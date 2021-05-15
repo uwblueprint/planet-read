@@ -10,6 +10,10 @@ Get [started with vault](https://www.notion.so/uwblueprintexecs/Secret-Managemen
 ```
 vault kv get -format=json kv/planet-read | python update_secret_files.py
 ```
+You should have three new files in your repo after this:
+- `.env`
+- `backend/.env`
+- `backend/python/firebaseServiceAccount.json`
 ## Prereqs
 Verify that you have docker and npx installed:
 ```
@@ -29,6 +33,9 @@ docker exec -it <db-container-id> /bin/bash
 psql -U postgres -d planet-read
 INSERT INTO users (first_name, last_name, auth_id, role) VALUES ('First', 'Last', 'insert-firebase-uid', 'Admin');
 ```
+
+If there are no tables in the DB, go into `/backend/python/app/models/__init__.py` and change the `erase_db_and_sync = False` to True, allow the hot reload to build, and change it back to `False`. Try to seed the database with a user again.
+
 Follow the [getting started](https://uwblueprint.github.io/starter-code-v2/docs/getting-started) for more details, especially if you desire to use your own firebase and gcp projects.
 
 Happy hacking! 💻🚀
