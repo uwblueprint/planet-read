@@ -2,6 +2,7 @@ import React, { useContext, useState } from "react";
 import { Redirect } from "react-router-dom";
 import authAPIClient from "../../APIClients/AuthAPIClient";
 import AuthContext, { AuthenticatedUser } from "../../contexts/AuthContext";
+import ResetPassword from "./ResetPassword";
 
 const Login = () => {
   const { authenticatedUser, setAuthenticatedUser } = useContext(AuthContext);
@@ -45,6 +46,7 @@ const Login = () => {
           >
             Log In
           </button>
+          <ResetPassword email={email} />
         </div>
       </form>
     </div>
