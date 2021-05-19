@@ -2,9 +2,10 @@ from ...models.entity import Entity
 from ...models import db
 from ..interfaces.entity_service import IEntityService
 
+from flask import current_app
 
 class EntityService(IEntityService):
-    def __init__(self, logger):
+    def __init__(self, logger=current_app.logger):
         self.logger = logger
 
     def get_entities(self):
@@ -53,4 +54,4 @@ class EntityService(IEntityService):
 
         self.logger.error("Invalid id")
         raise Exception("Invalid id")
-
+
