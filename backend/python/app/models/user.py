@@ -34,4 +34,3 @@ class User(db.Model):
                 # don't format the relationship's relationships
                 formatted[field] = [obj.to_dict() for obj in attr]
         return formatted
-

@@ -8,7 +8,7 @@ class File(db.Model):
     __tablename__ = "files"
 
     id = db.Column(db.Integer, primary_key=True, nullable=False)
-    link = db.Column(db.String(255), nullable=False)
+    path = db.Column(db.String(255), nullable=False)
 
     def to_dict(self, include_relationships=False):
         cls = type(self)

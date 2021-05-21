@@ -8,6 +8,7 @@ from ...resources.user_dto import UserDTO
 
 from flask import current_app
 
+
 class UserService(IUserService):
     """
     UserService implementation with user management methods
@@ -396,4 +397,3 @@ class UserService(IUserService):
         user_dict = user.to_dict()
         user_dict.pop("auth_id", None)
         return user_dict
-
