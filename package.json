@@ -1,0 +1,5 @@
+{
+  "dependencies": {
+    "node-vault": "^0.9.21"
+  }
+}
