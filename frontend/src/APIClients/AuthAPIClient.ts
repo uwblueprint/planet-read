@@ -32,7 +32,7 @@ const signup = async (
   try {
     const { data } = await baseAPIClient.post(
       "/auth/signup",
-      { firstName, lastName, email, password },
+      { firstName, lastName, email, role: "User", password },
       { withCredentials: true },
     );
     localStorage.setItem(AUTHENTICATED_USER_KEY, JSON.stringify(data));
