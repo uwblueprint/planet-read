@@ -32,7 +32,7 @@ class EntityService(IEntityService):
         # remember to commit to actually persist into the database
         db.session.commit()
 
-        return new_entity.to_dict()
+        return new_entity
 
     def update_entity(self, id, entity):
         Entity.query.filter_by(id=id).update(entity.__dict__)

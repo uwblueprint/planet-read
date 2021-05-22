@@ -1,35 +1,22 @@
-from ...models import Entity as EntityModel
-from ...resources.entity_dto import EntityDTO
-
 import graphene
-from graphene import relay
-from graphene_sqlalchemy import SQLAlchemyObjectType
 
-class Entity(SQLAlchemyObjectType):
-    class Meta:
-        model = EntityModel
-        interfaces = (relay.Node, )
+class EntityEnum(graphene.Enum):
+    A = "A"
+    B = "B"
+    C = "C"
+    D = "D"
 
-class EntityInput(graphene.InputObjectType):
+class EntityResponseDTO(graphene.ObjectType):
+    id = graphene.Int()
     string_field = graphene.String(required=True)
     int_field = graphene.Int(required=True)
     string_array_field = graphene.List(graphene.String, required=True)
-    enum_field = graphene.String(required=True) # TODO: make stricter
+    enum_field = graphene.Field(EntityEnum, required=True)
     bool_field = graphene.Boolean(required=True)
 
-def entity_input_to_dto_and_model(entity_data):
-    entity_dto = EntityDTO(
-        string_field=entity_data.string_field,
-        int_field=entity_data.int_field,
-        string_array_field=entity_data.string_array_field,
-        enum_field=entity_data.enum_field,
-        bool_field=entity_data.bool_field,
-    )
-    entity_model = EntityModel(
-        string_field=entity_data.string_field,
-        int_field=entity_data.int_field,
-        string_array_field=entity_data.string_array_field,
-        enum_field=entity_data.enum_field,
-        bool_field=entity_data.bool_field,
-    )
-    return entity_dto, entity_model 
+class EntityRequestDTO(graphene.InputObjectType):
+    string_field = graphene.String(required=True)
+    int_field = graphene.Int(required=True)
+    string_array_field = graphene.List(graphene.String, required=True)
+    enum_field = graphene.Argument(EntityEnum, required=True) 
+    bool_field = graphene.Boolean(required=True)

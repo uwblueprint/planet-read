@@ -3,9 +3,6 @@ from flask_sqlalchemy import SQLAlchemy
 db = SQLAlchemy()
 erase_db_and_sync = False
 
-from .user import User
-from .entity import Entity
-
 
 def init_app(app):
     from .entity import Entity

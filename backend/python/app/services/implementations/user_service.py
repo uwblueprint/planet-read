@@ -1,3 +1,4 @@
+from flask.globals import current_app
 import firebase_admin.auth
 
 from ..interfaces.user_service import IUserService
@@ -5,13 +6,14 @@ from ...models.user import User
 from ...models import db
 from ...resources.user_dto import UserDTO
 
+from flask import current_app
 
 class UserService(IUserService):
     """
     UserService implementation with user management methods
     """
 
-    def __init__(self, logger):
+    def __init__(self, logger=current_app.logger):
         """
         Create an instance of UserService
 
@@ -394,4 +396,4 @@ class UserService(IUserService):
         user_dict = user.to_dict()
         user_dict.pop("auth_id", None)
         return user_dict
-
+
