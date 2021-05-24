@@ -95,7 +95,6 @@ def logout(user_id):
 @blueprint.route(
     "/resetPassword/<string:email>", methods=["POST"], strict_slashes=False
 )
-@require_authorization_by_email("email")
 def reset_password(email):
     """
     Triggers password reset for user with specified email (reset link will be emailed)
