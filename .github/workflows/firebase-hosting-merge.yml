@@ -18,3 +18,6 @@ jobs:
           firebaseServiceAccount: '${{ secrets.FIREBASE_SERVICE_ACCOUNT_PLANET_READ_UWBP }}'
           channelId: live
           projectId: planet-read-uwbp
+
+- name: Create .env file
+  uses: SpicyPizza/create-envfile@v1.1
