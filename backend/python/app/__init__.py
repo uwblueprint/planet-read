@@ -55,4 +55,7 @@ def create_app(config_name):
     models.init_app(app)
     rest.init_app(app)
 
+    from . import graphql
+    graphql.init_app(app)
+
     return app
