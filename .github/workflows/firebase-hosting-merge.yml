@@ -21,5 +21,3 @@ jobs:
 
       - name: Create .env file
         uses: SpicyPizza/create-envfile@v1.1
-        with:
-          envkey_DEBUG: false
