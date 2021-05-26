@@ -81,3 +81,4 @@ def delete_entity(id):
         return jsonify({"error": (error_message if error_message else str(e))}), 500
 
     return jsonify(result), 200
+

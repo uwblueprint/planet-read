@@ -22,6 +22,11 @@ docker-compose --version
 npx -v
 ```
 # Build and Run
+Note: if you have already built the project before, run this first: 
+```
+docker-compose down --volumes
+```
+
 And run the project:
 ```
 docker-compose up --build

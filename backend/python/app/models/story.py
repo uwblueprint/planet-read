@@ -3,8 +3,7 @@ from sqlalchemy.orm.properties import ColumnProperty
 
 from . import db
 
-stages_enum = db.Enum("START", "TRANSLATE", "REVIEW", "PUBLISH", name="stages")
-
+stages_enum = db.Enum("START", "TRANSLATE", "REVIEW", "PUBLISH", name="stages" )
 
 class Story(db.Model):
     __tablename__ = "stories"
