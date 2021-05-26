@@ -12,7 +12,6 @@ from ..services.implementations.user_service import UserService
 
 from ..resources.create_user_dto import CreateUserDTO
 
-
 user_service = UserService(current_app.logger)
 email_service = EmailService(
     current_app.logger,
