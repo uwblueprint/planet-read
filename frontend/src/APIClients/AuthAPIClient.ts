@@ -23,6 +23,25 @@ const login = async (
   }
 };
 
+const signup = async (
+  firstName: string,
+  lastName: string,
+  email: string,
+  password: string,
+): Promise<AuthenticatedUser> => {
+  try {
+    const { data } = await baseAPIClient.post(
+      "/auth/signup",
+      { firstName, lastName, email, role: "User", password },
+      { withCredentials: true },
+    );
+    localStorage.setItem(AUTHENTICATED_USER_KEY, JSON.stringify(data));
+    return data;
+  } catch (error) {
+    return null;
+  }
+};
+
 const logout = async (userId: string | undefined): Promise<boolean> => {
   const bearerToken = `Bearer ${getLocalStorageObjProperty(
     AUTHENTICATED_USER_KEY,
@@ -77,4 +96,4 @@ const refresh = async (): Promise<boolean> => {
   }
 };
 
-export default { login, logout, resetPassword, refresh };
+export default { login, logout, signup, resetPassword, refresh };

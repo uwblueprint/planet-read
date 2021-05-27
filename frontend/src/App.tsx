@@ -3,6 +3,7 @@ import React, { useState } from "react";
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 
 import Login from "./components/auth/Login";
+import Signup from "./components/auth/Signup";
 import PrivateRoute from "./components/auth/PrivateRoute";
 import CreatePage from "./components/pages/CreatePage";
 import Default from "./components/pages/Default";
@@ -28,6 +29,7 @@ const App = () => {
         <Switch>
           <PrivateRoute exact path="/" component={Default} />
           <Route exact path="/login" component={Login} />
+          <Route exact path="/signup" component={Signup} />
           <PrivateRoute exact path="/entity/create" component={CreatePage} />
           <PrivateRoute exact path="/entity/update" component={UpdatePage} />
           <PrivateRoute exact path="/entity" component={DisplayPage} />

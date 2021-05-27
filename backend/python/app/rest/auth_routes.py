@@ -10,6 +10,7 @@ from ..services.implementations.auth_service import AuthService
 from ..services.implementations.email_service import EmailService
 from ..services.implementations.user_service import UserService
 
+from ..resources.create_user_dto import CreateUserDTO
 
 user_service = UserService(current_app.logger)
 email_service = EmailService(
@@ -33,6 +34,37 @@ def login():
     Returns access token in response body and sets refreshToken as an httpOnly cookie
     """
     try:
+        auth_dto = auth_service.generate_token(
+            request.json["email"], request.json["password"]
+        )
+        response = jsonify(
+            {
+                "access_token": auth_dto.access_token,
+                "id": auth_dto.id,
+                "first_name": auth_dto.first_name,
+                "last_name": auth_dto.last_name,
+                "email": auth_dto.email,
+                "role": auth_dto.role,
+            }
+        )
+        response.set_cookie(
+            "refreshToken",
+            value=auth_dto.refresh_token,
+            httponly=True,
+            secure=(os.getenv("FLASK_CONFIG") == "production"),
+        )
+        return response, 200
+    except Exception as e:
+        error_message = getattr(e, "message", None)
+        return jsonify({"error": (error_message if error_message else str(e))}), 500
+
+@blueprint.route("/signup", methods=["POST"], strict_slashes=False)
+def signup():
+    """
+    Returns access token in response body and sets refreshToken as an httpOnly cookie
+    """
+    try:
+        user_service.create_user(CreateUserDTO(**request.json))
         auth_dto = auth_service.generate_token(
             request.json["email"], request.json["password"]
         )
