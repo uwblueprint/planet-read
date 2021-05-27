@@ -1,0 +1,24 @@
+version: 2.1
+jobs:
+  build:
+    docker:
+      - image: cimg/base:2021.05
+    steps:
+      - checkout
+      - setup_remote_docker:
+          version: 19.03.13
+          docker_layer_caching: false
+      - run:
+          name: Create env file
+          command: |
+            touch .env
+      - run: 
+          name: Start container via docker-compose
+          command: |
+            set -x
+            docker-compose up -d
+workflows:
+  version: 2
+  build:
+    jobs:
+      - build
