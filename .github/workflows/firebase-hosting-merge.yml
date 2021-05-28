@@ -14,11 +14,11 @@ jobs:
       - run: 
         name: Creating .env file 
         command: | 
-        touch /home/runner/work/planet-read/planet-read/.env 
+          touch /home/runner/work/planet-read/planet-read/.env 
       - run: 
         name: run docker build script 
         command: | 
-        docker-compose up --build
+          docker-compose up --build
       - uses: FirebaseExtended/action-hosting-deploy@v0
         with:
           repoToken: '${{ secrets.GITHUB_TOKEN }}'
