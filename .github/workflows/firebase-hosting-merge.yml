@@ -11,11 +11,11 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      - name:  Creating .env file 
+        name:  Creating .env file 
         command: | 
           touch /home/runner/work/planet-read/planet-read/.env 
-      - name: run docker build script 
-        command: | 
+      # - name: run docker build script 
+      #   command: | 
           docker-compose up --build
       - uses: FirebaseExtended/action-hosting-deploy@v0
         with:
