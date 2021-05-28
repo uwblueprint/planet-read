@@ -15,12 +15,9 @@ jobs:
         run: | 
           touch /home/runner/work/planet-read/planet-read/.env 
           docker-compose up --build
-          
       - uses: FirebaseExtended/action-hosting-deploy@v0
         with:
           repoToken: '${{ secrets.GITHUB_TOKEN }}'
           firebaseServiceAccount: '${{ secrets.FIREBASE_SERVICE_ACCOUNT_PLANET_READ_UWBP }}'
           channelId: live
           projectId: planet-read-uwbp
-# - name: Create .env file
-#   uses: SpicyPizza/create-envfile@v1.1
