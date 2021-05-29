@@ -1,0 +1,133 @@
+PS C:\Users\Andrew Guo\OneDrive - University of Waterloo (1)\Blueprint\planet-read> firebase init hosting:github --debug
+[2021-05-29T02:13:24.314Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[2021-05-29T02:13:24.316Z] > authorizing via signed-in user (planetread@uwblueprint.org)
+
+     ######## #### ########  ######## ########     ###     ######  ########
+     ##        ##  ##     ## ##       ##     ##  ##   ##  ##       ##
+     ######    ##  ########  ######   ########  #########  ######  ######
+     ##        ##  ##    ##  ##       ##     ## ##     ##       ## ##
+     ##       #### ##     ## ######## ########  ##     ##  ######  ########
+
+You're about to initialize a Firebase project in this directory:
+
+  C:\Users\Andrew Guo\OneDrive - University of Waterloo (1)\Blueprint\planet-read
+
+Before we get started, keep in mind:
+
+  * You are initializing in an existing Firebase project directory
+
+? Are you ready to proceed? Yes
+
+=== Project Setup
+
+First, let's associate this project directory with a Firebase project.
+You can create multiple project aliases by running firebase use --add,
+but for now we'll just set up a default project.
+
+i  .firebaserc already has a default project, using planet-read-uwbp.
+[2021-05-29T02:13:28.413Z] >>> [apiv2][query] GET https://firebase.googleapis.com/v1beta1/projects/planet-read-uwbp [none]
+[2021-05-29T02:13:28.606Z] <<< [apiv2][status] GET https://firebase.googleapis.com/v1beta1/projects/planet-read-uwbp 200
+[2021-05-29T02:13:28.606Z] <<< [apiv2][body] GET https://firebase.googleapis.com/v1beta1/projects/planet-read-uwbp {"projectId":"planet-read-uwbp","projectNumber":"293534035161","displayName":"planet-read","name":"projects/planet-read-uwbp","resources":{"hostingSite":"planet-read-uwbp"},"state":"ACTIVE"}
+
+=== Hosting:github Setup
+
+i  Detected a .git folder at C:\Users\Andrew Guo\OneDrive - University of Waterloo (1)\Blueprint\planet-read
+i  Authorizing with GitHub to upload your service account to a GitHub repository's secrets store.
+
+Visit this URL on this device to log in:
+https://github.com/login/oauth/authorize?client_id=89cf50f02ac6aaed3484&state=173774691&redirect_uri=http%3A%2F%2Flocalhost%3A9005&scope=read%3Auser%20repo%20public_repo
+
+Waiting for authentication...
+[2021-05-29T02:13:29.149Z] >>> HTTP REQUEST POST https://github.com/login/oauth/access_token  
+ {"client_id":"89cf50f02ac6aaed3484","client_secret":"3330d14abc895d9a74d5f17cd7a00711fa2c5bf0","code":"793008942b70291f6f3b","redirect_uri":"http://localhost:9005","state":"173774691"}
+[2021-05-29T02:13:29.479Z] <<< HTTP RESPONSE 200 {"server":"GitHub.com","date":"Sat, 29 May 2021 02:13:30 GMT","content-type":"application/json; charset=utf-8","transfer-encoding":"chunked","vary":"X-PJAX, Accept-Encoding, Accept, X-Requested-With","permissions-policy":"interest-cohort=()","etag":"W/\"7ae86eeb4e1f862f43f6037c2227facd\"","cache-control":"max-age=0, private, must-revalidate","strict-transport-security":"max-age=31536000; includeSubdomains; preload","x-frame-options":"deny","x-content-type-options":"nosniff","x-xss-protection":"0","referrer-policy":"origin-when-cross-origin, strict-origin-when-cross-origin","expect-ct":"max-age=2592000, report-uri=\"https://api.github.com/_private/browser/errors\"","content-security-policy":"default-src 'none'; base-uri 'self'; block-all-mixed-content; connect-src 'self' uploads.github.com www.githubstatus.com collector.githubapp.com api.github.com github-cloud.s3.amazonaws.com github-production-repository-file-5c1aeb.s3.amazonaws.com github-production-upload-manifest-file-7fdce7.s3.amazonaws.com github-production-user-asset-6210df.s3.amazonaws.com html-translator.herokuapp.com cdn.optimizely.com logx.optimizely.com/v1/events wss://alive.github.com; font-src github.githubassets.com; 
+form-action 'self' github.com gist.github.com; frame-ancestors 'none'; frame-src render.githubusercontent.com; img-src 'self' data: github.githubassets.com identicons.github.com collector.githubapp.com github-cloud.s3.amazonaws.com secured-user-images.githubusercontent.com/ *.githubusercontent.com; manifest-src 'self'; media-src 'none'; script-src github.githubassets.com; style-src 'unsafe-inline' github.githubassets.com; worker-src github.com/socket-worker-3f088aa2.js gist.github.com/socket-worker-3f088aa2.js","x-github-request-id":"F4BF:43B0:69F86:B63D6:60B1A34A"}
+[2021-05-29T02:13:29.484Z] >>> [apiv2][query] GET https://api.github.com/user [none]
+[2021-05-29T02:13:29.825Z] <<< [apiv2][status] GET https://api.github.com/user 200
+[2021-05-29T02:13:29.826Z] <<< [apiv2][body] GET https://api.github.com/user {"login":"andrewyguo","id":54864799,"node_id":"MDQ6VXNlcjU0ODY0Nzk5","avatar_url":"https://avatars.githubusercontent.com/u/54864799?v=4","gravatar_id":"","url":"https://api.github.com/users/andrewyguo","html_url":"https://github.com/andrewyguo","followers_url":"https://api.github.com/users/andrewyguo/followers","following_url":"https://api.github.com/users/andrewyguo/following{/other_user}","gists_url":"https://api.github.com/users/andrewyguo/gists{/gist_id}","starred_url":"https://api.github.com/users/andrewyguo/starred{/owner}{/repo}","subscriptions_url":"https://api.github.com/users/andrewyguo/subscriptions","organizations_url":"https://api.github.com/users/andrewyguo/orgs","repos_url":"https://api.github.com/users/andrewyguo/repos","events_url":"https://api.github.com/users/andrewyguo/events{/privacy}","received_events_url":"https://api.github.com/users/andrewyguo/received_events","type":"User","site_admin":false,"name":"Andrew Guo","company":null,"blog":"andrewguo.com","location":"Vancouver, BC","email":null,"hireable":null,"bio":"UWaterloo Software Engineering","twitter_username":"andrewyguo","public_repos":10,"public_gists":0,"followers":15,"following":18,"created_at":"2019-09-03T19:44:19Z","updated_at":"2021-05-28T03:05:45Z","private_gists":0,"total_private_repos":14,"owned_private_repos":14,"disk_usage":371423,"collaborators":0,"two_factor_authentication":false,"plan":{"name":"pro","space":976562499,"collaborators":0,"private_repos":9999}}
+
++  Success! Logged into GitHub as andrewyguo
+
+? For which GitHub repository would you like to set up a GitHub workflow? (format: user/repository) uwblueprint/planet-read[2021-05-29T02:13:39.234Z] >>> [apiv2][query] GET https://api.github.com/repos/uwblueprint/planet-read/actions/secrets/public-key type=owner
+[2021-05-29T02:13:39.578Z] <<< [apiv2][status] GET https://api.github.com/repos/uwblueprint/planet-read/actions/secrets/public-key 200
+[2021-05-29T02:13:39.579Z] <<< [apiv2][body] GET https://api.github.com/repos/uwblueprint/planet-read/actions/secrets/public-key {"key_id":"568250167242549743","key":"DaRdmggxYWo+94RwxMpktVD/HN53OUl3crZLs6C4zF8="}
+? For which GitHub repository would you like to set up a GitHub workflow? (format: user/repository) uwblueprint/planet-read
+[2021-05-29T02:13:39.581Z] >>> [apiv2][query] GET https://api.github.com/repos/uwblueprint/planet-read [none]
+[2021-05-29T02:13:39.935Z] <<< [apiv2][status] GET https://api.github.com/repos/uwblueprint/planet-read 200
+[2021-05-29T02:13:39.935Z] <<< [apiv2][body] GET https://api.github.com/repos/uwblueprint/planet-read {"id":365667470,"node_id":"MDEwOlJlcG9zaXRvcnkzNjU2Njc0NzA=","name":"planet-read","full_name":"uwblueprint/planet-read","private":false,"owner":{"login":"uwblueprint","id":22460895,"node_id":"MDEyOk9yZ2FuaXphdGlvbjIyNDYwODk1","avatar_url":"https://avatars.githubusercontent.com/u/22460895?v=4","gravatar_id":"","url":"https://api.github.com/users/uwblueprint","html_url":"https://github.com/uwblueprint","followers_url":"https://api.github.com/users/uwblueprint/followers","following_url":"https://api.github.com/users/uwblueprint/following{/other_user}","gists_url":"https://api.github.com/users/uwblueprint/gists{/gist_id}","starred_url":"https://api.github.com/users/uwblueprint/starred{/owner}{/repo}","subscriptions_url":"https://api.github.com/users/uwblueprint/subscriptions","organizations_url":"https://api.github.com/users/uwblueprint/orgs","repos_url":"https://api.github.com/users/uwblueprint/repos","events_url":"https://api.github.com/users/uwblueprint/events{/privacy}","received_events_url":"https://api.github.com/users/uwblueprint/received_events","type":"Organization","site_admin":false},"html_url":"https://github.com/uwblueprint/planet-read","description":"🌎🌍🌏A platform for volunteers to translate and review stories.","fork":false,"url":"https://api.github.com/repos/uwblueprint/planet-read","forks_url":"https://api.github.com/repos/uwblueprint/planet-read/forks","keys_url":"https://api.github.com/repos/uwblueprint/planet-read/keys{/key_id}","collaborators_url":"https://api.github.com/repos/uwblueprint/planet-read/collaborators{/collaborator}","teams_url":"https://api.github.com/repos/uwblueprint/planet-read/teams","hooks_url":"https://api.github.com/repos/uwblueprint/planet-read/hooks","issue_events_url":"https://api.github.com/repos/uwblueprint/planet-read/issues/events{/number}","events_url":"https://api.github.com/repos/uwblueprint/planet-read/events","assignees_url":"https://api.github.com/repos/uwblueprint/planet-read/assignees{/user}","branches_url":"https://api.github.com/repos/uwblueprint/planet-read/branches{/branch}","tags_url":"https://api.github.com/repos/uwblueprint/planet-read/tags","blobs_url":"https://api.github.com/repos/uwblueprint/planet-read/git/blobs{/sha}","git_tags_url":"https://api.github.com/repos/uwblueprint/planet-read/git/tags{/sha}","git_refs_url":"https://api.github.com/repos/uwblueprint/planet-read/git/refs{/sha}","trees_url":"https://api.github.com/repos/uwblueprint/planet-read/git/trees{/sha}","statuses_url":"https://api.github.com/repos/uwblueprint/planet-read/statuses/{sha}","languages_url":"https://api.github.com/repos/uwblueprint/planet-read/languages","stargazers_url":"https://api.github.com/repos/uwblueprint/planet-read/stargazers","contributors_url":"https://api.github.com/repos/uwblueprint/planet-read/contributors","subscribers_url":"https://api.github.com/repos/uwblueprint/planet-read/subscribers","subscription_url":"https://api.github.com/repos/uwblueprint/planet-read/subscription","commits_url":"https://api.github.com/repos/uwblueprint/planet-read/commits{/sha}","git_commits_url":"https://api.github.com/repos/uwblueprint/planet-read/git/commits{/sha}","comments_url":"https://api.github.com/repos/uwblueprint/planet-read/comments{/number}","issue_comment_url":"https://api.github.com/repos/uwblueprint/planet-read/issues/comments{/number}","contents_url":"https://api.github.com/repos/uwblueprint/planet-read/contents/{+path}","compare_url":"https://api.github.com/repos/uwblueprint/planet-read/compare/{base}...{head}","merges_url":"https://api.github.com/repos/uwblueprint/planet-read/merges","archive_url":"https://api.github.com/repos/uwblueprint/planet-read/{archive_format}{/ref}","downloads_url":"https://api.github.com/repos/uwblueprint/planet-read/downloads","issues_url":"https://api.github.com/repos/uwblueprint/planet-read/issues{/number}","pulls_url":"https://api.github.com/repos/uwblueprint/planet-read/pulls{/number}","milestones_url":"https://api.github.com/repos/uwblueprint/planet-read/milestones{/number}","notifications_url":"https://api.github.com/repos/uwblueprint/planet-read/notifications{?since,all,participating}","labels_url":"https://api.github.com/repos/uwblueprint/planet-read/labels{/name}","releases_url":"https://api.github.com/repos/uwblueprint/planet-read/releases{/id}","deployments_url":"https://api.github.com/repos/uwblueprint/planet-read/deployments","created_at":"2021-05-09T04:35:23Z","updated_at":"2021-05-29T01:20:45Z","pushed_at":"2021-05-29T01:48:41Z","git_url":"git://github.com/uwblueprint/planet-read.git","ssh_url":"git@github.com:uwblueprint/planet-read.git","clone_url":"https://github.com/uwblueprint/planet-read.git","svn_url":"https://github.com/uwblueprint/planet-read","homepage":"","size":360,"stargazers_count":5,"watchers_count":5,"language":"Python","has_issues":true,"has_projects":true,"has_downloads":true,"has_wiki":true,"has_pages":false,"forks_count":1,"mirror_url":null,"archived":false,"disabled":false,"open_issues_count":3,"license":null,"forks":1,"open_issues":3,"watchers":5,"default_branch":"main","permissions":{"admin":true,"push":true,"pull":true},"temp_clone_token":"","allow_squash_merge":true,"allow_merge_commit":false,"allow_rebase_merge":false,"delete_branch_on_merge":false,"organization":{"login":"uwblueprint","id":22460895,"node_id":"MDEyOk9yZ2FuaXphdGlvbjIyNDYwODk1","avatar_url":"https://avatars.githubusercontent.com/u/22460895?v=4","gravatar_id":"","url":"https://api.github.com/users/uwblueprint","html_url":"https://github.com/uwblueprint","followers_url":"https://api.github.com/users/uwblueprint/followers","following_url":"https://api.github.com/users/uwblueprint/following{/other_user}","gists_url":"https://api.github.com/users/uwblueprint/gists{/gist_id}","starred_url":"https://api.github.com/users/uwblueprint/starred{/owner}{/repo}","subscriptions_url":"https://api.github.com/users/uwblueprint/subscriptions","organizations_url":"https://api.github.com/users/uwblueprint/orgs","repos_url":"https://api.github.com/users/uwblueprint/repos","events_url":"https://api.github.com/users/uwblueprint/events{/privacy}","received_events_url":"https://api.github.com/users/uwblueprint/received_events","type":"Organization","site_admin":false},"network_count":1,"subscribers_count":5}
+- Retrieving a service account.[2021-05-29T02:13:39.942Z] > refreshing access token with scopes: ["email","https://www.googleapis.com/auth/cloud-platform","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","openid"]
+[2021-05-29T02:13:39.943Z] >>> HTTP REQUEST POST https://www.googleapis.com/oauth2/v3/token
+ <request body omitted>
+[2021-05-29T02:13:40.042Z] <<< HTTP RESPONSE 200 {"pragma":"no-cache","cache-control":"no-cache, no-store, max-age=0, must-revalidate","expires":"Mon, 01 Jan 1990 00:00:00 GMT","date":"Sat, 29 May 2021 02:13:41 GMT","content-type":"application/json; 
+charset=utf-8","vary":"X-Origin, Referer, Origin,Accept-Encoding","server":"scaffolding on HTTPServer2","x-xss-protection":"0","x-frame-options":"SAMEORIGIN","x-content-type-options":"nosniff","alt-svc":"h3-29=\":443\"; ma=2592000,h3-T051=\":443\"; ma=2592000,h3-Q050=\":443\"; ma=2592000,h3-Q046=\":443\"; ma=2592000,h3-Q043=\":443\"; ma=2592000,quic=\":443\"; ma=2592000; v=\"46,43\"","accept-ranges":"none","transfer-encoding":"chunked"}
+[2021-05-29T02:13:40.052Z] >>> HTTP REQUEST POST https://iam.googleapis.com/v1/projects/planet-read-uwbp/serviceAccounts  
+ {"accountId":"github-action-365667470","serviceAccount":{"displayName":"GitHub Actions (uwblueprint/planet-read)","description":"A service account with permission to deploy to Firebase Hosting for the GitHub repository uwblueprint/planet-read"}}    
+| Retrieving a service account.[2021-05-29T02:13:40.303Z] <<< HTTP RESPONSE 409 {"vary":"X-Origin, Referer, Origin,Accept-Encoding","content-type":"application/json; charset=UTF-8","date":"Sat, 29 May 2021 02:13:41 GMT","server":"ESF","cache-control":"private","x-xss-protection":"0","x-frame-options":"SAMEORIGIN","x-content-type-options":"nosniff","alt-svc":"h3-29=\":443\"; ma=2592000,h3-T051=\":443\"; ma=2592000,h3-Q050=\":443\"; ma=2592000,h3-Q046=\":443\"; ma=2592000,h3-Q043=\":443\"; ma=2592000,quic=\":443\"; ma=2592000; v=\"46,43\"","accept-ranges":"none","transfer-encoding":"chunked"}
+[2021-05-29T02:13:40.304Z] <<< HTTP RESPONSE BODY {"error":{"code":409,"message":"Service account github-action-365667470 already exists within project projects/planet-read-uwbp.","status":"ALREADY_EXISTS","details":[{"@type":"type.googleapis.com/google.rpc.ResourceInfo","resourceName":"projects/planet-read-uwbp/serviceAccounts/github-action-365667470@planet-read-uwbp.iam.gserviceaccount.com"}]}}
+[2021-05-29T02:13:40.306Z] >>> HTTP REQUEST GET https://iam.googleapis.com/v1/projects/planet-read-uwbp/serviceAccounts/github-action-365667470@planet-read-uwbp.iam.gserviceaccount.com
+
+[2021-05-29T02:13:40.307Z] >>> HTTP REQUEST POST https://cloudresourcemanager.googleapis.com/v1/projects/planet-read-uwbp:getIamPolicy
+
+/ Retrieving a service account.[2021-05-29T02:13:40.477Z] <<< HTTP RESPONSE 200 {"content-type":"application/json; charset=UTF-8","vary":"X-Origin, Referer, Origin,Accept-Encoding","date":"Sat, 29 May 2021 02:13:41 GMT","server":"ESF","cache-control":"private","x-xss-protection":"0","x-frame-options":"SAMEORIGIN","x-content-type-options":"nosniff","alt-svc":"h3-29=\":443\"; ma=2592000,h3-T051=\":443\"; ma=2592000,h3-Q050=\":443\"; ma=2592000,h3-Q046=\":443\"; ma=2592000,h3-Q043=\":443\"; ma=2592000,quic=\":443\"; ma=2592000; v=\"46,43\"","accept-ranges":"none","transfer-encoding":"chunked"}
+- Retrieving a service account.[2021-05-29T02:13:40.533Z] <<< HTTP RESPONSE 200 {"content-type":"application/json; charset=UTF-8","vary":"X-Origin, Referer, Origin,Accept-Encoding","date":"Sat, 29 May 2021 02:13:41 GMT","server":"ESF","cache-control":"private","x-xss-protection":"0","x-frame-options":"SAMEORIGIN","x-content-type-options":"nosniff","server-timing":"gfet4t7; dur=180","alt-svc":"h3-29=\":443\"; ma=2592000,h3-T051=\":443\"; ma=2592000,h3-Q050=\":443\"; ma=2592000,h3-Q046=\":443\"; ma=2592000,h3-Q043=\":443\"; ma=2592000,quic=\":443\"; ma=2592000; v=\"46,43\"","accept-ranges":"none","transfer-encoding":"chunked"}
+[2021-05-29T02:13:40.536Z] >>> HTTP REQUEST POST https://cloudresourcemanager.googleapis.com/v1/projects/planet-read-uwbp:setIamPolicy  
+ {"policy":{"version":1,"etag":"BwXDboUEOUU=","bindings":[{"role":"roles/firebase.managementServiceAgent","members":["serviceAccount:firebase-service-account@firebase-sa-management.iam.gserviceaccount.com"]},{"role":"roles/firebase.sdkAdminServiceAgent","members":["serviceAccount:firebase-adminsdk-ezavl@planet-read-uwbp.iam.gserviceaccount.com"]},{"role":"roles/firebaseauth.admin","members":["serviceAccount:firebase-adminsdk-ezavl@planet-read-uwbp.iam.gserviceaccount.com","serviceAccount:github-action-365667470@planet-read-uwbp.iam.gserviceaccount.com","serviceAccount:github-action-368073581@planet-read-uwbp.iam.gserviceaccount.com"]},{"role":"roles/firebasehosting.admin","members":["serviceAccount:github-action-365667470@planet-read-uwbp.iam.gserviceaccount.com","serviceAccount:github-action-368073581@planet-read-uwbp.iam.gserviceaccount.com"]},{"role":"roles/firebaserules.system","members":["serviceAccount:service-293534035161@firebase-rules.iam.gserviceaccount.com"]},{"role":"roles/iam.serviceAccountTokenCreator","members":["serviceAccount:firebase-adminsdk-ezavl@planet-read-uwbp.iam.gserviceaccount.com"]},{"role":"roles/owner","members":["user:kristygao@uwblueprint.org","user:planetread@uwblueprint.org"]},{"role":"roles/pubsub.serviceAgent","members":["serviceAccount:service-293534035161@gcp-sa-pubsub.iam.gserviceaccount.com"]},{"role":"roles/run.viewer","members":["serviceAccount:github-action-365667470@planet-read-uwbp.iam.gserviceaccount.com","serviceAccount:github-action-368073581@planet-read-uwbp.iam.gserviceaccount.com"]},{"role":"roles/serviceusage.apiKeysViewer","members":["serviceAccount:github-action-365667470@planet-read-uwbp.iam.gserviceaccount.com","serviceAccount:github-action-368073581@planet-read-uwbp.iam.gserviceaccount.com"]}]},"updateMask":"bindings"}
+\ Retrieving a service account.[2021-05-29T02:13:41.202Z] <<< HTTP RESPONSE 200 {"content-type":"application/json; charset=UTF-8","vary":"X-Origin, Referer, Origin,Accept-Encoding","date":"Sat, 29 May 2021 02:13:42 GMT","server":"ESF","cache-control":"private","x-xss-protection":"0","x-frame-options":"SAMEORIGIN","x-content-type-options":"nosniff","server-timing":"gfet4t7; dur=623","alt-svc":"h3-29=\":443\"; ma=2592000,h3-T051=\":443\"; ma=2592000,h3-Q050=\":443\"; ma=2592000,h3-Q046=\":443\"; ma=2592000,h3-Q043=\":443\"; ma=2592000,quic=\":443\"; ma=2592000; v=\"46,43\"","accept-ranges":"none","transfer-encoding":"chunked"}
+[2021-05-29T02:13:41.204Z] >>> HTTP REQUEST POST https://iam.googleapis.com/v1/projects/planet-read-uwbp/serviceAccounts/github-action-365667470@planet-read-uwbp.iam.gserviceaccount.com/keys
+ {"keyAlgorithm":"KEY_ALG_UNSPECIFIED","privateKeyType":"TYPE_GOOGLE_CREDENTIALS_FILE"}
+/ Retrieving a service account.[2021-05-29T02:13:41.488Z] <<< HTTP RESPONSE 400 {"vary":"X-Origin, Referer, Origin,Accept-Encoding","content-type":"application/json; charset=UTF-8","date":"Sat, 29 May 2021 02:13:42 GMT","server":"ESF","cache-control":"private","x-xss-protection":"0","x-frame-options":"SAMEORIGIN","x-content-type-options":"nosniff","alt-svc":"h3-29=\":443\"; ma=2592000,h3-T051=\":443\"; ma=2592000,h3-Q050=\":443\"; ma=2592000,h3-Q046=\":443\"; ma=2592000,h3-Q043=\":443\"; ma=2592000,quic=\":443\"; ma=2592000; v=\"46,43\"","accept-ranges":"none","transfer-encoding":"chunked"}
+[2021-05-29T02:13:41.489Z] <<< HTTP RESPONSE BODY {"error":{"code":400,"message":"Precondition check failed.","status":"FAILED_PRECONDITION"}}
+
+Error: HTTP Error: 400, Precondition check failed.
+[2021-05-29T02:13:41.492Z] Error Context: {
+  "body": {
+    "error": {
+      "code": 400,
+      "message": "Precondition check failed.",
+      "status": "FAILED_PRECONDITION"
+    }
+  },
+  "response": {
+    "statusCode": 400,
+    "body": {
+      "error": {
+        "code": 400,
+        "message": "Precondition check failed.",
+        "status": "FAILED_PRECONDITION"
+      }
+    },
+    "headers": {
+      "vary": "X-Origin, Referer, Origin,Accept-Encoding",
+      "content-type": "application/json; charset=UTF-8",
+      "date": "Sat, 29 May 2021 02:13:42 GMT",
+      "server": "ESF",
+      "cache-control": "private",
+      "x-xss-protection": "0",
+      "x-frame-options": "SAMEORIGIN",
+      "x-content-type-options": "nosniff",
+      "alt-svc": "h3-29=\":443\"; ma=2592000,h3-T051=\":443\"; ma=2592000,h3-Q050=\":443\"; ma=2592000,h3-Q046=\":443\"; ma=2592000,h3-Q043=\":443\"; ma=2592000,quic=\":443\"; ma=2592000; v=\"46,43\"",
+      "accept-ranges": "none",
+      "transfer-encoding": "chunked"
+    },
+    "request": {
+      "uri": {
+        "protocol": "https:",
+        "slashes": true,
+        "auth": null,
+        "host": "iam.googleapis.com",
+        "port": 443,
+        "hostname": "iam.googleapis.com",
+        "hash": null,
+        "search": null,
+        "query": null,
+        "pathname": "/v1/projects/planet-read-uwbp/serviceAccounts/github-action-365667470@planet-read-uwbp.iam.gserviceaccount.com/keys",
+        "path": "/v1/projects/planet-read-uwbp/serviceAccounts/github-action-365667470@planet-read-uwbp.iam.gserviceaccount.com/keys",
+        "href": "https://iam.googleapis.com/v1/projects/planet-read-uwbp/serviceAccounts/github-action-365667470@planet-read-uwbp.iam.gserviceaccount.com/keys"
+      },
+      "method": "POST"
+    }
+  }
+}
+
+Having trouble? Try firebase [command] --help
+PS C:\Users\Andrew Guo\OneDrive - University of Waterloo (1)\Blueprint\planet-read> 
