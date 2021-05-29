@@ -1,8 +1,10 @@
-import graphene 
+import graphene
+
 
 class RoleEnum(graphene.Enum):
     User = "User"
     Admin = "Admin"
+
 
 class UserDTO(graphene.ObjectType):
     id = graphene.Int()
@@ -10,6 +12,7 @@ class UserDTO(graphene.ObjectType):
     last_name = graphene.String(required=True)
     role = graphene.Field(RoleEnum, required=True)
     email = graphene.String(required=True)
+
 
 class CreateUserDTO(graphene.InputObjectType):
     first_name = graphene.String(required=True)

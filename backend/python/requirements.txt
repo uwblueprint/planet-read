@@ -29,6 +29,7 @@ googleapis-common-protos==1.53.0
 grpcio==1.37.0
 httplib2==0.19.1
 idna==2.10
+isort==5.8.0
 itsdangerous==1.1.0
 Jinja2==2.11.2
 Mako==1.1.4

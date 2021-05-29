@@ -1,10 +1,10 @@
 import os
-import firebase_admin
+from logging.config import dictConfig
 
+import firebase_admin
 from flask import Flask
 from flask_cors import CORS
 from flask_sqlalchemy import SQLAlchemy
-from logging.config import dictConfig
 
 from .config import app_config
 
@@ -56,6 +56,7 @@ def create_app(config_name):
     rest.init_app(app)
 
     from . import graphql
+
     graphql.init_app(app)
 
     return app

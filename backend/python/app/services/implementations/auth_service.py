@@ -1,8 +1,8 @@
 import firebase_admin.auth
 
-from ..interfaces.auth_service import IAuthService
 from ...resources.auth_dto import AuthDTO
 from ...utilities.firebase_rest_client import FirebaseRestClient
+from ..interfaces.auth_service import IAuthService
 
 
 class AuthService(IAuthService):

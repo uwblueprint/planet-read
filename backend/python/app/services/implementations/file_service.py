@@ -1,7 +1,7 @@
 import os
 
-from ...models.file import File
 from ...models import db
+from ...models.file import File
 from ..interfaces.file_service import IFileService
 
 

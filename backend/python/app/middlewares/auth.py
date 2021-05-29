@@ -1,5 +1,6 @@
-from flask import current_app, jsonify, request
 from functools import wraps
+
+from flask import current_app, jsonify, request
 
 from ..services.implementations.auth_service import AuthService
 from ..services.implementations.user_service import UserService
