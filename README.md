@@ -31,6 +31,7 @@ And run the project:
 ```
 docker-compose up --build
 ```
+
 Don't forget to seed your database with a firebase user: 
 ```
 docker ps
@@ -40,6 +41,12 @@ INSERT INTO users (first_name, last_name, auth_id, role) VALUES ('First', 'Last'
 ```
 
 If there are no tables in the DB, go into `/backend/python/app/models/__init__.py` and change the `erase_db_and_sync = False` to True, allow the hot reload to build, and change it back to `False`. Try to seed the database with a user again.
+
+# Lint
+Frontend has on-save linting. To lint the backend:
+```
+docker exec -it <backend-container-id> /bin/bash -c "black . && isort --profile black ."
+```
 
 Follow the [getting started](https://uwblueprint.github.io/starter-code-v2/docs/getting-started) for more details, especially if you desire to use your own firebase and gcp projects.
 

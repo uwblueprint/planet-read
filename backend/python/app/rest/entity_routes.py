@@ -1,9 +1,7 @@
-from flask import Blueprint, current_app, request
-from flask import jsonify
-
-from ..resources.entity_dto import EntityDTO
+from flask import Blueprint, current_app, jsonify, request
 
 from ..middlewares.auth import require_authorization_by_role
+from ..resources.entity_dto import EntityDTO
 from ..services.implementations.entity_service import EntityService
 
 # define instance of EntityService
@@ -81,4 +79,3 @@ def delete_entity(id):
         return jsonify({"error": (error_message if error_message else str(e))}), 500
 
     return jsonify(result), 200
-

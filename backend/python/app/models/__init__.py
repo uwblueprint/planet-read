@@ -6,9 +6,9 @@ erase_db_and_sync = False
 
 def init_app(app):
     from .entity import Entity
-    from .user import User
-    from .story import Story
     from .file import File
+    from .story import Story
+    from .user import User
 
     app.app_context().push()
     db.init_app(app)

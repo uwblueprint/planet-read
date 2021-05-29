@@ -1,12 +1,10 @@
 import os
+
+from flask import Blueprint, current_app, jsonify, request
 from werkzeug.utils import secure_filename
 
-from flask import Blueprint, current_app, request
-from flask import jsonify
-
-from ..resources.file_dto import FileDTO
-
 from ..middlewares.auth import require_authorization_by_role
+from ..resources.file_dto import FileDTO
 from ..services.implementations.file_service import FileService
 
 # define instance of fileService

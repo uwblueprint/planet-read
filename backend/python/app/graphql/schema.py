@@ -1,12 +1,11 @@
-from .types.entity_type import EntityResponseDTO
-from .types.user_type import UserDTO
+import graphene
+
 from .mutations.entity_mutation import CreateEntity
 from .mutations.user_mutation import CreateUser
-from .service import services
 from .queries.entity_query import resolve_entities
-from .queries.user_query import resolve_users, resolve_user_by_id, resolve_user_by_email
-
-import graphene
+from .queries.user_query import resolve_user_by_email, resolve_user_by_id, resolve_users
+from .types.entity_type import EntityResponseDTO
+from .types.user_type import UserDTO
 
 
 class Mutation(graphene.ObjectType):

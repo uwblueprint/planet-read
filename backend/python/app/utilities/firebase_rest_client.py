@@ -1,4 +1,5 @@
 import os
+
 import requests
 
 from ..resources.token import Token
