@@ -12,8 +12,9 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - run: >-
-          touch /home/runner/work/planet-read/planet-read/.env && docker-compose
-          up --build 
+          mkdir /home/runner/work/planet-read/planet-read && 
+          touch /home/runner/work/planet-read/planet-read/.env && 
+          docker-compose up --build 
       - uses: FirebaseExtended/action-hosting-deploy@v0
         with:
           repoToken: '${{ secrets.GITHUB_TOKEN }}'
