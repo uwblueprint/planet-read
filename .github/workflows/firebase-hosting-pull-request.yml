@@ -10,7 +10,7 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - run: >-
-          mkdir touch /home/runner/work/planet-read/planet-read && 
+          mkdir /home/runner/work/planet-read/planet-read && 
           touch /home/runner/work/planet-read/planet-read/.env && docker-compose
           up --build 
       - uses: FirebaseExtended/action-hosting-deploy@v0
