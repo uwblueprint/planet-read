@@ -14,7 +14,7 @@ from flask import Blueprint, current_app, jsonify, request
 from ...services.implementations.auth_service import AuthService
 from ...services.implementations.email_service import EmailService
 from ..service import services
-from ..types.auth_type import AuthDTO, LoginRequestDTO
+from ..types.user_type import RoleEnum
 
 auth_service = AuthService(current_app.logger, services["user"], email_service=None)
 email_service = EmailService(
@@ -46,29 +46,29 @@ class ResetPassword(graphene.Mutation):
             raise Exception(error_message if error_message else str(e))
 
 
-
-
 class Login(graphene.Mutation):
     class Arguments:
-        login_data = LoginRequestDTO(required=True)
+        email = graphene.String(required=True)
+        password = graphene.String(required=True)
 
-    ok = graphene.Boolean()
-    auth = graphene.Field(lambda: AuthDTO)
+    access_token = graphene.String(required=True)
+    id = graphene.Int()
+    first_name = graphene.String(required=True)
+    last_name = graphene.String(required=True)
+    role = graphene.Field(RoleEnum, required=True)
+    email = graphene.String(required=True)
 
-    def mutate(root, info, login_data):
-        auth_dto = auth_service.generate_token(
-            email=login_data["email"], password=login_data["password"]
-        )
-        response = {
-            "access_token": auth_dto.access_token,
-            "user": {
-                "id": auth_dto.id,
-                "first_name": auth_dto.first_name,
-                "last_name": auth_dto.last_name,
-                "email": auth_dto.email,
-                "role": auth_dto.role,
-            },
-        }
-
-        ok = True
-        return Login(ok=ok, auth=response)
+    def mutate(root, info, email, password):
+        try:
+            auth_dto = auth_service.generate_token(email=email, password=password)
+            # TODO: is there a syntactically nicer way to destructure this?
+            access_token = auth_dto.access_token
+            id = auth_dto.id
+            first_name = auth_dto.first_name
+            last_name = auth_dto.last_name
+            email = auth_dto.email
+            role = auth_dto.role
+            return Login(access_token, id, first_name, last_name, role, email)
+        except Exception as e:
+            error_message = getattr(e, "message", None)
+            raise Exception(error_message if error_message else str(e))

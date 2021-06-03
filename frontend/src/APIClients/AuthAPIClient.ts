@@ -1,3 +1,8 @@
+import {
+  FetchResult,
+  MutationFunctionOptions,
+  OperationVariables,
+} from "@apollo/client";
 import baseAPIClient from "./BaseAPIClient";
 import AUTHENTICATED_USER_KEY from "../constants/AuthConstants";
 import { AuthenticatedUser } from "../contexts/AuthContext";
@@ -6,21 +11,35 @@ import {
   setLocalStorageObjProperty,
 } from "../utils/LocalStorageUtils";
 
+type LoginFunction = (
+  options?:
+    | MutationFunctionOptions<{ login: AuthenticatedUser }, OperationVariables>
+    | undefined,
+) => Promise<
+  FetchResult<
+    { login: AuthenticatedUser },
+    Record<string, unknown>,
+    Record<string, unknown>
+  >
+>;
+
 const login = async (
   email: string,
   password: string,
-): Promise<AuthenticatedUser> => {
+  loginFunction: LoginFunction,
+): Promise<AuthenticatedUser | null> => {
+  let user: AuthenticatedUser = null;
   try {
-    const { data } = await baseAPIClient.post(
-      "/auth/login",
-      { email, password },
-      { withCredentials: true },
-    );
-    localStorage.setItem(AUTHENTICATED_USER_KEY, JSON.stringify(data));
-    return data;
-  } catch (error) {
-    return null;
+    const result = await loginFunction({ variables: { email, password } });
+    user = result.data?.login ?? null;
+    if (user) {
+      localStorage.setItem(AUTHENTICATED_USER_KEY, JSON.stringify(user));
+    }
+  } catch (e: unknown) {
+    // eslint-disable-next-line no-alert
+    window.alert("Failed to login");
   }
+  return user;
 };
 
 const signup = async (
