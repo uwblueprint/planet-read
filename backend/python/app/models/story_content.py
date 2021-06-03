@@ -2,20 +2,16 @@ from sqlalchemy import inspect
 from sqlalchemy.orm.properties import ColumnProperty
 
 from . import db
-from .story_content import StoryContent
-
-stages_enum = db.Enum("START", "TRANSLATE", "REVIEW", "PUBLISH", name="stages")
 
 
-class Story(db.Model):
-    __tablename__ = "stories"
+class StoryContent(db.Model):
+    __tablename__ = "story_contents"
     id = db.Column(db.Integer, primary_key=True, nullable=False)
-    stage = db.Column(stages_enum, nullable=False)
-    description = db.Column(db.String, nullable=False)
-    youtube_link = db.Column(db.String, nullable=False)
-    level = db.Column(db.Integer, nullable=False)
-    translated_languages = db.Column(db.ARRAY(db.String))
-    contents = db.relationship(StoryContent)
+    story_id = db.Column(
+        db.Integer, db.ForeignKey("stories.id"), index=True, nullable=False
+    )
+    line_index = db.Column(db.Integer, nullable=False)
+    content = db.Column(db.String, nullable=False)
 
     def to_dict(self, include_relationships=False):
         cls = type(self)
