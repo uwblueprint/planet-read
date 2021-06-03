@@ -113,3 +113,25 @@ def require_authorization_by_email(email_field):
         return wrapper
 
     return require_authorization
+
+
+def require_authorization_by_role_gql(roles):
+    """
+    Determine if request is authorized based on access_token validity and role of client
+
+    :param roles: the set of authorized roles to check for
+    :type roles: {str}
+    """
+
+    def require_authorization(api_func):
+        @wraps(api_func)
+        def wrapper(root, info, *args, **kwargs):
+            access_token = get_access_token(info.context)
+            authorized = auth_service.is_authorized_by_role(access_token, roles)
+            if not authorized:
+                raise Exception("You are not authorized to make this request.")
+            return api_func(root, info, *args, **kwargs)
+
+        return wrapper
+
+    return require_authorization
