@@ -8,6 +8,9 @@ def init_app(app):
     from .entity import Entity
     from .file import File
     from .story import Story
+    from .story_content import StoryContent
+    from .story_translation import StoryTranslation
+    from .story_translation_content import StoryTranslationContent
     from .user import User
 
     app.app_context().push()
