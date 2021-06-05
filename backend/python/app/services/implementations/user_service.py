@@ -30,7 +30,6 @@ class UserService(IUserService):
                 raise Exception("user_id {user_id} not found".format(user_id))
 
             firebase_user = firebase_admin.auth.get_user(user.auth_id)
-
             user_dict = UserService.__user_to_dict_and_remove_auth_id(user)
             user_dict["email"] = firebase_user.email
 
@@ -145,6 +144,9 @@ class UserService(IUserService):
                 "last_name": user.last_name,
                 "auth_id": firebase_user.uid,
                 "role": user.role,
+                "resume": user.resume,
+                "profile_pic": user.profile_pic,
+                "approved_languages": user.approved_languages,
             }
 
             try:
@@ -194,6 +196,9 @@ class UserService(IUserService):
                     User.first_name: user.first_name,
                     User.last_name: user.last_name,
                     User.role: user.role,
+                    User.resume: user.resume,
+                    User.profile_pic: user.profile_pic,
+                    User.approved_languages: user.approved_languages,
                 }
             )
 

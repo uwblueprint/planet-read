@@ -14,6 +14,10 @@ class User(db.Model):
     last_name = db.Column(db.String, nullable=False)
     auth_id = db.Column(db.String, nullable=False)
     role = db.Column(roles_enum)
+    resume = db.Column(db.Integer, db.ForeignKey("files.id"))
+    profile_pic = db.Column(db.Integer, db.ForeignKey("files.id"))
+    # format for approved_languages should be language: highest approved level
+    approved_languages = db.Column(db.JSON)
 
     def to_dict(self, include_relationships=False):
         # define the entities table
