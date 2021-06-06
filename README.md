@@ -37,7 +37,7 @@ Don't forget to seed your database with a firebase user:
 docker ps
 docker exec -it <db-container-id> /bin/bash
 psql -U postgres -d planet-read
-INSERT INTO users (first_name, last_name, auth_id, role) VALUES ('First', 'Last', 'insert-firebase-uid', 'Admin');
+INSERT INTO users (first_name, last_name, auth_id, role, approved_languages) VALUES ('First', 'Last', 'insert-firebase-uid', 'Admin', '{"english":3}');
 ```
 
 If there are no tables in the DB, go into `/backend/python/app/models/__init__.py` and change the `erase_db_and_sync = False` to True, allow the hot reload to build, and change it back to `False`. Try to seed the database with a user again.
