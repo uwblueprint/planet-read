@@ -28,10 +28,11 @@ class IStoryService(ABC):
         pass
 
     @abstractmethod
-    def create_story(self, story):
+    def create_story(self, story, content):
         """Create a new Story object
 
         :param story: dictionary of story fields
+        :param content: array of strings representing story content
         :return: dictionary of Story object
         :rtype: dictionary
         :raises Exception: if entity fields are invalid

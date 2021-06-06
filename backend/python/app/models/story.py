@@ -5,13 +5,16 @@ from . import db
 from .story_content import StoryContent
 
 
-
 class Story(db.Model):
     __tablename__ = "stories"
     id = db.Column(db.Integer, primary_key=True, nullable=False)
+    title = db.Column(db.String, nullable=False)
     description = db.Column(db.String, nullable=False)
     youtube_link = db.Column(db.String, nullable=False)
     level = db.Column(db.Integer, nullable=False)
+    # Note: translated_languages should be an enum array, but postgres
+    # has a weird relationship with enums and we're going to switch to
+    # mysql anyways.
     translated_languages = db.Column(db.ARRAY(db.String))
     contents = db.relationship(StoryContent)
 

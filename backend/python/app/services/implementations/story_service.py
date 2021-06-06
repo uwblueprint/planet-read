@@ -2,6 +2,7 @@ from flask import current_app
 
 from ...models import db
 from ...models.story import Story
+from ...models.story_content import StoryContent
 from ..interfaces.story_service import IStoryService
 
 
@@ -22,16 +23,31 @@ class StoryService(IStoryService):
             raise Exception("Invalid id")
         return story.to_dict()
 
-    def create_story(self, entity):
-        # TODO: Require all story content when creating story
-        # and insert into story_contents
+    def create_story(self, story, content):
+        # create story
         try:
-            new_story = Story(**entity.__dict__)
+            new_story = Story(**story.__dict__)
         except Exception as error:
             self.logger.error(str(error))
             raise error
 
         db.session.add(new_story)
         db.session.commit()
+
+        # insert contents into story_contents
+        try:
+            for i, line in enumerate(content):
+                new_content = {
+                    "story_id": new_story.id,
+                    "line_index": i,
+                    "content": line,
+                }
+                db.session.add(StoryContent(**new_content))
+        except Exception as error:
+            self.logger.error(str(error))
+            raise error
+
+        db.session.commit()
+        db.session.refresh(new_story)
 
         return new_story
