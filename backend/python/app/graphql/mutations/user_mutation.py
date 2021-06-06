@@ -1,7 +1,7 @@
 import graphene
 
 from ..service import services
-from ..types.user_type import CreateUserDTO, UserDTO, UpdateUserDTO
+from ..types.user_type import CreateUserDTO, UpdateUserDTO, UserDTO
 
 
 class CreateUser(graphene.Mutation):
@@ -16,11 +16,12 @@ class CreateUser(graphene.Mutation):
         ok = True
         return CreateUser(user=user_response, ok=ok)
 
+
 class UpdateUser(graphene.Mutation):
     class Arguments:
-        id  = graphene.ID(required=True)
+        id = graphene.ID(required=True)
         user = UpdateUserDTO(required=True)
-    
+
     updated_user = graphene.Field(lambda: UserDTO)
 
     def mutate(root, info, id, user):
@@ -33,6 +34,7 @@ class UpdateUser(graphene.Mutation):
         except Exception as e:
             error_message = getattr(e, "message", None)
             raise Exception(error_message if error_message else str(e))
+
 
 """
 TODO mutations:
