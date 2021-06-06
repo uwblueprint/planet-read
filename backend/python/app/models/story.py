@@ -4,13 +4,11 @@ from sqlalchemy.orm.properties import ColumnProperty
 from . import db
 from .story_content import StoryContent
 
-stages_enum = db.Enum("START", "TRANSLATE", "REVIEW", "PUBLISH", name="stages")
 
 
 class Story(db.Model):
     __tablename__ = "stories"
     id = db.Column(db.Integer, primary_key=True, nullable=False)
-    stage = db.Column(stages_enum, nullable=False)
     description = db.Column(db.String, nullable=False)
     youtube_link = db.Column(db.String, nullable=False)
     level = db.Column(db.Integer, nullable=False)

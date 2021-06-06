@@ -4,12 +4,15 @@ from sqlalchemy.orm.properties import ColumnProperty
 from . import db
 from .story_translation_content import StoryTranslationContent
 
+stages_enum = db.Enum("START", "TRANSLATE", "REVIEW", "PUBLISH", name="stages")
+
 
 class StoryTranslation(db.Model):
     __tablename__ = "story_translations"
     id = db.Column(db.Integer, primary_key=True, nullable=False)
     story_id = db.Column(db.Integer, db.ForeignKey("stories.id"), nullable=False)
     language = db.Column(db.String, nullable=False)  # TODO replace with Enum
+    stage = db.Column(stages_enum, nullable=False)
     translator_id = db.Column(db.Integer, db.ForeignKey("users.id"), index=True)
     reviewer_id = db.Column(db.Integer, db.ForeignKey("users.id"), index=True)
     translation_contents = db.relationship(StoryTranslationContent)

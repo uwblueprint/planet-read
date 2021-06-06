@@ -10,7 +10,6 @@ class StageEnum(graphene.Enum):
 
 class StoryResponseDTO(graphene.ObjectType):
     id = graphene.Int()
-    stage = graphene.Field(StageEnum, required=True)
     description = graphene.String(required=True)
     youtube_link = graphene.String(required=True)
     level = graphene.Int(required=True)
@@ -18,7 +17,6 @@ class StoryResponseDTO(graphene.ObjectType):
 
 
 class StoryRequestDTO(graphene.InputObjectType):
-    stage = graphene.Argument(StageEnum, required=True)
     description = graphene.String(required=True)
     youtube_link = graphene.String(required=True)
     level = graphene.Int(required=True)
