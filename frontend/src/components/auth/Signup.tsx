@@ -1,7 +1,22 @@
 import React, { useContext, useState } from "react";
 import { Redirect } from "react-router-dom";
+import { gql, useMutation } from "@apollo/client";
 import authAPIClient from "../../APIClients/AuthAPIClient";
 import AuthContext, { AuthenticatedUser } from "../../contexts/AuthContext";
+
+
+const SIGNUP = gql`
+  mutation SignUp($email: String!, $password: String!) {
+    signup(email: $email, password: $password) {
+      id
+      firstName
+      lastName
+      email
+      role
+      accessToken
+    }
+  }
+`;
 
 const Signup = () => {
   const { authenticatedUser, setAuthenticatedUser } = useContext(AuthContext);
@@ -10,12 +25,15 @@ const Signup = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
+  const [signup] = useMutation<{ signup: AuthenticatedUser}>(SIGNUP); 
+
   const onSignUpClick = async () => {
     const user: AuthenticatedUser = await authAPIClient.signup(
       firstName,
       lastName,
       email,
       password,
+      signup 
     );
     setAuthenticatedUser(user);
   };
