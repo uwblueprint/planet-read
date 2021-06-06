@@ -1,11 +1,10 @@
 import json
 import os
 
-from flask_graphql import GraphQLView
-from graphene.types import mutation
+from graphene_file_upload.flask import FileUploadGraphQLView
 
 
-class ResponseCookieGraphQLView(GraphQLView):
+class ResponseCookieGraphQLView(FileUploadGraphQLView):
     """
     Sets response cookie for refresh mutation requests
     """

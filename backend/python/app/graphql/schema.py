@@ -2,9 +2,11 @@ import graphene
 
 from .mutations.auth_mutation import Login, Refresh, ResetPassword, SignUp
 from .mutations.entity_mutation import CreateEntity
+from .mutations.file_mutation import CreateFile
 from .mutations.story_mutation import CreateStory, CreateStoryTranslation
 from .mutations.user_mutation import CreateUser, UpdateUser
 from .queries.entity_query import resolve_entities
+from .queries.file_query import resolve_file_by_id
 from .queries.story_query import (
     resolve_stories,
     resolve_story_by_id,
@@ -12,12 +14,14 @@ from .queries.story_query import (
 )
 from .queries.user_query import resolve_user_by_email, resolve_user_by_id, resolve_users
 from .types.entity_type import EntityResponseDTO
+from .types.file_type import FileDTO
 from .types.story_type import StoryResponseDTO, StoryTranslationResponseDTO
 from .types.user_type import UserDTO
 
 
 class Mutation(graphene.ObjectType):
     create_entity = CreateEntity.Field()
+    create_file = CreateFile.Field()
     create_story = CreateStory.Field()
     create_user = CreateUser.Field()
     create_story_translation = CreateStoryTranslation.Field()
@@ -30,6 +34,7 @@ class Mutation(graphene.ObjectType):
 
 class Query(graphene.ObjectType):
     entities = graphene.Field(graphene.List(EntityResponseDTO))
+    file_by_id = graphene.Field(FileDTO, id=graphene.Int())
     stories = graphene.Field(graphene.List(StoryResponseDTO))
     story_by_id = graphene.Field(StoryResponseDTO, id=graphene.Int())
     story_translations_by_user = graphene.Field(
@@ -43,6 +48,9 @@ class Query(graphene.ObjectType):
 
     def resolve_entities(root, info, **kwargs):
         return resolve_entities(root, info, **kwargs)
+
+    def resolve_file_by_id(root, info, id):
+        return resolve_file_by_id(root, info, id)
 
     def resolve_stories(root, info, **kwargs):
         return resolve_stories(root, info, **kwargs)
