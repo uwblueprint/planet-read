@@ -6,9 +6,9 @@ class UserDTO:
         last_name,
         email,
         role,
-        resume,
-        profile_pic,
-        approved_languages,
+        resume=None,
+        profile_pic=None,
+        approved_languages=None,
     ):
         self.id = id
         self.first_name = first_name
