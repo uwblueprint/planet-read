@@ -38,37 +38,33 @@ const login = async (
 };
 
 type SignUpFunction = (
-  options?:
-    | MutationFunctionOptions<{ signup: AuthenticatedUser }, OperationVariables>
-    | undefined,
-) => Promise<
-  FetchResult<
+  options: MutationFunctionOptions<
     { signup: AuthenticatedUser },
-    Record<string, unknown>,
-    Record<string, unknown>
-  >
->;
+    OperationVariables
+  >,
+) => Promise<FetchResult<{ signup: AuthenticatedUser }>>;
 
 const signup = async (
   firstName: string,
   lastName: string,
   email: string,
   password: string,
-  signUpFunction: SignUpFunction, 
+  signUpFunction: SignUpFunction,
 ): Promise<AuthenticatedUser | null> => {
   let user: AuthenticatedUser = null;
   try {
-    const result = await signUpFunction({variables: { firstName, lastName, email, password } }); 
-    user = result.data?.login ?? null; 
+    const result = await signUpFunction({
+      variables: { firstName, lastName, email, password },
+    });
+    user = result.data?.signup ?? null;
 
     if (user) {
-      localStorage.setItem(AUTHENTICATED_USER_KEY, JSON.stringify(user)); 
+      localStorage.setItem(AUTHENTICATED_USER_KEY, JSON.stringify(user));
     }
   } catch (error) {
-    window.alert("Sign Up Failed"); 
+    return null;
   }
-
-  return user; 
+  return user;
 };
 
 const logout = async (userId: string | undefined): Promise<boolean> => {

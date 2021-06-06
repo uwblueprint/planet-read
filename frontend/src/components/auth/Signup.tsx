@@ -4,10 +4,19 @@ import { gql, useMutation } from "@apollo/client";
 import authAPIClient from "../../APIClients/AuthAPIClient";
 import AuthContext, { AuthenticatedUser } from "../../contexts/AuthContext";
 
-
 const SIGNUP = gql`
-  mutation SignUp($email: String!, $password: String!) {
-    signup(email: $email, password: $password) {
+  mutation SignUp(
+    $firstName: String!
+    $lastName: String!
+    $email: String!
+    $password: String!
+  ) {
+    signup(
+      firstName: $firstName
+      lastName: $lastName
+      email: $email
+      password: $password
+    ) {
       id
       firstName
       lastName
@@ -25,7 +34,7 @@ const Signup = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
-  const [signup] = useMutation<{ signup: AuthenticatedUser}>(SIGNUP); 
+  const [signup] = useMutation<{ signup: AuthenticatedUser }>(SIGNUP);
 
   const onSignUpClick = async () => {
     const user: AuthenticatedUser = await authAPIClient.signup(
@@ -33,7 +42,7 @@ const Signup = () => {
       lastName,
       email,
       password,
-      signup 
+      signup,
     );
     setAuthenticatedUser(user);
   };
