@@ -2,18 +2,16 @@ from sqlalchemy import inspect
 from sqlalchemy.orm.properties import ColumnProperty
 
 from . import db
-from .story_content import StoryContent
 
 
-
-class Story(db.Model):
-    __tablename__ = "stories"
+class StoryTranslationContent(db.Model):
+    __tablename__ = "story_translation_contents"
     id = db.Column(db.Integer, primary_key=True, nullable=False)
-    description = db.Column(db.String, nullable=False)
-    youtube_link = db.Column(db.String, nullable=False)
-    level = db.Column(db.Integer, nullable=False)
-    translated_languages = db.Column(db.ARRAY(db.String))
-    contents = db.relationship(StoryContent)
+    story_translation_id = db.Column(
+        db.Integer, db.ForeignKey("story_translations.id"), index=True, nullable=False
+    )
+    line_index = db.Column(db.Integer, nullable=False)
+    translation_content = db.Column(db.String, nullable=False)
 
     def to_dict(self, include_relationships=False):
         cls = type(self)
