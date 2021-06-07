@@ -26,3 +26,13 @@ class CreateUserDTO(graphene.InputObjectType):
     resume = graphene.Int(required=False, default=None)
     profile_pic = graphene.Int(required=False, default=None)
     approved_languages = graphene.JSONString(required=False, default=None)
+
+
+class UpdateUserDTO(graphene.InputObjectType):
+    first_name = graphene.String(required=True)
+    last_name = graphene.String(required=True)
+    role = graphene.Argument(RoleEnum, required=True)
+    email = graphene.String(required=True)
+    resume = graphene.Int(required=False, default=None)
+    profile_pic = graphene.Int(required=False, default=None)
+    approved_languages = graphene.JSONString(required=False, default=None)

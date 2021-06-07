@@ -5,7 +5,6 @@ from . import db
 from .story_content import StoryContent
 
 
-
 class Story(db.Model):
     __tablename__ = "stories"
     id = db.Column(db.Integer, primary_key=True, nullable=False)
