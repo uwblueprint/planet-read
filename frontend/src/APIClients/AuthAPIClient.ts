@@ -12,16 +12,11 @@ import {
 } from "../utils/LocalStorageUtils";
 
 type LoginFunction = (
-  options?:
-    | MutationFunctionOptions<{ login: AuthenticatedUser }, OperationVariables>
-    | undefined,
-) => Promise<
-  FetchResult<
+  options: MutationFunctionOptions<
     { login: AuthenticatedUser },
-    Record<string, unknown>,
-    Record<string, unknown>
-  >
->;
+    OperationVariables
+  >,
+) => Promise<FetchResult<{ login: AuthenticatedUser }>>;
 
 const login = async (
   email: string,

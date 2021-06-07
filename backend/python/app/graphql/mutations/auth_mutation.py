@@ -7,6 +7,7 @@ TODO mutations:
 """
 
 import os
+from operator import attrgetter
 
 import graphene
 from flask import Blueprint, current_app, jsonify, request
@@ -61,13 +62,9 @@ class Login(graphene.Mutation):
     def mutate(root, info, email, password):
         try:
             auth_dto = auth_service.generate_token(email=email, password=password)
-            # TODO: is there a syntactically nicer way to destructure this?
-            access_token = auth_dto.access_token
-            id = auth_dto.id
-            first_name = auth_dto.first_name
-            last_name = auth_dto.last_name
-            email = auth_dto.email
-            role = auth_dto.role
+            access_token, id, first_name, last_name, email, role = attrgetter(
+                "access_token", "id", "first_name", "last_name", "email", "role"
+            )(auth_dto)
             return Login(access_token, id, first_name, last_name, role, email)
         except Exception as e:
             error_message = getattr(e, "message", None)
