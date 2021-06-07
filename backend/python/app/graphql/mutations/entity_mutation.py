@@ -1,5 +1,6 @@
 import graphene
 
+from ...middlewares.auth import require_authorization_by_role_gql
 from ..service import services
 from ..types.entity_type import EntityRequestDTO, EntityResponseDTO
 
@@ -11,6 +12,7 @@ class CreateEntity(graphene.Mutation):
     ok = graphene.Boolean()
     entity = graphene.Field(lambda: EntityResponseDTO)
 
+    @require_authorization_by_role_gql({"User", "Admin"})
     def mutate(root, info, entity_data=None):
         entity_response = services["entity"].create_entity(entity_data)
         ok = True

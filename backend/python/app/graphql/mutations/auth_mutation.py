@@ -7,6 +7,7 @@ TODO mutations:
 """
 
 import os
+from operator import attrgetter
 
 import graphene
 from flask import Blueprint, current_app, jsonify, request
@@ -14,6 +15,7 @@ from flask import Blueprint, current_app, jsonify, request
 from ...services.implementations.auth_service import AuthService
 from ...services.implementations.email_service import EmailService
 from ..service import services
+from ..types.user_type import RoleEnum
 
 email_service = EmailService(
     current_app.logger,
@@ -39,6 +41,30 @@ class ResetPassword(graphene.Mutation):
         try:
             auth_service.reset_password(email)
             return ResetPassword(ok=True)
+        except Exception as e:
+            error_message = getattr(e, "message", None)
+            raise Exception(error_message if error_message else str(e))
+
+
+class Login(graphene.Mutation):
+    class Arguments:
+        email = graphene.String(required=True)
+        password = graphene.String(required=True)
+
+    access_token = graphene.String(required=True)
+    id = graphene.Int()
+    first_name = graphene.String(required=True)
+    last_name = graphene.String(required=True)
+    role = graphene.Field(RoleEnum, required=True)
+    email = graphene.String(required=True)
+
+    def mutate(root, info, email, password):
+        try:
+            auth_dto = auth_service.generate_token(email=email, password=password)
+            access_token, id, first_name, last_name, email, role = attrgetter(
+                "access_token", "id", "first_name", "last_name", "email", "role"
+            )(auth_dto)
+            return Login(access_token, id, first_name, last_name, role, email)
         except Exception as e:
             error_message = getattr(e, "message", None)
             raise Exception(error_message if error_message else str(e))
