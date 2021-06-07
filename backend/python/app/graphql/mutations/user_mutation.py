@@ -1,5 +1,6 @@
 import graphene
 
+from ...middlewares.auth import require_authorization_by_role_gql
 from ..service import services
 from ..types.user_type import CreateUserDTO, UserDTO
 
@@ -11,6 +12,7 @@ class CreateUser(graphene.Mutation):
     ok = graphene.Boolean()
     user = graphene.Field(lambda: UserDTO)
 
+    @require_authorization_by_role_gql({"User", "Admin"})
     def mutate(root, info, user_data=None):
         user_response = services["user"].create_user(user_data).__dict__
         ok = True
