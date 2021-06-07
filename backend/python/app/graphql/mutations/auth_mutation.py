@@ -17,7 +17,6 @@ from ...services.implementations.email_service import EmailService
 from ..service import services
 from ..types.user_type import RoleEnum
 
-auth_service = AuthService(current_app.logger, services["user"], email_service=None)
 email_service = EmailService(
     current_app.logger,
     {
