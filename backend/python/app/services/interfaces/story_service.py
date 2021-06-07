@@ -38,3 +38,15 @@ class IStoryService(ABC):
         :raises Exception: if entity fields are invalid
         """
         pass
+
+    @abstractmethod
+    def get_story_translations(self, user_id, translate):
+        """Return a list of stories currently being translated/reviewed
+
+        :param user_id: id of the user
+        :param translator: boolean; if True will return a list of stories
+        being translated by the user, else a list of stories being reviewed
+        :return: list of StoryTranslationResponseDTO's
+        :rtype: list of StoryTranslationResponseDTO's
+        """
+        pass
