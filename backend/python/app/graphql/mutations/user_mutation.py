@@ -22,7 +22,7 @@ class UpdateUser(graphene.Mutation):
         id = graphene.ID(required=True)
         user = UpdateUserDTO(required=True)
 
-    updated_user = graphene.Field(lambda: UserDTO)
+    user = graphene.Field(lambda: UserDTO)
 
     def mutate(root, info, id, user):
         """
@@ -30,7 +30,7 @@ class UpdateUser(graphene.Mutation):
         """
         try:
             updated_user = services["user"].update_user_by_id(id, user)
-            return UpdateUser(updated_user=updated_user)
+            return UpdateUser(user=updated_user)
         except Exception as e:
             error_message = getattr(e, "message", None)
             raise Exception(error_message if error_message else str(e))
