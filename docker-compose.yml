@@ -31,14 +31,12 @@ services:
     env_file:
       - ./.env
   db:
-    image: postgres:12-alpine
+    image: mysql:8.0.25
     ports:
       - 5432:5432
-    volumes:
-      - postgres_data:/var/lib/postgresql/data/
+    command: --default-authentication-plugin=mysql_native_password
     env_file:
       - ./.env
 
 volumes:
-  postgres_data:
   file_uploads:
