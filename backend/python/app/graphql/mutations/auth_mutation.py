@@ -37,9 +37,6 @@ class Refresh(graphene.Mutation):
     access_token = graphene.String()
 
     def mutate(root, info):
-        print("Refresh mutation")
-        print(request.__dict__)
-        print(request.cookies.get("refreshToken"))
         try:
             token = auth_service.renew_token(request.cookies.get("refreshToken"))
             access_token = token.access_token
@@ -50,7 +47,7 @@ class Refresh(graphene.Mutation):
                     "secure": (os.getenv("FLASK_CONFIG") == "production"),                    
                 }
             )
-            return Refresh(access_token, ok=True)
+            return Refresh(access_token=access_token, ok=True)
         except Exception as e:
             error_message = getattr(e, "message", None)
             raise Exception(error_message if error_message else str(e))

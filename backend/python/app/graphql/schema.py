@@ -1,4 +1,3 @@
-#from backend.python.app.rest.auth_routes import refresh
 import graphene
 
 from .mutations.auth_mutation import Login, ResetPassword, Refresh, SignUp

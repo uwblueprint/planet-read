@@ -31,16 +31,17 @@ const REFRESH = gql`
   }
 `;
 
+type Refresh = { refresh: { accessToken: string; ok: boolean } };
+
 const RefreshCredentials = () => {
   const { setAuthenticatedUser } = useContext(AuthContext);
 
-  const [refresh] = useMutation<{ accessToken: string; ok: boolean }>(REFRESH);
+  const [refresh] = useMutation<Refresh>(REFRESH);
 
   const onRefreshClick = async () => {
     const result = await refresh();
-    console.log("RefreshCredentials");
-    const success = result.data?.ok;
-    const token = result.data?.accessToken;
+    const success = result.data?.refresh.ok;
+    const token = result.data?.refresh.accessToken;
     if (success && token) {
       setLocalStorageObjProperty(AUTHENTICATED_USER_KEY, "accessToken", token);
     } else {
