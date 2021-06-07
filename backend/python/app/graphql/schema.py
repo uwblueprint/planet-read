@@ -1,6 +1,7 @@
+#from backend.python.app.rest.auth_routes import refresh
 import graphene
 
-from .mutations.auth_mutation import Login, ResetPassword, SignUp
+from .mutations.auth_mutation import Login, ResetPassword, Refresh, SignUp
 from .mutations.entity_mutation import CreateEntity
 from .mutations.story_mutation import CreateStory, CreateStoryTranslation
 from .mutations.user_mutation import CreateUser, UpdateUser
@@ -20,12 +21,12 @@ class Mutation(graphene.ObjectType):
     create_entity = CreateEntity.Field()
     create_story = CreateStory.Field()
     create_user = CreateUser.Field()
+    create_story_translation = CreateStoryTranslation.Field()
     reset_password = ResetPassword.Field()
     update_user = UpdateUser.Field()
     login = Login.Field()
     signup = SignUp.Field()
-    create_story_translation = CreateStoryTranslation.Field()
-
+    refresh = Refresh.Field()
 
 class Query(graphene.ObjectType):
     entities = graphene.Field(graphene.List(EntityResponseDTO))

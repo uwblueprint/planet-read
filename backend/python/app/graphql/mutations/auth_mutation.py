@@ -31,6 +31,30 @@ email_service = EmailService(
 )
 auth_service = AuthService(current_app.logger, services["user"], email_service)
 
+class Refresh(graphene.Mutation):
+
+    ok = graphene.Boolean()
+    access_token = graphene.String()
+
+    def mutate(root, info):
+        print("Refresh mutation")
+        print(request.__dict__)
+        print(request.cookies.get("refreshToken"))
+        try:
+            token = auth_service.renew_token(request.cookies.get("refreshToken"))
+            access_token = token.access_token
+            info.context.set_refresh_token = jsonify(
+                {
+                    "refresh_token": token.refresh_token,
+                    "httponly": True,
+                    "secure": (os.getenv("FLASK_CONFIG") == "production"),                    
+                }
+            )
+            return Refresh(access_token, ok=True)
+        except Exception as e:
+            error_message = getattr(e, "message", None)
+            raise Exception(error_message if error_message else str(e))
+
 
 class ResetPassword(graphene.Mutation):
     class Arguments:

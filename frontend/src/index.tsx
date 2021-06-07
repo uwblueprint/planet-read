@@ -21,8 +21,11 @@ import App from "./App";
 import reportWebVitals from "./reportWebVitals";
 
 const REFRESH_MUTATION = `
-  mutation Index_Refresh {
-    refresh
+  mutation Refresh {
+    refresh {
+      accessToken
+      ok
+    }
   }
 `;
 
