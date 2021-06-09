@@ -37,23 +37,34 @@ const login = async (
   return user;
 };
 
+type SignUpFunction = (
+  options: MutationFunctionOptions<
+    { signup: AuthenticatedUser },
+    OperationVariables
+  >,
+) => Promise<FetchResult<{ signup: AuthenticatedUser }>>;
+
 const signup = async (
   firstName: string,
   lastName: string,
   email: string,
   password: string,
-): Promise<AuthenticatedUser> => {
+  signUpFunction: SignUpFunction,
+): Promise<AuthenticatedUser | null> => {
+  let user: AuthenticatedUser = null;
   try {
-    const { data } = await baseAPIClient.post(
-      "/auth/signup",
-      { firstName, lastName, email, role: "User", password },
-      { withCredentials: true },
-    );
-    localStorage.setItem(AUTHENTICATED_USER_KEY, JSON.stringify(data));
-    return data;
+    const result = await signUpFunction({
+      variables: { firstName, lastName, email, password },
+    });
+    user = result.data?.signup ?? null;
+
+    if (user) {
+      localStorage.setItem(AUTHENTICATED_USER_KEY, JSON.stringify(user));
+    }
   } catch (error) {
     return null;
   }
+  return user;
 };
 
 const logout = async (userId: string | undefined): Promise<boolean> => {

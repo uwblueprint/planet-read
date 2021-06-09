@@ -1,6 +1,6 @@
 import graphene
 
-from .mutations.auth_mutation import Login, ResetPassword
+from .mutations.auth_mutation import Login, ResetPassword, SignUp
 from .mutations.entity_mutation import CreateEntity
 from .mutations.story_mutation import CreateStory
 from .mutations.user_mutation import CreateUser, UpdateUser
@@ -19,6 +19,7 @@ class Mutation(graphene.ObjectType):
     reset_password = ResetPassword.Field()
     update_user = UpdateUser.Field()
     login = Login.Field()
+    signup = SignUp.Field()
 
 
 class Query(graphene.ObjectType):
