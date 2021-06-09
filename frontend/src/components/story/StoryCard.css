@@ -1,0 +1,44 @@
+.story-card {
+    background-color: #FAFAFA;
+    border: 2px solid black;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    min-width: 950px;
+    width: 80%;
+}
+
+.youtube-thumbnail {
+    flex-basis: 20%;
+}
+
+.story-card-details {
+    flex-basis: 40%;
+    padding-bottom: 17px;
+    padding-left: 26px;
+    padding-top: 17px;
+}
+
+.story-card-actions {
+    flex-basis: 40%;
+}
+
+.story-card-top {
+    align-items: center;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+}
+
+.story-card-title {
+    font-size: 24px;
+    font-weight: bold;
+    line-height: 29.05px;
+    margin-right: 10px;
+}
+
+.story-card-description {
+    font-size: 10px;
+    line-height: 12.1px;
+    text-align: left;
+}
