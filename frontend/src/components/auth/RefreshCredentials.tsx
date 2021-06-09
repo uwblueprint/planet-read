@@ -1,31 +1,14 @@
 import React, { useContext } from "react";
 import { gql, useMutation } from "@apollo/client";
-// import authAPIClient from "../../APIClients/AuthAPIClient";
 import AuthContext from "../../contexts/AuthContext";
 import AUTHENTICATED_USER_KEY from "../../constants/AuthConstants";
 import { setLocalStorageObjProperty } from "../../utils/LocalStorageUtils";
-
-// const RefreshCredentials = () => {
-//   const { setAuthenticatedUser } = useContext(AuthContext);
-
-//   const onRefreshClick = async () => {
-//     const success = await authAPIClient.refresh();
-//     if (!success) {
-//       setAuthenticatedUser(null);
-//     }
-//   };
-
-//   return (
-//     <button type="button" className="btn btn-primary" onClick={onRefreshClick}>
-//       Refresh Credentials
-//     </button>
-//   );
-// };
 
 const REFRESH = gql`
   mutation Refresh {
     refresh {
       accessToken
+      refreshToken
       ok
     }
   }

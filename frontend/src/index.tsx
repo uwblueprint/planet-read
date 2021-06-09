@@ -24,6 +24,7 @@ const REFRESH_MUTATION = `
   mutation Refresh {
     refresh {
       accessToken
+      refreshToken
       ok
     }
   }
