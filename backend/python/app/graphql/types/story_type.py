@@ -33,3 +33,18 @@ class StoryRequestDTO(graphene.InputObjectType):
     youtube_link = graphene.String(required=True)
     level = graphene.Int(required=True)
     translated_languages = graphene.List(LanguageEnum)
+
+
+class NewStoryTranslationResponseDTO(graphene.ObjectType):
+    id = graphene.Int(required=True)
+    translator_id = graphene.Int(required=True)
+    story_id = graphene.String(required=True)
+    language = graphene.String(required=True)
+    stage = graphene.Field(StageEnum)
+
+
+class NewStoryTranslationRequestDTO(graphene.InputObjectType):
+    translator_id = graphene.Int(required=True)
+    story_id = graphene.Int(required=True)
+    language = graphene.String(required=True)
+    stage = graphene.Field(StageEnum, default_value=StageEnum.START)
