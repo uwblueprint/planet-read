@@ -31,7 +31,9 @@ class Query(graphene.ObjectType):
     users = graphene.Field(graphene.List(UserDTO))
     user_by_id = graphene.Field(UserDTO, id=graphene.Int())
     user_by_email = graphene.Field(UserDTO, email=graphene.String())
-    stories_available_for_translation = graphene.Field(UserDTO, id=graphene.Int())
+    stories_available_for_translation = graphene.Field(
+        graphene.List(StoryResponseDTO), id=graphene.Int()
+    )
 
     def resolve_entities(root, info, **kwargs):
         return resolve_entities(root, info, **kwargs)

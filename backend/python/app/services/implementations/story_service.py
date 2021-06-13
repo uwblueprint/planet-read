@@ -8,7 +8,6 @@ from ..interfaces.story_service import IStoryService
 # from sqlalchemy.sql.operators import notin_op
 
 
-
 class StoryService(IStoryService):
     def __init__(self, logger=current_app.logger):
         self.logger = logger
@@ -40,12 +39,19 @@ class StoryService(IStoryService):
 
         return new_story
 
-    def get_stories_available_for_translation(self, language, level):
-        lang_list = [language]
+    def get_stories_available_for_translation(self, user):
+        all_stories = []
+        approved_languages = user.approved_languages
         # filter(~lang_list.contained_by(Story.translated_languages)).all()
         # session.query(Story).filter(Story.translated_languages.op('@>')(lang_list)).all()
-        return (
-            Story.query.filter(Story.level <= level)
-            .filter(~language.contained_by(Story.translated_languages))
-            .all()
-        )
+        for lang in approved_languages:
+            level = approved_languages[lang]
+            stories = (
+                Story.query.filter(Story.level <= level)
+                .filter(lang.contained_by(Story.translated_languages))
+                .all()
+            )
+            all_stories += stories
+
+        # Remove duplicates
+        return Story.query.all()
