@@ -1,8 +1,12 @@
 from flask import current_app
+from sqlalchemy.dialects.postgresql import ARRAY
 
 from ...models import db
 from ...models.story import Story
 from ..interfaces.story_service import IStoryService
+
+# from sqlalchemy.sql.operators import notin_op
+
 
 
 class StoryService(IStoryService):
@@ -35,3 +39,13 @@ class StoryService(IStoryService):
         db.session.commit()
 
         return new_story
+
+    def get_stories_available_for_translation(self, language, level):
+        lang_list = [language]
+        # filter(~lang_list.contained_by(Story.translated_languages)).all()
+        # session.query(Story).filter(Story.translated_languages.op('@>')(lang_list)).all()
+        return (
+            Story.query.filter(Story.level <= level)
+            .filter(~language.contained_by(Story.translated_languages))
+            .all()
+        )
