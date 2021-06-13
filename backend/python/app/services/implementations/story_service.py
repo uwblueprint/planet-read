@@ -6,8 +6,6 @@ from ...models.story_content import StoryContent
 from ...models.story_translation import StoryTranslation
 from ..interfaces.story_service import IStoryService
 
-# from sqlalchemy.sql.operators import notin_op
-
 
 class StoryService(IStoryService):
     def __init__(self, logger=current_app.logger):
