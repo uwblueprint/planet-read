@@ -1,5 +1,4 @@
 from flask import current_app
-from sqlalchemy.dialects.postgresql import ARRAY
 
 from ...models import db
 from ...models.story import Story
@@ -38,20 +37,20 @@ class StoryService(IStoryService):
         db.session.commit()
 
         return new_story
-
+    
     def get_stories_available_for_translation(self, user):
         all_stories = []
         approved_languages = user.approved_languages
-        # filter(~lang_list.contained_by(Story.translated_languages)).all()
-        # session.query(Story).filter(Story.translated_languages.op('@>')(lang_list)).all()
         for lang in approved_languages:
             level = approved_languages[lang]
             stories = (
                 Story.query.filter(Story.level <= level)
-                .filter(lang.contained_by(Story.translated_languages))
+                .filter(~Story.translated_languages.any(lang))
                 .all()
             )
-            all_stories += stories
 
-        # Remove duplicates
-        return Story.query.all()
+            for story in stories:
+                if (not story in all_stories):
+                    all_stories.append(story)
+        
+        return all_stories
