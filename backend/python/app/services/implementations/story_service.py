@@ -6,6 +6,8 @@ from ...models.story_content import StoryContent
 from ...models.story_translation import StoryTranslation
 from ..interfaces.story_service import IStoryService
 
+# from backend.python.app.models import story_translation
+
 
 class StoryService(IStoryService):
     def __init__(self, logger=current_app.logger):
@@ -78,3 +80,43 @@ class StoryService(IStoryService):
         except Exception as error:
             self.logger.error(str(error))
             raise error
+
+    def get_story_translation(self, id):
+        try:
+            return (
+                db.session.query(
+                    Story.id.label("story_id"),
+                    Story.title.label("title"),
+                    Story.description.label("description"),
+                    Story.youtube_link.label("youtube_link"),
+                    Story.level.label("level"),
+                    StoryTranslation.id.label("story_translation_id"),
+                    StoryTranslation.language.label("language"),
+                    StoryTranslation.stage.label("stage"),
+                    StoryTranslation.translator_id.label("translator_id"),
+                    StoryTranslation.reviewer_id.label("reviewer_id"),
+                )
+                .join(StoryTranslation, Story.id == StoryTranslation.story_id)
+                .filter(StoryTranslation.id == id)
+                .one()
+            )
+        except Exception as error:
+            self.logger.error(str(error))
+            raise error
+
+    def assign_user_as_reviewer(self, user, story_translation_obj):
+        if (
+            story_translation_obj.language in user.approved_languages
+            and user.approved_languages[story_translation_obj.language] >= story_translation_obj.level 
+            and story_translation_obj.stage == "TRANSLATE"
+            and not story_translation_obj.reviewer_id
+        ):
+            story_translation = StoryTranslation.query.get(
+                story_translation_obj.story_translation_id
+            )
+            story_translation.reviewer_id = user.id
+            story_translation.stage = "REVIEW"
+            db.session.commit()
+        else:
+            self.logger.error("User can't be assigned as a reviewer")
+            raise Exception("User can't be assigned as a reviewer")

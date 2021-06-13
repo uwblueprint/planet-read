@@ -50,3 +50,14 @@ class IStoryService(ABC):
         :rtype: list of StoryTranslationResponseDTO's
         """
         pass
+
+    @abstractmethod
+    def get_story_translation(self, id):
+        """Return a story currently being translated/reviewed
+
+        :param id: id of the story translation
+        :return: StoryTranslationResponseDTO
+        :rtype: StoryTranslationResponseDTO
+        :raises Exception: id retrieval fails
+        """
+        pass
