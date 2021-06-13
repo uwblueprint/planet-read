@@ -12,6 +12,7 @@ from operator import attrgetter
 import graphene
 from flask import Blueprint, current_app, jsonify, request
 
+from ...resources.create_user_dto import CreateUserDTO
 from ...services.implementations.auth_service import AuthService
 from ...services.implementations.email_service import EmailService
 from ..service import services
@@ -65,6 +66,47 @@ class Login(graphene.Mutation):
                 "access_token", "id", "first_name", "last_name", "email", "role"
             )(auth_dto)
             return Login(access_token, id, first_name, last_name, role, email)
+        except Exception as e:
+            error_message = getattr(e, "message", None)
+            raise Exception(error_message if error_message else str(e))
+
+
+class SignUp(graphene.Mutation):
+    class Arguments:
+        first_name = graphene.String(required=True)
+        last_name = graphene.String(required=True)
+        email = graphene.String(required=True)
+        password = graphene.String(required=True)
+
+    access_token = graphene.String(required=True)
+    id = graphene.Int()
+    first_name = graphene.String(required=True)
+    last_name = graphene.String(required=True)
+    role = graphene.Field(RoleEnum, required=True)
+    email = graphene.String(required=True)
+
+    def mutate(root, info, first_name, last_name, email, password):
+        try:
+            services["user"].create_user(
+                CreateUserDTO(
+                    first_name=first_name,
+                    last_name=last_name,
+                    email=email,
+                    role="User",
+                    password=password,
+                )
+            )
+            auth_dto = auth_service.generate_token(email=email, password=password)
+
+            access_token = auth_dto.access_token
+            id = auth_dto.id
+            first_name = auth_dto.first_name
+            last_name = auth_dto.last_name
+            email = auth_dto.email
+            role = auth_dto.role
+
+            return SignUp(access_token, id, first_name, last_name, role, email)
+
         except Exception as e:
             error_message = getattr(e, "message", None)
             raise Exception(error_message if error_message else str(e))

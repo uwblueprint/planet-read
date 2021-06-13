@@ -2,6 +2,8 @@ from flask import current_app
 
 from ...models import db
 from ...models.story import Story
+from ...models.story_content import StoryContent
+from ...models.story_translation import StoryTranslation
 from ..interfaces.story_service import IStoryService
 
 # from sqlalchemy.sql.operators import notin_op
@@ -14,7 +16,9 @@ class StoryService(IStoryService):
     def get_stories(self):
         # Entity is a SQLAlchemy model, we can use convenient methods provided
         # by SQLAlchemy like query.all() to query the data
-        return [result.to_dict() for result in Story.query.all()]
+        return [
+            story.to_dict(include_relationships=True) for story in Story.query.all()
+        ]
 
     def get_story(self, id):
         # get queries by the primary key, which is id for the Story table
@@ -22,19 +26,34 @@ class StoryService(IStoryService):
         if story is None:
             self.logger.error("Invalid id")
             raise Exception("Invalid id")
-        return story.to_dict()
+        return story.to_dict(include_relationships=True)
 
-    def create_story(self, entity):
-        # TODO: Require all story content when creating story
-        # and insert into story_contents
+    def create_story(self, story, content):
+        # create story
         try:
-            new_story = Story(**entity.__dict__)
+            new_story = Story(**story.__dict__)
         except Exception as error:
             self.logger.error(str(error))
             raise error
 
         db.session.add(new_story)
         db.session.commit()
+
+        # insert contents into story_contents
+        try:
+            for i, line in enumerate(content):
+                new_content = {
+                    "story_id": new_story.id,
+                    "line_index": i,
+                    "content": line,
+                }
+                db.session.add(StoryContent(**new_content))
+        except Exception as error:
+            self.logger.error(str(error))
+            raise error
+
+        db.session.commit()
+        db.session.refresh(new_story)
 
         return new_story
     
@@ -54,3 +73,29 @@ class StoryService(IStoryService):
                     all_stories.append(story)
         
         return all_stories
+
+    def get_story_translations(self, user_id, translator):
+        try:
+            return (
+                db.session.query(
+                    Story.id.label("story_id"),
+                    Story.title.label("title"),
+                    Story.description.label("description"),
+                    Story.youtube_link.label("youtube_link"),
+                    Story.level.label("level"),
+                    StoryTranslation.id.label("story_translation_id"),
+                    StoryTranslation.language.label("language"),
+                    StoryTranslation.stage.label("stage"),
+                    StoryTranslation.translator_id.label("translator_id"),
+                    StoryTranslation.reviewer_id.label("reviewer_id"),
+                )
+                .join(StoryTranslation, Story.id == StoryTranslation.story_id)
+                .filter(
+                    StoryTranslation.translator_id == user_id
+                    if translator
+                    else StoryTranslation.reviewer_id == user_id
+                )
+            )
+        except Exception as error:
+            self.logger.error(str(error))
+            raise error

@@ -28,12 +28,25 @@ class IStoryService(ABC):
         pass
 
     @abstractmethod
-    def create_story(self, story):
+    def create_story(self, story, content):
         """Create a new Story object
 
         :param story: dictionary of story fields
+        :param content: array of strings representing story content
         :return: dictionary of Story object
         :rtype: dictionary
         :raises Exception: if entity fields are invalid
+        """
+        pass
+
+    @abstractmethod
+    def get_story_translations(self, user_id, translate):
+        """Return a list of stories currently being translated/reviewed
+
+        :param user_id: id of the user
+        :param translator: boolean; if True will return a list of stories
+        being translated by the user, else a list of stories being reviewed
+        :return: list of StoryTranslationResponseDTO's
+        :rtype: list of StoryTranslationResponseDTO's
         """
         pass
