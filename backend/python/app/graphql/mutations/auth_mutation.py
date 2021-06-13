@@ -71,20 +71,39 @@ class Login(graphene.Mutation):
         email = graphene.String(required=True)
         password = graphene.String(required=True)
 
-    access_token = graphene.String(required=True)
+    access_token = graphene.String()
+    refresh_token = graphene.String()
     id = graphene.Int()
-    first_name = graphene.String(required=True)
-    last_name = graphene.String(required=True)
-    role = graphene.Field(RoleEnum, required=True)
-    email = graphene.String(required=True)
+    first_name = graphene.String()
+    last_name = graphene.String()
+    role = graphene.Field(RoleEnum)
+    email = graphene.String()
 
     def mutate(root, info, email, password):
         try:
             auth_dto = auth_service.generate_token(email=email, password=password)
-            access_token, id, first_name, last_name, email, role = attrgetter(
-                "access_token", "id", "first_name", "last_name", "email", "role"
-            )(auth_dto)
-            return Login(access_token, id, first_name, last_name, role, email)
+            (
+                access_token,
+                refresh_token,
+                id,
+                first_name,
+                last_name,
+                email,
+                role,
+            ) = attrgetter(
+                "access_token",
+                "refresh_token",
+                "id",
+                "first_name",
+                "last_name",
+                "email",
+                "role",
+            )(
+                auth_dto
+            )
+            return Login(
+                access_token, refresh_token, id, first_name, last_name, role, email
+            )
         except Exception as e:
             error_message = getattr(e, "message", None)
             raise Exception(error_message if error_message else str(e))
