@@ -3,6 +3,7 @@ from flask import current_app
 from ...models import db
 from ...models.story import Story
 from ...models.story_content import StoryContent
+from ...models.story_translation import StoryTranslation
 from ..interfaces.story_service import IStoryService
 
 
@@ -51,3 +52,29 @@ class StoryService(IStoryService):
         db.session.refresh(new_story)
 
         return new_story
+
+    def get_story_translations(self, user_id, translator):
+        try:
+            return (
+                db.session.query(
+                    Story.id.label("story_id"),
+                    Story.title.label("title"),
+                    Story.description.label("description"),
+                    Story.youtube_link.label("youtube_link"),
+                    Story.level.label("level"),
+                    StoryTranslation.id.label("story_translation_id"),
+                    StoryTranslation.language.label("language"),
+                    StoryTranslation.stage.label("stage"),
+                    StoryTranslation.translator_id.label("translator_id"),
+                    StoryTranslation.reviewer_id.label("reviewer_id"),
+                )
+                .join(StoryTranslation, Story.id == StoryTranslation.story_id)
+                .filter(
+                    StoryTranslation.translator_id == user_id
+                    if translator
+                    else StoryTranslation.reviewer_id == user_id
+                )
+            )
+        except Exception as error:
+            self.logger.error(str(error))
+            raise error
