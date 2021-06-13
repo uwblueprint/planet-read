@@ -13,14 +13,16 @@ class ResponseCookieGraphQLView(GraphQLView):
     def dispatch_request(self):
         response = super(ResponseCookieGraphQLView, self).dispatch_request()
         data = self.parse_body()
-        # refresh or  login mutation response is returned from dipatch
-        if "operationName" in data.keys() and (
-            "refresh" in data["query"] or "login" in data["query"]
+
+        # The following mutations MUST request refreshToken
+        refresh_token_mutations = ["Refresh", "Login", "SignUp"]
+        if (
+            "operationName" in data.keys()
+            and data["operationName"] in refresh_token_mutations
         ):
-            # mutation must be called for both refreshToken and accessToken
             # get refreshToken from response
             response_json = json.loads(response.response[0])["data"]
-            mutation_name = "refresh" if "refresh" in response_json.keys() else "login"
+            mutation_name = data["operationName"].lower()
             refresh_token = response_json[mutation_name]["refreshToken"]
 
             # set response cookie
