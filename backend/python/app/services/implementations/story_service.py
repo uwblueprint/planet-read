@@ -15,7 +15,9 @@ class StoryService(IStoryService):
     def get_stories(self):
         # Entity is a SQLAlchemy model, we can use convenient methods provided
         # by SQLAlchemy like query.all() to query the data
-        return [result.to_dict() for result in Story.query.all()]
+        return [
+            story.to_dict(include_relationships=True) for story in Story.query.all()
+        ]
 
     def get_story(self, id):
         # get queries by the primary key, which is id for the Story table
@@ -23,7 +25,7 @@ class StoryService(IStoryService):
         if story is None:
             self.logger.error("Invalid id")
             raise Exception("Invalid id")
-        return story.to_dict()
+        return story.to_dict(include_relationships=True)
 
     def create_story(self, story, content):
         # create story
@@ -84,3 +86,29 @@ class StoryService(IStoryService):
             raise error
 
         return new_story_translation
+ 
+    def get_story_translations(self, user_id, translator):
+        try:
+            return (
+                db.session.query(
+                    Story.id.label("story_id"),
+                    Story.title.label("title"),
+                    Story.description.label("description"),
+                    Story.youtube_link.label("youtube_link"),
+                    Story.level.label("level"),
+                    StoryTranslation.id.label("story_translation_id"),
+                    StoryTranslation.language.label("language"),
+                    StoryTranslation.stage.label("stage"),
+                    StoryTranslation.translator_id.label("translator_id"),
+                    StoryTranslation.reviewer_id.label("reviewer_id"),
+                )
+                .join(StoryTranslation, Story.id == StoryTranslation.story_id)
+                .filter(
+                    StoryTranslation.translator_id == user_id
+                    if translator
+                    else StoryTranslation.reviewer_id == user_id
+                )
+            )
+        except Exception as error:
+            self.logger.error(str(error))
+            raise error
