@@ -2,7 +2,7 @@ import graphene
 
 from .mutations.auth_mutation import Login, ResetPassword, SignUp
 from .mutations.entity_mutation import CreateEntity
-from .mutations.story_mutation import CreateStory
+from .mutations.story_mutation import CreateStory, CreateStoryTranslation
 from .mutations.user_mutation import CreateUser, UpdateUser
 from .queries.entity_query import resolve_entities
 from .queries.story_query import (
@@ -24,6 +24,7 @@ class Mutation(graphene.ObjectType):
     update_user = UpdateUser.Field()
     login = Login.Field()
     signup = SignUp.Field()
+    create_story_translation = CreateStoryTranslation.Field()
 
 
 class Query(graphene.ObjectType):

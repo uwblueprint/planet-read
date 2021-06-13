@@ -4,6 +4,7 @@ from ...models import db
 from ...models.story import Story
 from ...models.story_content import StoryContent
 from ...models.story_translation import StoryTranslation
+from ...models.story_translation_content import StoryTranslationContent
 from ..interfaces.story_service import IStoryService
 
 
@@ -38,6 +39,7 @@ class StoryService(IStoryService):
         db.session.commit()
 
         # insert contents into story_contents
+        # TODO use batch inserts here instead of iterating over the for loop?
         try:
             for i, line in enumerate(content):
                 new_content = {
@@ -55,6 +57,36 @@ class StoryService(IStoryService):
 
         return new_story
 
+    def create_translation(self, entity):
+        try:
+            new_story_translation = StoryTranslation(**entity.__dict__)
+            db.session.add(new_story_translation)
+            db.session.commit()
+        except Exception as error:
+            self.logger.error(str(error))
+            raise error
+        try:
+            translation_id = new_story_translation.id
+            story_id = new_story_translation.story_id
+            story_lines = len(StoryContent.query.filter_by(story_id=story_id).all())
+            new_story_translation_content_cache = [
+                StoryTranslationContent(
+                    story_translation_id=translation_id,
+                    line_index=line,
+                    translation_content="",
+                )
+                for line in range(story_lines)
+            ]
+            db.session.bulk_save_objects(new_story_translation_content_cache)
+            db.session.commit()
+        except Exception as error:
+            db.session.delete(new_story_translation)
+            db.session.commit()
+            self.logger.error(str(error))
+            raise error
+
+        return new_story_translation
+ 
     def get_story_translations(self, user_id, translator):
         try:
             return (
