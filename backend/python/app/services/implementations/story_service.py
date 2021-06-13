@@ -60,26 +60,26 @@ class StoryService(IStoryService):
             new_story_translation = StoryTranslation(**entity.__dict__)
             db.session.add(new_story_translation)
             db.session.commit()
+        except Exception as error:
+            self.logger.error(str(error))
+            raise error
+        try:
             translation_id = new_story_translation.id
             story_id = new_story_translation.story_id
-            try:
-                story_lines = len(StoryContent.query.filter_by(story_id=story_id).all())
-                new_story_translation_content_cache = [
-                    StoryTranslationContent(
-                        story_translation_id=translation_id,
-                        line_index=line,
-                        translation_content="",
-                    )
-                    for line in range(story_lines)
-                ]
-                db.session.bulk_save_objects(new_story_translation_content_cache)
-                db.session.commit()
-            except Exception as error:
-                db.session.delete(new_story_translation)
-                db.session.commit()
-                self.logger.error(str(error))
-                raise error
+            story_lines = len(StoryContent.query.filter_by(story_id=story_id).all())
+            new_story_translation_content_cache = [
+                StoryTranslationContent(
+                    story_translation_id=translation_id,
+                    line_index=line,
+                    translation_content="",
+                )
+                for line in range(story_lines)
+            ]
+            db.session.bulk_save_objects(new_story_translation_content_cache)
+            db.session.commit()
         except Exception as error:
+            db.session.delete(new_story_translation)
+            db.session.commit()
             self.logger.error(str(error))
             raise error
 

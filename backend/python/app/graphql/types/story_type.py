@@ -35,7 +35,7 @@ class StoryRequestDTO(graphene.InputObjectType):
     translated_languages = graphene.List(LanguageEnum)
 
 
-class NewStoryTranslationResponseDTO(graphene.ObjectType):
+class CreateStoryTranslationResponseDTO(graphene.ObjectType):
     id = graphene.Int(required=True)
     translator_id = graphene.Int(required=True)
     story_id = graphene.String(required=True)
@@ -43,8 +43,8 @@ class NewStoryTranslationResponseDTO(graphene.ObjectType):
     stage = graphene.Field(StageEnum)
 
 
-class NewStoryTranslationRequestDTO(graphene.InputObjectType):
+class CreateStoryTranslationRequestDTO(graphene.InputObjectType):
     translator_id = graphene.Int(required=True)
     story_id = graphene.Int(required=True)
     language = graphene.String(required=True)
-    stage = graphene.Field(StageEnum, default_value=StageEnum.START)
+    stage = graphene.Field(StageEnum, default_value="TRANSLATE")

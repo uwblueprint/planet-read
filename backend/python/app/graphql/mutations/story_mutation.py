@@ -2,8 +2,8 @@ import graphene
 
 from ..service import services
 from ..types.story_type import (
-    NewStoryTranslationRequestDTO,
-    NewStoryTranslationResponseDTO,
+    CreateStoryTranslationRequestDTO,
+    CreateStoryTranslationResponseDTO,
     StoryRequestDTO,
     StoryResponseDTO,
 )
@@ -25,9 +25,9 @@ class CreateStory(graphene.Mutation):
 
 class CreateStoryTranslation(graphene.Mutation):
     class Arguments:
-        story_translation_data = NewStoryTranslationRequestDTO(required=True)
+        story_translation_data = CreateStoryTranslationRequestDTO(required=True)
 
-    story = graphene.Field(lambda: NewStoryTranslationResponseDTO)
+    story = graphene.Field(lambda: CreateStoryTranslationResponseDTO)
 
     def mutate(root, info, story_translation_data):
         try:
