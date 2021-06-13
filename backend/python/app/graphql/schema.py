@@ -63,7 +63,7 @@ class Query(graphene.ObjectType):
 
     def resolve_stories_available_for_translation(root, info, id):
         return resolve_stories_available_for_translation(root, info, id)
-        
+
     def resolve_story_translations_by_user(root, info, user_id, translator):
         return resolve_story_translations_by_user(root, info, user_id, translator)
 

@@ -56,7 +56,7 @@ class StoryService(IStoryService):
         db.session.refresh(new_story)
 
         return new_story
-    
+
     def get_stories_available_for_translation(self, user):
         all_stories = []
         approved_languages = user.approved_languages
@@ -69,9 +69,9 @@ class StoryService(IStoryService):
             )
 
             for story in stories:
-                if (not story in all_stories):
+                if not story in all_stories:
                     all_stories.append(story)
-        
+
         return all_stories
 
     def get_story_translations(self, user_id, translator):
