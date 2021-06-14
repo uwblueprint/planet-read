@@ -56,21 +56,19 @@ class StoryService(IStoryService):
         return new_story
 
     def get_stories_available_for_translation(self, user):
-        all_stories = []
+        all_stories = set()
         approved_languages = user.approved_languages
         for lang in approved_languages:
             level = approved_languages[lang]
-            stories = (
+            stories = set(
                 Story.query.filter(Story.level <= level)
                 .filter(~Story.translated_languages.any(lang))
                 .all()
             )
 
-            for story in stories:
-                if not story in all_stories:
-                    all_stories.append(story)
+            all_stories = all_stories.union(stories)
 
-        return all_stories
+        return [story.to_dict(include_relationships=True) for story in all_stories]
 
     def get_story_translations(self, user_id, translator):
         try:
