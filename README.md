@@ -45,7 +45,7 @@ If there are no tables in the DB, go into `/backend/python/app/models/__init__.p
 # Lint
 Frontend has on-save linting. To lint the backend:
 ```
-docker exec <backend-container-id> /bin/bash -c "black . && isort --profile black ."
+docker exec -it <backend-container-id> /bin/bash -c "black . && isort --profile black ."
 ```
 
 Follow the [getting started](https://uwblueprint.github.io/starter-code-v2/docs/getting-started) for more details, especially if you desire to use your own firebase and gcp projects.

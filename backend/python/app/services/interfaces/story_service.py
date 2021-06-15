@@ -50,3 +50,13 @@ class IStoryService(ABC):
         :rtype: list of StoryTranslationResponseDTO's
         """
         pass
+
+    @abstractmethod
+    def update_translation(self, entity):
+        """Update a single story translation content entry
+
+        :param entity: id and updated translation for story translation
+        :return: StoryTranslationContentResponseDTO
+        :rtype: StoryTranslationContentResponseDTO
+        """
+        pass

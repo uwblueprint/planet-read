@@ -6,6 +6,7 @@ from ...models.story_content import StoryContent
 from ...models.story_translation import StoryTranslation
 from ...models.story_translation_content import StoryTranslationContent
 from ..interfaces.story_service import IStoryService
+from ...graphql.types.story_type import StoryTranslationContentResponseDTO
 
 
 class StoryService(IStoryService):
@@ -120,3 +121,30 @@ class StoryService(IStoryService):
         except Exception as error:
             self.logger.error(str(error))
             raise error
+
+    def update_translation(self, entity):
+        try:
+            old_translation_content = StoryTranslationContent.query.get(entity.id)
+
+            if not old_translation_content:
+                raise Exception(
+                    "story_translation_content_id {id} not found".format(id=entity.id)
+                )
+
+            StoryTranslationContent.query.filter_by(id=entity.id).update(
+                {StoryTranslationContent.translation_content: entity.content}
+            )
+            db.session.commit()
+        except Exception as e:
+            reason = getattr(e, "message", None)
+            self.logger.error(
+                "Failed to update story translation content. Reason = {reason}".format(
+                    reason=(reason if reason else str(e))
+                )
+            )
+            raise e
+
+        return StoryTranslationContentResponseDTO(
+            entity.id,
+            entity.content,
+        )

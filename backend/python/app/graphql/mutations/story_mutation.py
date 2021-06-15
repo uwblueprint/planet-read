@@ -6,6 +6,8 @@ from ..types.story_type import (
     CreateStoryTranslationResponseDTO,
     StoryRequestDTO,
     StoryResponseDTO,
+    StoryTranslationContentRequestDTO,
+    StoryTranslationContentResponseDTO,
 )
 
 
@@ -35,6 +37,25 @@ class CreateStoryTranslation(graphene.Mutation):
                 story_translation_data
             )
             return CreateStoryTranslation(story=new_story_translation)
+        except Exception as e:
+            error_message = getattr(e, "message", None)
+            raise Exception(error_message if error_message else str(e))
+
+
+class UpdateStoryTranslationContentById(graphene.Mutation):
+    class Arguments:
+        story_translation_content_data = StoryTranslationContentRequestDTO(
+            required=True
+        )
+
+    story = graphene.Field(lambda: StoryTranslationContentResponseDTO)
+
+    def mutate(root, info, story_translation_content_data):
+        try:
+            new_story_translation = services["story"].update_translation(
+                story_translation_content_data
+            )
+            return UpdateStoryTranslationContentById(new_story_translation)
         except Exception as e:
             error_message = getattr(e, "message", None)
             raise Exception(error_message if error_message else str(e))

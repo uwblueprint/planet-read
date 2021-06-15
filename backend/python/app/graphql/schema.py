@@ -3,7 +3,11 @@ import graphene
 from .mutations.auth_mutation import Login, Logout, Refresh, ResetPassword, SignUp
 from .mutations.entity_mutation import CreateEntity
 from .mutations.file_mutation import CreateFile
-from .mutations.story_mutation import CreateStory, CreateStoryTranslation
+from .mutations.story_mutation import (
+    CreateStory,
+    CreateStoryTranslation,
+    UpdateStoryTranslationContentById,
+)
 from .mutations.user_mutation import CreateUser, UpdateUser
 from .queries.entity_query import resolve_entities
 from .queries.file_query import resolve_file_by_id
@@ -32,6 +36,8 @@ class Mutation(graphene.ObjectType):
     logout = Logout.Field()
     signup = SignUp.Field()
     refresh = Refresh.Field()
+    create_story_translation = CreateStoryTranslation.Field()
+    update_story_translation_content_by_id = UpdateStoryTranslationContentById.Field()
 
 
 class Query(graphene.ObjectType):
