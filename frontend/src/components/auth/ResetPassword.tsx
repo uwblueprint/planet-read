@@ -2,9 +2,9 @@ import React, { useContext } from "react";
 import { gql, useMutation } from "@apollo/client";
 import AuthContext from "../../contexts/AuthContext";
 
-interface ResetPasswordProps {
+type ResetPasswordProps = {
   email?: string;
-}
+};
 
 const RESET_PASSWORD = gql`
   mutation ResetPassword($email: String!) {
