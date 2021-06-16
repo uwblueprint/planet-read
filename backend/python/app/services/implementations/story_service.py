@@ -4,6 +4,7 @@ from ...models import db
 from ...models.story import Story
 from ...models.story_content import StoryContent
 from ...models.story_translation import StoryTranslation
+from ...models.story_translation_content import StoryTranslationContent
 from ..interfaces.story_service import IStoryService
 
 # from backend.python.app.models import story_translation
@@ -16,7 +17,9 @@ class StoryService(IStoryService):
     def get_stories(self):
         # Entity is a SQLAlchemy model, we can use convenient methods provided
         # by SQLAlchemy like query.all() to query the data
-        return [result.to_dict() for result in Story.query.all()]
+        return [
+            story.to_dict(include_relationships=True) for story in Story.query.all()
+        ]
 
     def get_story(self, id):
         # get queries by the primary key, which is id for the Story table
@@ -24,7 +27,7 @@ class StoryService(IStoryService):
         if story is None:
             self.logger.error("Invalid id")
             raise Exception("Invalid id")
-        return story.to_dict()
+        return story.to_dict(include_relationships=True)
 
     def create_story(self, story, content):
         # create story
@@ -38,6 +41,7 @@ class StoryService(IStoryService):
         db.session.commit()
 
         # insert contents into story_contents
+        # TODO use batch inserts here instead of iterating over the for loop?
         try:
             for i, line in enumerate(content):
                 new_content = {
@@ -54,6 +58,36 @@ class StoryService(IStoryService):
         db.session.refresh(new_story)
 
         return new_story
+
+    def create_translation(self, entity):
+        try:
+            new_story_translation = StoryTranslation(**entity.__dict__)
+            db.session.add(new_story_translation)
+            db.session.commit()
+        except Exception as error:
+            self.logger.error(str(error))
+            raise error
+        try:
+            translation_id = new_story_translation.id
+            story_id = new_story_translation.story_id
+            story_lines = len(StoryContent.query.filter_by(story_id=story_id).all())
+            new_story_translation_content_cache = [
+                StoryTranslationContent(
+                    story_translation_id=translation_id,
+                    line_index=line,
+                    translation_content="",
+                )
+                for line in range(story_lines)
+            ]
+            db.session.bulk_save_objects(new_story_translation_content_cache)
+            db.session.commit()
+        except Exception as error:
+            db.session.delete(new_story_translation)
+            db.session.commit()
+            self.logger.error(str(error))
+            raise error
+
+        return new_story_translation
 
     def get_story_translations(self, user_id, translator):
         try:
@@ -107,7 +141,8 @@ class StoryService(IStoryService):
     def assign_user_as_reviewer(self, user, story_translation_obj):
         if (
             story_translation_obj.language in user.approved_languages
-            and user.approved_languages[story_translation_obj.language] >= story_translation_obj.level 
+            and user.approved_languages[story_translation_obj.language]
+            >= story_translation_obj.level
             and story_translation_obj.stage == "TRANSLATE"
             and not story_translation_obj.reviewer_id
         ):

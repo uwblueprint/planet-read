@@ -10,6 +10,7 @@ stages_enum = db.Enum("START", "TRANSLATE", "REVIEW", "PUBLISH", name="stages")
 
 
 class StoryTranslation(db.Model):
+
     __tablename__ = "story_translations"
     id = db.Column(db.Integer, primary_key=True, nullable=False)
     story_id = db.Column(db.Integer, db.ForeignKey("stories.id"), nullable=False)
