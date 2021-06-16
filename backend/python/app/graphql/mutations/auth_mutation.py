@@ -85,7 +85,6 @@ class Logout(graphene.Mutation):
             return Logout(ok=True)
         except Exception as e:
             error_message = getattr(e, "message", None)
-            print(error_message)
             return Exception(error_message if error_message else str(e))
 
 

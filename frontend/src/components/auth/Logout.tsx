@@ -17,16 +17,22 @@ const LOGOUT = gql`
 
 const Logout = () => {
   const { authenticatedUser, setAuthenticatedUser } = useContext(AuthContext);
-  const [logout, { data, error }] = useMutation<{ logout: LogoutResponse }>(
-    LOGOUT,
-  );
+  const [logout, { error }] = useMutation<{ logout: LogoutResponse }>(LOGOUT);
 
-  useEffect(() => {
-    if (data?.logout?.ok) {
-      setAuthenticatedUser(null);
+  const onLogOutClick = async () => {
+    console.log("Test");
+    const result = await logout({
+      variables: { userId: String(authenticatedUser?.id) },
+    });
+    let success: boolean = false;
+    if (result.data?.logout.ok === true) {
+      success = true;
       localStorage.removeItem(AUTHENTICATED_USER_KEY);
     }
-  }, [data]);
+    if (success) {
+      setAuthenticatedUser(null);
+    }
+  };
 
   useEffect(() => {
     if (error) {
@@ -36,15 +42,7 @@ const Logout = () => {
   }, [error]);
 
   return (
-    <button
-      type="button"
-      className="btn btn-primary"
-      onClick={() => {
-        logout({
-          variables: { userId: authenticatedUser?.id },
-        });
-      }}
-    >
+    <button type="button" className="btn btn-primary" onClick={onLogOutClick}>
       Log Out
     </button>
   );
