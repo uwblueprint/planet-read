@@ -115,6 +115,7 @@ class StoryService(IStoryService):
             self.logger.error(str(error))
             raise error
 
+    # TODO: change query to return Story object joined with Story Translation (as dict) on id's being the same
     def get_story_translation(self, id):
         try:
             return (
@@ -138,16 +139,16 @@ class StoryService(IStoryService):
             self.logger.error(str(error))
             raise error
 
-    def assign_user_as_reviewer(self, user, story_translation_obj):
+    def assign_user_as_reviewer(self, user, story_translation):
         if (
-            story_translation_obj.language in user.approved_languages
-            and user.approved_languages[story_translation_obj.language]
-            >= story_translation_obj.level
-            and story_translation_obj.stage == "TRANSLATE"
-            and not story_translation_obj.reviewer_id
+            story_translation.language in user.approved_languages
+            and user.approved_languages[story_translation.language]
+            >= story_translation.level
+            and story_translation.stage == "TRANSLATE"
+            and not story_translation.reviewer_id
         ):
             story_translation = StoryTranslation.query.get(
-                story_translation_obj.story_translation_id
+                story_translation.story_translation_id
             )
             story_translation.reviewer_id = user.id
             story_translation.stage = "REVIEW"
