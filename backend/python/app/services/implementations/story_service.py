@@ -57,6 +57,14 @@ class StoryService(IStoryService):
 
         return new_story
 
+    def get_stories_available_for_translation(self, language, level):
+        stories = (
+            Story.query.filter(Story.level <= level)
+            .filter(~Story.translated_languages.any(language))
+            .all()
+        )
+        return [story.to_dict(include_relationships=True) for story in stories]
+
     def create_translation(self, entity):
         try:
             new_story_translation = StoryTranslation(**entity.__dict__)
@@ -86,7 +94,7 @@ class StoryService(IStoryService):
             raise error
 
         return new_story_translation
- 
+
     def get_story_translations(self, user_id, translator):
         try:
             return (
