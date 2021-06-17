@@ -7,6 +7,7 @@ from .mutations.user_mutation import CreateUser, UpdateUser
 from .queries.entity_query import resolve_entities
 from .queries.story_query import (
     resolve_stories,
+    resolve_story_available_for_review_by_user,
     resolve_story_by_id,
     resolve_story_translations_by_user,
 )
@@ -38,6 +39,10 @@ class Query(graphene.ObjectType):
     users = graphene.Field(graphene.List(UserDTO))
     user_by_id = graphene.Field(UserDTO, id=graphene.Int())
     user_by_email = graphene.Field(UserDTO, email=graphene.String())
+    story_available_for_review_by_user = graphene.Field(
+        graphene.List(StoryTranslationResponseDTO),
+        user_id=graphene.Int(),
+    )
 
     def resolve_entities(root, info, **kwargs):
         return resolve_entities(root, info, **kwargs)
@@ -59,6 +64,9 @@ class Query(graphene.ObjectType):
 
     def resolve_story_translations_by_user(root, info, user_id, translator):
         return resolve_story_translations_by_user(root, info, user_id, translator)
+
+    def resolve_story_available_for_review_by_user(root, info, user_id, language):
+        return resolve_story_available_for_review_by_user(root, info, user_id, language)
 
 
 schema = graphene.Schema(query=Query, mutation=Mutation)
