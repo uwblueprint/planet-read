@@ -2,7 +2,7 @@ import React from "react";
 import Tag from "./Tag";
 import "./StoryCard.css";
 
-type StoryCardProps = {
+export type StoryCardProps = {
   id: number;
   title: string;
   description: string;

@@ -4,8 +4,9 @@
     display: flex;
     flex-direction: row;
     flex-wrap: wrap;
-    min-width: 950px;
-    width: 80%;
+    margin: 10px 0px 10px 10px;
+    min-width: 800px;
+    width: 60%;
 }
 
 .youtube-thumbnail {
@@ -14,9 +15,7 @@
 
 .story-card-details {
     flex-basis: 40%;
-    padding-bottom: 17px;
-    padding-left: 26px;
-    padding-top: 17px;
+    padding: 17px 0px 17px 26px;
 }
 
 .story-card-actions {

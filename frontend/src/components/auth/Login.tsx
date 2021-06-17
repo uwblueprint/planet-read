@@ -14,6 +14,7 @@ const LOGIN = gql`
       email
       role
       accessToken
+      refreshToken
     }
   }
 `;
