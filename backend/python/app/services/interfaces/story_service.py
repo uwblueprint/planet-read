@@ -50,3 +50,14 @@ class IStoryService(ABC):
         :rtype: list of StoryTranslationResponseDTO's
         """
         pass
+
+    @abstractmethod
+    def get_story_available_for_review(self, user, language):
+        """
+        Return a list of stories available to be reviewed by user
+        :param user: user
+        language: language being searched for
+        :return: list of StoryTranslationResponseDTO's
+        :rtype: list of StoryTranslationResponseDTO's
+        """
+        pass

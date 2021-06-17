@@ -8,3 +8,5 @@
 **/.DS_Store
 **/nodemailer.config.ts
 .vscode
+./package-lock.json
+./package.json

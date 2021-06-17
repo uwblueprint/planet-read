@@ -14,7 +14,9 @@ class StoryService(IStoryService):
     def get_stories(self):
         # Entity is a SQLAlchemy model, we can use convenient methods provided
         # by SQLAlchemy like query.all() to query the data
-        return [result.to_dict() for result in Story.query.all()]
+        return [
+            story.to_dict(include_relationships=True) for story in Story.query.all()
+        ]
 
     def get_story(self, id):
         # get queries by the primary key, which is id for the Story table
@@ -22,7 +24,7 @@ class StoryService(IStoryService):
         if story is None:
             self.logger.error("Invalid id")
             raise Exception("Invalid id")
-        return story.to_dict()
+        return story.to_dict(include_relationships=True)
 
     def create_story(self, story, content):
         # create story
@@ -78,3 +80,14 @@ class StoryService(IStoryService):
         except Exception as error:
             self.logger.error(str(error))
             raise error
+
+    def get_story_available_for_review(self, user, language):
+        level = user.approved_languages[language]
+
+        stories = (
+            Story.query.filter(Story.level <= level)
+            .filter(~Story.translated_languages.any(lang))
+            .all()
+        )
+
+        return [story.to_dict(include_relationships=True) for story in stories]
