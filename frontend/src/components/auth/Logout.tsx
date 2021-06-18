@@ -1,16 +1,40 @@
-import React, { useContext } from "react";
-import authAPIClient from "../../APIClients/AuthAPIClient";
+import React, { useContext, useEffect } from "react";
+import { gql, useMutation } from "@apollo/client";
 import AuthContext from "../../contexts/AuthContext";
+import AUTHENTICATED_USER_KEY from "../../constants/AuthConstants";
+
+interface LogoutResponse {
+  ok: Boolean;
+}
+
+const LOGOUT = gql`
+  mutation Logout($userId: ID!) {
+    logout(userId: $userId) {
+      ok
+    }
+  }
+`;
 
 const Logout = () => {
   const { authenticatedUser, setAuthenticatedUser } = useContext(AuthContext);
+  const [logout, { error }] = useMutation<{ logout: LogoutResponse }>(LOGOUT);
 
   const onLogOutClick = async () => {
-    const success = await authAPIClient.logout(authenticatedUser?.id);
-    if (success) {
+    const result = await logout({
+      variables: { userId: String(authenticatedUser?.id) },
+    });
+    if (result.data?.logout.ok === true) {
+      localStorage.removeItem(AUTHENTICATED_USER_KEY);
       setAuthenticatedUser(null);
     }
   };
+
+  useEffect(() => {
+    if (error) {
+      // TODO: Implement Error State
+      console.log(error);
+    }
+  }, [error]);
 
   return (
     <button type="button" className="btn btn-primary" onClick={onLogOutClick}>
