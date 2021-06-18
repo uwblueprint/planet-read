@@ -1,12 +1,12 @@
 from flask import current_app
 
+from ...graphql.types.story_type import StoryTranslationContentResponseDTO
 from ...models import db
 from ...models.story import Story
 from ...models.story_content import StoryContent
 from ...models.story_translation import StoryTranslation
 from ...models.story_translation_content import StoryTranslationContent
 from ..interfaces.story_service import IStoryService
-from ...graphql.types.story_type import StoryTranslationContentResponseDTO
 
 
 class StoryService(IStoryService):
@@ -132,7 +132,9 @@ class StoryService(IStoryService):
                 )
 
             StoryTranslationContent.query.filter_by(id=entity.id).update(
-                {StoryTranslationContent.translation_content: entity.content}
+                {
+                    StoryTranslationContent.translation_content: entity.translation_content
+                }
             )
             db.session.commit()
         except Exception as e:
@@ -146,5 +148,21 @@ class StoryService(IStoryService):
 
         return StoryTranslationContentResponseDTO(
             entity.id,
-            entity.content,
+            entity.translation_content,
         )
+
+    def update_translations(self, story_translation_contents):
+        try:
+            db.session.bulk_update_mappings(
+                StoryTranslationContent, story_translation_contents
+            )
+            db.session.commit()
+            return story_translation_contents
+        except Exception as e:
+            reason = getattr(e, "message", None)
+            self.logger.error(
+                "Failed to update story translation content. Reason = {reason}".format(
+                    reason=(reason if reason else str(e))
+                )
+            )
+            raise e

@@ -65,9 +65,9 @@ class StoryTranslationResponseDTO(graphene.ObjectType):
 
 class StoryTranslationContentRequestDTO(graphene.InputObjectType):
     id = graphene.Int(required=True)
-    content = graphene.String(required=True)
+    translation_content = graphene.String(required=True)
 
 
 class StoryTranslationContentResponseDTO(graphene.ObjectType):
     id = graphene.Int(required=True)
-    content = graphene.String(required=True)
+    translation_content = graphene.String(required=True)

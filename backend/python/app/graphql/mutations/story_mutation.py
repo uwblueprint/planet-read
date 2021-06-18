@@ -59,3 +59,20 @@ class UpdateStoryTranslationContentById(graphene.Mutation):
         except Exception as e:
             error_message = getattr(e, "message", None)
             raise Exception(error_message if error_message else str(e))
+
+
+class UpdateStoryTranslationContents(graphene.Mutation):
+    class Arguments:
+        story_translation_contents = graphene.List(StoryTranslationContentRequestDTO)
+
+    story = graphene.Field(lambda: graphene.List(StoryTranslationContentResponseDTO))
+
+    def mutate(root, info, story_translation_contents):
+        try:
+            new_story_translation_contents = services["story"].update_translations(
+                story_translation_contents
+            )
+            return UpdateStoryTranslationContents(new_story_translation_contents)
+        except Exception as e:
+            error_message = getattr(e, "message", None)
+            raise Exception(error_message if error_message else str(e))

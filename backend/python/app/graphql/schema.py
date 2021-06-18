@@ -7,6 +7,7 @@ from .mutations.story_mutation import (
     CreateStory,
     CreateStoryTranslation,
     UpdateStoryTranslationContentById,
+    UpdateStoryTranslationContents,
 )
 from .mutations.user_mutation import CreateUser, UpdateUser
 from .queries.entity_query import resolve_entities
@@ -38,6 +39,7 @@ class Mutation(graphene.ObjectType):
     refresh = Refresh.Field()
     create_story_translation = CreateStoryTranslation.Field()
     update_story_translation_content_by_id = UpdateStoryTranslationContentById.Field()
+    update_story_translation_contents = UpdateStoryTranslationContents.Field()
 
 
 class Query(graphene.ObjectType):
