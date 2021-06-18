@@ -20,7 +20,6 @@ const Logout = () => {
   const [logout, { error }] = useMutation<{ logout: LogoutResponse }>(LOGOUT);
 
   const onLogOutClick = async () => {
-    console.log("Test");
     const result = await logout({
       variables: { userId: String(authenticatedUser?.id) },
     });
@@ -28,8 +27,6 @@ const Logout = () => {
     if (result.data?.logout.ok === true) {
       success = true;
       localStorage.removeItem(AUTHENTICATED_USER_KEY);
-    }
-    if (success) {
       setAuthenticatedUser(null);
     }
   };
