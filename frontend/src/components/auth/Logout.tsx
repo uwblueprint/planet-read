@@ -23,9 +23,7 @@ const Logout = () => {
     const result = await logout({
       variables: { userId: String(authenticatedUser?.id) },
     });
-    let success: boolean = false;
     if (result.data?.logout.ok === true) {
-      success = true;
       localStorage.removeItem(AUTHENTICATED_USER_KEY);
       setAuthenticatedUser(null);
     }
