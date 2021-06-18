@@ -81,12 +81,13 @@ class StoryService(IStoryService):
             self.logger.error(str(error))
             raise error
 
-    def get_story_available_for_review(self, user, language):
-        level = user.approved_languages[language]
+    def get_story_available_for_review(self, level, language):
 
         stories = (
-            Story.query.filter(Story.level <= level)
-            .filter(~Story.translated_languages.any(language))
+            Story.query.join(StoryTranslation)
+            .filter(Story.level <= level)
+            .filter(StoryTranslation.language == language)
+            .filter(StoryTranslation.reviewer_id == None)
             .all()
         )
 

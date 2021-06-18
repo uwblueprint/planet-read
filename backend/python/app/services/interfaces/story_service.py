@@ -52,7 +52,7 @@ class IStoryService(ABC):
         pass
 
     @abstractmethod
-    def get_story_available_for_review(self, user, language):
+    def get_story_available_for_review(self, level, language):
         """
         Return a list of stories available to be reviewed by user
         :param user: user
