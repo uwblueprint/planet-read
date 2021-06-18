@@ -87,8 +87,7 @@ class StoryService(IStoryService):
             Story.query.join(StoryTranslation)
             .filter(Story.level <= level)
             .filter(StoryTranslation.language == language)
-            .filter(StoryTranslation.reviewer_id == None)
+            .filter(StoryTranslation.stage == "REVIEW")
             .all()
         )
-
         return [story.to_dict(include_relationships=True) for story in stories]

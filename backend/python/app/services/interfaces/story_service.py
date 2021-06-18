@@ -55,7 +55,7 @@ class IStoryService(ABC):
     def get_story_available_for_review(self, level, language):
         """
         Return a list of stories available to be reviewed by user
-        :param user: user
+        :param level: level of user 
         language: language being searched for
         :return: list of StoryTranslationResponseDTO's
         :rtype: list of StoryTranslationResponseDTO's

@@ -41,7 +41,7 @@ class Query(graphene.ObjectType):
     user_by_email = graphene.Field(UserDTO, email=graphene.String())
     story_available_for_review_by_user = graphene.Field(
         graphene.List(StoryTranslationResponseDTO),
-        user_id=graphene.Int(),
+        level=graphene.Int(),
         language=graphene.String() 
     )
 
