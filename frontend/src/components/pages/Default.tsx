@@ -1,9 +1,10 @@
-import React from "react";
+import React, { useContext } from "react";
 import { useHistory } from "react-router-dom";
 
 import Logout from "../auth/Logout";
 import RefreshCredentials from "../auth/RefreshCredentials";
 import ResetPassword from "../auth/ResetPassword";
+import AuthContext from "../../contexts/AuthContext";
 
 const CreateButton = () => {
   const history = useHistory();
@@ -48,13 +49,15 @@ const HomePageButton = () => {
 };
 
 const Default = () => {
+  const { authenticatedUser } = useContext(AuthContext);
+
   return (
     <div style={{ textAlign: "center", paddingTop: "20px" }}>
       <h1>Default Page</h1>
       <div className="btn-group" style={{ paddingRight: "10px" }}>
         <Logout />
         <RefreshCredentials />
-        <ResetPassword />
+        <ResetPassword email={authenticatedUser!!.email} />
         <CreateButton />
         <UpdateButton />
         <GetButton />

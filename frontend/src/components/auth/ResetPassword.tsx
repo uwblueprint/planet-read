@@ -1,9 +1,8 @@
-import React, { useContext } from "react";
+import React from "react";
 import { gql, useMutation } from "@apollo/client";
-import AuthContext from "../../contexts/AuthContext";
 
 type ResetPasswordProps = {
-  email?: string;
+  email: string;
 };
 
 const RESET_PASSWORD = gql`
@@ -15,8 +14,6 @@ const RESET_PASSWORD = gql`
 `;
 
 const ResetPassword = ({ email }: ResetPasswordProps) => {
-  const { authenticatedUser } = useContext(AuthContext);
-
   const isRealEmailAvailable = (emailString: string): boolean => {
     const re = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
     return re.test(String(emailString).toLowerCase());
@@ -36,17 +33,16 @@ const ResetPassword = ({ email }: ResetPasswordProps) => {
   };
 
   const onResetPasswordClick = async () => {
-    if (authenticatedUser == null && !isRealEmailAvailable(email!)) {
+    if (!isRealEmailAvailable(email!)) {
       alert("Invalid email");
       return;
     }
 
-    const resetEmail = authenticatedUser?.email ?? email;
     try {
-      const result = await resetPassword({ variables: { email: resetEmail } });
+      const result = await resetPassword({ variables: { email } });
 
       if (result.data?.resetPassword.ok) {
-        handleSuccessOnReset(`Reset email sent to ${resetEmail}`);
+        handleSuccessOnReset(`Reset email sent to ${email}`);
       } else {
         handleErrorOnReset("Reset password failed.");
       }
@@ -64,10 +60,6 @@ const ResetPassword = ({ email }: ResetPasswordProps) => {
       Reset Password
     </button>
   );
-};
-
-ResetPassword.defaultProps = {
-  email: "",
 };
 
 export default ResetPassword;
