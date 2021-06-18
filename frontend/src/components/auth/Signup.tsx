@@ -23,6 +23,7 @@ const SIGNUP = gql`
       email
       role
       accessToken
+      refreshToken
     }
   }
 `;
