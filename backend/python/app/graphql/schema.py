@@ -4,6 +4,7 @@ from .mutations.auth_mutation import Login, Logout, Refresh, ResetPassword, Sign
 from .mutations.entity_mutation import CreateEntity
 from .mutations.file_mutation import CreateFile
 from .mutations.story_mutation import (
+    AssignUserAsReviewer,
     CreateStory,
     CreateStoryTranslation,
     UpdateStoryTranslationContentById,
@@ -16,6 +17,7 @@ from .queries.story_query import (
     resolve_stories,
     resolve_stories_available_for_translation,
     resolve_story_by_id,
+    resolve_story_translation_by_id,
     resolve_story_translations_by_user,
 )
 from .queries.user_query import resolve_user_by_email, resolve_user_by_id, resolve_users
@@ -37,6 +39,7 @@ class Mutation(graphene.ObjectType):
     logout = Logout.Field()
     signup = SignUp.Field()
     refresh = Refresh.Field()
+    assign_user_as_reviewer = AssignUserAsReviewer.Field()
     update_story_translation_content_by_id = UpdateStoryTranslationContentById.Field()
     update_story_translation_contents = UpdateStoryTranslationContents.Field()
 
@@ -50,6 +53,10 @@ class Query(graphene.ObjectType):
         graphene.List(StoryTranslationResponseDTO),
         user_id=graphene.Int(),
         translator=graphene.Boolean(),
+    )
+    story_translation_by_id = graphene.Field(
+        StoryTranslationResponseDTO,
+        id=graphene.Int(),
     )
     users = graphene.Field(graphene.List(UserDTO))
     user_by_id = graphene.Field(UserDTO, id=graphene.Int())
@@ -86,6 +93,9 @@ class Query(graphene.ObjectType):
 
     def resolve_story_translations_by_user(root, info, user_id, translator):
         return resolve_story_translations_by_user(root, info, user_id, translator)
+
+    def resolve_story_translation_by_id(root, info, id):
+        return resolve_story_translation_by_id(root, info, id)
 
 
 schema = graphene.Schema(query=Query, mutation=Mutation)

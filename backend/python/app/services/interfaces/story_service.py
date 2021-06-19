@@ -52,6 +52,17 @@ class IStoryService(ABC):
         pass
 
     @abstractmethod
+    def get_story_translation(self, id):
+        """Return a story currently being translated/reviewed
+
+        :param id: id of the story translation
+        :return: StoryTranslationResponseDTO
+        :rtype: StoryTranslationResponseDTO
+        :raises Exception: id retrieval fails
+        """
+        pass
+
+    @abstractmethod
     def update_story_translation_content(self, story_translation_content):
         """Update a single story translation content entry
 
