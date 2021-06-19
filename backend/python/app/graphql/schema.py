@@ -9,8 +9,8 @@ from .queries.entity_query import resolve_entities
 from .queries.file_query import resolve_file_by_id
 from .queries.story_query import (
     resolve_stories,
-    resolve_story_available_for_review_by_user,
     resolve_stories_available_for_translation,
+    resolve_story_available_for_review_by_user,
     resolve_story_by_id,
     resolve_story_translations_by_user,
 )
@@ -50,9 +50,9 @@ class Query(graphene.ObjectType):
     user_by_email = graphene.Field(UserDTO, email=graphene.String())
     story_available_for_review_by_user = graphene.Field(
         graphene.List(StoryTranslationResponseDTO),
+        language=graphene.String(),
         level=graphene.Int(),
-        language=graphene.String() 
-    ) 
+    )
     stories_available_for_translation = graphene.Field(
         graphene.List(StoryResponseDTO),
         language=graphene.String(),

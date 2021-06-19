@@ -49,6 +49,7 @@ class CreateStoryTranslationRequestDTO(graphene.InputObjectType):
     language = graphene.String(required=True)
     stage = graphene.Field(StageEnum, default_value="TRANSLATE")
 
+
 class StoryTranslationResponseDTO(graphene.ObjectType):
     story_id = graphene.Int(required=True)
     title = graphene.String(required=True)

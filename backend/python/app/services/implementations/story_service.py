@@ -121,13 +121,13 @@ class StoryService(IStoryService):
             self.logger.error(str(error))
             raise error
 
-    def get_story_available_for_review(self, level, language):
+    def get_story_available_for_review(self, language, level):
 
         stories = (
             Story.query.join(StoryTranslation)
             .filter(Story.level <= level)
             .filter(StoryTranslation.language == language)
-            .filter(StoryTranslation.stage == "REVIEW")
+            .filter(StoryTranslation.reviewer_id == None)
             .all()
         )
         return [story.to_dict(include_relationships=True) for story in stories]
