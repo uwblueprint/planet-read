@@ -6,6 +6,8 @@ from ..types.story_type import (
     CreateStoryTranslationResponseDTO,
     StoryRequestDTO,
     StoryResponseDTO,
+    StoryTranslationContentRequestDTO,
+    StoryTranslationContentResponseDTO,
 )
 
 
@@ -55,6 +57,42 @@ class AssignUserAsReviewer(graphene.Mutation):
             )
             services["story"].assign_user_as_reviewer(user, story_translation)
             return AssignUserAsReviewer(ok=True)
+        except Exception as e:
+            error_message = getattr(e, "message", None)
+            raise Exception(error_message if error_message else str(e))
+
+
+class UpdateStoryTranslationContentById(graphene.Mutation):
+    class Arguments:
+        story_translation_content_data = StoryTranslationContentRequestDTO(
+            required=True
+        )
+
+    story = graphene.Field(lambda: StoryTranslationContentResponseDTO)
+
+    def mutate(root, info, story_translation_content_data):
+        try:
+            new_story_translation = services["story"].update_story_translation_content(
+                story_translation_content_data
+            )
+            return UpdateStoryTranslationContentById(new_story_translation)
+        except Exception as e:
+            error_message = getattr(e, "message", None)
+            raise Exception(error_message if error_message else str(e))
+
+
+class UpdateStoryTranslationContents(graphene.Mutation):
+    class Arguments:
+        story_translation_contents = graphene.List(StoryTranslationContentRequestDTO)
+
+    story = graphene.Field(lambda: graphene.List(StoryTranslationContentResponseDTO))
+
+    def mutate(root, info, story_translation_contents):
+        try:
+            new_story_translation_contents = services[
+                "story"
+            ].update_story_translation_contents(story_translation_contents)
+            return UpdateStoryTranslationContents(new_story_translation_contents)
         except Exception as e:
             error_message = getattr(e, "message", None)
             raise Exception(error_message if error_message else str(e))

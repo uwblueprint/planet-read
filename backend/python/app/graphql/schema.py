@@ -1,18 +1,21 @@
 import graphene
 
-from .mutations.auth_mutation import Login, Refresh, ResetPassword, SignUp
+from .mutations.auth_mutation import Login, Logout, Refresh, ResetPassword, SignUp
 from .mutations.entity_mutation import CreateEntity
 from .mutations.file_mutation import CreateFile
 from .mutations.story_mutation import (
-    AssignUserAsReviewer,
     CreateStory,
     CreateStoryTranslation,
+    AssignUserAsReviewer,
+    UpdateStoryTranslationContentById,
+    UpdateStoryTranslationContents,
 )
 from .mutations.user_mutation import CreateUser, UpdateUser
 from .queries.entity_query import resolve_entities
 from .queries.file_query import resolve_file_by_id
 from .queries.story_query import (
     resolve_stories,
+    resolve_stories_available_for_translation,
     resolve_story_by_id,
     resolve_story_translation_by_id,
     resolve_story_translations_by_user,
@@ -33,9 +36,12 @@ class Mutation(graphene.ObjectType):
     reset_password = ResetPassword.Field()
     update_user = UpdateUser.Field()
     login = Login.Field()
+    logout = Logout.Field()
     signup = SignUp.Field()
     refresh = Refresh.Field()
     assign_user_as_reviewer = AssignUserAsReviewer.Field()
+    update_story_translation_content_by_id = UpdateStoryTranslationContentById.Field()
+    update_story_translation_contents = UpdateStoryTranslationContents.Field()
 
 
 class Query(graphene.ObjectType):
@@ -55,6 +61,11 @@ class Query(graphene.ObjectType):
     users = graphene.Field(graphene.List(UserDTO))
     user_by_id = graphene.Field(UserDTO, id=graphene.Int())
     user_by_email = graphene.Field(UserDTO, email=graphene.String())
+    stories_available_for_translation = graphene.Field(
+        graphene.List(StoryResponseDTO),
+        language=graphene.String(),
+        level=graphene.Int(),
+    )
 
     def resolve_entities(root, info, **kwargs):
         return resolve_entities(root, info, **kwargs)
@@ -76,6 +87,9 @@ class Query(graphene.ObjectType):
 
     def resolve_user_by_email(root, info, email):
         return resolve_user_by_email(root, info, email)
+
+    def resolve_stories_available_for_translation(root, info, language, level):
+        return resolve_stories_available_for_translation(root, info, language, level)
 
     def resolve_story_translations_by_user(root, info, user_id, translator):
         return resolve_story_translations_by_user(root, info, user_id, translator)

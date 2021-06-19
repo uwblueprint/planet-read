@@ -73,6 +73,21 @@ class Login(graphene.Mutation):
             raise Exception(error_message if error_message else str(e))
 
 
+class Logout(graphene.Mutation):
+    class Arguments:
+        userId = graphene.ID(required=True)
+
+    ok = graphene.Boolean()
+
+    def mutate(root, info, userId):
+        try:
+            services["auth"].revoke_tokens(userId)
+            return Logout(ok=True)
+        except Exception as e:
+            error_message = getattr(e, "message", None)
+            return Exception(error_message if error_message else str(e))
+
+
 class SignUp(graphene.Mutation):
     class Arguments:
         first_name = graphene.String(required=True)

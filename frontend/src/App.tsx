@@ -8,6 +8,7 @@ import PrivateRoute from "./components/auth/PrivateRoute";
 import CreatePage from "./components/pages/CreatePage";
 import Default from "./components/pages/Default";
 import DisplayPage from "./components/pages/DisplayPage";
+import HomePage from "./components/pages/HomePage";
 import NotFound from "./components/pages/NotFound";
 import UpdatePage from "./components/pages/UpdatePage";
 import AUTHENTICATED_USER_KEY from "./constants/AuthConstants";
@@ -33,6 +34,7 @@ const App = () => {
           <PrivateRoute exact path="/entity/create" component={CreatePage} />
           <PrivateRoute exact path="/entity/update" component={UpdatePage} />
           <PrivateRoute exact path="/entity" component={DisplayPage} />
+          <PrivateRoute exact path="/stories" component={HomePage} />
           <Route exact path="*" component={NotFound} />
         </Switch>
       </Router>

@@ -1,13 +1,12 @@
 from flask import current_app
 
+from ...graphql.types.story_type import StoryTranslationContentResponseDTO
 from ...models import db
 from ...models.story import Story
 from ...models.story_content import StoryContent
 from ...models.story_translation import StoryTranslation
 from ...models.story_translation_content import StoryTranslationContent
 from ..interfaces.story_service import IStoryService
-
-# from backend.python.app.models import story_translation
 
 
 class StoryService(IStoryService):
@@ -58,6 +57,14 @@ class StoryService(IStoryService):
         db.session.refresh(new_story)
 
         return new_story
+
+    def get_stories_available_for_translation(self, language, level):
+        stories = (
+            Story.query.filter(Story.level <= level)
+            .filter(~Story.translated_languages.any(language))
+            .all()
+        )
+        return [story.to_dict(include_relationships=True) for story in stories]
 
     def create_translation(self, entity):
         try:
@@ -115,7 +122,6 @@ class StoryService(IStoryService):
             self.logger.error(str(error))
             raise error
 
-    # TODO: change query to return Story object joined with Story Translation (as dict) on id's being the same
     def get_story_translation(self, id):
         try:
             return (
@@ -156,3 +162,54 @@ class StoryService(IStoryService):
         else:
             self.logger.error("User can't be assigned as a reviewer")
             raise Exception("User can't be assigned as a reviewer")
+
+    def update_story_translation_content(self, story_translation_content):
+        try:
+            old_translation_content = StoryTranslationContent.query.get(
+                story_translation_content.id
+            )
+
+            if not old_translation_content:
+                raise Exception(
+                    "story_translation_content_id {id} not found".format(
+                        id=story_translation_content.id
+                    )
+                )
+
+            StoryTranslationContent.query.filter_by(
+                id=story_translation_content.id
+            ).update(
+                {
+                    StoryTranslationContent.translation_content: story_translation_content.translation_content
+                }
+            )
+            db.session.commit()
+        except Exception as error:
+            reason = getattr(error, "message", None)
+            self.logger.error(
+                "Failed to update story translation content. Reason = {reason}".format(
+                    reason=(reason if reason else str(error))
+                )
+            )
+            raise error
+
+        return StoryTranslationContentResponseDTO(
+            story_translation_content.id,
+            story_translation_content.translation_content,
+        )
+
+    def update_story_translation_contents(self, story_translation_contents):
+        try:
+            db.session.bulk_update_mappings(
+                StoryTranslationContent, story_translation_contents
+            )
+            db.session.commit()
+            return story_translation_contents
+        except Exception as error:
+            reason = getattr(error, "message", None)
+            self.logger.error(
+                "Failed to update story translation content. Reason = {reason}".format(
+                    reason=(reason if reason else str(error))
+                )
+            )
+            raise error
