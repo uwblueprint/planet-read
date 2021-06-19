@@ -121,7 +121,7 @@ class StoryService(IStoryService):
             self.logger.error(str(error))
             raise error
 
-    def get_story_available_for_review(self, language, level):
+    def get_story_translations_available_for_review(self, language, level):
 
         stories = (
             Story.query.join(StoryTranslation)

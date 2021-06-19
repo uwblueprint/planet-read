@@ -48,7 +48,7 @@ class Query(graphene.ObjectType):
     users = graphene.Field(graphene.List(UserDTO))
     user_by_id = graphene.Field(UserDTO, id=graphene.Int())
     user_by_email = graphene.Field(UserDTO, email=graphene.String())
-    story_available_for_review_by_user = graphene.Field(
+    story_translations_available_for_review = graphene.Field(
         graphene.List(StoryTranslationResponseDTO),
         language=graphene.String(),
         level=graphene.Int(),
@@ -86,8 +86,8 @@ class Query(graphene.ObjectType):
     def resolve_story_translations_by_user(root, info, user_id, translator):
         return resolve_story_translations_by_user(root, info, user_id, translator)
 
-    def resolve_story_available_for_review_by_user(root, info, level, language):
-        return resolve_story_available_for_review_by_user(root, info, level, language)
+    def resolve_story_translations_available_for_review(root, info, language, level):
+        return resolve_story_translations_available_for_review(root, info, language, level)
 
 
 schema = graphene.Schema(query=Query, mutation=Mutation)
