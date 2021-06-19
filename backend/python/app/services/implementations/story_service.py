@@ -122,12 +122,28 @@ class StoryService(IStoryService):
             raise error
 
     def get_story_translations_available_for_review(self, language, level):
+        try:
+            stories = (
+                db.session.query(
+                    Story.id.label("story_id"),
+                    Story.title.label("title"),
+                    Story.description.label("description"),
+                    Story.youtube_link.label("youtube_link"),
+                    Story.level.label("level"),
+                    StoryTranslation.id.label("story_translation_id"),
+                    StoryTranslation.language.label("language"),
+                    StoryTranslation.stage.label("stage"),
+                    StoryTranslation.translator_id.label("translator_id"),
+                    StoryTranslation.reviewer_id.label("reviewer_id"),
+                )
+                .join(StoryTranslation, Story.id == StoryTranslation.story_id)
+                .filter(Story.level <= level)
+                .filter(StoryTranslation.language == language)
+                .filter(StoryTranslation.reviewer_id == None)
+                .all()
+            )
+            return stories
 
-        stories = (
-            Story.query.join(StoryTranslation)
-            .filter(Story.level <= level)
-            .filter(StoryTranslation.language == language)
-            .filter(StoryTranslation.reviewer_id == None)
-            .all()
-        )
-        return [story.to_dict(include_relationships=True) for story in stories]
+        except Exception as error:
+            self.logger.error(str(error))
+            raise error

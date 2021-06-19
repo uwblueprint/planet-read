@@ -18,4 +18,6 @@ def resolve_story_translations_by_user(root, info, user_id, translator):
 
 
 def resolve_story_translations_available_for_review(root, info, language, level):
-    return services["story"].get_story_translations_available_for_review(language, level)
+    return services["story"].get_story_translations_available_for_review(
+        language, level
+    )

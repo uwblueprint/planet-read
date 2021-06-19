@@ -10,8 +10,8 @@ from .queries.file_query import resolve_file_by_id
 from .queries.story_query import (
     resolve_stories,
     resolve_stories_available_for_translation,
-    resolve_story_available_for_review_by_user,
     resolve_story_by_id,
+    resolve_story_translations_available_for_review,
     resolve_story_translations_by_user,
 )
 from .queries.user_query import resolve_user_by_email, resolve_user_by_id, resolve_users
@@ -87,7 +87,9 @@ class Query(graphene.ObjectType):
         return resolve_story_translations_by_user(root, info, user_id, translator)
 
     def resolve_story_translations_available_for_review(root, info, language, level):
-        return resolve_story_translations_available_for_review(root, info, language, level)
+        return resolve_story_translations_available_for_review(
+            root, info, language, level
+        )
 
 
 schema = graphene.Schema(query=Query, mutation=Mutation)

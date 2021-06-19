@@ -52,11 +52,11 @@ class IStoryService(ABC):
         pass
 
     @abstractmethod
-    def get_story_available_for_review(self, language, level):
+    def get_story_translations_available_for_review(self, language, level):
         """
         Return a list of stories available to be reviewed by user
         :param level: level of user
-        :param language: language: language being searched for
+        :param language: language being searched for
         :return: list of StoryTranslationResponseDTO's
         :rtype: list of StoryTranslationResponseDTO's
         """
