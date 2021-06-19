@@ -4,9 +4,9 @@ from .mutations.auth_mutation import Login, Logout, Refresh, ResetPassword, Sign
 from .mutations.entity_mutation import CreateEntity
 from .mutations.file_mutation import CreateFile
 from .mutations.story_mutation import (
+    AssignUserAsReviewer,
     CreateStory,
     CreateStoryTranslation,
-    AssignUserAsReviewer,
     UpdateStoryTranslationContentById,
     UpdateStoryTranslationContents,
 )
