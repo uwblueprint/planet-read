@@ -52,10 +52,10 @@ class IStoryService(ABC):
         pass
 
     @abstractmethod
-    def update_translation(self, entity):
+    def update_story_translation_content(self, story_translation_content):
         """Update a single story translation content entry
 
-        :param entity: StoryTranslationContentRequestDTO id and updated
+        :param story_translation_content: StoryTranslationContentRequestDTO id and updated
         translation for story translation
         :return: StoryTranslationContentResponseDTO
         :rtype: StoryTranslationContentResponseDTO
@@ -63,10 +63,10 @@ class IStoryService(ABC):
         pass
 
     @abstractmethod
-    def update_translations(self, story_translations):
-        """Batch update story translation content entry
+    def update_story_translation_contents(self, story_translations):
+        """Batch update story translation content entries
 
-        :param entity: list of StoryTranslationContentRequestDTO objects
+        :param story_translations: list of StoryTranslationContentRequestDTO objects
         :return: list of StoryTranslationContentResponseDTO objects
         :rtype: [StoryTranslationContentResponseDTO]
         """

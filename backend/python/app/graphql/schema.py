@@ -37,7 +37,6 @@ class Mutation(graphene.ObjectType):
     logout = Logout.Field()
     signup = SignUp.Field()
     refresh = Refresh.Field()
-    create_story_translation = CreateStoryTranslation.Field()
     update_story_translation_content_by_id = UpdateStoryTranslationContentById.Field()
     update_story_translation_contents = UpdateStoryTranslationContents.Field()
 

@@ -52,7 +52,7 @@ class UpdateStoryTranslationContentById(graphene.Mutation):
 
     def mutate(root, info, story_translation_content_data):
         try:
-            new_story_translation = services["story"].update_translation(
+            new_story_translation = services["story"].update_story_translation_content(
                 story_translation_content_data
             )
             return UpdateStoryTranslationContentById(new_story_translation)
@@ -69,9 +69,9 @@ class UpdateStoryTranslationContents(graphene.Mutation):
 
     def mutate(root, info, story_translation_contents):
         try:
-            new_story_translation_contents = services["story"].update_translations(
-                story_translation_contents
-            )
+            new_story_translation_contents = services[
+                "story"
+            ].update_story_translation_contents(story_translation_contents)
             return UpdateStoryTranslationContents(new_story_translation_contents)
         except Exception as e:
             error_message = getattr(e, "message", None)

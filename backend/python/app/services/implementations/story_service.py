@@ -122,47 +122,53 @@ class StoryService(IStoryService):
             self.logger.error(str(error))
             raise error
 
-    def update_translation(self, entity):
+    def update_story_translation_content(self, story_translation_content):
         try:
-            old_translation_content = StoryTranslationContent.query.get(entity.id)
+            old_translation_content = StoryTranslationContent.query.get(
+                story_translation_content.id
+            )
 
             if not old_translation_content:
                 raise Exception(
-                    "story_translation_content_id {id} not found".format(id=entity.id)
+                    "story_translation_content_id {id} not found".format(
+                        id=story_translation_content.id
+                    )
                 )
 
-            StoryTranslationContent.query.filter_by(id=entity.id).update(
+            StoryTranslationContent.query.filter_by(
+                id=story_translation_content.id
+            ).update(
                 {
-                    StoryTranslationContent.translation_content: entity.translation_content
+                    StoryTranslationContent.translation_content: story_translation_content.translation_content
                 }
             )
             db.session.commit()
-        except Exception as e:
-            reason = getattr(e, "message", None)
+        except Exception as error:
+            reason = getattr(error, "message", None)
             self.logger.error(
                 "Failed to update story translation content. Reason = {reason}".format(
-                    reason=(reason if reason else str(e))
+                    reason=(reason if reason else str(error))
                 )
             )
-            raise e
+            raise error
 
         return StoryTranslationContentResponseDTO(
-            entity.id,
-            entity.translation_content,
+            story_translation_content.id,
+            story_translation_content.translation_content,
         )
 
-    def update_translations(self, story_translation_contents):
+    def update_story_translation_contents(self, story_translation_contents):
         try:
             db.session.bulk_update_mappings(
                 StoryTranslationContent, story_translation_contents
             )
             db.session.commit()
             return story_translation_contents
-        except Exception as e:
-            reason = getattr(e, "message", None)
+        except Exception as error:
+            reason = getattr(error, "message", None)
             self.logger.error(
                 "Failed to update story translation content. Reason = {reason}".format(
-                    reason=(reason if reason else str(e))
+                    reason=(reason if reason else str(error))
                 )
             )
-            raise e
+            raise error
