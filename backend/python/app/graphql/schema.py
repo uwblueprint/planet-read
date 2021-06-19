@@ -55,7 +55,7 @@ class Query(graphene.ObjectType):
         translator=graphene.Boolean(),
     )
     story_translation_by_id = graphene.Field(
-        graphene.List(StoryTranslationResponseDTO),
+        StoryTranslationResponseDTO,
         id=graphene.Int(),
     )
     users = graphene.Field(graphene.List(UserDTO))
