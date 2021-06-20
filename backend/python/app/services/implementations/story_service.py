@@ -93,7 +93,6 @@ class StoryService(IStoryService):
             db.session.commit()
             self.logger.error(str(error))
             raise error
-
         return new_story_translation
 
     def get_story_translations(self, user_id, translator):
@@ -117,6 +116,29 @@ class StoryService(IStoryService):
                     if translator
                     else StoryTranslation.reviewer_id == user_id
                 )
+            )
+        except Exception as error:
+            self.logger.error(str(error))
+            raise error
+
+    def get_story_translation(self, id):
+        try:
+            return (
+                db.session.query(
+                    Story.id.label("story_id"),
+                    Story.title.label("title"),
+                    Story.description.label("description"),
+                    Story.youtube_link.label("youtube_link"),
+                    Story.level.label("level"),
+                    StoryTranslation.id.label("story_translation_id"),
+                    StoryTranslation.language.label("language"),
+                    StoryTranslation.stage.label("stage"),
+                    StoryTranslation.translator_id.label("translator_id"),
+                    StoryTranslation.reviewer_id.label("reviewer_id"),
+                )
+                .join(StoryTranslation, Story.id == StoryTranslation.story_id)
+                .filter(StoryTranslation.id == id)
+                .one()
             )
         except Exception as error:
             self.logger.error(str(error))

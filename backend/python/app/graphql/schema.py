@@ -18,8 +18,8 @@ from .queries.story_query import (
     resolve_stories_available_for_translation,
     resolve_story_by_id,
     resolve_story_translation_by_id,
-    resolve_story_translations_by_user,
     resolve_story_translations_available_for_review,
+    resolve_story_translations_by_user,
 )
 from .queries.user_query import resolve_user_by_email, resolve_user_by_id, resolve_users
 from .types.entity_type import EntityResponseDTO
