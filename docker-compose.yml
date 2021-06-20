@@ -39,6 +39,14 @@ services:
       - mysql_data:/var/lib/mysql/
     env_file:
       - ./.env
+  test-db:
+    image: postgres:12-alpine
+    ports:
+      - 5433:5432
+    volumes:
+      - postgres_test_data:/var/lib/postgresql_test/data/
+    env_file:
+      - ./.env
 
 volumes:
   mysql_data:

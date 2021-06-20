@@ -6,7 +6,6 @@ class Config(object):
     # put any configurations here that are common across all environments
     # list of available configs: https://flask.palletsprojects.com/en/1.1.x/config/
 
-
 class DevelopmentConfig(Config):
     """
     Development configurations
@@ -24,4 +23,12 @@ class ProductionConfig(Config):
     DEBUG = False
 
 
-app_config = {"development": DevelopmentConfig, "production": ProductionConfig}
+class TestingConfig(Config):
+    """
+    Development configurations
+    """
+
+    DEBUG = True
+    SQLALCHEMY_ECHO = True
+
+app_config = {"development": DevelopmentConfig, "production": ProductionConfig, "testing": TestingConfig}
