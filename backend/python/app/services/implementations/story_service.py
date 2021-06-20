@@ -123,7 +123,7 @@ class StoryService(IStoryService):
 
     def get_story_translations_available_for_review(self, language, level):
         try:
-            stories = (
+            return (
                 db.session.query(
                     Story.id.label("story_id"),
                     Story.title.label("title"),
@@ -142,7 +142,6 @@ class StoryService(IStoryService):
                 .filter(StoryTranslation.reviewer_id == None)
                 .all()
             )
-            return stories
 
         except Exception as error:
             self.logger.error(str(error))
