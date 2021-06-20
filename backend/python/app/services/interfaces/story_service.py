@@ -52,6 +52,35 @@ class IStoryService(ABC):
         pass
 
     @abstractmethod
+    def get_story_translation(self, id):
+        """Return a story currently being translated/reviewed
+        :param id: id of the story translation
+        :return: StoryTranslationResponseDTO
+        :rtype: StoryTranslationResponseDTO
+        :raises Exception: id retrieval fails
+        """
+        pass
+
+    @abstractmethod
+    def update_story_translation_content(self, story_translation_content):
+        """Update a single story translation content entry
+        :param story_translation_content: StoryTranslationContentRequestDTO id and updated
+        translation for story translation
+        :return: StoryTranslationContentResponseDTO
+        :rtype: StoryTranslationContentResponseDTO
+        """
+        pass
+
+    @abstractmethod
+    def update_story_translation_contents(self, story_translations):
+        """Batch update story translation content entries
+        :param story_translations: list of StoryTranslationContentRequestDTO objects
+        :return: list of StoryTranslationContentResponseDTO objects
+        :rtype: [StoryTranslationContentResponseDTO]
+        """
+        pass
+
+    @abstractmethod
     def get_story_translations_available_for_review(self, language, level):
         """
         Return a list of stories available to be reviewed by user
