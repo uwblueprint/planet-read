@@ -122,29 +122,6 @@ class StoryService(IStoryService):
             self.logger.error(str(error))
             raise error
 
-    def get_story_translation(self, id):
-        try:
-            return (
-                db.session.query(
-                    Story.id.label("story_id"),
-                    Story.title.label("title"),
-                    Story.description.label("description"),
-                    Story.youtube_link.label("youtube_link"),
-                    Story.level.label("level"),
-                    StoryTranslation.id.label("story_translation_id"),
-                    StoryTranslation.language.label("language"),
-                    StoryTranslation.stage.label("stage"),
-                    StoryTranslation.translator_id.label("translator_id"),
-                    StoryTranslation.reviewer_id.label("reviewer_id"),
-                )
-                .join(StoryTranslation, Story.id == StoryTranslation.story_id)
-                .filter(StoryTranslation.id == id)
-                .one()
-            )
-        except Exception as error:
-            self.logger.error(str(error))
-            raise error
-
     def assign_user_as_reviewer(self, user, story_translation):
         if (
             story_translation.language in user.approved_languages
@@ -212,4 +189,30 @@ class StoryService(IStoryService):
                     reason=(reason if reason else str(error))
                 )
             )
+            raise error
+
+    def get_story_translations_available_for_review(self, language, level):
+        try:
+            return (
+                db.session.query(
+                    Story.id.label("story_id"),
+                    Story.title.label("title"),
+                    Story.description.label("description"),
+                    Story.youtube_link.label("youtube_link"),
+                    Story.level.label("level"),
+                    StoryTranslation.id.label("story_translation_id"),
+                    StoryTranslation.language.label("language"),
+                    StoryTranslation.stage.label("stage"),
+                    StoryTranslation.translator_id.label("translator_id"),
+                    StoryTranslation.reviewer_id.label("reviewer_id"),
+                )
+                .join(StoryTranslation, Story.id == StoryTranslation.story_id)
+                .filter(Story.level <= level)
+                .filter(StoryTranslation.language == language)
+                .filter(StoryTranslation.reviewer_id == None)
+                .all()
+            )
+
+        except Exception as error:
+            self.logger.error(str(error))
             raise error

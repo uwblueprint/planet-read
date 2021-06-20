@@ -19,6 +19,7 @@ from .queries.story_query import (
     resolve_story_by_id,
     resolve_story_translation_by_id,
     resolve_story_translations_by_user,
+    resolve_story_translations_available_for_review,
 )
 from .queries.user_query import resolve_user_by_email, resolve_user_by_id, resolve_users
 from .types.entity_type import EntityResponseDTO
@@ -61,6 +62,11 @@ class Query(graphene.ObjectType):
     users = graphene.Field(graphene.List(UserDTO))
     user_by_id = graphene.Field(UserDTO, id=graphene.Int())
     user_by_email = graphene.Field(UserDTO, email=graphene.String())
+    story_translations_available_for_review = graphene.Field(
+        graphene.List(StoryTranslationResponseDTO),
+        language=graphene.String(),
+        level=graphene.Int(),
+    )
     stories_available_for_translation = graphene.Field(
         graphene.List(StoryResponseDTO),
         language=graphene.String(),
@@ -96,6 +102,11 @@ class Query(graphene.ObjectType):
 
     def resolve_story_translation_by_id(root, info, id):
         return resolve_story_translation_by_id(root, info, id)
+
+    def resolve_story_translations_available_for_review(root, info, language, level):
+        return resolve_story_translations_available_for_review(
+            root, info, language, level
+        )
 
 
 schema = graphene.Schema(query=Query, mutation=Mutation)
