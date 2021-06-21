@@ -40,7 +40,7 @@ class IStoryService(ABC):
         pass
 
     @abstractmethod
-    def get_story_translations(self, user_id, translate):
+    def get_story_translations(self, user_id, translate, language, level):
         """Return a list of stories currently being translated/reviewed
 
         :param user_id: id of the user
