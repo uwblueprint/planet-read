@@ -5,7 +5,7 @@
     flex-direction: row;
     flex-wrap: wrap;
     margin: 10px 0px 10px 10px;
-    min-width: 800px;
+    min-width: 924px;
     width: 60%;
 }
 
@@ -19,13 +19,15 @@
 }
 
 .story-card-actions {
-    flex-basis: 40%;
+    flex-basis: 20%;
+    flex-direction: column;
+    padding-top: 30px;
+    text-align: center;
 }
 
 .story-card-top {
-    align-items: center;
     display: flex;
-    flex-direction: row;
+    flex-direction: column;
     flex-wrap: wrap;
 }
 
@@ -33,11 +35,18 @@
     font-size: 24px;
     font-weight: bold;
     line-height: 29.05px;
-    margin-right: 10px;
+    margin-left: 5px;
+    margin-right: 5px;
+}
+
+.story-card-tags {
+    display: flex;
+    flex-direction: row;
 }
 
 .story-card-description {
     font-size: 10px;
     line-height: 12.1px;
+    margin-left: 5px;
     text-align: left;
 }

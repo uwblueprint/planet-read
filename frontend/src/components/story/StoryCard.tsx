@@ -1,5 +1,8 @@
 import React from "react";
+import { useHistory } from "react-router-dom";
 import Tag from "./Tag";
+import PrimaryButton from "./PrimaryButton";
+import SecondaryButton from "./SecondaryButton";
 import "./StoryCard.css";
 
 export type StoryCardProps = {
@@ -8,6 +11,7 @@ export type StoryCardProps = {
   description: string;
   youtubeLink: string;
   level: number;
+  isStory: boolean;
 };
 
 const StoryCard = ({
@@ -16,6 +20,7 @@ const StoryCard = ({
   description,
   youtubeLink,
   level,
+  isStory,
 }: StoryCardProps) => {
   const embedLink = (originalYoutubeLink: string): string => {
     /*
@@ -29,7 +34,8 @@ const StoryCard = ({
 
     return originalYoutubeLink.replace("watch?v=", "embed/");
   };
-
+  const history = useHistory();
+  const navigateTo = () => history.push("/review/id");
   return (
     <div id={`story-${id}`} className="story-card">
       <iframe
@@ -43,12 +49,20 @@ const StoryCard = ({
       <div className="story-card-details">
         <div className="story-card-top">
           <p className="story-card-title">{title}</p>
-          <Tag displayText={`level ${level}`} />
-          <Tag displayText="language needed" />
+          <div className="story-card-tags">
+            <Tag displayText={`level ${level}`} />
+            <Tag displayText="language needed" />
+          </div>
         </div>
         <p className="story-card-description">{description}</p>
       </div>
-      <div className="story-card-actions" />
+      <div className="story-card-actions">
+        <PrimaryButton
+          onClick={navigateTo}
+          displayText={isStory ? "translate book" : "review book"}
+        />
+        <SecondaryButton onClick={navigateTo} displayText="preview book" />
+      </div>
     </div>
   );
 };

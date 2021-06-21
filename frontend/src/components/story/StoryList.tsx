@@ -14,6 +14,8 @@ const StoryList = ({ stories }: StoryListProps) => {
       description={story.description}
       youtubeLink={story.youtubeLink}
       level={story.level}
+      // isStory={story.isStory}
+      isStory
     />
   ));
 
