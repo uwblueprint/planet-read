@@ -95,7 +95,7 @@ class StoryService(IStoryService):
             raise error
         return new_story_translation
 
-    def get_story_translations(self, user_id, translator):
+    def get_story_translations(self, user_id, translator, language, level):
         try:
             return (
                 db.session.query(
@@ -116,6 +116,8 @@ class StoryService(IStoryService):
                     if translator
                     else StoryTranslation.reviewer_id == user_id
                 )
+                .filter(StoryTranslation.language == language if language else True)
+                .filter(Story.level <= level if level else True)
             )
         except Exception as error:
             self.logger.error(str(error))
