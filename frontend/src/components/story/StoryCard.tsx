@@ -133,6 +133,7 @@ const StoryCard = ({
         <div className="story-card-top">
           <p className="story-card-title">{title}</p>
           <div className="story-card-tags">
+            {/* TODO: make tags that reflect actual state */}
             <Tag displayText={`level ${level}`} />
             <Tag displayText="language needed" />
           </div>
