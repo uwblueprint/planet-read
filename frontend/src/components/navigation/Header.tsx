@@ -1,6 +1,6 @@
 import React from "react";
-import Logo from "../../assets/planet-read-logo.png";
-import PlaceholderUserIcon from "../../assets/user-icon.png";
+import Logo from "../../assets/planet-read-logo.svg";
+import PlaceholderUserIcon from "../../assets/user-icon.svg";
 import "./Header.css";
 
 type HeaderProps = {

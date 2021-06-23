@@ -4,6 +4,16 @@ import "./StoryList.css";
 
 export type StoryListProps = {
   stories: StoryCardProps[] | null;
+  language: string;
+};
+
+const LoadingCard = () => {
+  return (
+    <div className="loading-card">
+      <h1>Loading...</h1>
+      <p>Almost there ⌛⌛⌛</p>
+    </div>
+  );
 };
 
 const NoStoriesFoundCard = () => {
@@ -15,13 +25,21 @@ const NoStoriesFoundCard = () => {
   );
 };
 
-const StoryList = ({ stories }: StoryListProps) => {
+const StoryList = ({ stories, language }: StoryListProps) => {
   const createCardId = (storyId: number, storyTranslationId?: number) =>
     `story-${storyId}${
       storyTranslationId ? `-translation-${storyTranslationId}` : ``
     }-card`;
 
-  const storyCards = stories?.map(
+  if (stories == null) {
+    return <LoadingCard />;
+  }
+
+  if (stories.length === 0) {
+    return <NoStoriesFoundCard />;
+  }
+
+  const storyCards = stories.map(
     ({
       storyId,
       storyTranslationId,
@@ -38,14 +56,10 @@ const StoryList = ({ stories }: StoryListProps) => {
         description={description}
         youtubeLink={youtubeLink}
         level={level}
-        language="HINDI"
+        language={language}
       />
     ),
   );
-
-  if (stories == null || stories.length === 0) {
-    return <NoStoriesFoundCard />;
-  }
 
   return <div className="story-list">{storyCards}</div>;
 };

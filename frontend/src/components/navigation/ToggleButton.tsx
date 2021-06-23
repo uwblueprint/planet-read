@@ -2,16 +2,16 @@ import React from "react";
 import "./ToggleButton.css";
 
 export type ToggleButtonProps = {
-  currentState: boolean;
-  trueStateName: string;
-  falseStateName: string;
+  leftStateIsSelected: boolean;
+  leftStateLabel: string;
+  rightStateLabel: string;
   onToggle: (newState: boolean) => void;
 };
 
 const ToggleButton = ({
-  currentState,
-  trueStateName,
-  falseStateName,
+  leftStateIsSelected,
+  leftStateLabel,
+  rightStateLabel,
   onToggle,
 }: ToggleButtonProps) => {
   /**
@@ -25,27 +25,27 @@ const ToggleButton = ({
 
   return (
     <div
-      onClick={() => onToggle(!currentState)}
-      onKeyUp={() => onToggle(!currentState)}
+      onClick={() => onToggle(!leftStateIsSelected)}
+      onKeyUp={() => onToggle(!leftStateIsSelected)}
       role="checkbox"
-      aria-label={`Check for ${trueStateName} and uncheck to show ${falseStateName}`}
-      aria-checked={currentState}
+      aria-label={`Check for ${leftStateLabel} and uncheck to show ${rightStateLabel}`}
+      aria-checked={leftStateIsSelected}
       tabIndex={0}
     >
       <div className="toggle-button">
         <div
           className={`left-checked-option 
-          ${currentState ? "selected" : "unselected"}
+          ${leftStateIsSelected ? "selected" : "unselected"}
           `}
         >
-          <span>{trueStateName}</span>
+          <span>{leftStateLabel}</span>
         </div>
         <div
           className={`right-unchecked-option 
-            ${!currentState ? "selected" : "unselected"}
+            ${!leftStateIsSelected ? "selected" : "unselected"}
           `}
         >
-          <span>{falseStateName}</span>
+          <span>{rightStateLabel}</span>
         </div>
       </div>
     </div>

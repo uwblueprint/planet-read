@@ -1,4 +1,4 @@
-.no-stories-found-card {
+.no-stories-found-card, .loading-card {
     align-items: center;
     border: 2px solid #333333;
     background-color: #FAFAFA;

@@ -100,8 +100,8 @@ const HomePage = () => {
 
   useQuery(query.string, {
     fetchPolicy: "cache-and-network",
-    onCompleted: (data) => setStories(data[query.fieldName]),
     // Assumes independent queries (query will never include two sub-queries)
+    onCompleted: (data) => setStories(data[query.fieldName]),
   });
 
   return (
@@ -110,13 +110,13 @@ const HomePage = () => {
       <div id="homepage-stories-display">
         <div id="homepage-display-state-toggle-section">
           <ToggleButton
-            currentState={displayMyStories}
-            trueStateName="My Work"
-            falseStateName="Browse Stories"
+            leftStateIsSelected={displayMyStories}
+            leftStateLabel="My Work"
+            rightStateLabel="Browse Stories"
             onToggle={setDisplayMyStories}
           />
         </div>
-        <StoryList stories={stories} />
+        <StoryList stories={stories} language={translationLanguage} />
       </div>
     </div>
   );
