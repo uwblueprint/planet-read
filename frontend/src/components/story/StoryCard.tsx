@@ -7,6 +7,39 @@ import PrimaryButton from "./PrimaryButton";
 import SecondaryButton from "./SecondaryButton";
 import "./StoryCard.css";
 
+type AssignReviewer = { ok: boolean };
+const ASSIGN_REVIEWER = gql`
+  mutation assignUserAsReviewer($storyTranslationId: ID!, $userId: ID!) {
+    assignUserAsReviewer(
+      storyTranslationId: $storyTranslationId
+      userId: $userId
+    ) {
+      ok
+    }
+  }
+`;
+
+type CreateTranslation = {
+  story: {
+    storyId: number;
+    translatorId: number;
+    language: string;
+  };
+};
+const CREATE_TRANSLATION = gql`
+  mutation createStoryTranslation(
+    $storyTranslationData: CreateStoryTranslationRequestDTO!
+  ) {
+    createStoryTranslation(storyTranslationData: $storyTranslationData) {
+      story {
+        storyId
+        translatorId
+        language
+      }
+    }
+  }
+`;
+
 export type StoryCardProps = {
   storyId: number;
   storyTranslationId?: number;
@@ -44,17 +77,6 @@ const StoryCard = ({
     alert(errorMessage);
   };
 
-  const ASSIGN_REVIEWER = gql`
-    mutation assignUserAsReviewer($storyTranslationId: ID!, $userId: ID!) {
-      assignUserAsReviewer(
-        storyTranslationId: $storyTranslationId
-        userId: $userId
-      ) {
-        ok
-      }
-    }
-  `;
-  type AssignReviewer = { ok: boolean };
   const [assignUserAsReviewer] = useMutation<{
     assignUserAsReviewer: AssignReviewer;
   }>(ASSIGN_REVIEWER);
@@ -73,26 +95,6 @@ const StoryCard = ({
     }
   };
 
-  const CREATE_TRANSLATION = gql`
-    mutation createStoryTranslation(
-      $storyTranslationData: CreateStoryTranslationRequestDTO!
-    ) {
-      createStoryTranslation(storyTranslationData: $storyTranslationData) {
-        story {
-          storyId
-          translatorId
-          language
-        }
-      }
-    }
-  `;
-  type CreateTranslation = {
-    story: {
-      storyId: number;
-      translatorId: number;
-      language: string;
-    };
-  };
   const [createTranslation] = useMutation<{
     createStoryTranslation: CreateTranslation;
   }>(CREATE_TRANSLATION);

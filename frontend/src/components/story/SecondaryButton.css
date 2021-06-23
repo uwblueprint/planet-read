@@ -1,11 +1,8 @@
 .secondary-button {
-  background-color: #fafafa;
+  background-color: #FAFAFA;
   height: 40px;
   line-height: 24px;
-  margin-bottom: 5px;
-  margin-left: 5px;
-  margin-right: 5px;
-  margin-top: 5px;
+  margin: 5px;
   outline-color: #333333;
   outline-width: 1px;
   text-align: center;
