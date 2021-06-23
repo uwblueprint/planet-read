@@ -1,0 +1,17 @@
+.no-stories-found-card {
+    align-items: center;
+    border: 2px solid #333333;
+    background-color: #FAFAFA;
+    flex-direction: column;
+    display: flex;
+    margin: 10px 0px 10px 0px;
+    padding: 20px;
+}
+
+h1 {
+    font-size: 20px;
+}
+
+p {
+    font-size: 10px;
+}

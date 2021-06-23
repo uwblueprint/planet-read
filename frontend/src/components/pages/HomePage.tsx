@@ -4,11 +4,9 @@ import StoryList from "../story/StoryList";
 import { StoryCardProps } from "../story/StoryCard";
 import { Role } from "../../constants/Enums";
 import AuthContext from "../../contexts/AuthContext";
-
-export enum HomePageDisplayState {
-  MyWork,
-  Browse,
-}
+import ToggleButton from "../navigation/ToggleButton";
+import Header from "../navigation/Header";
+import "./HomePage.css";
 
 type QueryInformation = {
   fieldName: string;
@@ -16,16 +14,24 @@ type QueryInformation = {
 };
 
 const HomePage = () => {
-  // how do private methods exist?
+  const STORY_FIELDS = `
+  title
+  description
+  youtubeLink
+  level
+  `;
+
   const buildHomePageStoriesQuery = (
-    display: HomePageDisplayState,
+    displayMyStories: boolean,
     translationLanguage: string,
     role: Role,
     level: number,
     userId: number,
   ): QueryInformation => {
-    if (role === Role.Translator && display === HomePageDisplayState.Browse) {
-      return {
+    let result = {};
+
+    if (role === Role.Translator && !displayMyStories) {
+      result = {
         fieldName: "storiesAvailableForTranslation",
         string: gql`
           query {
@@ -34,19 +40,13 @@ const HomePage = () => {
               level: ${level}
             ) {
               storyId: id
-              title
-              description
-              youtubeLink
-              level
+              ${STORY_FIELDS}
             }
           }
         `,
       };
-    }
-
-    if (role === Role.Reviewer && display === HomePageDisplayState.Browse) {
-      // TODO: real query DNE yet
-      return {
+    } else if (role === Role.Reviewer && !displayMyStories) {
+      result = {
         fieldName: "storyTranslationsAvailableForReview",
         string: gql`
           query {
@@ -56,58 +56,42 @@ const HomePage = () => {
             ) {
               storyId
               storyTranslationId
-              title
-              description
-              youtubeLink
-              level
+              ${STORY_FIELDS}
+            }
+          }
+        `,
+      };
+    } else if (displayMyStories) {
+      result = {
+        fieldName: "storyTranslationsByUser",
+        string: gql`
+          query {
+            storyTranslationsByUser(
+              userId: ${userId},
+              translator: ${role === Role.Translator}
+            ) {
+              storyId
+              storyTranslationId
+              ${STORY_FIELDS}
             }
           }
         `,
       };
     }
 
-    return {
-      fieldName: "storyTranslationsByUser",
-      string: gql`
-        query {
-          storyTranslationsByUser(
-            userId: ${userId},
-            translator: ${role === Role.Translator}
-          ) {
-            storyId
-            storyTranslationId
-            title
-            description
-            youtubeLink
-            level
-          }
-        }
-      `,
-    };
+    return result as QueryInformation;
   };
 
-  const [displayState, setDisplayState] = useState<HomePageDisplayState>(
-    HomePageDisplayState.MyWork,
-  );
-  const [translationLanguage, setTranslationLanguage] = useState<string>(
-    "RUSSIAN",
-  );
-  const [role, setRole] = useState<Role>(Role.Translator);
-  const [maxLevel, setMaxLevel] = useState<number>(1);
+  const [displayMyStories, setDisplayMyStories] = useState<boolean>(true);
+  const [translationLanguage] = useState<string>("RUSSIAN");
+  const [role] = useState<Role>(Role.Translator);
+  const [maxLevel] = useState<number>(1);
   const [stories, setStories] = useState<StoryCardProps[] | null>(null);
 
   const { authenticatedUser } = useContext(AuthContext);
 
-  // dummy setting to avoid the unused vars error :(
-  if (authenticatedUser == null) {
-    setDisplayState(HomePageDisplayState.MyWork);
-    setTranslationLanguage("ENGLISH");
-    setRole(Role.Translator);
-    setMaxLevel(2);
-  }
-
   const query = buildHomePageStoriesQuery(
-    displayState,
+    displayMyStories,
     translationLanguage,
     role,
     maxLevel,
@@ -116,33 +100,24 @@ const HomePage = () => {
 
   useQuery(query.string, {
     fetchPolicy: "cache-and-network",
-    onCompleted: (data) => {
-      // Assumes independent queries (query will never include two sub-queries)
-      setStories(data[query.fieldName]);
-    },
+    onCompleted: (data) => setStories(data[query.fieldName]),
+    // Assumes independent queries (query will never include two sub-queries)
   });
 
   return (
     <div>
-      <h1>Header Bar - Stories</h1>
-      <div id="homepage-display-state-toggle">
-        <button
-          type="button"
-          className="btn btn-primary"
-          onClick={() => setDisplayState(HomePageDisplayState.MyWork)}
-        >
-          My Work
-        </button>
-
-        <button
-          type="button"
-          className="btn btn-primary"
-          onClick={() => setDisplayState(HomePageDisplayState.Browse)}
-        >
-          Browse Stories
-        </button>
+      <Header currentPageTitle="Stories" />
+      <div id="homepage-stories-display">
+        <div id="homepage-display-state-toggle-section">
+          <ToggleButton
+            currentState={displayMyStories}
+            trueStateName="My Work"
+            falseStateName="Browse Stories"
+            onToggle={setDisplayMyStories}
+          />
+        </div>
+        <StoryList stories={stories} />
       </div>
-      <StoryList stories={stories} />
     </div>
   );
 };
