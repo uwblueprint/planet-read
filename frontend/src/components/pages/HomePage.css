@@ -1,3 +1,8 @@
+#homepage-body {
+    display: flex;
+    flex-direction: row;
+}
+
 #homepage-stories-display {
     min-width: 800px;
     width: 60%;

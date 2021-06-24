@@ -13,6 +13,7 @@ const LOGIN = gql`
       lastName
       email
       role
+      approvedLanguages
       accessToken
       refreshToken
     }
