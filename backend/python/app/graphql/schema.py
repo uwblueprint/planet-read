@@ -18,13 +18,18 @@ from .queries.story_query import (
     resolve_stories_available_for_translation,
     resolve_story_by_id,
     resolve_story_translation_by_id,
+    resolve_story_translation_progress,
     resolve_story_translations_available_for_review,
     resolve_story_translations_by_user,
 )
 from .queries.user_query import resolve_user_by_email, resolve_user_by_id, resolve_users
 from .types.entity_type import EntityResponseDTO
 from .types.file_type import FileDTO
-from .types.story_type import StoryResponseDTO, StoryTranslationResponseDTO
+from .types.story_type import (
+    StoryResponseDTO,
+    StoryTranslationProgressResponseDTO,
+    StoryTranslationResponseDTO,
+)
 from .types.user_type import UserDTO
 
 
@@ -74,6 +79,11 @@ class Query(graphene.ObjectType):
         language=graphene.String(),
         level=graphene.Int(),
     )
+    story_translation_progress = graphene.Field(
+        StoryTranslationProgressResponseDTO,
+        story_id=graphene.Int(),
+        translation_id=graphene.Int(),
+    )
 
     def resolve_entities(root, info, **kwargs):
         return resolve_entities(root, info, **kwargs)
@@ -113,6 +123,9 @@ class Query(graphene.ObjectType):
         return resolve_story_translations_available_for_review(
             root, info, language, level
         )
+
+    def resolve_story_translation_progress(root, info, story_id, translation_id):
+        return resolve_story_translation_progress(root, info, story_id, translation_id)
 
 
 schema = graphene.Schema(query=Query, mutation=Mutation)

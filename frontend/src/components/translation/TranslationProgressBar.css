@@ -1,0 +1,18 @@
+.progress-bar-container {
+    max-width: 279px;
+    padding: 5px;
+}
+
+.progress {
+    background-color: #FFFFFF;
+    border: 1px solid #E2E2E2;
+}
+
+.progress-bar {
+    background-color: #C4C4C4;
+}
+
+.progress-label {
+    font-size: 12px;
+    margin-bottom: 5px;
+}

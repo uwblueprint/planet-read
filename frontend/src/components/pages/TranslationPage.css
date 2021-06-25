@@ -1,0 +1,16 @@
+.translation {
+    display: flex;
+    flex-direction: row;
+}
+
+.translation-container {
+    flex-basis: 75%;
+}
+
+.translation-sidebar {
+    flex-basis: 25%;
+}
+
+.translation-progress-bar {
+    margin: 20px 30px 0 0;
+}

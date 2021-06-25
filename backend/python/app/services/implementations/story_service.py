@@ -1,6 +1,9 @@
 from flask import current_app
 
-from ...graphql.types.story_type import StoryTranslationContentResponseDTO
+from ...graphql.types.story_type import (
+    StoryTranslationContentResponseDTO,
+    StoryTranslationProgressResponseDTO,
+)
 from ...models import db
 from ...models.story import Story
 from ...models.story_content import StoryContent
@@ -241,6 +244,25 @@ class StoryService(IStoryService):
                 .filter(StoryTranslation.reviewer_id == None)
                 .all()
             )
+
+        except Exception as error:
+            self.logger.error(str(error))
+            raise error
+
+    def get_translation_progress(self, story_id, translation_id):
+        try:
+            num_translated_lines = (
+                db.session.query(StoryTranslationContent)
+                .filter(StoryTranslationContent.story_translation_id == translation_id)
+                .count()
+            )
+            num_story_lines = (
+                db.session.query(StoryContent)
+                .filter(StoryContent.story_id == story_id)
+                .count()
+            )
+            percentage_complete = round(num_translated_lines / num_story_lines, 2) * 100
+            return StoryTranslationProgressResponseDTO(percentage_complete)
 
         except Exception as error:
             self.logger.error(str(error))

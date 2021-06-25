@@ -73,3 +73,7 @@ class StoryTranslationResponseDTO(graphene.ObjectType):
     description = graphene.String(required=True)
     youtube_link = graphene.String(required=True)
     level = graphene.Int(required=True)
+
+
+class StoryTranslationProgressResponseDTO(graphene.ObjectType):
+    percentage_complete = graphene.Int(required=True)

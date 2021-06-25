@@ -29,3 +29,7 @@ def resolve_story_translations_available_for_review(root, info, language, level)
     return services["story"].get_story_translations_available_for_review(
         language, level
     )
+
+
+def resolve_story_translation_progress(root, info, story_id, translation_id):
+    return services["story"].get_translation_progress(story_id, translation_id)
