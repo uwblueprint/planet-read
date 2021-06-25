@@ -45,7 +45,6 @@ def create_app(config_name):
     app.config["MYSQL_PASSWORD"] = os.getenv("MYSQL_PASSWORD")
     app.config["MYSQL_DB"] = "planet-read"
 
-
     app.config[
         "SQLALCHEMY_DATABASE_URI"
     ] = "mysql://{username}:{password}@{host}:3306/{db}".format(

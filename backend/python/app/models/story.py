@@ -1,18 +1,18 @@
 from sqlalchemy import inspect
+from sqlalchemy.dialects.mysql import LONGTEXT, TEXT
 from sqlalchemy.orm.properties import ColumnProperty
 
 from . import db
 from .story_content import StoryContent
 
 
-
 class Story(db.Model):
     __tablename__ = "stories"
     id = db.Column(db.Integer, primary_key=True, nullable=False)
-    description = db.Column(db.String, nullable=False)
-    youtube_link = db.Column(db.String, nullable=False)
+    description = db.Column(LONGTEXT, nullable=False)
+    youtube_link = db.Column(db.String(255), nullable=False)
     level = db.Column(db.Integer, nullable=False)
-    translated_languages = db.Column(db.ARRAY(db.String))
+    translated_languages = db.Column(db.JSON)
     contents = db.relationship(StoryContent)
 
     def to_dict(self, include_relationships=False):
