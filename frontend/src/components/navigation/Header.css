@@ -1,0 +1,36 @@
+.header-bar {
+    align-items: center;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    padding: 20px 0px 20px 0px;
+}
+
+.header-information {
+    align-items: center;
+    background-color: #FAFAFA;
+    display: flex;
+    flex-direction: row;
+    justify-content: left;
+    /* TODO: this width may change on toggle
+     * This happens when the cursor bar on the right is asked to appear
+     * aka when My Stories has # of entries that > screen and Browse doesn't
+     * or vice versa
+     */
+    width: 80%;
+}
+
+#header-logo {
+    height: 55px;
+    margin: 20px;
+}
+
+h1 {
+    font-size: 20px;
+}
+
+#header-user-icon {
+    height: 35px;
+    margin: 20px;
+    width: 35px;
+}
