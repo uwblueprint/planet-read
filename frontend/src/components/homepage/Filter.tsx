@@ -22,13 +22,6 @@ const Filter = ({
   role,
   setRole,
 }: FilterProps) => {
-  // language state in Homepage can't default to user context value
-  // set the default language from user approvedLanguages here
-  if (!Object.keys(approvedLanguages).includes(language)) {
-    const firstLang = Object.keys(approvedLanguages)[0];
-    setLanguage(firstLang);
-    setLevel(approvedLanguages[firstLang]);
-  }
   const handleSelectChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     setLanguage(event.target.value);
   };

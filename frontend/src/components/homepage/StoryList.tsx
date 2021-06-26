@@ -58,7 +58,7 @@ const StoryList = ({ stories, language, displayMyStories }: StoryListProps) => {
         youtubeLink={youtubeLink}
         level={level}
         language={language}
-        displayMyStories={displayMyStories}
+        isMyStory={displayMyStories}
       />
     ),
   );

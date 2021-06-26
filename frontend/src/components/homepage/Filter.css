@@ -1,7 +1,6 @@
 datalist {
     display: flex;
     justify-content: space-between;
-    width: 125px;
 }
 
 .filter {
@@ -10,9 +9,13 @@ datalist {
     flex-direction: column;
     height: 500px;
     justify-content: space-between;
-    min-width: 350px;
     margin-right: 10px;
+    min-width: 350px;
     padding: 50px 50px 50px 50px;
+}
+
+#filter-level {
+    width: 125px;
 }
 
 h1 {

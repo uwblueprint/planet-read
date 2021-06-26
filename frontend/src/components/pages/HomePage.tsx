@@ -86,10 +86,16 @@ const HomePage = () => {
 
   const { authenticatedUser } = useContext(AuthContext);
 
+  const approvedLanguages = JSON.parse(
+    authenticatedUser!!.approvedLanguages.replace(/'/g, '"'),
+  );
+
   const [displayMyStories, setDisplayMyStories] = useState<boolean>(true);
-  const [language, setLanguage] = useState<string>("RUSSIAN");
+  const [language, setLanguage] = useState<string>(
+    Object.keys(approvedLanguages)[0],
+  );
   const [isTranslator, setIsTranslator] = useState<boolean>(true);
-  const [level, setLevel] = useState<number>(1);
+  const [level, setLevel] = useState<number>(approvedLanguages[language]);
   const [stories, setStories] = useState<StoryCardProps[] | null>(null);
 
   const query = buildHomePageStoriesQuery(
@@ -110,9 +116,7 @@ const HomePage = () => {
       <Header currentPageTitle="Stories" />
       <div id="homepage-body">
         <Filter
-          approvedLanguages={JSON.parse(
-            authenticatedUser!!.approvedLanguages.replace(/'/g, '"'),
-          )}
+          approvedLanguages={approvedLanguages}
           level={level}
           setLevel={setLevel}
           language={language}

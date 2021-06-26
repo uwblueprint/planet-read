@@ -18,8 +18,7 @@
 .right-unchecked-option {
     border: 2px solid #333333;
     border-radius: 0px 20px 20px 0px;
-    max-width: 200px;
-    min-width: 100px;
+    min-width: 150px;
     padding: 5px 40px 5px 30px;
 }
 

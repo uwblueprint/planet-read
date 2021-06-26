@@ -48,7 +48,7 @@ export type StoryCardProps = {
   youtubeLink: string;
   level: number;
   language: string;
-  displayMyStories: boolean;
+  isMyStory: boolean;
 };
 
 const StoryCard = ({
@@ -59,7 +59,7 @@ const StoryCard = ({
   youtubeLink,
   level,
   language,
-  displayMyStories,
+  isMyStory,
 }: StoryCardProps) => {
   const { authenticatedUser } = useContext(AuthContext);
   const history = useHistory();
@@ -122,11 +122,21 @@ const StoryCard = ({
 
   const previewBook = () => history.push("/preview");
 
+  const openTranslation = () =>
+    history.push(`/translation/${storyTranslationId}`);
+
   const primaryBtnText = () => {
-    if (displayMyStories) {
+    if (isMyStory) {
       return storyTranslationId ? "review book" : "translate book";
     }
     return "view translation";
+  };
+
+  const primaryBtnOnClick = () => {
+    if (isMyStory) {
+      return storyTranslationId ? assignReviewer : assignTranslator;
+    }
+    return openTranslation;
   };
 
   return (
@@ -152,7 +162,7 @@ const StoryCard = ({
       </div>
       <div className="story-card-actions">
         <PrimaryButton
-          onClick={storyTranslationId ? assignReviewer : assignTranslator}
+          onClick={primaryBtnOnClick()}
           displayText={primaryBtnText()}
         />
         <SecondaryButton onClick={previewBook} displayText="preview book" />
