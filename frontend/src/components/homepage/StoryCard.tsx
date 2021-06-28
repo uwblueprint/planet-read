@@ -48,6 +48,7 @@ export type StoryCardProps = {
   youtubeLink: string;
   level: number;
   language: string;
+  isMyStory: boolean;
 };
 
 const StoryCard = ({
@@ -58,6 +59,7 @@ const StoryCard = ({
   youtubeLink,
   level,
   language,
+  isMyStory,
 }: StoryCardProps) => {
   const { authenticatedUser } = useContext(AuthContext);
   const history = useHistory();
@@ -119,6 +121,24 @@ const StoryCard = ({
   };
 
   const previewBook = () => history.push("/preview");
+
+  const openTranslation = () =>
+    history.push(`/translation/${storyTranslationId}`);
+
+  const primaryBtnText = () => {
+    if (isMyStory) {
+      return storyTranslationId ? "view translation" : "edit translation";
+    }
+    return storyTranslationId ? "review book" : "translate book";
+  };
+
+  const primaryBtnOnClick = () => {
+    if (isMyStory) {
+      return openTranslation;
+    }
+    return storyTranslationId ? assignReviewer : assignTranslator;
+  };
+
   return (
     <div id={`story-${storyId}`} className="story-card">
       <iframe
@@ -134,16 +154,16 @@ const StoryCard = ({
           <p className="story-card-title">{title}</p>
           <div className="story-card-tags">
             {/* TODO: make tags that reflect actual state */}
-            <Tag displayText={`level ${level}`} />
-            <Tag displayText="language needed" />
+            <Tag displayText={`Level ${level}`} />
+            {storyTranslationId && <Tag displayText={`${language}`} />}
           </div>
         </div>
         <p className="story-card-description">{description}</p>
       </div>
       <div className="story-card-actions">
         <PrimaryButton
-          onClick={storyTranslationId ? assignReviewer : assignTranslator}
-          displayText={storyTranslationId ? "review book" : "translate book"}
+          onClick={primaryBtnOnClick()}
+          displayText={primaryBtnText()}
         />
         <SecondaryButton onClick={previewBook} displayText="preview book" />
       </div>
