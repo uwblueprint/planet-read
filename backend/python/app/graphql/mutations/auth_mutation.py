@@ -52,6 +52,7 @@ class Login(graphene.Mutation):
     last_name = graphene.String()
     role = graphene.Field(RoleEnum)
     email = graphene.String()
+    approved_languages = graphene.String()
 
     def mutate(root, info, email, password):
         try:
@@ -62,11 +63,19 @@ class Login(graphene.Mutation):
             id = auth_dto.id
             first_name = auth_dto.first_name
             last_name = auth_dto.last_name
-            email = auth_dto.email
             role = auth_dto.role
+            email = auth_dto.email
+            approved_languages = auth_dto.approved_languages
 
             return Login(
-                access_token, refresh_token, id, first_name, last_name, role, email
+                access_token,
+                refresh_token,
+                id,
+                first_name,
+                last_name,
+                role,
+                email,
+                approved_languages,
             )
         except Exception as e:
             error_message = getattr(e, "message", None)
@@ -125,7 +134,13 @@ class SignUp(graphene.Mutation):
             role = auth_dto.role
 
             return SignUp(
-                access_token, refresh_token, id, first_name, last_name, role, email
+                access_token,
+                refresh_token,
+                id,
+                first_name,
+                last_name,
+                role,
+                email,
             )
 
         except Exception as e:

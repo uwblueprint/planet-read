@@ -1,5 +1,10 @@
+#homepage-body {
+    display: flex;
+    flex-direction: row;
+}
+
 #homepage-stories-display {
-    min-width: 800px;
+    min-width: 924px;
     width: 60%;
 }
 

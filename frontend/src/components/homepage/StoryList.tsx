@@ -5,6 +5,7 @@ import "./StoryList.css";
 export type StoryListProps = {
   stories: StoryCardProps[] | null;
   language: string;
+  displayMyStories: boolean;
 };
 
 const LoadingCard = () => {
@@ -25,7 +26,7 @@ const NoStoriesFoundCard = () => {
   );
 };
 
-const StoryList = ({ stories, language }: StoryListProps) => {
+const StoryList = ({ stories, language, displayMyStories }: StoryListProps) => {
   const createCardId = (storyId: number, storyTranslationId?: number) =>
     `story-${storyId}${
       storyTranslationId ? `-translation-${storyTranslationId}` : ``
@@ -57,6 +58,7 @@ const StoryList = ({ stories, language }: StoryListProps) => {
         youtubeLink={youtubeLink}
         level={level}
         language={language}
+        isMyStory={displayMyStories}
       />
     ),
   );
