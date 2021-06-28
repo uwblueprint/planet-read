@@ -127,16 +127,16 @@ const StoryCard = ({
 
   const primaryBtnText = () => {
     if (isMyStory) {
-      return storyTranslationId ? "review book" : "translate book";
+      return storyTranslationId ? "view translation" : "edit translation";
     }
-    return "view translation";
+    return storyTranslationId ? "review book" : "translate book";
   };
 
   const primaryBtnOnClick = () => {
     if (isMyStory) {
-      return storyTranslationId ? assignReviewer : assignTranslator;
+      return openTranslation;
     }
-    return openTranslation;
+    return storyTranslationId ? assignReviewer : assignTranslator;
   };
 
   return (
