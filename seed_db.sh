@@ -1,9 +1,22 @@
 # ***** How to Use: *****
-# For now, you will need to set the two secret variables $USER_AUTH_ID and $ADMIN_AUTH_ID in your own shell.
+# For now, you will need to set the secret variables $AUTH_ID_* in your own shell.
 # The values of these variables can be found in the secret channel. 
 # Working to add these to vault and, in a future update, you won't need to set these variables manually. 
 # 
-# In the directory of the script, call ./seed_db.sh [OPTION] 
+# In the directory of the script, call: 
+# ** Replace '123' with auth_ids posted in the secrets channel 
+# 
+# 1) 
+# export AUTH_ID_1=123 && \ 
+# export AUTH_ID_2=123 && \ 
+# export AUTH_ID_3=123 && \ 
+# export AUTH_ID_4=123 && \ 
+# export AUTH_ID_5=123 && \ 
+# export AUTH_ID_6=123 && \ 
+# export AUTH_ID_7=123 \ 
+# 
+# 2) 
+# ./seed_db.sh [OPTION] 
 #
 # [OPTIONS]: 
 #   erase - erases the contents of the database. To avoid conflicting entries, 
@@ -13,6 +26,16 @@
 # 
 #   kevin - generates story contents that, to say the least, are probably 
 #           not NGO-friendly. Please use this option cautiously. 
+#
+# ** Debugging Tips ** 
+# 1) If you run into an issue running this script, try to toggle your shell settings between CRLF and LF.
+# These change the formatting of whitespace and endline characters which, if left in the wrong format, 
+# may cause runtime issues. 
+# 
+# 2) If you are encountering issues with inserting duplicate elements into a database, call: 
+# ./seed_db.sh erase 
+# which will clear the databases. 
+# 
 
 if [[ "$1" = "erase" ]]
 then 
@@ -26,10 +49,9 @@ then
 
 elif [[ "$1" = "kevin" ]]
 then 
-    
-    if [ -z "$AUTH_ID_1" ] 
+    if [ -z "$AUTH_ID_1" ] || [ -z "$AUTH_ID_2" ] || [ -z "$AUTH_ID_3" ] || [ -z "$AUTH_ID_4" ] || [ -z "$AUTH_ID_5" ] || [ -z "$AUTH_ID_6" ] || [ -z "$AUTH_ID_7" ] 
     then 
-        echo "ERROR: \$AUTH_ID is empty. Please set the value to the one posted in the secrets channel." 
+        echo "ERROR: \$AUTH_ID_* is empty. Please set the value to the one posted in the secrets channel." 
         exit 1
     fi 
 
@@ -80,7 +102,7 @@ then
     echo "A small snippet of Kevin's crimes have been exposed. 🤑🤑🤑"
 
 else
-    if [ -z "$AUTH_ID_1" ] 
+    if [ -z "$AUTH_ID_1" ] || [ -z "$AUTH_ID_2" ] || [ -z "$AUTH_ID_3" ] || [ -z "$AUTH_ID_4" ] || [ -z "$AUTH_ID_5" ] || [ -z "$AUTH_ID_6" ] || [ -z "$AUTH_ID_7" ] 
     then 
         echo "ERROR: \$AUTH_ID is empty. Please set the value to the one posted in the secrets channel." 
         exit 1
