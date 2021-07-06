@@ -50,19 +50,6 @@ class CreateStoryTranslationRequestDTO(graphene.InputObjectType):
     stage = graphene.Field(StageEnum, default_value="TRANSLATE")
 
 
-class StoryTranslationResponseDTO(graphene.ObjectType):
-    story_id = graphene.Int(required=True)
-    title = graphene.String(required=True)
-    description = graphene.String(required=True)
-    youtube_link = graphene.String(required=True)
-    level = graphene.Int(required=True)
-    story_translation_id = graphene.Int(required=True)
-    language = graphene.String(required=True)
-    stage = graphene.Field(StageEnum, required=True)
-    translator_id = graphene.Int()
-    reviewer_id = graphene.Int()
-
-
 class StoryTranslationContentRequestDTO(graphene.InputObjectType):
     id = graphene.Int(required=True)
     translation_content = graphene.String(required=True)
@@ -70,4 +57,19 @@ class StoryTranslationContentRequestDTO(graphene.InputObjectType):
 
 class StoryTranslationContentResponseDTO(graphene.ObjectType):
     id = graphene.Int(required=True)
+    line_index = graphene.Int(required=True)
     translation_content = graphene.String(required=True)
+
+
+class StoryTranslationResponseDTO(graphene.ObjectType):
+    id = graphene.Int(required=True)
+    language = graphene.String(required=True)
+    stage = graphene.Field(StageEnum, required=True)
+    translation_contents = graphene.List(StoryTranslationContentResponseDTO)
+    translator_id = graphene.Int()
+    reviewer_id = graphene.Int()
+    story_id = graphene.Int(required=True)
+    title = graphene.String(required=True)
+    description = graphene.String(required=True)
+    youtube_link = graphene.String(required=True)
+    level = graphene.Int(required=True)

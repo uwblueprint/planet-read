@@ -125,23 +125,28 @@ class StoryService(IStoryService):
 
     def get_story_translation(self, id):
         try:
-            return (
+            # TODO: Condense into singular query
+            translation = StoryTranslation.query.get(id)
+
+            story_details = (
                 db.session.query(
                     Story.id.label("story_id"),
                     Story.title.label("title"),
                     Story.description.label("description"),
                     Story.youtube_link.label("youtube_link"),
                     Story.level.label("level"),
-                    StoryTranslation.id.label("story_translation_id"),
-                    StoryTranslation.language.label("language"),
-                    StoryTranslation.stage.label("stage"),
-                    StoryTranslation.translator_id.label("translator_id"),
-                    StoryTranslation.reviewer_id.label("reviewer_id"),
                 )
                 .join(StoryTranslation, Story.id == StoryTranslation.story_id)
                 .filter(StoryTranslation.id == id)
                 .one()
             )
+
+            response = {
+                **translation.to_dict(include_relationships=True),
+                **story_details._asdict(),
+            }
+            return response
+
         except Exception as error:
             self.logger.error(str(error))
             raise error
@@ -177,13 +182,11 @@ class StoryService(IStoryService):
                     )
                 )
 
-            StoryTranslationContent.query.filter_by(
+            story_translation = StoryTranslationContent.query.filter_by(
                 id=story_translation_content.id
-            ).update(
-                {
-                    StoryTranslationContent.translation_content: story_translation_content.translation_content
-                }
-            )
+            ).first()
+
+            story_translation.translation_content: story_translation_content.translation_content
             db.session.commit()
         except Exception as error:
             reason = getattr(error, "message", None)
@@ -195,12 +198,14 @@ class StoryService(IStoryService):
             raise error
 
         return StoryTranslationContentResponseDTO(
-            story_translation_content.id,
-            story_translation_content.translation_content,
+            id=story_translation_content.id,
+            line_index=old_translation_content.line_index,
+            translation_content=story_translation_content.translation_content,
         )
 
     def update_story_translation_contents(self, story_translation_contents):
         try:
+            # TODO: return lineIndex too
             db.session.bulk_update_mappings(
                 StoryTranslationContent, story_translation_contents
             )
