@@ -207,6 +207,38 @@ else
             For if ‘Thou mayest’—it is also true that ‘Thou mayest not.’ Don’t you see?”');"
     done 
 
+    for STORY_TRANSLATION_ID in 1 4 6 8 9 10  
+    do 
+        docker exec -it planet-read_db_1 psql -U postgres -d planet-read -c "INSERT INTO story_translation_contents (story_translation_id, line_index, translation_content) VALUES ('$STORY_TRANSLATION_ID', 1, '');"
+        docker exec -it planet-read_db_1 psql -U postgres -d planet-read -c "INSERT INTO story_translation_contents (story_translation_id, line_index, translation_content) VALUES ('$STORY_TRANSLATION_ID', 2, '');"
+        docker exec -it planet-read_db_1 psql -U postgres -d planet-read -c "INSERT INTO story_translation_contents (story_translation_id, line_index, translation_content) VALUES ('$STORY_TRANSLATION_ID', 3, '');"
+        docker exec -it planet-read_db_1 psql -U postgres -d planet-read -c "INSERT INTO story_translation_contents (story_translation_id, line_index, translation_content) VALUES ('$STORY_TRANSLATION_ID', 4, '');"
+        docker exec -it planet-read_db_1 psql -U postgres -d planet-read -c "INSERT INTO story_translation_contents (story_translation_id, line_index, translation_content) VALUES ('$STORY_TRANSLATION_ID', 5, '');"
+        docker exec -it planet-read_db_1 psql -U postgres -d planet-read -c "INSERT INTO story_translation_contents (story_translation_id, line_index, translation_content) VALUES ('$STORY_TRANSLATION_ID', 6, '');"
+        docker exec -it planet-read_db_1 psql -U postgres -d planet-read -c "INSERT INTO story_translation_contents (story_translation_id, line_index, translation_content) VALUES ('$STORY_TRANSLATION_ID', 7, '');"
+        docker exec -it planet-read_db_1 psql -U postgres -d planet-read -c "INSERT INTO story_translation_contents (story_translation_id, line_index, translation_content) VALUES ('$STORY_TRANSLATION_ID', 8, '');"
+        docker exec -it planet-read_db_1 psql -U postgres -d planet-read -c "INSERT INTO story_translation_contents (story_translation_id, line_index, translation_content) VALUES ('$STORY_TRANSLATION_ID', 9, '');"
+        docker exec -it planet-read_db_1 psql -U postgres -d planet-read -c "INSERT INTO story_translation_contents (story_translation_id, line_index, translation_content) VALUES ('$STORY_TRANSLATION_ID', 10, '');"
+    done 
+
+    for STORY_TRANSLATION_ID in 12 
+    do 
+        docker exec -it planet-read_db_1 psql -U postgres -d planet-read -c "INSERT INTO story_translation_contents (story_translation_id, line_index, translation_content) VALUES ('$STORY_TRANSLATION_ID', 1, '');"
+        docker exec -it planet-read_db_1 psql -U postgres -d planet-read -c "INSERT INTO story_translation_contents (story_translation_id, line_index, translation_content) VALUES ('$STORY_TRANSLATION_ID', 2, '');"
+        docker exec -it planet-read_db_1 psql -U postgres -d planet-read -c "INSERT INTO story_translation_contents (story_translation_id, line_index, translation_content) VALUES ('$STORY_TRANSLATION_ID', 3, '');"
+        docker exec -it planet-read_db_1 psql -U postgres -d planet-read -c "INSERT INTO story_translation_contents (story_translation_id, line_index, translation_content) VALUES ('$STORY_TRANSLATION_ID', 4, '');"
+        docker exec -it planet-read_db_1 psql -U postgres -d planet-read -c "INSERT INTO story_translation_contents (story_translation_id, line_index, translation_content) VALUES ('$STORY_TRANSLATION_ID', 5, '');"
+        docker exec -it planet-read_db_1 psql -U postgres -d planet-read -c "INSERT INTO story_translation_contents (story_translation_id, line_index, translation_content) VALUES ('$STORY_TRANSLATION_ID', 6, '');"
+        docker exec -it planet-read_db_1 psql -U postgres -d planet-read -c "INSERT INTO story_translation_contents (story_translation_id, line_index, translation_content) VALUES ('$STORY_TRANSLATION_ID', 7, '');"
+        docker exec -it planet-read_db_1 psql -U postgres -d planet-read -c "INSERT INTO story_translation_contents (story_translation_id, line_index, translation_content) VALUES ('$STORY_TRANSLATION_ID', 8, '');"
+        docker exec -it planet-read_db_1 psql -U postgres -d planet-read -c "INSERT INTO story_translation_contents (story_translation_id, line_index, translation_content) VALUES ('$STORY_TRANSLATION_ID', 9, '');"
+        
+        docker exec -it planet-read_db_1 psql -U postgres -d planet-read -c "INSERT INTO story_translation_contents (story_translation_id, line_index, translation_content) VALUES ('$STORY_TRANSLATION_ID', 10, 'But the Hebrew word, the word timshel—‘Thou mayest’—that gives a choice. 
+            It might be the most important word in the world. 
+            That says the way is open. That throws it right back on a man.
+            For if ‘Thou mayest’—it is also true that ‘Thou mayest not.’ Don’t you see?”');"
+    done 
+
 
     if  [[ "$1" = "kevin" ]] 
     then 
