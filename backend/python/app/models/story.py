@@ -9,7 +9,7 @@ from .story_content import StoryContent
 class Story(db.Model):
     __tablename__ = "stories"
     id = db.Column(db.Integer, primary_key=True, nullable=False)
-    title = db.Column(db.String, nullable=False)
+    title = db.Column(TEXT, nullable=False)
     description = db.Column(LONGTEXT, nullable=False)
     youtube_link = db.Column(db.String(255), nullable=False)
     level = db.Column(db.Integer, nullable=False)

@@ -61,7 +61,7 @@ class StoryService(IStoryService):
     def get_stories_available_for_translation(self, language, level):
         stories = (
             Story.query.filter(Story.level <= level)
-            .filter(~Story.translated_languages.any(language))
+            .filter(Story.translated_languages.contains(language))
             .all()
         )
         return [story.to_dict(include_relationships=True) for story in stories]
