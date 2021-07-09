@@ -1,5 +1,5 @@
 from sqlalchemy import inspect
-from sqlalchemy.dialects.mysql import LONGTEXT, TEXT
+from sqlalchemy.dialects.mysql import TEXT
 from sqlalchemy.orm.properties import ColumnProperty
 
 from . import db
