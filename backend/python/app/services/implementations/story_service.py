@@ -153,15 +153,13 @@ class StoryService(IStoryService):
 
     def assign_user_as_reviewer(self, user, story_translation):
         if (
-            story_translation.language in user.approved_languages
-            and user.approved_languages[story_translation.language]
-            >= story_translation.level
-            and story_translation.stage == "TRANSLATE"
-            and not story_translation.reviewer_id
+            story_translation["language"] in user.approved_languages
+            and user.approved_languages[story_translation["language"]]
+            >= story_translation["level"]
+            and story_translation["stage"] == "TRANSLATE"
+            and not story_translation["reviewer_id"]
         ):
-            story_translation = StoryTranslation.query.get(
-                story_translation.story_translation_id
-            )
+            story_translation = StoryTranslation.query.get(story_translation["id"])
             story_translation.reviewer_id = user.id
             story_translation.stage = "REVIEW"
             db.session.commit()

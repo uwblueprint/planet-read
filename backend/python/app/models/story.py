@@ -11,7 +11,7 @@ class Story(db.Model):
     id = db.Column(db.Integer, primary_key=True, nullable=False)
     title = db.Column(TEXT, nullable=False)
     description = db.Column(LONGTEXT, nullable=False)
-    youtube_link = db.Column(db.String(255), nullable=False)
+    youtube_link = db.Column(TEXT, nullable=False)
     level = db.Column(db.Integer, nullable=False)
     # Note: translated_languages should be an enum array, but postgres
     # has a weird relationship with enums and we're going to switch to
