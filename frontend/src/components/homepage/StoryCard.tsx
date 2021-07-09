@@ -155,7 +155,13 @@ const StoryCard = ({
           <div className="story-card-tags">
             {/* TODO: make tags that reflect actual state */}
             <Tag displayText={`Level ${level}`} />
-            {storyTranslationId && <Tag displayText={`${language}`} />}
+            {!storyTranslationId && storyId && (
+              <Tag
+                displayText={`${
+                  language[0] + language.substring(1).toLowerCase()
+                }`}
+              />
+            )}
           </div>
         </div>
         <p className="story-card-description">{description}</p>
