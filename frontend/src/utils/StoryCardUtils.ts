@@ -17,6 +17,6 @@ function changeLanguageToTitleCase(language: string) {
     default:
       return language[0] + language.substring(1).toLowerCase();
   }
-}
+};
 
 export { changeLanguageToTitleCase as default };
