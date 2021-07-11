@@ -12,6 +12,10 @@ import HomePage from "./components/pages/HomePage";
 import NotFound from "./components/pages/NotFound";
 import UpdatePage from "./components/pages/UpdatePage";
 import TranslationPage from "./components/pages/TranslationPage";
+<<<<<<< HEAD
+=======
+
+>>>>>>> c6638ab... Create TranslationPage with css, adding it to existing setup
 import AUTHENTICATED_USER_KEY from "./constants/AuthConstants";
 import AuthContext, { AuthenticatedUser } from "./contexts/AuthContext";
 import { getLocalStorageObj } from "./utils/LocalStorageUtils";
@@ -38,7 +42,7 @@ const App = () => {
           <PrivateRoute exact path="/stories" component={HomePage} />
           <PrivateRoute
             exact
-            path="/translation/:storyId/:storyTranslationId"
+            path="/translation/:storyIdParam/:storyTranslationIdParam"
             component={TranslationPage}
           />
           <Route exact path="*" component={NotFound} />

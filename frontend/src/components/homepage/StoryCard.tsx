@@ -22,9 +22,7 @@ const ASSIGN_REVIEWER = gql`
 
 type CreateTranslation = {
   story: {
-    storyId: number;
-    translatorId: number;
-    language: string;
+    id: number;
   };
 };
 const CREATE_TRANSLATION = gql`
@@ -33,9 +31,7 @@ const CREATE_TRANSLATION = gql`
   ) {
     createStoryTranslation(storyTranslationData: $storyTranslationData) {
       story {
-        storyId
-        translatorId
-        language
+        id
       }
     }
   }
@@ -89,7 +85,7 @@ const StoryCard = ({
         variables: { storyTranslationId, userId: +authenticatedUser!!.id },
       });
       if (result.data?.assignUserAsReviewer.ok) {
-        history.push(`/review/${storyTranslationId}`);
+        history.push(`/review/${storyId}/${storyTranslationId}`);
       } else {
         handleError("Unable to assign reviewer.");
       }
@@ -111,8 +107,10 @@ const StoryCard = ({
       const result = await createTranslation({
         variables: { storyTranslationData },
       });
-      if (result.data?.createStoryTranslation.story.storyId) {
-        history.push(`/translation/${storyId}`);
+      if (result.data?.createStoryTranslation.story.id) {
+        history.push(
+          `/translation/${storyId}/${result.data?.createStoryTranslation.story.id}`,
+        );
       } else {
         handleError("Unable to assign translator.");
       }
@@ -124,7 +122,7 @@ const StoryCard = ({
   const previewBook = () => history.push("/preview");
 
   const openTranslation = () =>
-    history.push(`/translation/${storyTranslationId}`);
+    history.push(`/translation/${storyId}/${storyTranslationId}`);
 
   const primaryBtnText = () => {
     if (isMyStory) {

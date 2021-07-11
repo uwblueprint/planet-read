@@ -1,6 +1,19 @@
-.translation {
+.translation-page {
+    margin: 20px;
     display: flex;
     flex-direction: row;
+}
+
+h4 {
+    font-size: 12px;
+    text-decoration: underline;
+}
+
+.translation-content {
+    display: flex;
+    flex-direction: column;
+    height: 70vh;
+    overflow-y: auto;
 }
 
 .translation-container {
@@ -14,3 +27,36 @@
 .translation-progress-bar {
     margin: 20px 30px 0 0;
 }
+
+::-webkit-scrollbar {
+    width: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: #EDEDED;
+  }
+
+::-webkit-scrollbar-thumb {
+    background: #C4C4C4;
+}
+  
+::-webkit-scrollbar-thumb:hover {
+    /* Don't know what colour we want here */
+    background: #B3B3B3;
+}
+
+.row-translation {
+    align-items: flex-start;
+    display: flex;
+    flex-direction: row;
+}
+
+.line-index {
+    font-size: 20px;
+    font-weight: 600;
+    margin: 10px 20px 10px 0px;
+    width: 10px;
+}
+
+img {
+    margin: 5px 20px 0px 10px;
