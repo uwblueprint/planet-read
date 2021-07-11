@@ -24,10 +24,7 @@ from .queries.story_query import (
 from .queries.user_query import resolve_user_by_email, resolve_user_by_id, resolve_users
 from .types.entity_type import EntityResponseDTO
 from .types.file_type import FileDTO
-from .types.story_type import (
-    StoryResponseDTO,
-    StoryTranslationResponseDTO,
-)
+from .types.story_type import StoryResponseDTO, StoryTranslationResponseDTO
 from .types.user_type import UserDTO
 
 

@@ -59,7 +59,6 @@ class StoryTranslationContentResponseDTO(graphene.ObjectType):
     id = graphene.Int(required=True)
     line_index = graphene.Int(required=True)
     translation_content = graphene.String(required=True)
-    percentage_complete = graphene.Int()
 
 
 class StoryTranslationResponseDTO(graphene.ObjectType):
@@ -74,4 +73,4 @@ class StoryTranslationResponseDTO(graphene.ObjectType):
     description = graphene.String(required=True)
     youtube_link = graphene.String(required=True)
     level = graphene.Int(required=True)
-    percentage_complete = graphene.Int()
+    num_translated_lines = graphene.Int()

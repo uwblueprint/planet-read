@@ -1,8 +1,6 @@
 from flask import current_app
 
-from ...graphql.types.story_type import (
-    StoryTranslationContentResponseDTO,
-)
+from ...graphql.types.story_type import StoryTranslationContentResponseDTO
 from ...models import db
 from ...models.story import Story
 from ...models.story_content import StoryContent
@@ -130,25 +128,22 @@ class StoryService(IStoryService):
             # TODO: Condense into singular query
             translation = StoryTranslation.query.get(id)
 
-            # story_details = Story.query.
             story_details = (
-                (
-                    db.session.query(
-                        Story.id.label("story_id"),
-                        Story.title.label("title"),
-                        Story.description.label("description"),
-                        Story.youtube_link.label("youtube_link"),
-                        Story.level.label("level"),
-                    )
-                    .join(StoryTranslation, Story.id == StoryTranslation.story_id)
-                    .filter(StoryTranslation.id == id)
+                db.session.query(
+                    Story.id.label("story_id"),
+                    Story.title.label("title"),
+                    Story.description.label("description"),
+                    Story.youtube_link.label("youtube_link"),
+                    Story.level.label("level"),
                 )
+                .join(StoryTranslation, Story.id == StoryTranslation.story_id)
+                .filter(StoryTranslation.id == id)
                 .one()
                 ._asdict()
             )
 
-            story_details["percentage_complete"] = self._get_translation_progress(
-                story_details["story_id"], id
+            story_details["num_translated_lines"] = self._get_num_translated_lines(
+                translation.translation_contents
             )
             response = {
                 **translation.to_dict(include_relationships=True),
@@ -180,41 +175,20 @@ class StoryService(IStoryService):
 
     def update_story_translation_content(self, story_translation_content):
         try:
-            old_translation_content = (
-                db.session.query(
-                    StoryTranslation.id,
-                    StoryTranslation.story_id,
-                    StoryTranslationContent.translation_content,
-                    StoryTranslationContent.line_index,
-                )
-                .join(
-                    StoryTranslation,
-                    StoryTranslation.id == StoryTranslationContent.story_translation_id,
-                )
-                .filter(StoryTranslationContent.id == story_translation_content.id)
-                .one()
-            )
+            story_translation = StoryTranslationContent.query.filter_by(
+                id=story_translation_content.id
+            ).first()
 
-            if not old_translation_content:
+            if not story_translation:
                 raise Exception(
                     "story_translation_content_id {id} not found".format(
                         id=story_translation_content.id
                     )
                 )
 
-            story_translation = StoryTranslationContent.query.filter_by(
-                id=story_translation_content.id
-            ).first()
-
             story_translation.translation_content = (
                 story_translation_content.translation_content
             )
-            db.session.commit()
-
-            percentage_complete = self._get_translation_progress(
-                old_translation_content.story_id, old_translation_content.id
-            )
-
             db.session.commit()
         except Exception as error:
             reason = getattr(error, "message", None)
@@ -227,9 +201,8 @@ class StoryService(IStoryService):
 
         return StoryTranslationContentResponseDTO(
             story_translation_content.id,
-            old_translation_content.line_index,
+            story_translation.line_index,
             story_translation_content.translation_content,
-            percentage_complete,
         )
 
     def update_story_translation_contents(self, story_translation_contents):
@@ -275,40 +248,7 @@ class StoryService(IStoryService):
             self.logger.error(str(error))
             raise error
 
-    def _get_translation_progress(self, story_id, translation_id):
-        try:
-            num_translated_lines = self._get_num_translated_lines(translation_id)
-            num_story_lines = self._get_num_story_lines(story_id)
-            if num_translated_lines == 0 or num_story_lines == 0:
-                return 0
-            percentage_complete = round(num_translated_lines / num_story_lines, 2) * 100
-            return percentage_complete
-
-        except Exception as error:
-            self.logger.error(str(error))
-            raise error
-
-    def _get_num_translated_lines(self, translation_id):
-        try:
-            return (
-                db.session.query(StoryTranslationContent)
-                .filter(
-                    StoryTranslationContent.story_translation_id == translation_id,
-                    StoryTranslationContent.translation_content != "",
-                )
-                .count()
-            )
-        except Exception as error:
-            self.logger.error(str(error))
-            raise error
-
-    def _get_num_story_lines(self, story_id):
-        try:
-            return (
-                db.session.query(StoryContent)
-                .filter(StoryContent.story_id == story_id)
-                .count()
-            )
-        except Exception as error:
-            self.logger.error(str(error))
-            raise error
+    def _get_num_translated_lines(self, translation_contents):
+        return len(translation_contents) - [
+            _.translation_content for _ in translation_contents
+        ].count("")

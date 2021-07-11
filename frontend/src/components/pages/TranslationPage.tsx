@@ -10,8 +10,10 @@ type TranslationPageProps = {
 
 const TranslationPage = () => {
   const { storyId, storyTranslationId } = useParams<TranslationPageProps>();
+  // TODO: set percentageComplete based on return from get translation query,
+  // and update when edits made to page
   // const [percentageComplete, setPercentageComplete] = useState(0);
-  const [percentageComplete] = useState(0);
+  const [percentageComplete] = useState(25);
   if (storyId === undefined || storyTranslationId === undefined) {
     return (
       <div className="error">
