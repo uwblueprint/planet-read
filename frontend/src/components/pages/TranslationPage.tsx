@@ -14,12 +14,6 @@ type TranslationPageProps = {
   storyTranslationIdParam: string | undefined;
 };
 
-// array that sorted by lineIndex -> does this need sorting at any point?
-// this works since back half can be null
-// but front half HAS to be defined, with the ocmplete num of lines on query
-// back half -> null or optional?
-// and can use map
-// lineIndex starts at 0 we good ==> this isn't true, db starts at 1
 type StoryLine = {
   lineIndex: number;
   originalContent: string;
@@ -33,7 +27,6 @@ type Content = {
   lineIndex: number;
   content: string;
 };
-// TODO fix up the storyTranslationById mutation
 const GET_STORY_CONTENTS = (storyId: number, storyTranslationId: number) => gql`
   query {
     storyById(id: ${storyId}) {
@@ -80,7 +73,6 @@ const TranslationPage = () => {
     storyTranslationIdParam,
   } = useParams<TranslationPageProps>();
 
-  // do we need to catch these?
   const storyId = +storyIdParam!!;
   const storyTranslationId = +storyTranslationIdParam!!;
 
@@ -98,7 +90,7 @@ const TranslationPage = () => {
     lineIndex - (translatedStoryLines[0].lineIndex - 1);
 
   // TODO replace with real logic
-  const addIcon = (): JSX.Element | null => {
+  const translationStatusIcon = (): JSX.Element | null => {
     const randomNum = Math.floor(Math.random() * 3);
 
     switch (randomNum) {
@@ -129,10 +121,6 @@ const TranslationPage = () => {
       const lineIndex =
         result.data?.updateStoryTranslationContentById.story.lineIndex;
       if (lineIndex !== undefined) {
-        // this is update only, so id already set
-        // not convinced this is the best strateg, this will re-redner the page
-        // and the box that has already been updated right?
-        // should only update whatever is storingi nfo without re-rendering if possible
         const updatedContentArray = [...translatedStoryLines];
         const index = arrayIndex(lineIndex);
         updatedContentArray[index].translatedContent = newContent;
@@ -153,8 +141,6 @@ const TranslationPage = () => {
       const translatedContent = data.storyTranslationById.translationContents;
 
       const contentArray: StoryLine[] = [];
-      // would callign directly onto state object rather than this array re-render
-      // expect an ordered response
       storyContent.forEach(({ id, content, lineIndex }: Content) => {
         contentArray.push({
           lineIndex,
@@ -163,8 +149,7 @@ const TranslationPage = () => {
         });
       });
       translatedContent.forEach(({ id, content, lineIndex }: Content) => {
-        // why is "" registering as undefined
-        contentArray[lineIndex].translatedContent = content ?? "";
+        contentArray[lineIndex].translatedContent = content;
         contentArray[lineIndex].storyTranslationContentId = id;
       });
 
@@ -172,12 +157,6 @@ const TranslationPage = () => {
     },
   });
 
-  // TODO not in order? maybe fix it via css -> is it possible since not guaranteed order (what div properties needed)
-  // array might help then
-  // pagination will give us troubles in this format -> will need to subtract firsti ndex or smth
-  // is that super inefficient
-
-  // double loop from response?
   const storyCells = translatedStoryLines.map((storyLine: StoryLine) => {
     return (
       <div
@@ -191,7 +170,7 @@ const TranslationPage = () => {
           storyTranslationContentId={storyLine.storyTranslationContentId!!}
           onChange={onChangeTranslationContent}
         />
-        {addIcon()}
+        {translationStatusIcon}
       </div>
     );
   });

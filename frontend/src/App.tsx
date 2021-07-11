@@ -10,12 +10,9 @@ import Default from "./components/pages/Default";
 import DisplayPage from "./components/pages/DisplayPage";
 import HomePage from "./components/pages/HomePage";
 import NotFound from "./components/pages/NotFound";
-import UpdatePage from "./components/pages/UpdatePage";
 import TranslationPage from "./components/pages/TranslationPage";
-<<<<<<< HEAD
-=======
+import UpdatePage from "./components/pages/UpdatePage";
 
->>>>>>> c6638ab... Create TranslationPage with css, adding it to existing setup
 import AUTHENTICATED_USER_KEY from "./constants/AuthConstants";
 import AuthContext, { AuthenticatedUser } from "./contexts/AuthContext";
 import { getLocalStorageObj } from "./utils/LocalStorageUtils";

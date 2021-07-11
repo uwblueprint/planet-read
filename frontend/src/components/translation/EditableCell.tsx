@@ -12,8 +12,6 @@ const EditableCell = ({
   storyTranslationContentId,
   onChange,
 }: EditableCellProps) => {
-  // Should this be stored here? should this store its own state? make own GQL requests?
-
   return (
     <textarea
       className="input-translation"
