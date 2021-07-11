@@ -22,7 +22,7 @@
 #   erase - erases the contents of the database. To avoid conflicting entries, 
 #           please call this to erase the contents of the db. Note that this 
 #           will erase all of the contents in the story_translations, users, 
-#           and stories databases. 
+#           stories, story_contents, and story_translation_contents databases. 
 # 
 #   kevin - generates story contents that, to say the least, are probably 
 #           not NGO-friendly. Please use this option cautiously. 
