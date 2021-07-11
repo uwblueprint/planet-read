@@ -70,13 +70,13 @@ else
     # users 
     docker exec -it planet-read_db_1 psql -U postgres -d planet-read -c "ALTER SEQUENCE users_id_seq RESTART WITH 1;"
 
-    docker exec -it planet-read_db_1 psql -U postgres -d planet-read -c "INSERT INTO users (first_name, last_name, auth_id, role, approved_languages) VALUES ('Carl', 'Sagan', '$AUTH_ID_1', 'User', '{\"ENGLISH_US\":5}');"
-    docker exec -it planet-read_db_1 psql -U postgres -d planet-read -c "INSERT INTO users (first_name, last_name, auth_id, role, approved_languages) VALUES ('Miroslav', 'Klose', '$AUTH_ID_2', 'User', '{\"POLISH\":5, \"GERMAN\":5}');"
-    docker exec -it planet-read_db_1 psql -U postgres -d planet-read -c "INSERT INTO users (first_name, last_name, auth_id, role, approved_languages) VALUES ('Kevin', 'De Bryune', '$AUTH_ID_3', 'User', '{\"DUTCH\":5, \"FRENCH\":5}');"
-    docker exec -it planet-read_db_1 psql -U postgres -d planet-read -c "INSERT INTO users (first_name, last_name, auth_id, role, approved_languages) VALUES ('Dwight', 'D. Eisenhower', '$AUTH_ID_4', 'User', '{\"ENGLISH_UK\":5}');"
-    docker exec -it planet-read_db_1 psql -U postgres -d planet-read -c "INSERT INTO users (first_name, last_name, auth_id, role, approved_languages) VALUES ('Alexander', 'Hamilton', '$AUTH_ID_5', 'User', '{\"MANDARIN\":5}');"
-    docker exec -it planet-read_db_1 psql -U postgres -d planet-read -c "INSERT INTO users (first_name, last_name, auth_id, role, approved_languages) VALUES ('Angela', 'Merkel', '$AUTH_ID_6', 'Admin', '{\"GERMAN\":5}');"
-    docker exec -it planet-read_db_1 psql -U postgres -d planet-read -c "INSERT INTO users (first_name, last_name, auth_id, role, approved_languages) VALUES ('Richard', 'Feynman', '$AUTH_ID_7', 'User', '{\"PORTUGESE\":5}');"
+    docker exec -it planet-read_db_1 psql -U postgres -d planet-read -c "INSERT INTO users (first_name, last_name, auth_id, role, approved_languages) VALUES ('Carl', 'Sagan', '$AUTH_ID_1', 'User', '{\"ENGLISH_US\":4}');"
+    docker exec -it planet-read_db_1 psql -U postgres -d planet-read -c "INSERT INTO users (first_name, last_name, auth_id, role, approved_languages) VALUES ('Miroslav', 'Klose', '$AUTH_ID_2', 'User', '{\"POLISH\":4, \"GERMAN\":4}');"
+    docker exec -it planet-read_db_1 psql -U postgres -d planet-read -c "INSERT INTO users (first_name, last_name, auth_id, role, approved_languages) VALUES ('Kevin', 'De Bryune', '$AUTH_ID_3', 'User', '{\"DUTCH\":4, \"FRENCH\":4}');"
+    docker exec -it planet-read_db_1 psql -U postgres -d planet-read -c "INSERT INTO users (first_name, last_name, auth_id, role, approved_languages) VALUES ('Dwight', 'D. Eisenhower', '$AUTH_ID_4', 'User', '{\"ENGLISH_UK\":4}');"
+    docker exec -it planet-read_db_1 psql -U postgres -d planet-read -c "INSERT INTO users (first_name, last_name, auth_id, role, approved_languages) VALUES ('Alexander', 'Hamilton', '$AUTH_ID_5', 'User', '{\"MANDARIN\":4}');"
+    docker exec -it planet-read_db_1 psql -U postgres -d planet-read -c "INSERT INTO users (first_name, last_name, auth_id, role, approved_languages) VALUES ('Angela', 'Merkel', '$AUTH_ID_6', 'Admin', '{\"GERMAN\":4}');"
+    docker exec -it planet-read_db_1 psql -U postgres -d planet-read -c "INSERT INTO users (first_name, last_name, auth_id, role, approved_languages) VALUES ('Richard', 'Feynman', '$AUTH_ID_7', 'User', '{\"PORTUGESE\":4}');"
     
 
     if  [[ "$1" = "kevin" ]] 
@@ -90,7 +90,7 @@ else
         docker exec -it planet-read_db_1 psql -U postgres -d planet-read -c "INSERT INTO stories (title, description, youtube_link, level, translated_languages) VALUES ('Kevin Burns Down Old Growth Forest', 'Aims to expand cow pasture for his A5 Wagyu cattle', 'https://www.youtube.com/watch?v=udFxKZRyQt4', 2, '{\"GERMAN\", \"ENGLISH_UK\"}');"
         docker exec -it planet-read_db_1 psql -U postgres -d planet-read -c "INSERT INTO stories (title, description, youtube_link, level, translated_languages) VALUES ('Kevin, When Told that Peasants Have No Bread, Responds:', 'Let them eat cake', 'https://www.youtube.com/watch?v=y8XvQNt26KI', 4, '{\"GERMAN\", \"ENGLISH_UK\", \"PORTUGUESE\", \"DUTCH\"}');"
         docker exec -it planet-read_db_1 psql -U postgres -d planet-read -c "INSERT INTO stories (title, description, youtube_link, level, translated_languages) VALUES ('Four Score and Seven Years Ago', 'Conceived in liberty and dedicated to the proposition that all men are created equal', 'https://www.youtube.com/watch?v=QImCld9YubE', 4, '{\"ENGLISH_US\"}');"
-        docker exec -it planet-read_db_1 psql -U postgres -d planet-read -c "INSERT INTO stories (title, description, youtube_link, level, translated_languages) VALUES ('Kevin Lobbies Against Expansion of Social Safety Net', 'He complains higher taxes will prevent him from getting a new Gulfstream G650ER for Christmas', 'https://www.youtube.com/watch?v=t8IK0ZqfxNI&t=27s', 1, '{}');"
+        docker exec -it planet-read_db_1 psql -U postgres -d planet-read -c "INSERT INTO stories (title, description, youtube_link, level, translated_languages) VALUES ('Kevin Lobbies Against Expansion of Social Safety Net', 'He complains higher taxes will prevent him from getting a new Gulfstream G650ER for Christmas', 'https://www.youtube.com/watch?v=t8IK0ZqfxNI&t=27s', 2, '{}');"
     
     else 
         # stories 
@@ -99,7 +99,7 @@ else
         docker exec -it planet-read_db_1 psql -U postgres -d planet-read -c "INSERT INTO stories (title, description, youtube_link, level, translated_languages) VALUES ('East of Eden', 'John Steinbeck', 'https://www.youtube.com/watch?v=DHyUYg8X31c', 4, '{\"GERMAN\", \"ENGLISH_UK\"}');"
         docker exec -it planet-read_db_1 psql -U postgres -d planet-read -c "INSERT INTO stories (title, description, youtube_link, level, translated_languages) VALUES ('War and Peace', 'Leo Tolstoy', 'https://www.youtube.com/watch?v=Da-2h2B4faU&t=4s', 1, '{\"GERMAN\", \"POLISH\"}');"
         docker exec -it planet-read_db_1 psql -U postgres -d planet-read -c "INSERT INTO stories (title, description, youtube_link, level, translated_languages) VALUES ('A Tale of Two Cities', 'Charles Dickens', 'https://www.youtube.com/watch?v=DHyUYg8X31c', 3, '{\"MANDARIN\", \"ENGLISH_UK\"}');"
-        docker exec -it planet-read_db_1 psql -U postgres -d planet-read -c "INSERT INTO stories (title, description, youtube_link, level, translated_languages) VALUES ('Pride and Prejudice', 'Jane Austen', 'https://www.youtube.com/watch?v=DHyUYg8X31c', 5, '{\"GERMAN\", \"ENGLISH_UK\"}');"
+        docker exec -it planet-read_db_1 psql -U postgres -d planet-read -c "INSERT INTO stories (title, description, youtube_link, level, translated_languages) VALUES ('Pride and Prejudice', 'Jane Austen', 'https://www.youtube.com/watch?v=DHyUYg8X31c', 4, '{\"GERMAN\", \"ENGLISH_UK\"}');"
         docker exec -it planet-read_db_1 psql -U postgres -d planet-read -c "INSERT INTO stories (title, description, youtube_link, level, translated_languages) VALUES ('To Kill a Mockingbird', 'Harper Lee', 'https://www.youtube.com/watch?v=DHyUYg8X31c', 3, '{\"GERMAN\", \"ENGLISH_UK\", \"PORTUGUESE\", \"DUTCH\"}');"
         docker exec -it planet-read_db_1 psql -U postgres -d planet-read -c "INSERT INTO stories (title, description, youtube_link, level, translated_languages) VALUES ('The Great Gatsby', 'F. Scott Fitzgerald', 'https://www.youtube.com/watch?v=DHyUYg8X31c', 4, '{\"ENGLISH_US\"}');"
         docker exec -it planet-read_db_1 psql -U postgres -d planet-read -c "INSERT INTO stories (title, description, youtube_link, level, translated_languages) VALUES ('1984', 'George Orwell', 'https://www.youtube.com/watch?v=Da-2h2B4faU&t=4s', 2, '{}');"
