@@ -1,5 +1,5 @@
 // Change language string to title case
-function changeLanguageToTitleCase(language: string) {
+function convertLanguageTitleCase(language: string) {
   // Handles 4 edge cases: ENGLISH_US, ENGLISH_UK, ENGLISH_INDIA, ASANTE_TWI
   switch (language) {
     case "ENGLISH_US":
@@ -17,6 +17,6 @@ function changeLanguageToTitleCase(language: string) {
     default:
       return language[0] + language.substring(1).toLowerCase();
   }
-};
+}
 
-export { changeLanguageToTitleCase as default };
+export { convertLanguageTitleCase as default };

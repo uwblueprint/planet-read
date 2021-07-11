@@ -6,7 +6,7 @@ import Tag from "./Tag";
 import PrimaryButton from "./PrimaryButton";
 import SecondaryButton from "./SecondaryButton";
 import "./StoryCard.css";
-import changeLanguageToTitleCase from "../../utils/StoryCardUtils";
+import convertLanguageTitleCase from "../../utils/LanguageUtils";
 
 type AssignReviewer = { ok: boolean };
 const ASSIGN_REVIEWER = gql`
@@ -154,9 +154,8 @@ const StoryCard = ({
         <div className="story-card-top">
           <p className="story-card-title">{title}</p>
           <div className="story-card-tags">
-            {/* TODO: make tags that reflect actual state */}
             <Tag displayText={`Level ${level}`} />
-            <Tag displayText={`${changeLanguageToTitleCase(language)}`} />
+            <Tag displayText={`${convertLanguageTitleCase(language)}`} />
           </div>
         </div>
         <p className="story-card-description">{description}</p>
