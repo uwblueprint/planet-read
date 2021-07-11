@@ -43,7 +43,7 @@ def create_app(config_name):
     app.config["MYSQL_HOST"] = os.getenv("MYSQL_HOST")
     app.config["MYSQL_USER"] = os.getenv("MYSQL_USER")
     app.config["MYSQL_PASSWORD"] = os.getenv("MYSQL_PASSWORD")
-    app.config["MYSQL_DB"] = os.getenv("MYSQL_DB")
+    app.config["MYSQL_DATABASE"] = os.getenv("MYSQL_DATABASE")
 
     app.config[
         "SQLALCHEMY_DATABASE_URI"
@@ -51,7 +51,7 @@ def create_app(config_name):
         username=os.getenv("MYSQL_USER"),
         password=os.getenv("MYSQL_PASSWORD"),
         host=os.getenv("DB_HOST"),
-        db=os.getenv("MYSQL_DB"),
+        db=os.getenv("MYSQL_DATABASE"),
     )
 
     app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False

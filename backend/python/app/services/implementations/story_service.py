@@ -104,7 +104,7 @@ class StoryService(IStoryService):
                     Story.description.label("description"),
                     Story.youtube_link.label("youtube_link"),
                     Story.level.label("level"),
-                    StoryTranslation.id.label("story_translation_id"),
+                    StoryTranslation.id.label("id"),
                     StoryTranslation.language.label("language"),
                     StoryTranslation.stage.label("stage"),
                     StoryTranslation.translator_id.label("translator_id"),
@@ -152,6 +152,9 @@ class StoryService(IStoryService):
             raise error
 
     def assign_user_as_reviewer(self, user, story_translation):
+        print(story_translation)
+        print(story_translation.___dict___)
+        print("hihihih")
         if (
             story_translation["language"] in user.approved_languages
             and user.approved_languages[story_translation["language"]]
@@ -227,7 +230,7 @@ class StoryService(IStoryService):
                     Story.description.label("description"),
                     Story.youtube_link.label("youtube_link"),
                     Story.level.label("level"),
-                    StoryTranslation.id.label("story_translation_id"),
+                    StoryTranslation.id.label("id"),
                     StoryTranslation.language.label("language"),
                     StoryTranslation.stage.label("stage"),
                     StoryTranslation.translator_id.label("translator_id"),
