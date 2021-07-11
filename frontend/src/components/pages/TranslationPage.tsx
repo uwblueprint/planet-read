@@ -1,16 +1,7 @@
 import React, { useState } from "react";
-import { gql, useQuery } from "@apollo/client";
 import "./TranslationPage.css";
 import { useParams } from "react-router-dom";
 import TranslationProgressBar from "../translation/TranslationProgressBar";
-
-const GET_TRANSLATION_PROGRESS = gql`
-  query storyTranslationProgress($storyId: Int!, $translationId: Int!) {
-    storyTranslationProgress(storyId: $storyId, translationId: $translationId) {
-      percentageComplete
-    }
-  }
-`;
 
 type TranslationPageProps = {
   storyId: string | undefined;
@@ -19,7 +10,8 @@ type TranslationPageProps = {
 
 const TranslationPage = () => {
   const { storyId, storyTranslationId } = useParams<TranslationPageProps>();
-  const [percentageComplete, setPercentageComplete] = useState(0);
+  // const [percentageComplete, setPercentageComplete] = useState(0);
+  const [percentageComplete] = useState(0);
   if (storyId === undefined || storyTranslationId === undefined) {
     return (
       <div className="error">
@@ -27,17 +19,6 @@ const TranslationPage = () => {
       </div>
     );
   }
-
-  useQuery(GET_TRANSLATION_PROGRESS, {
-    variables: {
-      storyId,
-      translationId: storyTranslationId,
-    },
-    fetchPolicy: "cache-and-network",
-    onCompleted: (data) => {
-      setPercentageComplete(data.storyTranslationProgress.percentageComplete);
-    },
-  });
 
   return (
     <div className="translation">

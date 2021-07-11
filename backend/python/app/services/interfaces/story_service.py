@@ -90,14 +90,3 @@ class IStoryService(ABC):
         :rtype: list of StoryTranslationResponseDTO's
         """
         pass
-
-    @abstractmethod
-    def get_translation_progress(self, story_id, translation_id):
-        """
-        Return percentage of lines that are translated
-        :param story_id: id of Story of interest
-        :param translation_id: id of corresponding StoryTranslation
-        :return: percentage of lines in the story that are translated
-        :rtype: StoryTranslationProgressResponseDTO
-        """
-        pass
