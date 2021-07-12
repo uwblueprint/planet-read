@@ -51,20 +51,17 @@ class AuthService(IAuthService):
             try:
                 user = self.user_service.get_user_by_email(
                     google_user["email"]
-                )  # If the user already has an email account, let them access that account, might make profile pics more complicated
+                )  # If the user already has an email account, let them access that account
                 return AuthDTO(**{**token.__dict__, **user.__dict__})
             except KeyError as e:
                 pass
             try:
-                user = firebase_admin.auth.get_user(
+                firebase_admin.auth.get_user(
                     auth_id
-                )  # If a person is on firebase but isn't there locally (a check that's mainly useful in a dev environment)
+                )  # If a person is on firebase but isn't there locally (a check that's mainly useful in a dev environment) so that we don't double create accounts
                 onFirebase = True
             except firebase_admin.auth.UserNotFoundError as e:
                 self.logger.error("User not found locally, but exists on Firebase")
-                pass
-            user = self.user_service.get_user_by_auth_id(auth_id)
-        except KeyError as e:
             user = self.user_service.create_user(
                 CreateUserWithGoogleDTO(
                     first_name=google_user["firstName"],
@@ -74,8 +71,7 @@ class AuthService(IAuthService):
                     uid=auth_id,
                     onFirebase=onFirebase,
                 )
-            )
-            # TODO: Pass in the profile photo from google
+            )  # TODO: Pass in the profile photo from google
         except Exception as e:
             reason = getattr(e, "message", None)
             self.logger.error(
