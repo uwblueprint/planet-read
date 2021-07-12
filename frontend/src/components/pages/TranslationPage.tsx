@@ -17,7 +17,6 @@ type TranslationPageProps = {
 type StoryLine = {
   lineIndex: number;
   originalContent: string;
-  storyContentId: number;
   translatedContent?: string;
   storyTranslationContentId?: number;
 };
@@ -87,7 +86,7 @@ const TranslationPage = () => {
   };
 
   const arrayIndex = (lineIndex: number): number =>
-    lineIndex - (translatedStoryLines[0].lineIndex - 1);
+    lineIndex - translatedStoryLines[0].lineIndex;
 
   // TODO replace with real logic
   const translationStatusIcon = (): JSX.Element | null => {
@@ -141,16 +140,19 @@ const TranslationPage = () => {
       const translatedContent = data.storyTranslationById.translationContents;
 
       const contentArray: StoryLine[] = [];
-      storyContent.forEach(({ id, content, lineIndex }: Content) => {
+      storyContent.forEach(({ content, lineIndex }: Content) => {
         contentArray.push({
           lineIndex,
           originalContent: content,
-          storyContentId: id,
         });
       });
+
+      contentArray.sort((a, b) => a.lineIndex - b.lineIndex);
+
       translatedContent.forEach(({ id, content, lineIndex }: Content) => {
-        contentArray[lineIndex].translatedContent = content;
-        contentArray[lineIndex].storyTranslationContentId = id;
+        const arrIndex = lineIndex - contentArray[0].lineIndex;
+        contentArray[arrIndex].translatedContent = content;
+        contentArray[arrIndex].storyTranslationContentId = id;
       });
 
       setTranslatedStoryLines(contentArray);
@@ -158,19 +160,21 @@ const TranslationPage = () => {
   });
 
   const storyCells = translatedStoryLines.map((storyLine: StoryLine) => {
+    const displayLineNumber = storyLine.lineIndex + 1;
+
     return (
       <div
         className="row-translation"
         key={`row-${arrayIndex(storyLine.lineIndex)}`}
       >
-        <p className="line-index">{storyLine.lineIndex}</p>
+        <p className="line-index">{displayLineNumber}</p>
         <Cell text={storyLine.originalContent} />
         <EditableCell
           text={storyLine.translatedContent!!}
           storyTranslationContentId={storyLine.storyTranslationContentId!!}
           onChange={onChangeTranslationContent}
         />
-        {translationStatusIcon}
+        {translationStatusIcon()}
       </div>
     );
   });
