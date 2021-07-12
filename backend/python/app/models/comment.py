@@ -10,12 +10,13 @@ class Comment(db.Model):
 
     id = db.Column(db.Integer, primary_key=True, nullable=False)
     story_translation_content_id = db.Column(
-        db.Integer, db.ForeignKey("story_translation_contents.id"), index=True, nullable=False
+        db.Integer,
+        db.ForeignKey("story_translation_contents.id"),
+        index=True,
+        nullable=False,
     )
 
-    user_id = db.Column(
-        db.Integer, db.ForeignKey("users.id"), nullable=False
-    )
+    user_id = db.Column(db.Integer, db.ForeignKey("users.id"), nullable=False)
 
     comment_index = db.Column(db.Integer, nullable=False)
     time = db.Column(db.Integer, nullable=False)

@@ -5,6 +5,7 @@ erase_db_and_sync = False
 
 
 def init_app(app):
+    from .comment import Comment
     from .entity import Entity
     from .file import File
     from .story import Story
@@ -12,7 +13,6 @@ def init_app(app):
     from .story_translation import StoryTranslation
     from .story_translation_content import StoryTranslationContent
     from .user import User
-    from .comment import Comment
 
     app.app_context().push()
     db.init_app(app)
