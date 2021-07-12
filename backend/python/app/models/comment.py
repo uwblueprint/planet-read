@@ -1,19 +1,28 @@
 from sqlalchemy import inspect
-from sqlalchemy.dialects.mysql import LONGTEXT
 from sqlalchemy.orm.properties import ColumnProperty
+from sqlalchemy.dialects.mysql import LONGTEXT
 
 from . import db
-from .comment import Comment
 
 
-class StoryTranslationContent(db.Model):
-    __tablename__ = "story_translation_contents"
+class Comment(db.Model):
+
+    __tablename__ = "comments"
+
     id = db.Column(db.Integer, primary_key=True, nullable=False)
-    story_translation_id = db.Column(
-        db.Integer, db.ForeignKey("story_translations.id"), index=True, nullable=False
+    story_translation_content_id = db.Column(
+        db.Integer,
+        db.ForeignKey("story_translation_contents.id"),
+        index=True,
+        nullable=False,
     )
-    line_index = db.Column(db.Integer, nullable=False)
-    translation_content = db.Column(LONGTEXT, nullable=False)
+
+    user_id = db.Column(db.Integer, db.ForeignKey("users.id"), nullable=False)
+
+    comment_index = db.Column(db.Integer, nullable=False)
+    time = db.Column(db.Integer, nullable=False)
+    resolved = db.Column(db.Boolean, nullable=False)
+    content = db.Column(LONGTEXT, nullable=False)
 
     def to_dict(self, include_relationships=False):
         cls = type(self)
