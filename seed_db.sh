@@ -135,36 +135,38 @@ else
 
     for STORY_ID in 1 2 3 4 5 6 7
     do 
-        docker exec -it planet-read_db_1 mysql -u root -proot -e "USE planet-read; INSERT INTO story_contents (story_id, line_index, content) VALUES ('$STORY_ID', 1, '“Every two weeks I went to a meeting with them, and in my room here I covered pages with writing. 
+        docker exec -it planet-read_db_1 mysql -u root -proot -e "USE planet-read; INSERT INTO story_contents (story_id, line_index, content) VALUES ('$STORY_ID', 0, '“Every two weeks I went to a meeting with them, and in my room here I covered pages with writing. 
             I bought every known Hebrew dictionary. But the old gentlemen were always ahead of me. 
             It wasn’t long before they were ahead of our rabbi; he brought a colleague in. ');"
 
-        docker exec -it planet-read_db_1 mysql -u root -proot -e "USE planet-read; INSERT INTO story_contents (story_id, line_index, content) VALUES ('$STORY_ID', 2, 'Mr. Hamilton, you should have sat through some of those nights of argument and discussion. 
+        docker exec -it planet-read_db_1 mysql -u root -proot -e "USE planet-read; INSERT INTO story_contents (story_id, line_index, content) VALUES ('$STORY_ID', 1, 'Mr. Hamilton, you should have sat through some of those nights of argument and discussion. 
             The questions, the inspection, oh, the lovely thinking—the beautiful thinking.');"
                                                                                                                                                         
-        docker exec -it planet-read_db_1 mysql -u root -proot -e "USE planet-read; INSERT INTO story_contents (story_id, line_index, content) VALUES ('$STORY_ID', 3, 'After two years we felt that we could approach your sixteen verses of the fourth chapter of Genesis. ');"
+        docker exec -it planet-read_db_1 mysql -u root -proot -e "USE planet-read; INSERT INTO story_contents (story_id, line_index, content) VALUES ('$STORY_ID', 2, 'After two years we felt that we could approach your sixteen verses of the fourth chapter of Genesis. ');"
 
-        docker exec -it planet-read_db_1 mysql -u root -proot -e "USE planet-read; INSERT INTO story_contents (story_id, line_index, content) VALUES ('$STORY_ID', 4, 'My old gentlemen felt that these words were very important too—’Thou shalt’ and ‘Do thou.’ 
+        docker exec -it planet-read_db_1 mysql -u root -proot -e "USE planet-read; INSERT INTO story_contents (story_id, line_index, content) VALUES ('$STORY_ID', 3, 'My old gentlemen felt that these words were very important too—’Thou shalt’ and ‘Do thou.’ 
             And this was the gold from our mining: ‘Thou mayest.’ ‘Thou mayest rule over sin.’ ');"
 
-        docker exec -it planet-read_db_1 mysql -u root -proot -e "USE planet-read; INSERT INTO story_contents (story_id, line_index, content) VALUES ('$STORY_ID', 5, 'The old gentlemen smiled and nodded and felt the years were well spent. It brought them out of their
+        docker exec -it planet-read_db_1 mysql -u root -proot -e "USE planet-read; INSERT INTO story_contents (story_id, line_index, content) VALUES ('$STORY_ID', 4, 'The old gentlemen smiled and nodded and felt the years were well spent. It brought them out of their
             Chinese shells too, and right now they are studying Greek.” ');"
         
-        docker exec -it planet-read_db_1 mysql -u root -proot -e "USE planet-read; INSERT INTO story_contents (story_id, line_index, content) VALUES ('$STORY_ID', 6, 'Samuel said, “It’s a fantastic story. And I’ve tried to follow and maybe I’ve missed somewhere. 
+        docker exec -it planet-read_db_1 mysql -u root -proot -e "USE planet-read; INSERT INTO story_contents (story_id, line_index, content) VALUES ('$STORY_ID', 5, 'Samuel said, “It’s a fantastic story. And I’ve tried to follow and maybe I’ve missed somewhere. 
             Why is this word so important?”');"
         
-        docker exec -it planet-read_db_1 mysql -u root -proot -e "USE planet-read; INSERT INTO story_contents (story_id, line_index, content) VALUES ('$STORY_ID', 7, 'Lee’s hand shook as he filled the delicate cups. 
+        docker exec -it planet-read_db_1 mysql -u root -proot -e "USE planet-read; INSERT INTO story_contents (story_id, line_index, content) VALUES ('$STORY_ID', 6, 'Lee’s hand shook as he filled the delicate cups. 
             He drank his down in one gulp. “Don’t you see?” he cried. ');"
         
-        docker exec -it planet-read_db_1 mysql -u root -proot -e "USE planet-read; INSERT INTO story_contents (story_id, line_index, content) VALUES ('$STORY_ID', 8, '“The American Standard translation orders men to triumph over sin, and you can call sin ignorance. ');"
+        docker exec -it planet-read_db_1 mysql -u root -proot -e "USE planet-read; INSERT INTO story_contents (story_id, line_index, content) VALUES ('$STORY_ID', 7, '“The American Standard translation orders men to triumph over sin, and you can call sin ignorance. ');"
         
-        docker exec -it planet-read_db_1 mysql -u root -proot -e "USE planet-read; INSERT INTO story_contents (story_id, line_index, content) VALUES ('$STORY_ID', 9, 'The King James translation makes a promise in ‘Thou shalt,’ 
+        docker exec -it planet-read_db_1 mysql -u root -proot -e "USE planet-read; INSERT INTO story_contents (story_id, line_index, content) VALUES ('$STORY_ID', 8, 'The King James translation makes a promise in ‘Thou shalt,’ 
             meaning that men will surely triumph over sin. ');"
         
-        docker exec -it planet-read_db_1 mysql -u root -proot -e "USE planet-read; INSERT INTO story_contents (story_id, line_index, content) VALUES ('$STORY_ID', 10, 'But the Hebrew word, the word timshel—‘Thou mayest’—that gives a choice. 
+        docker exec -it planet-read_db_1 mysql -u root -proot -e "USE planet-read; INSERT INTO story_contents (story_id, line_index, content) VALUES ('$STORY_ID', 9, 'But the Hebrew word, the word timshel—‘Thou mayest’—that gives a choice. 
             It might be the most important word in the world. 
             That says the way is open. That throws it right back on a man.
             For if ‘Thou mayest’—it is also true that ‘Thou mayest not.’ Don’t you see?”');"
+        
+        docker exec -it planet-read_db_1 psql -U postgres -d planet-read -c "INSERT INTO story_contents (story_id, line_index, content) VALUES ('$STORY_TRANSLATION_ID', 10, 'Well this line is probably a disappointment.');"
     done 
 
     
@@ -174,42 +176,44 @@ else
 
     for STORY_TRANSLATION_ID in 2 3 5 7 11 13 
     do 
-        docker exec -it planet-read_db_1 mysql -u root -proot -e "USE planet-read; INSERT INTO story_translation_contents (story_translation_id, line_index, translation_content) VALUES ('$STORY_TRANSLATION_ID', 1, '“Every two weeks I went to a meeting with them, and in my room here I covered pages with writing. 
+        docker exec -it planet-read_db_1 mysql -u root -proot -e "USE planet-read; INSERT INTO story_translation_contents (story_translation_id, line_index, translation_content) VALUES ('$STORY_TRANSLATION_ID', 0, '“Every two weeks I went to a meeting with them, and in my room here I covered pages with writing. 
             I bought every known Hebrew dictionary. But the old gentlemen were always ahead of me. 
             It wasn’t long before they were ahead of our rabbi; he brought a colleague in. ');"
 
-        docker exec -it planet-read_db_1 mysql -u root -proot -e "USE planet-read; INSERT INTO story_translation_contents (story_translation_id, line_index, translation_content) VALUES ('$STORY_TRANSLATION_ID', 2, 'Mr. Hamilton, you should have sat through some of those nights of argument and discussion. 
+        docker exec -it planet-read_db_1 mysql -u root -proot -e "USE planet-read; INSERT INTO story_translation_contents (story_translation_id, line_index, translation_content) VALUES ('$STORY_TRANSLATION_ID', 1, 'Mr. Hamilton, you should have sat through some of those nights of argument and discussion. 
             The questions, the inspection, oh, the lovely thinking—the beautiful thinking.');"
                                                                                                                                                         
-        docker exec -it planet-read_db_1 mysql -u root -proot -e "USE planet-read; INSERT INTO story_translation_contents (story_translation_id, line_index, translation_content) VALUES ('$STORY_TRANSLATION_ID', 3, 'After two years we felt that we could approach your sixteen verses of the fourth chapter of Genesis. ');"
+        docker exec -it planet-read_db_1 mysql -u root -proot -e "USE planet-read; INSERT INTO story_translation_contents (story_translation_id, line_index, translation_content) VALUES ('$STORY_TRANSLATION_ID', 2, 'After two years we felt that we could approach your sixteen verses of the fourth chapter of Genesis. ');"
 
-        docker exec -it planet-read_db_1 mysql -u root -proot -e "USE planet-read; INSERT INTO story_translation_contents (story_translation_id, line_index, translation_content) VALUES ('$STORY_TRANSLATION_ID', 4, 'My old gentlemen felt that these words were very important too—’Thou shalt’ and ‘Do thou.’ 
+        docker exec -it planet-read_db_1 mysql -u root -proot -e "USE planet-read; INSERT INTO story_translation_contents (story_translation_id, line_index, translation_content) VALUES ('$STORY_TRANSLATION_ID', 3, 'My old gentlemen felt that these words were very important too—’Thou shalt’ and ‘Do thou.’ 
             And this was the gold from our mining: ‘Thou mayest.’ ‘Thou mayest rule over sin.’ ');"
 
-        docker exec -it planet-read_db_1 mysql -u root -proot -e "USE planet-read; INSERT INTO story_translation_contents (story_translation_id, line_index, translation_content) VALUES ('$STORY_TRANSLATION_ID', 5, 'The old gentlemen smiled and nodded and felt the years were well spent. It brought them out of their
+        docker exec -it planet-read_db_1 mysql -u root -proot -e "USE planet-read; INSERT INTO story_translation_contents (story_translation_id, line_index, translation_content) VALUES ('$STORY_TRANSLATION_ID', 4, 'The old gentlemen smiled and nodded and felt the years were well spent. It brought them out of their
             Chinese shells too, and right now they are studying Greek.” ');"
         
-        docker exec -it planet-read_db_1 mysql -u root -proot -e "USE planet-read; INSERT INTO story_translation_contents (story_translation_id, line_index, translation_content) VALUES ('$STORY_TRANSLATION_ID', 6, 'Samuel said, “It’s a fantastic story. And I’ve tried to follow and maybe I’ve missed somewhere. 
+        docker exec -it planet-read_db_1 mysql -u root -proot -e "USE planet-read; INSERT INTO story_translation_contents (story_translation_id, line_index, translation_content) VALUES ('$STORY_TRANSLATION_ID', 5, 'Samuel said, “It’s a fantastic story. And I’ve tried to follow and maybe I’ve missed somewhere. 
             Why is this word so important?”');"
         
-        docker exec -it planet-read_db_1 mysql -u root -proot -e "USE planet-read; INSERT INTO story_translation_contents (story_translation_id, line_index, translation_content) VALUES ('$STORY_TRANSLATION_ID', 7, 'Lee’s hand shook as he filled the delicate cups. 
+        docker exec -it planet-read_db_1 mysql -u root -proot -e "USE planet-read; INSERT INTO story_translation_contents (story_translation_id, line_index, translation_content) VALUES ('$STORY_TRANSLATION_ID', 6, 'Lee’s hand shook as he filled the delicate cups. 
             He drank his down in one gulp. “Don’t you see?” he cried. ');"
         
-        docker exec -it planet-read_db_1 mysql -u root -proot -e "USE planet-read; INSERT INTO story_translation_contents (story_translation_id, line_index, translation_content) VALUES ('$STORY_TRANSLATION_ID', 8, '“The American Standard translation orders men to triumph over sin, 
+        docker exec -it planet-read_db_1 mysql -u root -proot -e "USE planet-read; INSERT INTO story_translation_contents (story_translation_id, line_index, translation_content) VALUES ('$STORY_TRANSLATION_ID', 7, '“The American Standard translation orders men to triumph over sin, 
             and you can call sin ignorance. ');"
         
-        docker exec -it planet-read_db_1 mysql -u root -proot -e "USE planet-read; INSERT INTO story_translation_contents (story_translation_id, line_index, translation_content) VALUES ('$STORY_TRANSLATION_ID', 9, 'The King James translation makes a promise in ‘Thou shalt,’ 
+        docker exec -it planet-read_db_1 mysql -u root -proot -e "USE planet-read; INSERT INTO story_translation_contents (story_translation_id, line_index, translation_content) VALUES ('$STORY_TRANSLATION_ID', 8, 'The King James translation makes a promise in ‘Thou shalt,’ 
             meaning that men will surely triumph over sin. ');"
         
-        docker exec -it planet-read_db_1 mysql -u root -proot -e "USE planet-read; INSERT INTO story_translation_contents (story_translation_id, line_index, translation_content) VALUES ('$STORY_TRANSLATION_ID', 10, 'But the Hebrew word, the word timshel—‘Thou mayest’—that gives a choice. 
+        docker exec -it planet-read_db_1 mysql -u root -proot -e "USE planet-read; INSERT INTO story_translation_contents (story_translation_id, line_index, translation_content) VALUES ('$STORY_TRANSLATION_ID', 9, 'But the Hebrew word, the word timshel—‘Thou mayest’—that gives a choice. 
             It might be the most important word in the world. 
             That says the way is open. That throws it right back on a man.
             For if ‘Thou mayest’—it is also true that ‘Thou mayest not.’ Don’t you see?”');"
+        
+        docker exec -it planet-read_db_1 psql -U postgres -d planet-read -c "INSERT INTO story_translation_contents (story_translation_id, line_index, translation_content) VALUES ('$STORY_TRANSLATION_ID', 10, 'Another disappointing line.');"
     done 
 
     for STORY_TRANSLATION_ID in 1 4 6 8 9 10  
     do 
-        for i in 1 2 3 4 5 6 7 8 9 10
+        for i in 0 1 2 3 4 5 6 7 8 9 10
         do
             docker exec -it planet-read_db_1 mysql -u root -proot -e "USE planet-read; INSERT INTO story_translation_contents (story_translation_id, line_index, translation_content) VALUES ('$STORY_TRANSLATION_ID', $i, '');"
         done 
@@ -217,7 +221,7 @@ else
 
     for STORY_TRANSLATION_ID in 12 
     do 
-        for i in 1 2 3 4 5 6 7 8 9 
+        for i in 0 1 2 3 4 5 6 7 8 9 
         do
             docker exec -it planet-read_db_1 mysql -u root -proot -e "USE planet-read; INSERT INTO story_translation_contents (story_translation_id, line_index, translation_content) VALUES ('$STORY_TRANSLATION_ID', $i, '');"
         done 
