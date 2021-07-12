@@ -1,5 +1,6 @@
 from sqlalchemy import inspect
 from sqlalchemy.orm.properties import ColumnProperty
+from sqlalchemy.dialects.mysql import LONGTEXT
 
 from . import db
 
@@ -21,7 +22,7 @@ class Comment(db.Model):
     comment_index = db.Column(db.Integer, nullable=False)
     time = db.Column(db.Integer, nullable=False)
     resolved = db.Column(db.Boolean, nullable=False)
-    content = db.Column(db.String, nullable=False)
+    content = db.Column(LONGTEXT, nullable=False)
 
     def to_dict(self, include_relationships=False):
         cls = type(self)
