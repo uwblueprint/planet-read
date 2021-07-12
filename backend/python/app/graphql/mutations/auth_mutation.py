@@ -1,7 +1,7 @@
 import graphene
 from flask import request
 
-from ...resources.create_user_dto import CreateUserDTO
+from ...resources.create_user_dto import CreateUserWithEmailDTO
 from ..service import services
 from ..types.user_type import RoleEnum
 
@@ -112,15 +112,16 @@ class SignUp(graphene.Mutation):
     role = graphene.Field(RoleEnum)
     email = graphene.String()
 
-    def mutate(root, info, first_name, last_name, email, password):
+    def mutate(root, info, first_name, last_name, email, password, signUpMethod):
         try:
             services["user"].create_user(
-                CreateUserDTO(
+                CreateUserWithEmailDTO(
                     first_name=first_name,
                     last_name=last_name,
                     email=email,
                     role="User",
                     password=password,
+                    signUpMethod="password",
                 )
             )
             auth_dto = services["auth"].generate_token(email=email, password=password)
