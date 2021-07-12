@@ -5,6 +5,7 @@ erase_db_and_sync = False
 
 
 def init_app(app):
+    from .comment import Comment
     from .entity import Entity
     from .file import File
     from .story import Story

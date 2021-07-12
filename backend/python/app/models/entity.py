@@ -1,4 +1,5 @@
 from sqlalchemy import inspect
+from sqlalchemy.dialects.mysql import TEXT
 from sqlalchemy.orm.properties import ColumnProperty
 
 from . import db
@@ -18,10 +19,10 @@ class Entity(db.Model):
     __tablename__ = "entities"
 
     id = db.Column(db.Integer, primary_key=True, nullable=False)
-    string_field = db.Column(db.String, nullable=False)
+    string_field = db.Column(TEXT, nullable=False)
     int_field = db.Column(db.Integer, nullable=False)
     enum_field = db.Column(enum, nullable=False)
-    string_array_field = db.Column(db.ARRAY(db.String), nullable=False)
+    string_array_field = db.Column(db.JSON(TEXT), nullable=False)
     bool_field = db.Column(db.Boolean, nullable=False)
     # must define how to convert to a dict so that Entity can eventually be serialized into JSON
     # this would be a good method to include in a base Mixin
