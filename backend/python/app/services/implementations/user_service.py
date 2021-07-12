@@ -49,7 +49,7 @@ class UserService(IUserService):
             user = User.query.filter_by(auth_id=firebase_user.uid).first()
 
             if not user:
-                raise Exception(
+                raise KeyError(
                     "user with auth_id {auth_id} not found".format(
                         auth_id=firebase_user.uid
                     )
@@ -70,7 +70,7 @@ class UserService(IUserService):
 
     def get_user_role_by_auth_id(self, auth_id):
         try:
-            user = self.__get_user_by_auth_id(auth_id)
+            user = self.get_user_by_auth_id(auth_id)
             return user.role
         except Exception as e:
             reason = getattr(e, "message", None)
@@ -83,7 +83,7 @@ class UserService(IUserService):
 
     def get_user_id_by_auth_id(self, auth_id):
         try:
-            user = self.__get_user_by_auth_id(auth_id)
+            user = self.get_user_by_auth_id(auth_id)
             return str(user.id)
         except Exception as e:
             reason = getattr(e, "message", None)
@@ -133,16 +133,23 @@ class UserService(IUserService):
     def create_user(self, user):
         new_user = None
         firebase_user = None
-
+        postgres_user = None
+        auth_id = None
         try:
-            firebase_user = firebase_admin.auth.create_user(
-                email=user.email, password=user.password
-            )
+            if user.signUpMethod == "PASSWORD":
+                firebase_user = firebase_admin.auth.create_user(
+                    email=user.email, password=user.password
+                )
+                auth_id = firebase_user.uid
+            elif user.signUpMethod == "GOOGLE":
+                if not user.onFirebase:
+                    firebase_user = firebase_admin.auth.create_user(uid=user.uid)
+                auth_id = user.uid
 
             postgres_user = {
                 "first_name": user.first_name,
                 "last_name": user.last_name,
-                "auth_id": firebase_user.uid,
+                "auth_id": auth_id,
                 "role": user.role,
                 "resume": user.resume,
                 "profile_pic": user.profile_pic,
@@ -156,7 +163,8 @@ class UserService(IUserService):
             except Exception as postgres_error:
                 # rollback user creation in Firebase
                 try:
-                    firebase_admin.auth.delete_user(firebase_user.uid)
+                    if not (user.signUpMethod == "GOOGLE" and user.onFirebase):
+                        firebase_admin.auth.delete_user(firebase_user.uid)
                 except Exception as firebase_error:
                     reason = getattr(firebase_error, "message", None)
                     error_message = [
@@ -181,7 +189,7 @@ class UserService(IUserService):
             raise e
 
         new_user_dict = UserService.__user_to_dict_and_remove_auth_id(new_user)
-        new_user_dict["email"] = firebase_user.email
+        new_user_dict["email"] = user.email
         return UserDTO(**new_user_dict)
 
     def update_user_by_id(self, user_id, user):
@@ -322,6 +330,7 @@ class UserService(IUserService):
                 synchronize_session="fetch"
             )
 
+            # Not this ticket, but I think these exceptions won't work, where is user_id declared in this function?
             if delete_count < 1:
                 raise Exception(
                     "user_id {user_id} was not deleted".format(user_id=user_id)
@@ -373,21 +382,24 @@ class UserService(IUserService):
             )
             raise e
 
-    def __get_user_by_auth_id(self, auth_id):
+    def get_user_by_auth_id(self, auth_id):
         """
         Get a user document by auth_id
 
         :param auth_id: the user's auth_id (Firebase uid)
         :type auth_id: str
         """
-        user = User.query.filter_by(auth_id=auth_id).first()
+        firebase_user = firebase_admin.auth.get_user(auth_id)
 
+        user = User.query.filter_by(auth_id=auth_id).first()
         if not user:
-            raise Exception(
+            raise KeyError(
                 "user with auth_id {auth_id} not found".format(auth_id=auth_id)
             )
+        user_dict = UserService.__user_to_dict_and_remove_auth_id(user)
+        user_dict["email"] = firebase_user.email
 
-        return user
+        return UserDTO(**user_dict)
 
     @staticmethod
     def __user_to_dict_and_remove_auth_id(user):
