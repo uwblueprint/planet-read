@@ -43,11 +43,11 @@ then
     echo "Erasing the database..."
 
 
-    docker exec -it planet-read_db_1 psql -U postgres -d planet-read -c "DELETE FROM story_translation_contents;"
-    docker exec -it planet-read_db_1 psql -U postgres -d planet-read -c "DELETE FROM story_contents;"
-    docker exec -it planet-read_db_1 psql -U postgres -d planet-read -c "DELETE FROM story_translations;"
-    docker exec -it planet-read_db_1 psql -U postgres -d planet-read -c "DELETE FROM users;"
-    docker exec -it planet-read_db_1 psql -U postgres -d planet-read -c "DELETE FROM stories;"
+    docker exec -it planet-read_db_1 mysql -u root -proot -e "USE planet-read; DELETE FROM story_translation_contents;"
+    docker exec -it planet-read_db_1 mysql -u root -proot -e "USE planet-read; DELETE FROM story_contents;"
+    docker exec -it planet-read_db_1 mysql -u root -proot -e "USE planet-read; DELETE FROM story_translations;"
+    docker exec -it planet-read_db_1 mysql -u root -proot -e "USE planet-read; DELETE FROM users;"
+    docker exec -it planet-read_db_1 mysql -u root -proot -e "USE planet-read; DELETE FROM stories;"
 
 
     echo "Erased the database 💥💥💥"
@@ -68,100 +68,100 @@ else
     
 
     # users 
-    docker exec -it planet-read_db_1 psql -U postgres -d planet-read -c "ALTER SEQUENCE users_id_seq RESTART WITH 1;"
+    docker exec -it planet-read_db_1 mysql -u root -proot -e "USE planet-read; ALTER SEQUENCE users_id_seq RESTART WITH 1;"
 
-    docker exec -it planet-read_db_1 psql -U postgres -d planet-read -c "INSERT INTO users (first_name, last_name, auth_id, role, approved_languages) VALUES ('Carl', 'Sagan', '$AUTH_ID_1', 'User', '{\"ENGLISH_US\":4}');"
-    docker exec -it planet-read_db_1 psql -U postgres -d planet-read -c "INSERT INTO users (first_name, last_name, auth_id, role, approved_languages) VALUES ('Miroslav', 'Klose', '$AUTH_ID_2', 'User', '{\"POLISH\":4, \"GERMAN\":4}');"
-    docker exec -it planet-read_db_1 psql -U postgres -d planet-read -c "INSERT INTO users (first_name, last_name, auth_id, role, approved_languages) VALUES ('Kevin', 'De Bryune', '$AUTH_ID_3', 'User', '{\"DUTCH\":4, \"FRENCH\":4}');"
-    docker exec -it planet-read_db_1 psql -U postgres -d planet-read -c "INSERT INTO users (first_name, last_name, auth_id, role, approved_languages) VALUES ('Dwight', 'D. Eisenhower', '$AUTH_ID_4', 'User', '{\"ENGLISH_UK\":4}');"
-    docker exec -it planet-read_db_1 psql -U postgres -d planet-read -c "INSERT INTO users (first_name, last_name, auth_id, role, approved_languages) VALUES ('Alexander', 'Hamilton', '$AUTH_ID_5', 'User', '{\"MANDARIN\":4}');"
-    docker exec -it planet-read_db_1 psql -U postgres -d planet-read -c "INSERT INTO users (first_name, last_name, auth_id, role, approved_languages) VALUES ('Angela', 'Merkel', '$AUTH_ID_6', 'Admin', '{\"GERMAN\":4}');"
-    docker exec -it planet-read_db_1 psql -U postgres -d planet-read -c "INSERT INTO users (first_name, last_name, auth_id, role, approved_languages) VALUES ('Richard', 'Feynman', '$AUTH_ID_7', 'User', '{\"PORTUGESE\":4}');"
+    docker exec -it planet-read_db_1 mysql -u root -proot -e "USE planet-read; INSERT INTO users (first_name, last_name, auth_id, role, approved_languages) VALUES ('Carl', 'Sagan', '$AUTH_ID_1', 'User', '{\"ENGLISH_US\":4}');"
+    docker exec -it planet-read_db_1 mysql -u root -proot -e "USE planet-read; INSERT INTO users (first_name, last_name, auth_id, role, approved_languages) VALUES ('Miroslav', 'Klose', '$AUTH_ID_2', 'User', '{\"POLISH\":4, \"GERMAN\":4}');"
+    docker exec -it planet-read_db_1 mysql -u root -proot -e "USE planet-read; INSERT INTO users (first_name, last_name, auth_id, role, approved_languages) VALUES ('Kevin', 'De Bryune', '$AUTH_ID_3', 'User', '{\"DUTCH\":4, \"FRENCH\":4}');"
+    docker exec -it planet-read_db_1 mysql -u root -proot -e "USE planet-read; INSERT INTO users (first_name, last_name, auth_id, role, approved_languages) VALUES ('Dwight', 'D. Eisenhower', '$AUTH_ID_4', 'User', '{\"ENGLISH_UK\":4}');"
+    docker exec -it planet-read_db_1 mysql -u root -proot -e "USE planet-read; INSERT INTO users (first_name, last_name, auth_id, role, approved_languages) VALUES ('Alexander', 'Hamilton', '$AUTH_ID_5', 'User', '{\"MANDARIN\":4}');"
+    docker exec -it planet-read_db_1 mysql -u root -proot -e "USE planet-read; INSERT INTO users (first_name, last_name, auth_id, role, approved_languages) VALUES ('Angela', 'Merkel', '$AUTH_ID_6', 'Admin', '{\"GERMAN\":4}');"
+    docker exec -it planet-read_db_1 mysql -u root -proot -e "USE planet-read; INSERT INTO users (first_name, last_name, auth_id, role, approved_languages) VALUES ('Richard', 'Feynman', '$AUTH_ID_7', 'User', '{\"PORTUGESE\":4}');"
     
 
     if  [[ "$1" = "kevin" ]] 
     then 
         # stories 
-        docker exec -it planet-read_db_1 psql -U postgres -d planet-read -c "ALTER SEQUENCE stories_id_seq RESTART WITH 1;"
+        docker exec -it planet-read_db_1 mysql -u root -proot -e "USE planet-read; ALTER SEQUENCE stories_id_seq RESTART WITH 1;"
         
-        docker exec -it planet-read_db_1 psql -U postgres -d planet-read -c "INSERT INTO stories (title, description, youtube_link, level, translated_languages) VALUES ('Kevin Burns Coal to Create Smog', 'He wants to test out the HEPA filter in the new Tesla he got for his birthday', 'https://www.youtube.com/watch?v=pP44EPBMb8A', 4, '{\"GERMAN\", \"ENGLISH_UK\"}');"
-        docker exec -it planet-read_db_1 psql -U postgres -d planet-read -c "INSERT INTO stories (title, description, youtube_link, level, translated_languages) VALUES ('Kevin Drives Dolphin Species to Extinction', 'He said dolphin looked at him funny', 'https://www.youtube.com/watch?v=ouAccsTzlGU', 2, '{\"GERMAN\", \"POLISH\"}');"
-        docker exec -it planet-read_db_1 psql -U postgres -d planet-read -c "INSERT INTO stories (title, description, youtube_link, level, translated_languages) VALUES ('Kevin Complains About Taxes', 'He wants buy a new 180 foot yacht', 'https://www.youtube.com/watch?v=PaErPyEnDvk', 3, '{\"MANDARIN\", \"ENGLISH_UK\"}');"
-        docker exec -it planet-read_db_1 psql -U postgres -d planet-read -c "INSERT INTO stories (title, description, youtube_link, level, translated_languages) VALUES ('Kevin Burns Down Old Growth Forest', 'Aims to expand cow pasture for his A5 Wagyu cattle', 'https://www.youtube.com/watch?v=udFxKZRyQt4', 2, '{\"GERMAN\", \"ENGLISH_UK\"}');"
-        docker exec -it planet-read_db_1 psql -U postgres -d planet-read -c "INSERT INTO stories (title, description, youtube_link, level, translated_languages) VALUES ('Kevin, When Told that Peasants Have No Bread, Responds:', 'Let them eat cake', 'https://www.youtube.com/watch?v=y8XvQNt26KI', 4, '{\"GERMAN\", \"ENGLISH_UK\", \"PORTUGUESE\", \"DUTCH\"}');"
-        docker exec -it planet-read_db_1 psql -U postgres -d planet-read -c "INSERT INTO stories (title, description, youtube_link, level, translated_languages) VALUES ('Four Score and Seven Years Ago', 'Conceived in liberty and dedicated to the proposition that all men are created equal', 'https://www.youtube.com/watch?v=QImCld9YubE', 4, '{\"ENGLISH_US\"}');"
-        docker exec -it planet-read_db_1 psql -U postgres -d planet-read -c "INSERT INTO stories (title, description, youtube_link, level, translated_languages) VALUES ('Kevin Lobbies Against Expansion of Social Safety Net', 'He complains higher taxes will prevent him from getting a new Gulfstream G650ER for Christmas', 'https://www.youtube.com/watch?v=t8IK0ZqfxNI&t=27s', 2, '{}');"
+        docker exec -it planet-read_db_1 mysql -u root -proot -e "USE planet-read; INSERT INTO stories (title, description, youtube_link, level, translated_languages) VALUES ('Kevin Burns Coal to Create Smog', 'He wants to test out the HEPA filter in the new Tesla he got for his birthday', 'https://www.youtube.com/watch?v=pP44EPBMb8A', 4, '[\"GERMAN\", \"ENGLISH_UK\"]');"
+        docker exec -it planet-read_db_1 mysql -u root -proot -e "USE planet-read; INSERT INTO stories (title, description, youtube_link, level, translated_languages) VALUES ('Kevin Drives Dolphin Species to Extinction', 'He said dolphin looked at him funny', 'https://www.youtube.com/watch?v=ouAccsTzlGU', 2, '[\"GERMAN\", \"POLISH\"]');"
+        docker exec -it planet-read_db_1 mysql -u root -proot -e "USE planet-read; INSERT INTO stories (title, description, youtube_link, level, translated_languages) VALUES ('Kevin Complains About Taxes', 'He wants buy a new 180 foot yacht', 'https://www.youtube.com/watch?v=PaErPyEnDvk', 3, '[\"MANDARIN\", \"ENGLISH_UK\"]');"
+        docker exec -it planet-read_db_1 mysql -u root -proot -e "USE planet-read; INSERT INTO stories (title, description, youtube_link, level, translated_languages) VALUES ('Kevin Burns Down Old Growth Forest', 'Aims to expand cow pasture for his A5 Wagyu cattle', 'https://www.youtube.com/watch?v=udFxKZRyQt4', 2, '[\"GERMAN\", \"ENGLISH_UK\"]');"
+        docker exec -it planet-read_db_1 mysql -u root -proot -e "USE planet-read; INSERT INTO stories (title, description, youtube_link, level, translated_languages) VALUES ('Kevin, When Told that Peasants Have No Bread, Responds:', 'Let them eat cake', 'https://www.youtube.com/watch?v=y8XvQNt26KI', 4, '[\"GERMAN\", \"ENGLISH_UK\", \"PORTUGUESE\", \"DUTCH\"]');"
+        docker exec -it planet-read_db_1 mysql -u root -proot -e "USE planet-read; INSERT INTO stories (title, description, youtube_link, level, translated_languages) VALUES ('Four Score and Seven Years Ago', 'Conceived in liberty and dedicated to the proposition that all men are created equal', 'https://www.youtube.com/watch?v=QImCld9YubE', 4, '[\"ENGLISH_US\"]');"
+        docker exec -it planet-read_db_1 mysql -u root -proot -e "USE planet-read; INSERT INTO stories (title, description, youtube_link, level, translated_languages) VALUES ('Kevin Lobbies Against Expansion of Social Safety Net', 'He complains higher taxes will prevent him from getting a new Gulfstream G650ER for Christmas', 'https://www.youtube.com/watch?v=t8IK0ZqfxNI&t=27s', 2, '[]');"
     
     else 
         # stories 
-        docker exec -it planet-read_db_1 psql -U postgres -d planet-read -c "ALTER SEQUENCE stories_id_seq RESTART WITH 1;"
+        docker exec -it planet-read_db_1 mysql -u root -proot -e "USE planet-read; ALTER SEQUENCE stories_id_seq RESTART WITH 1;"
         
-        docker exec -it planet-read_db_1 psql -U postgres -d planet-read -c "INSERT INTO stories (title, description, youtube_link, level, translated_languages) VALUES ('East of Eden', 'John Steinbeck', 'https://www.youtube.com/watch?v=DHyUYg8X31c', 4, '{\"GERMAN\", \"ENGLISH_UK\"}');"
-        docker exec -it planet-read_db_1 psql -U postgres -d planet-read -c "INSERT INTO stories (title, description, youtube_link, level, translated_languages) VALUES ('War and Peace', 'Leo Tolstoy', 'https://www.youtube.com/watch?v=Da-2h2B4faU&t=4s', 1, '{\"GERMAN\", \"POLISH\"}');"
-        docker exec -it planet-read_db_1 psql -U postgres -d planet-read -c "INSERT INTO stories (title, description, youtube_link, level, translated_languages) VALUES ('A Tale of Two Cities', 'Charles Dickens', 'https://www.youtube.com/watch?v=DHyUYg8X31c', 3, '{\"MANDARIN\", \"ENGLISH_UK\"}');"
-        docker exec -it planet-read_db_1 psql -U postgres -d planet-read -c "INSERT INTO stories (title, description, youtube_link, level, translated_languages) VALUES ('Pride and Prejudice', 'Jane Austen', 'https://www.youtube.com/watch?v=DHyUYg8X31c', 4, '{\"GERMAN\", \"ENGLISH_UK\"}');"
-        docker exec -it planet-read_db_1 psql -U postgres -d planet-read -c "INSERT INTO stories (title, description, youtube_link, level, translated_languages) VALUES ('To Kill a Mockingbird', 'Harper Lee', 'https://www.youtube.com/watch?v=DHyUYg8X31c', 3, '{\"GERMAN\", \"ENGLISH_UK\", \"PORTUGUESE\", \"DUTCH\"}');"
-        docker exec -it planet-read_db_1 psql -U postgres -d planet-read -c "INSERT INTO stories (title, description, youtube_link, level, translated_languages) VALUES ('The Great Gatsby', 'F. Scott Fitzgerald', 'https://www.youtube.com/watch?v=DHyUYg8X31c', 4, '{\"ENGLISH_US\"}');"
-        docker exec -it planet-read_db_1 psql -U postgres -d planet-read -c "INSERT INTO stories (title, description, youtube_link, level, translated_languages) VALUES ('1984', 'George Orwell', 'https://www.youtube.com/watch?v=Da-2h2B4faU&t=4s', 2, '{}');"
+        docker exec -it planet-read_db_1 mysql -u root -proot -e "USE planet-read; INSERT INTO stories (title, description, youtube_link, level, translated_languages) VALUES ('East of Eden', 'John Steinbeck', 'https://www.youtube.com/watch?v=DHyUYg8X31c', 4, '[\"GERMAN\", \"ENGLISH_UK\"]');"
+        docker exec -it planet-read_db_1 mysql -u root -proot -e "USE planet-read; INSERT INTO stories (title, description, youtube_link, level, translated_languages) VALUES ('War and Peace', 'Leo Tolstoy', 'https://www.youtube.com/watch?v=Da-2h2B4faU&t=4s', 1, '[\"GERMAN\", \"POLISH\"]');"
+        docker exec -it planet-read_db_1 mysql -u root -proot -e "USE planet-read; INSERT INTO stories (title, description, youtube_link, level, translated_languages) VALUES ('A Tale of Two Cities', 'Charles Dickens', 'https://www.youtube.com/watch?v=DHyUYg8X31c', 3, '[\"MANDARIN\", \"ENGLISH_UK\"]');"
+        docker exec -it planet-read_db_1 mysql -u root -proot -e "USE planet-read; INSERT INTO stories (title, description, youtube_link, level, translated_languages) VALUES ('Pride and Prejudice', 'Jane Austen', 'https://www.youtube.com/watch?v=DHyUYg8X31c', 4, '[\"GERMAN\", \"ENGLISH_UK\"]');"
+        docker exec -it planet-read_db_1 mysql -u root -proot -e "USE planet-read; INSERT INTO stories (title, description, youtube_link, level, translated_languages) VALUES ('To Kill a Mockingbird', 'Harper Lee', 'https://www.youtube.com/watch?v=DHyUYg8X31c', 3, '[\"GERMAN\", \"ENGLISH_UK\", \"PORTUGUESE\", \"DUTCH\"]');"
+        docker exec -it planet-read_db_1 mysql -u root -proot -e "USE planet-read; INSERT INTO stories (title, description, youtube_link, level, translated_languages) VALUES ('The Great Gatsby', 'F. Scott Fitzgerald', 'https://www.youtube.com/watch?v=DHyUYg8X31c', 4, '[\"ENGLISH_US\"]');"
+        docker exec -it planet-read_db_1 mysql -u root -proot -e "USE planet-read; INSERT INTO stories (title, description, youtube_link, level, translated_languages) VALUES ('1984', 'George Orwell', 'https://www.youtube.com/watch?v=Da-2h2B4faU&t=4s', 2, '[]');"
     fi 
     
 
     # story_translations
-    docker exec -it planet-read_db_1 psql -U postgres -d planet-read -c "ALTER SEQUENCE story_translations_id_seq RESTART WITH 1;"
+    docker exec -it planet-read_db_1 mysql -u root -proot -e "USE planet-read; ALTER SEQUENCE story_translations_id_seq RESTART WITH 1;"
 
 
-    docker exec -it planet-read_db_1 psql -U postgres -d planet-read -c "INSERT INTO story_translations (story_id, language, stage, translator_id) VALUES (1, 'GERMAN', 'REVIEW', 6);"
-    docker exec -it planet-read_db_1 psql -U postgres -d planet-read -c "INSERT INTO story_translations (story_id, language, stage, translator_id) VALUES (1, 'ENGLISH_UK', 'REVIEW', 4);"
+    docker exec -it planet-read_db_1 mysql -u root -proot -e "USE planet-read; INSERT INTO story_translations (story_id, language, stage, translator_id) VALUES (1, 'GERMAN', 'TRANSLATE', 6);"
+    docker exec -it planet-read_db_1 mysql -u root -proot -e "USE planet-read; INSERT INTO story_translations (story_id, language, stage, translator_id) VALUES (1, 'ENGLISH_UK', 'TRANSLATE', 4);"
 
-    docker exec -it planet-read_db_1 psql -U postgres -d planet-read -c "INSERT INTO story_translations (story_id, language, stage, translator_id) VALUES (2, 'GERMAN', 'REVIEW', 2);"
-    docker exec -it planet-read_db_1 psql -U postgres -d planet-read -c "INSERT INTO story_translations (story_id, language, stage, translator_id) VALUES (2, 'POLISH', 'REVIEW', 2);"
+    docker exec -it planet-read_db_1 mysql -u root -proot -e "USE planet-read; INSERT INTO story_translations (story_id, language, stage, translator_id) VALUES (2, 'GERMAN', 'TRANSLATE', 2);"
+    docker exec -it planet-read_db_1 mysql -u root -proot -e "USE planet-read; INSERT INTO story_translations (story_id, language, stage, translator_id) VALUES (2, 'POLISH', 'TRANSLATE', 2);"
 
-    docker exec -it planet-read_db_1 psql -U postgres -d planet-read -c "INSERT INTO story_translations (story_id, language, stage, translator_id) VALUES (3, 'MANDARIN', 'REVIEW', 5);"
-    docker exec -it planet-read_db_1 psql -U postgres -d planet-read -c "INSERT INTO story_translations (story_id, language, stage, translator_id) VALUES (3, 'ENGLISH_UK', 'START', 4);"
+    docker exec -it planet-read_db_1 mysql -u root -proot -e "USE planet-read; INSERT INTO story_translations (story_id, language, stage, translator_id) VALUES (3, 'MANDARIN', 'TRANSLATE', 5);"
+    docker exec -it planet-read_db_1 mysql -u root -proot -e "USE planet-read; INSERT INTO story_translations (story_id, language, stage, translator_id) VALUES (3, 'ENGLISH_UK', 'TRANSLATE', 4);"
 
-    docker exec -it planet-read_db_1 psql -U postgres -d planet-read -c "INSERT INTO story_translations (story_id, language, stage, translator_id) VALUES (4, 'GERMAN', 'REVIEW', 6);"
-    docker exec -it planet-read_db_1 psql -U postgres -d planet-read -c "INSERT INTO story_translations (story_id, language, stage, translator_id) VALUES (4, 'ENGLISH_UK', 'START', 4);"
+    docker exec -it planet-read_db_1 mysql -u root -proot -e "USE planet-read; INSERT INTO story_translations (story_id, language, stage, translator_id) VALUES (4, 'GERMAN', 'TRANSLATE', 6);"
+    docker exec -it planet-read_db_1 mysql -u root -proot -e "USE planet-read; INSERT INTO story_translations (story_id, language, stage, translator_id) VALUES (4, 'ENGLISH_UK', 'TRANSLATE', 4);"
 
-    docker exec -it planet-read_db_1 psql -U postgres -d planet-read -c "INSERT INTO story_translations (story_id, language, stage, translator_id) VALUES (5, 'GERMAN', 'START', 2);"
-    docker exec -it planet-read_db_1 psql -U postgres -d planet-read -c "INSERT INTO story_translations (story_id, language, stage, translator_id) VALUES (5, 'ENGLISH_US', 'START', 1);"
-    docker exec -it planet-read_db_1 psql -U postgres -d planet-read -c "INSERT INTO story_translations (story_id, language, stage, translator_id) VALUES (5, 'PORTUGUESE', 'START', 7);"
-    docker exec -it planet-read_db_1 psql -U postgres -d planet-read -c "INSERT INTO story_translations (story_id, language, stage, translator_id) VALUES (5, 'DUTCH', 'START', 3);"
+    docker exec -it planet-read_db_1 mysql -u root -proot -e "USE planet-read; INSERT INTO story_translations (story_id, language, stage, translator_id) VALUES (5, 'GERMAN', 'TRANSLATE', 2);"
+    docker exec -it planet-read_db_1 mysql -u root -proot -e "USE planet-read; INSERT INTO story_translations (story_id, language, stage, translator_id) VALUES (5, 'ENGLISH_US', 'TRANSLATE', 1);"
+    docker exec -it planet-read_db_1 mysql -u root -proot -e "USE planet-read; INSERT INTO story_translations (story_id, language, stage, translator_id) VALUES (5, 'PORTUGUESE', 'TRANSLATE', 7);"
+    docker exec -it planet-read_db_1 mysql -u root -proot -e "USE planet-read; INSERT INTO story_translations (story_id, language, stage, translator_id) VALUES (5, 'DUTCH', 'TRANSLATE', 3);"
 
-    docker exec -it planet-read_db_1 psql -U postgres -d planet-read -c "INSERT INTO story_translations (story_id, language, stage, translator_id) VALUES (6, 'ENGLISH_US', 'START', 1);"
+    docker exec -it planet-read_db_1 mysql -u root -proot -e "USE planet-read; INSERT INTO story_translations (story_id, language, stage, translator_id) VALUES (6, 'ENGLISH_US', 'TRANSLATE', 1);"
 
 
     # Story content 
-    docker exec -it planet-read_db_1 psql -U postgres -d planet-read -c "ALTER SEQUENCE story_contents_id_seq RESTART WITH 1;"
+    docker exec -it planet-read_db_1 mysql -u root -proot -e "USE planet-read; ALTER SEQUENCE story_contents_id_seq RESTART WITH 1;"
 
     for STORY_ID in 1 2 3 4 5 6 7
     do 
-        docker exec -it planet-read_db_1 psql -U postgres -d planet-read -c "INSERT INTO story_contents (story_id, line_index, content) VALUES ('$STORY_ID', 1, '“Every two weeks I went to a meeting with them, and in my room here I covered pages with writing. 
+        docker exec -it planet-read_db_1 mysql -u root -proot -e "USE planet-read; INSERT INTO story_contents (story_id, line_index, content) VALUES ('$STORY_ID', 1, '“Every two weeks I went to a meeting with them, and in my room here I covered pages with writing. 
             I bought every known Hebrew dictionary. But the old gentlemen were always ahead of me. 
             It wasn’t long before they were ahead of our rabbi; he brought a colleague in. ');"
 
-        docker exec -it planet-read_db_1 psql -U postgres -d planet-read -c "INSERT INTO story_contents (story_id, line_index, content) VALUES ('$STORY_ID', 2, 'Mr. Hamilton, you should have sat through some of those nights of argument and discussion. 
+        docker exec -it planet-read_db_1 mysql -u root -proot -e "USE planet-read; INSERT INTO story_contents (story_id, line_index, content) VALUES ('$STORY_ID', 2, 'Mr. Hamilton, you should have sat through some of those nights of argument and discussion. 
             The questions, the inspection, oh, the lovely thinking—the beautiful thinking.');"
                                                                                                                                                         
-        docker exec -it planet-read_db_1 psql -U postgres -d planet-read -c "INSERT INTO story_contents (story_id, line_index, content) VALUES ('$STORY_ID', 3, 'After two years we felt that we could approach your sixteen verses of the fourth chapter of Genesis. ');"
+        docker exec -it planet-read_db_1 mysql -u root -proot -e "USE planet-read; INSERT INTO story_contents (story_id, line_index, content) VALUES ('$STORY_ID', 3, 'After two years we felt that we could approach your sixteen verses of the fourth chapter of Genesis. ');"
 
-        docker exec -it planet-read_db_1 psql -U postgres -d planet-read -c "INSERT INTO story_contents (story_id, line_index, content) VALUES ('$STORY_ID', 4, 'My old gentlemen felt that these words were very important too—’Thou shalt’ and ‘Do thou.’ 
+        docker exec -it planet-read_db_1 mysql -u root -proot -e "USE planet-read; INSERT INTO story_contents (story_id, line_index, content) VALUES ('$STORY_ID', 4, 'My old gentlemen felt that these words were very important too—’Thou shalt’ and ‘Do thou.’ 
             And this was the gold from our mining: ‘Thou mayest.’ ‘Thou mayest rule over sin.’ ');"
 
-        docker exec -it planet-read_db_1 psql -U postgres -d planet-read -c "INSERT INTO story_contents (story_id, line_index, content) VALUES ('$STORY_ID', 5, 'The old gentlemen smiled and nodded and felt the years were well spent. It brought them out of their
+        docker exec -it planet-read_db_1 mysql -u root -proot -e "USE planet-read; INSERT INTO story_contents (story_id, line_index, content) VALUES ('$STORY_ID', 5, 'The old gentlemen smiled and nodded and felt the years were well spent. It brought them out of their
             Chinese shells too, and right now they are studying Greek.” ');"
         
-        docker exec -it planet-read_db_1 psql -U postgres -d planet-read -c "INSERT INTO story_contents (story_id, line_index, content) VALUES ('$STORY_ID', 6, 'Samuel said, “It’s a fantastic story. And I’ve tried to follow and maybe I’ve missed somewhere. 
+        docker exec -it planet-read_db_1 mysql -u root -proot -e "USE planet-read; INSERT INTO story_contents (story_id, line_index, content) VALUES ('$STORY_ID', 6, 'Samuel said, “It’s a fantastic story. And I’ve tried to follow and maybe I’ve missed somewhere. 
             Why is this word so important?”');"
         
-        docker exec -it planet-read_db_1 psql -U postgres -d planet-read -c "INSERT INTO story_contents (story_id, line_index, content) VALUES ('$STORY_ID', 7, 'Lee’s hand shook as he filled the delicate cups. 
+        docker exec -it planet-read_db_1 mysql -u root -proot -e "USE planet-read; INSERT INTO story_contents (story_id, line_index, content) VALUES ('$STORY_ID', 7, 'Lee’s hand shook as he filled the delicate cups. 
             He drank his down in one gulp. “Don’t you see?” he cried. ');"
         
-        docker exec -it planet-read_db_1 psql -U postgres -d planet-read -c "INSERT INTO story_contents (story_id, line_index, content) VALUES ('$STORY_ID', 8, '“The American Standard translation orders men to triumph over sin, and you can call sin ignorance. ');"
+        docker exec -it planet-read_db_1 mysql -u root -proot -e "USE planet-read; INSERT INTO story_contents (story_id, line_index, content) VALUES ('$STORY_ID', 8, '“The American Standard translation orders men to triumph over sin, and you can call sin ignorance. ');"
         
-        docker exec -it planet-read_db_1 psql -U postgres -d planet-read -c "INSERT INTO story_contents (story_id, line_index, content) VALUES ('$STORY_ID', 9, 'The King James translation makes a promise in ‘Thou shalt,’ 
+        docker exec -it planet-read_db_1 mysql -u root -proot -e "USE planet-read; INSERT INTO story_contents (story_id, line_index, content) VALUES ('$STORY_ID', 9, 'The King James translation makes a promise in ‘Thou shalt,’ 
             meaning that men will surely triumph over sin. ');"
         
-        docker exec -it planet-read_db_1 psql -U postgres -d planet-read -c "INSERT INTO story_contents (story_id, line_index, content) VALUES ('$STORY_ID', 10, 'But the Hebrew word, the word timshel—‘Thou mayest’—that gives a choice. 
+        docker exec -it planet-read_db_1 mysql -u root -proot -e "USE planet-read; INSERT INTO story_contents (story_id, line_index, content) VALUES ('$STORY_ID', 10, 'But the Hebrew word, the word timshel—‘Thou mayest’—that gives a choice. 
             It might be the most important word in the world. 
             That says the way is open. That throws it right back on a man.
             For if ‘Thou mayest’—it is also true that ‘Thou mayest not.’ Don’t you see?”');"
@@ -169,39 +169,39 @@ else
 
     
     # Story translation content 
-    docker exec -it planet-read_db_1 psql -U postgres -d planet-read -c "ALTER SEQUENCE story_translation_contents_id_seq RESTART WITH 1;"
+    docker exec -it planet-read_db_1 mysql -u root -proot -e "USE planet-read; ALTER SEQUENCE story_translation_contents_id_seq RESTART WITH 1;"
 
 
     for STORY_TRANSLATION_ID in 2 3 5 7 11 13 
     do 
-        docker exec -it planet-read_db_1 psql -U postgres -d planet-read -c "INSERT INTO story_translation_contents (story_translation_id, line_index, translation_content) VALUES ('$STORY_TRANSLATION_ID', 1, '“Every two weeks I went to a meeting with them, and in my room here I covered pages with writing. 
+        docker exec -it planet-read_db_1 mysql -u root -proot -e "USE planet-read; INSERT INTO story_translation_contents (story_translation_id, line_index, translation_content) VALUES ('$STORY_TRANSLATION_ID', 1, '“Every two weeks I went to a meeting with them, and in my room here I covered pages with writing. 
             I bought every known Hebrew dictionary. But the old gentlemen were always ahead of me. 
             It wasn’t long before they were ahead of our rabbi; he brought a colleague in. ');"
 
-        docker exec -it planet-read_db_1 psql -U postgres -d planet-read -c "INSERT INTO story_translation_contents (story_translation_id, line_index, translation_content) VALUES ('$STORY_TRANSLATION_ID', 2, 'Mr. Hamilton, you should have sat through some of those nights of argument and discussion. 
+        docker exec -it planet-read_db_1 mysql -u root -proot -e "USE planet-read; INSERT INTO story_translation_contents (story_translation_id, line_index, translation_content) VALUES ('$STORY_TRANSLATION_ID', 2, 'Mr. Hamilton, you should have sat through some of those nights of argument and discussion. 
             The questions, the inspection, oh, the lovely thinking—the beautiful thinking.');"
                                                                                                                                                         
-        docker exec -it planet-read_db_1 psql -U postgres -d planet-read -c "INSERT INTO story_translation_contents (story_translation_id, line_index, translation_content) VALUES ('$STORY_TRANSLATION_ID', 3, 'After two years we felt that we could approach your sixteen verses of the fourth chapter of Genesis. ');"
+        docker exec -it planet-read_db_1 mysql -u root -proot -e "USE planet-read; INSERT INTO story_translation_contents (story_translation_id, line_index, translation_content) VALUES ('$STORY_TRANSLATION_ID', 3, 'After two years we felt that we could approach your sixteen verses of the fourth chapter of Genesis. ');"
 
-        docker exec -it planet-read_db_1 psql -U postgres -d planet-read -c "INSERT INTO story_translation_contents (story_translation_id, line_index, translation_content) VALUES ('$STORY_TRANSLATION_ID', 4, 'My old gentlemen felt that these words were very important too—’Thou shalt’ and ‘Do thou.’ 
+        docker exec -it planet-read_db_1 mysql -u root -proot -e "USE planet-read; INSERT INTO story_translation_contents (story_translation_id, line_index, translation_content) VALUES ('$STORY_TRANSLATION_ID', 4, 'My old gentlemen felt that these words were very important too—’Thou shalt’ and ‘Do thou.’ 
             And this was the gold from our mining: ‘Thou mayest.’ ‘Thou mayest rule over sin.’ ');"
 
-        docker exec -it planet-read_db_1 psql -U postgres -d planet-read -c "INSERT INTO story_translation_contents (story_translation_id, line_index, translation_content) VALUES ('$STORY_TRANSLATION_ID', 5, 'The old gentlemen smiled and nodded and felt the years were well spent. It brought them out of their
+        docker exec -it planet-read_db_1 mysql -u root -proot -e "USE planet-read; INSERT INTO story_translation_contents (story_translation_id, line_index, translation_content) VALUES ('$STORY_TRANSLATION_ID', 5, 'The old gentlemen smiled and nodded and felt the years were well spent. It brought them out of their
             Chinese shells too, and right now they are studying Greek.” ');"
         
-        docker exec -it planet-read_db_1 psql -U postgres -d planet-read -c "INSERT INTO story_translation_contents (story_translation_id, line_index, translation_content) VALUES ('$STORY_TRANSLATION_ID', 6, 'Samuel said, “It’s a fantastic story. And I’ve tried to follow and maybe I’ve missed somewhere. 
+        docker exec -it planet-read_db_1 mysql -u root -proot -e "USE planet-read; INSERT INTO story_translation_contents (story_translation_id, line_index, translation_content) VALUES ('$STORY_TRANSLATION_ID', 6, 'Samuel said, “It’s a fantastic story. And I’ve tried to follow and maybe I’ve missed somewhere. 
             Why is this word so important?”');"
         
-        docker exec -it planet-read_db_1 psql -U postgres -d planet-read -c "INSERT INTO story_translation_contents (story_translation_id, line_index, translation_content) VALUES ('$STORY_TRANSLATION_ID', 7, 'Lee’s hand shook as he filled the delicate cups. 
+        docker exec -it planet-read_db_1 mysql -u root -proot -e "USE planet-read; INSERT INTO story_translation_contents (story_translation_id, line_index, translation_content) VALUES ('$STORY_TRANSLATION_ID', 7, 'Lee’s hand shook as he filled the delicate cups. 
             He drank his down in one gulp. “Don’t you see?” he cried. ');"
         
-        docker exec -it planet-read_db_1 psql -U postgres -d planet-read -c "INSERT INTO story_translation_contents (story_translation_id, line_index, translation_content) VALUES ('$STORY_TRANSLATION_ID', 8, '“The American Standard translation orders men to triumph over sin, 
+        docker exec -it planet-read_db_1 mysql -u root -proot -e "USE planet-read; INSERT INTO story_translation_contents (story_translation_id, line_index, translation_content) VALUES ('$STORY_TRANSLATION_ID', 8, '“The American Standard translation orders men to triumph over sin, 
             and you can call sin ignorance. ');"
         
-        docker exec -it planet-read_db_1 psql -U postgres -d planet-read -c "INSERT INTO story_translation_contents (story_translation_id, line_index, translation_content) VALUES ('$STORY_TRANSLATION_ID', 9, 'The King James translation makes a promise in ‘Thou shalt,’ 
+        docker exec -it planet-read_db_1 mysql -u root -proot -e "USE planet-read; INSERT INTO story_translation_contents (story_translation_id, line_index, translation_content) VALUES ('$STORY_TRANSLATION_ID', 9, 'The King James translation makes a promise in ‘Thou shalt,’ 
             meaning that men will surely triumph over sin. ');"
         
-        docker exec -it planet-read_db_1 psql -U postgres -d planet-read -c "INSERT INTO story_translation_contents (story_translation_id, line_index, translation_content) VALUES ('$STORY_TRANSLATION_ID', 10, 'But the Hebrew word, the word timshel—‘Thou mayest’—that gives a choice. 
+        docker exec -it planet-read_db_1 mysql -u root -proot -e "USE planet-read; INSERT INTO story_translation_contents (story_translation_id, line_index, translation_content) VALUES ('$STORY_TRANSLATION_ID', 10, 'But the Hebrew word, the word timshel—‘Thou mayest’—that gives a choice. 
             It might be the most important word in the world. 
             That says the way is open. That throws it right back on a man.
             For if ‘Thou mayest’—it is also true that ‘Thou mayest not.’ Don’t you see?”');"
@@ -211,7 +211,7 @@ else
     do 
         for i in 1 2 3 4 5 6 7 8 9 10
         do
-            docker exec -it planet-read_db_1 psql -U postgres -d planet-read -c "INSERT INTO story_translation_contents (story_translation_id, line_index, translation_content) VALUES ('$STORY_TRANSLATION_ID', $i, '');"
+            docker exec -it planet-read_db_1 mysql -u root -proot -e "USE planet-read; INSERT INTO story_translation_contents (story_translation_id, line_index, translation_content) VALUES ('$STORY_TRANSLATION_ID', $i, '');"
         done 
     done 
 
@@ -219,10 +219,10 @@ else
     do 
         for i in 1 2 3 4 5 6 7 8 9 
         do
-            docker exec -it planet-read_db_1 psql -U postgres -d planet-read -c "INSERT INTO story_translation_contents (story_translation_id, line_index, translation_content) VALUES ('$STORY_TRANSLATION_ID', $i, '');"
+            docker exec -it planet-read_db_1 mysql -u root -proot -e "USE planet-read; INSERT INTO story_translation_contents (story_translation_id, line_index, translation_content) VALUES ('$STORY_TRANSLATION_ID', $i, '');"
         done 
 
-        docker exec -it planet-read_db_1 psql -U postgres -d planet-read -c "INSERT INTO story_translation_contents (story_translation_id, line_index, translation_content) VALUES ('$STORY_TRANSLATION_ID', 10, 'But the Hebrew word, the word timshel—‘Thou mayest’—that gives a choice. 
+        docker exec -it planet-read_db_1 mysql -u root -proot -e "USE planet-read; INSERT INTO story_translation_contents (story_translation_id, line_index, translation_content) VALUES ('$STORY_TRANSLATION_ID', 10, 'But the Hebrew word, the word timshel—‘Thou mayest’—that gives a choice. 
             It might be the most important word in the world. 
             That says the way is open. That throws it right back on a man.
             For if ‘Thou mayest’—it is also true that ‘Thou mayest not.’ Don’t you see?”');"

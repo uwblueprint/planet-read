@@ -1,4 +1,5 @@
 from sqlalchemy import inspect
+from sqlalchemy.dialects.mysql import TEXT
 from sqlalchemy.orm.properties import ColumnProperty
 
 from . import db
@@ -10,9 +11,9 @@ class User(db.Model):
     __tablename__ = "users"
 
     id = db.Column(db.Integer, primary_key=True, nullable=False)
-    first_name = db.Column(db.String, nullable=False)
-    last_name = db.Column(db.String, nullable=False)
-    auth_id = db.Column(db.String, nullable=False)
+    first_name = db.Column(TEXT, nullable=False)
+    last_name = db.Column(TEXT, nullable=False)
+    auth_id = db.Column(TEXT, nullable=False)
     role = db.Column(roles_enum)
     resume = db.Column(db.Integer, db.ForeignKey("files.id"))
     profile_pic = db.Column(db.Integer, db.ForeignKey("files.id"))

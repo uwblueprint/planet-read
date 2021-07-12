@@ -1,4 +1,5 @@
 from sqlalchemy import inspect
+from sqlalchemy.dialects.mysql import LONGTEXT
 from sqlalchemy.orm.properties import ColumnProperty
 
 from . import db
@@ -11,7 +12,7 @@ class StoryContent(db.Model):
         db.Integer, db.ForeignKey("stories.id"), index=True, nullable=False
     )
     line_index = db.Column(db.Integer, nullable=False)
-    content = db.Column(db.String, nullable=False)
+    content = db.Column(LONGTEXT, nullable=False)
 
     def to_dict(self, include_relationships=False):
         cls = type(self)
