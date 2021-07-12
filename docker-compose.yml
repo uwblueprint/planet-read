@@ -31,14 +31,15 @@ services:
     env_file:
       - ./.env
   db:
-    image: postgres:12-alpine
+    image: mysql:8.0.25
+    command: --default-authentication-plugin=mysql_native_password --innodb-use-native-aio=0
     ports:
-      - 5432:5432
+      - 3306:3306
     volumes:
-      - postgres_data:/var/lib/postgresql/data/
+      - mysql_data:/var/lib/mysql/
     env_file:
       - ./.env
 
 volumes:
-  postgres_data:
+  mysql_data:
   file_uploads:

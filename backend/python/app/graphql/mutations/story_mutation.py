@@ -52,6 +52,7 @@ class AssignUserAsReviewer(graphene.Mutation):
     def mutate(root, info, user_id, story_translation_id):
         try:
             user = services["user"].get_user_by_id(user_id)
+            # TODO: move fetching story_translation to assign_user_as_reviewer 
             story_translation = services["story"].get_story_translation(
                 story_translation_id
             )

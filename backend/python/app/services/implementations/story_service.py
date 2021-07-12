@@ -61,7 +61,7 @@ class StoryService(IStoryService):
     def get_stories_available_for_translation(self, language, level):
         stories = (
             Story.query.filter(Story.level <= level)
-            .filter(~Story.translated_languages.any(language))
+            .filter(~Story.translated_languages.contains(language))
             .all()
         )
         return [story.to_dict(include_relationships=True) for story in stories]
@@ -104,7 +104,7 @@ class StoryService(IStoryService):
                     Story.description.label("description"),
                     Story.youtube_link.label("youtube_link"),
                     Story.level.label("level"),
-                    StoryTranslation.id.label("story_translation_id"),
+                    StoryTranslation.id.label("id"),
                     StoryTranslation.language.label("language"),
                     StoryTranslation.stage.label("stage"),
                     StoryTranslation.translator_id.label("translator_id"),
@@ -152,16 +152,17 @@ class StoryService(IStoryService):
             raise error
 
     def assign_user_as_reviewer(self, user, story_translation):
+        print(story_translation)
+        print(story_translation.___dict___)
+        print("hihihih")
         if (
-            story_translation.language in user.approved_languages
-            and user.approved_languages[story_translation.language]
-            >= story_translation.level
-            and story_translation.stage == "TRANSLATE"
-            and not story_translation.reviewer_id
+            story_translation["language"] in user.approved_languages
+            and user.approved_languages[story_translation["language"]]
+            >= story_translation["level"]
+            and story_translation["stage"] == "TRANSLATE"
+            and not story_translation["reviewer_id"]
         ):
-            story_translation = StoryTranslation.query.get(
-                story_translation.story_translation_id
-            )
+            story_translation = StoryTranslation.query.get(story_translation["id"])
             story_translation.reviewer_id = user.id
             story_translation.stage = "REVIEW"
             db.session.commit()
@@ -229,7 +230,7 @@ class StoryService(IStoryService):
                     Story.description.label("description"),
                     Story.youtube_link.label("youtube_link"),
                     Story.level.label("level"),
-                    StoryTranslation.id.label("story_translation_id"),
+                    StoryTranslation.id.label("id"),
                     StoryTranslation.language.label("language"),
                     StoryTranslation.stage.label("stage"),
                     StoryTranslation.translator_id.label("translator_id"),
