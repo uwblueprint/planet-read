@@ -9,17 +9,17 @@ class Comment(db.Model):
     __tablename__ = "comments"
 
     id = db.Column(db.Integer, primary_key=True, nullable=False)
-    story_translation_id = db.Column(
-        db.Integer, db.ForeignKey("story_translations.id"), index=True, nullable=False
+    story_translation_content_id = db.Column(
+        db.Integer, db.ForeignKey("story_translation_contents.id"), index=True, nullable=False
     )
 
     user_id = db.Column(
-        db.Integer, db.ForeignKey("users.id"), index=True, nullable=False
+        db.Integer, db.ForeignKey("users.id"), nullable=False
     )
 
     comment_index = db.Column(db.Integer, nullable=False)
     time = db.Column(db.Integer, nullable=False)
-    resolved = db.Column(db.Boolean, nullable=False)
+    resolved = db.Column(db.Boolean, nullable=True)
     content = db.Column(db.String, nullable=False)
 
     def to_dict(self, include_relationships=False):
