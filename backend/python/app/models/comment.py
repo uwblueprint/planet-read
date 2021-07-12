@@ -20,7 +20,7 @@ class Comment(db.Model):
 
     comment_index = db.Column(db.Integer, nullable=False)
     time = db.Column(db.Integer, nullable=False)
-    resolved = db.Column(db.Boolean, nullable=True)
+    resolved = db.Column(db.Boolean, nullable=False)
     content = db.Column(db.String, nullable=False)
 
     def to_dict(self, include_relationships=False):
