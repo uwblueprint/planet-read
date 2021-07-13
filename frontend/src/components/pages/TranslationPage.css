@@ -1,7 +1,5 @@
 .translation-page {
-    margin: 20px;
-    display: flex;
-    flex-direction: row;
+    margin: 20px 20px 0px 20px;
 }
 
 h4 {
@@ -9,19 +7,15 @@ h4 {
     text-decoration: underline;
 }
 
+.translation-container {
+    display: flex;
+}
+
 .translation-content {
     display: flex;
     flex-direction: column;
-    height: 70vh;
     overflow-y: auto;
-}
-
-.translation-container {
-    flex-basis: 75%;
-}
-
-.translation-sidebar {
-    flex-basis: 25%;
+    width: 75vw;
 }
 
 .translation-progress-bar {
@@ -59,4 +53,7 @@ h4 {
 }
 
 img {
+    height: 15px;
     margin: 5px 20px 0px 10px;
+    width: 15px;
+}

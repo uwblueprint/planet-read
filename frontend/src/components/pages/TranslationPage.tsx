@@ -80,7 +80,6 @@ const TranslationPage = () => {
   );
   const [percentageComplete] = useState(25);
 
-
   const handleError = (errorMessage: string) => {
     alert(errorMessage);
   };
@@ -185,10 +184,10 @@ const TranslationPage = () => {
       <h4>View story details</h4>
       <div className="translation-container">
         <div className="translation-content">{storyCells}</div>
-      </div>
-      <div className="translation-sidebar">
-        <div className="translation-progress-bar">
-          <TranslationProgressBar percentageComplete={percentageComplete} />
+        <div className="translation-sidebar">
+          <div className="translation-progress-bar">
+            <TranslationProgressBar percentageComplete={percentageComplete} />
+          </div>
         </div>
       </div>
     </div>
