@@ -11,6 +11,7 @@ import DisplayPage from "./components/pages/DisplayPage";
 import HomePage from "./components/pages/HomePage";
 import NotFound from "./components/pages/NotFound";
 import UpdatePage from "./components/pages/UpdatePage";
+import TranslationPage from "./components/pages/TranslationPage";
 import AUTHENTICATED_USER_KEY from "./constants/AuthConstants";
 import AuthContext, { AuthenticatedUser } from "./contexts/AuthContext";
 import { getLocalStorageObj } from "./utils/LocalStorageUtils";
@@ -35,6 +36,11 @@ const App = () => {
           <PrivateRoute exact path="/entity/update" component={UpdatePage} />
           <PrivateRoute exact path="/entity" component={DisplayPage} />
           <PrivateRoute exact path="/stories" component={HomePage} />
+          <PrivateRoute
+            exact
+            path="/translation/:storyId/:storyTranslationId"
+            component={TranslationPage}
+          />
           <Route exact path="*" component={NotFound} />
         </Switch>
       </Router>
