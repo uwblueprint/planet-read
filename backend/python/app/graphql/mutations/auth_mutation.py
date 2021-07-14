@@ -153,7 +153,7 @@ class SignUp(graphene.Mutation):
     role = graphene.Field(RoleEnum)
     email = graphene.String()
 
-    def mutate(root, info, first_name, last_name, email, password, signUpMethod):
+    def mutate(root, info, first_name, last_name, email, password):
         try:
             services["user"].create_user(
                 CreateUserWithEmailDTO(
@@ -161,8 +161,7 @@ class SignUp(graphene.Mutation):
                     last_name=last_name,
                     email=email,
                     role="User",
-                    password=password,
-                    signUpMethod="password",
+                    password=password
                 )
             )
             auth_dto = services["auth"].generate_token(email=email, password=password)
