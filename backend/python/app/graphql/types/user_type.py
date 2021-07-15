@@ -33,7 +33,7 @@ class CreateUserWithGoogleDTO(graphene.InputObjectType):
     last_name = graphene.String(required=True)
     role = graphene.Argument(RoleEnum, required=True)
     email = graphene.String(required=True)
-    uid = graphene.String(required=True)
+    auth_id = graphene.String(required=True)
     resume = graphene.Int(required=False, default=None)
     profile_pic = graphene.Int(required=False, default=None)
     approved_languages = graphene.JSONString(required=False, default=None)

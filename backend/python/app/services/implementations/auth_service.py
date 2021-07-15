@@ -68,7 +68,7 @@ class AuthService(IAuthService):
                     last_name=google_user["lastName"],
                     role="User",
                     email=google_user["email"],
-                    uid=auth_id,
+                    auth_id=auth_id,
                     onFirebase=onFirebase,
                 )
             )  # TODO: Pass in the profile photo from google

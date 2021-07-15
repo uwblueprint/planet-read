@@ -10,7 +10,7 @@ import authAPIClient from "../../APIClients/AuthAPIClient";
 import AuthContext, { AuthenticatedUser } from "../../contexts/AuthContext";
 import ResetPassword from "./ResetPassword";
 
-type GoogleSucces = GoogleLoginResponse | GoogleLoginResponseOffline;
+type GoogleResponse = GoogleLoginResponse | GoogleLoginResponseOffline;
 
 const LOGIN = gql`
   mutation Login($email: String!, $password: String!) {
@@ -63,13 +63,11 @@ const Login = () => {
   };
 
   const onGoogleLoginSuccess = async (tokenId: string) => {
-    console.log(tokenId);
     const user: AuthenticatedUser = await authAPIClient.loginWithGoogle(
       tokenId,
       loginWithGoogle,
     );
     setAuthenticatedUser(user);
-    console.log(user);
   };
 
   const onSignUpClick = async () => {
@@ -117,14 +115,14 @@ const Login = () => {
           <GoogleLogin
             clientId="175399577852-6hll8ih9q1ljij8f50f9pf9t2va6u3a7.apps.googleusercontent.com"
             buttonText="Google"
-            onSuccess={(response: GoogleSucces): void => {
+            onSuccess={(response: GoogleResponse): void => {
               if ("tokenId" in response) {
                 onGoogleLoginSuccess(response.tokenId);
               } else {
                 console.log(response);
               }
             }}
-            onFailure={(response) => console.log(response)}
+            onFailure={(response) => alert(response)}
           />
         </div>
         <div>

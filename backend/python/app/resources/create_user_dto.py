@@ -28,7 +28,7 @@ class CreateUserWithGoogleDTO:
         last_name,
         role,
         email,
-        uid,
+        auth_id,
         onFirebase,
         resume=None,
         profile_pic=None,
@@ -38,7 +38,7 @@ class CreateUserWithGoogleDTO:
         self.last_name = last_name
         self.role = role
         self.email = email
-        self.uid = uid
+        self.auth_id = auth_id
         self.resume = resume
         self.profile_pic = profile_pic
         self.approved_languages = approved_languages

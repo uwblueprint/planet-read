@@ -143,8 +143,8 @@ class UserService(IUserService):
                 auth_id = firebase_user.uid
             elif user.signUpMethod == "GOOGLE":
                 if not user.onFirebase:
-                    firebase_user = firebase_admin.auth.create_user(uid=user.uid)
-                auth_id = user.uid
+                    firebase_user = firebase_admin.auth.create_user(uid=user.auth_id)
+                auth_id = user.auth_id
 
             postgres_user = {
                 "first_name": user.first_name,
