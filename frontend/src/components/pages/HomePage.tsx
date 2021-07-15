@@ -55,7 +55,7 @@ const HomePage = () => {
               level: ${level}
             ) {
               storyId
-              storyTranslationId
+              storyTranslationId: id
               ${STORY_FIELDS}
             }
           }
@@ -73,7 +73,7 @@ const HomePage = () => {
               level: ${level}
             ) {
               storyId
-              storyTranslationId
+              storyTranslationId: id
               ${STORY_FIELDS}
             }
           }

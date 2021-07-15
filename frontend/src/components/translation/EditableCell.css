@@ -1,0 +1,9 @@
+.input-translation {
+    border: 1px black solid;
+    border-radius: 3px;
+    font-size: 12px;
+    height: fit-content;
+    margin: 0px 10px 10px 10px;
+    padding: 10px;
+    width: 40%;
+}
