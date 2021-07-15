@@ -4,6 +4,7 @@ from flask import current_app
 
 from ..models import db
 from ..services.implementations.auth_service import AuthService
+from ..services.implementations.comment_service import CommentService
 from ..services.implementations.email_service import EmailService
 from ..services.implementations.entity_service import EntityService
 from ..services.implementations.file_service import FileService
@@ -25,6 +26,7 @@ def init_app(app):
         ),
     )
 
+    services["comment"] = CommentService(current_app.logger)
     services["entity"] = EntityService(current_app.logger)
     services["file"] = FileService(current_app.logger)
     services["story"] = StoryService(current_app.logger)

@@ -1,6 +1,6 @@
 from sqlalchemy import inspect
-from sqlalchemy.orm.properties import ColumnProperty
 from sqlalchemy.dialects.mysql import LONGTEXT
+from sqlalchemy.orm.properties import ColumnProperty
 
 from . import db
 
