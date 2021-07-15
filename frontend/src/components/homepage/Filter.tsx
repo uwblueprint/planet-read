@@ -29,12 +29,16 @@ const Filter = ({
     setLevel(parseInt(event.target.value, 10));
   };
   const languageOptions = Object.keys(approvedLanguages).map((lang) => (
-    <option value={lang}>{lang}</option>
+    <option key={lang} value={lang}>
+      {lang}
+    </option>
   ));
   const maxLvl = approvedLanguages[language];
   const lvlOptions = [];
   for (let i = 1; i <= maxLvl; i += 1) {
-    lvlOptions.push(<option value={i.toString()} label={i.toString()} />);
+    lvlOptions.push(
+      <option key={i.toString()} value={i.toString()} label={i.toString()} />,
+    );
   }
   return (
     <div className="filter">
