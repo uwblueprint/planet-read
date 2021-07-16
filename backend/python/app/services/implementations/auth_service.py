@@ -1,6 +1,8 @@
 import firebase_admin.auth
 
 from ...resources.auth_dto import AuthDTO
+from ...resources.create_user_dto import CreateUserWithGoogleDTO
+from ...resources.token import Token
 from ...utilities.firebase_rest_client import FirebaseRestClient
 from ..interfaces.auth_service import IAuthService
 
@@ -38,6 +40,47 @@ class AuthService(IAuthService):
                 )
             )
             raise e
+
+    def generate_oauth_token(self, id_token):
+        # If user already has a login with this email, just return the token
+        try:
+            google_user = self.firebase_rest_client.sign_in_with_google(id_token)
+            auth_id = google_user["localId"]
+            token = Token(google_user["idToken"], google_user["refreshToken"])
+            onFirebase = False
+            try:
+                user = self.user_service.get_user_by_email(
+                    google_user["email"]
+                )  # If the user already has an email account, let them access that account
+                return AuthDTO(**{**token.__dict__, **user.__dict__})
+            except KeyError as e:
+                pass
+            try:
+                firebase_admin.auth.get_user(
+                    auth_id
+                )  # If a person is on firebase but isn't there locally (a check that's mainly useful in a dev environment) so that we don't double create accounts
+                onFirebase = True
+            except firebase_admin.auth.UserNotFoundError as e:
+                self.logger.error("User not found locally, but exists on Firebase")
+            user = self.user_service.create_user(
+                CreateUserWithGoogleDTO(
+                    first_name=google_user["firstName"],
+                    last_name=google_user["lastName"],
+                    role="User",
+                    email=google_user["email"],
+                    auth_id=auth_id,
+                    onFirebase=onFirebase,
+                )
+            )  # TODO: Pass in the profile photo from google
+        except Exception as e:
+            reason = getattr(e, "message", None)
+            self.logger.error(
+                "Failed to generate token for user. Reason = {reason}".format(
+                    reason=(reason if reason else str(e))
+                )
+            )
+            raise e
+        return AuthDTO(**{**token.__dict__, **user.__dict__})
 
     def revoke_tokens(self, user_id):
         try:

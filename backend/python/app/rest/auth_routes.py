@@ -6,7 +6,7 @@ from ..middlewares.auth import (
     require_authorization_by_email,
     require_authorization_by_user_id,
 )
-from ..resources.create_user_dto import CreateUserDTO
+from ..resources.create_user_dto import CreateUserWithEmailDTO
 from ..services.implementations.auth_service import AuthService
 from ..services.implementations.email_service import EmailService
 from ..services.implementations.user_service import UserService
@@ -64,7 +64,7 @@ def signup():
     Returns access token in response body and sets refreshToken as an httpOnly cookie
     """
     try:
-        user_service.create_user(CreateUserDTO(**request.json))
+        user_service.create_user(CreateUserWithEmailDTO(**request.json))
         auth_dto = auth_service.generate_token(
             request.json["email"], request.json["password"]
         )

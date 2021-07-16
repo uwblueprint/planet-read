@@ -88,7 +88,7 @@ class IUserService(ABC):
         Create a user, email verification configurable
 
         :param user: the user to be created
-        :type user: CreateUserDTO
+        :type user: CreateUserWithEmailDTO/CreateUserWithGoogleDTO
         :return: the created user
         :rtype: UserDTO
         :raises Exception: if user creation fails

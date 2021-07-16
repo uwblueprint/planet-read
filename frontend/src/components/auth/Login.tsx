@@ -1,13 +1,35 @@
-import React, { useContext, useState } from "react";
-import { Redirect } from "react-router-dom";
 import { gql, useMutation } from "@apollo/client";
+import React, { useContext, useState } from "react";
+import {
+  GoogleLogin,
+  GoogleLoginResponse,
+  GoogleLoginResponseOffline,
+} from "react-google-login";
+import { Redirect } from "react-router-dom";
 import authAPIClient from "../../APIClients/AuthAPIClient";
 import AuthContext, { AuthenticatedUser } from "../../contexts/AuthContext";
 import ResetPassword from "./ResetPassword";
 
+type GoogleResponse = GoogleLoginResponse | GoogleLoginResponseOffline;
+
 const LOGIN = gql`
   mutation Login($email: String!, $password: String!) {
     login(email: $email, password: $password) {
+      id
+      firstName
+      lastName
+      email
+      role
+      approvedLanguages
+      accessToken
+      refreshToken
+    }
+  }
+`;
+
+const LOGIN_WITH_GOOGLE = gql`
+  mutation loginWithGoogle($tokenId: String!) {
+    loginWithGoogle(tokenId: $tokenId) {
       id
       firstName
       lastName
@@ -27,12 +49,23 @@ const Login = () => {
   const [signup, setSignup] = useState(false);
 
   const [login] = useMutation<{ login: AuthenticatedUser }>(LOGIN);
+  const [loginWithGoogle] = useMutation<{ loginWithGoogle: AuthenticatedUser }>(
+    LOGIN_WITH_GOOGLE,
+  );
 
   const onLogInClick = async () => {
     const user: AuthenticatedUser = await authAPIClient.login(
       email,
       password,
       login,
+    );
+    setAuthenticatedUser(user);
+  };
+
+  const onGoogleLoginSuccess = async (tokenId: string) => {
+    const user: AuthenticatedUser = await authAPIClient.loginWithGoogle(
+      tokenId,
+      loginWithGoogle,
     );
     setAuthenticatedUser(user);
   };
@@ -78,6 +111,19 @@ const Login = () => {
             Log In
           </button>
           <ResetPassword email={email} />
+
+          <GoogleLogin
+            clientId="175399577852-6hll8ih9q1ljij8f50f9pf9t2va6u3a7.apps.googleusercontent.com"
+            buttonText="Google"
+            onSuccess={(response: GoogleResponse): void => {
+              if ("tokenId" in response) {
+                onGoogleLoginSuccess(response.tokenId);
+              } else {
+                console.log(response);
+              }
+            }}
+            onFailure={(response) => alert(response)}
+          />
         </div>
         <div>
           <button
