@@ -2,12 +2,12 @@ import graphene
 
 from ...middlewares.auth import require_authorization_by_role_gql
 from ..service import services
-from ..types.user_type import CreateUserDTO, UpdateUserDTO, UserDTO
+from ..types.user_type import CreateUserWithEmailDTO, UpdateUserDTO, UserDTO
 
 
 class CreateUser(graphene.Mutation):
     class Arguments:
-        user_data = CreateUserDTO(required=True)
+        user_data = CreateUserWithEmailDTO(required=True)
 
     ok = graphene.Boolean()
     user = graphene.Field(lambda: UserDTO)

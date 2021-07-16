@@ -1,7 +1,7 @@
 from flask import Blueprint, current_app, jsonify, request
 
 from ..middlewares.auth import require_authorization_by_role
-from ..resources.create_user_dto import CreateUserDTO
+from ..resources.create_user_dto import CreateUserWithEmailDTO
 from ..resources.update_user_dto import UpdateUserDTO
 from ..services.implementations.user_service import UserService
 
@@ -65,7 +65,7 @@ def create_user():
     Create a user
     """
     try:
-        user = CreateUserDTO(**request.json)
+        user = CreateUserWithEmailDTO(**request.json)
         created_user = user_service.create_user(user)
         return jsonify(created_user.__dict__), 201
     except Exception as e:

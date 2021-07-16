@@ -37,6 +37,31 @@ const login = async (
   return user;
 };
 
+type GoogleLoginFunction = (
+  options: MutationFunctionOptions<
+    { loginWithGoogle: AuthenticatedUser },
+    OperationVariables
+  >,
+) => Promise<FetchResult<{ loginWithGoogle: AuthenticatedUser }>>;
+
+const loginWithGoogle = async (
+  tokenId: string,
+  loginFunction: GoogleLoginFunction,
+): Promise<AuthenticatedUser | null> => {
+  let user: AuthenticatedUser = null;
+  try {
+    const result = await loginFunction({ variables: { tokenId } });
+    user = result.data?.loginWithGoogle ?? null;
+    if (user) {
+      localStorage.setItem(AUTHENTICATED_USER_KEY, JSON.stringify(user));
+    }
+  } catch (e: unknown) {
+    // eslint-disable-next-line no-alert
+    window.alert("Failed to login");
+  }
+  return user;
+};
+
 type SignUpFunction = (
   options: MutationFunctionOptions<
     { signup: AuthenticatedUser },
@@ -121,4 +146,11 @@ const refresh = async (): Promise<boolean> => {
   }
 };
 
-export default { login, logout, signup, resetPassword, refresh };
+export default {
+  login,
+  loginWithGoogle,
+  logout,
+  signup,
+  resetPassword,
+  refresh,
+};

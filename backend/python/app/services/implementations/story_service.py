@@ -139,11 +139,15 @@ class StoryService(IStoryService):
                 .join(StoryTranslation, Story.id == StoryTranslation.story_id)
                 .filter(StoryTranslation.id == id)
                 .one()
+                ._asdict()
             )
 
+            story_details["num_translated_lines"] = self._get_num_translated_lines(
+                translation.translation_contents
+            )
             response = {
                 **translation.to_dict(include_relationships=True),
-                **story_details._asdict(),
+                **story_details,
             }
             return response
 
@@ -172,22 +176,20 @@ class StoryService(IStoryService):
 
     def update_story_translation_content(self, story_translation_content):
         try:
-            old_translation_content = StoryTranslationContent.query.get(
-                story_translation_content.id
-            )
+            story_translation = StoryTranslationContent.query.filter_by(
+                id=story_translation_content.id
+            ).first()
 
-            if not old_translation_content:
+            if not story_translation:
                 raise Exception(
                     "story_translation_content_id {id} not found".format(
                         id=story_translation_content.id
                     )
                 )
 
-            story_translation = StoryTranslationContent.query.filter_by(
-                id=story_translation_content.id
-            ).first()
-
-            story_translation.translation_content: story_translation_content.translation_content
+            story_translation.translation_content = (
+                story_translation_content.translation_content
+            )
             db.session.commit()
         except Exception as error:
             reason = getattr(error, "message", None)
@@ -199,9 +201,9 @@ class StoryService(IStoryService):
             raise error
 
         return StoryTranslationContentResponseDTO(
-            id=story_translation_content.id,
-            line_index=old_translation_content.line_index,
-            translation_content=story_translation_content.translation_content,
+            story_translation_content.id,
+            story_translation.line_index,
+            story_translation_content.translation_content,
         )
 
     def update_story_translation_contents(self, story_translation_contents):
@@ -246,3 +248,8 @@ class StoryService(IStoryService):
         except Exception as error:
             self.logger.error(str(error))
             raise error
+
+    def _get_num_translated_lines(self, translation_contents):
+        return len(translation_contents) - [
+            _.translation_content for _ in translation_contents
+        ].count("")

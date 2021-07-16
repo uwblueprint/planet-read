@@ -8,6 +8,9 @@ FIREBASE_SIGN_IN_URL = (
     "https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword"
 )
 FIREBASE_REFRESH_TOKEN_URL = "https://securetoken.googleapis.com/v1/token"
+FIREBASE_OAUTH_SIGN_IN_URL = (
+    "https://identitytoolkit.googleapis.com/v1/accounts:signInWithIdp"
+)
 
 
 class FirebaseRestClient:
@@ -100,3 +103,45 @@ class FirebaseRestClient:
             raise Exception("Failed to refresh token via Firebase REST API")
 
         return Token(response_json["id_token"], response_json["refresh_token"])
+
+    # docs: https://cloud.google.com/identity-platform/docs/use-rest-api#section-sign-in-with-oauth-credential
+    def sign_in_with_google(self, id_token):
+        """
+        Obtain user's personal info, access token, and refresh token from Google.
+
+        :param id_token: google issued id token from frontend sign in
+        :type ref_token: str
+        :return: access token, refresh token, and user's personal info
+        :rtype: dict
+        :raises Exception: if Firebase API call fails
+        """
+
+        headers = {"Content-Type": "application/json"}
+        data = {
+            "postBody": f"id_token={id_token}&providerId=google.com",
+            "requestUri": os.getenv("FIREBASE_REQUEST_URI"),
+            "returnIdpCredential": "true",
+            "returnSecureToken": "true",
+        }
+
+        response = requests.post(
+            "{base_url}?key={api_key}".format(
+                base_url=FIREBASE_OAUTH_SIGN_IN_URL,
+                api_key=os.getenv("FIREBASE_WEB_API_KEY"),
+            ),
+            headers=headers,
+            data=str(data),
+        )
+
+        response_json = response.json()
+        if response.status_code != 200:
+            error_message = [
+                "Failed to sign-in via Firebase REST API, status code =",
+                str(response.status_code),
+                "error message =",
+                response_json["error"]["message"],
+            ]
+            self.logger.error(" ".join(error_message))
+
+            raise Exception("Failed to sign-in via Firebase REST API")
+        return response_json
