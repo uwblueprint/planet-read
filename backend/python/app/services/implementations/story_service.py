@@ -156,9 +156,6 @@ class StoryService(IStoryService):
             raise error
 
     def assign_user_as_reviewer(self, user, story_translation):
-        print(story_translation)
-        print(story_translation.___dict___)
-        print("hihihih")
         if (
             story_translation["language"] in user.approved_languages
             and user.approved_languages[story_translation["language"]]

@@ -1,6 +1,5 @@
 import graphene
 
-from .mutations.comment_mutation import CreateComment
 from .mutations.auth_mutation import (
     Login,
     LoginWithGoogle,
@@ -9,6 +8,7 @@ from .mutations.auth_mutation import (
     ResetPassword,
     SignUp,
 )
+from .mutations.comment_mutation import CreateComment
 from .mutations.entity_mutation import CreateEntity
 from .mutations.file_mutation import CreateFile
 from .mutations.story_mutation import (

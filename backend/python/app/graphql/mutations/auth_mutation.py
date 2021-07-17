@@ -161,7 +161,7 @@ class SignUp(graphene.Mutation):
                     last_name=last_name,
                     email=email,
                     role="User",
-                    password=password
+                    password=password,
                 )
             )
             auth_dto = services["auth"].generate_token(email=email, password=password)
