@@ -1,10 +1,16 @@
 import React, { useContext } from "react";
 import { gql, useMutation } from "@apollo/client";
 import { useHistory } from "react-router-dom";
+import {
+  Badge,
+  Box,
+  Button,
+  Flex,
+  Heading,
+  Text,
+  useStyleConfig,
+} from "@chakra-ui/react";
 import AuthContext from "../../contexts/AuthContext";
-import Tag from "./Tag";
-import PrimaryButton from "./PrimaryButton";
-import SecondaryButton from "./SecondaryButton";
 import "./StoryCard.css";
 import convertLanguageTitleCase from "../../utils/LanguageUtils";
 
@@ -73,6 +79,7 @@ const StoryCard = ({
     return originalYoutubeLink.replace("watch?v=", "embed/");
   };
   const handleError = (errorMessage: string) => {
+    // eslint-disable-next-line no-alert
     alert(errorMessage);
   };
 
@@ -137,9 +144,10 @@ const StoryCard = ({
     }
     return storyTranslationId ? assignReviewer : assignTranslator;
   };
+  const storyCardStyle = useStyleConfig("StoryCard");
 
   return (
-    <div id={`story-${storyId}`} className="story-card">
+    <Flex id={`story-${storyId}`} sx={storyCardStyle}>
       <iframe
         className="youtube-thumbnail"
         src={embedLink(youtubeLink)}
@@ -148,24 +156,35 @@ const StoryCard = ({
         allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
         allowFullScreen
       />
-      <div className="story-card-details">
-        <div className="story-card-top">
-          <p className="story-card-title">{title}</p>
-          <div className="story-card-tags">
-            <Tag displayText={`Level ${level}`} />
-            <Tag displayText={`${convertLanguageTitleCase(language)}`} />
-          </div>
-        </div>
-        <p className="story-card-description">{description}</p>
-      </div>
-      <div className="story-card-actions">
-        <PrimaryButton
+      <Box flexBasis="40%" padding="17px 0px 17px 26px">
+        <Flex direction="column" wrap="wrap">
+          <Heading size="md">{title}</Heading>
+          <Flex direction="row">
+            <Badge>{`Level ${level}`}</Badge>
+            <Badge>{`${convertLanguageTitleCase(language)}`}</Badge>
+          </Flex>
+        </Flex>
+        <Text>{description}</Text>
+      </Box>
+      <Box flexBasis="40%" paddingTop="30px" textAlign="center">
+        <Button
+          colorScheme="blue"
+          variant="solid"
+          size="wide"
           onClick={primaryBtnOnClick()}
-          displayText={primaryBtnText()}
-        />
-        <SecondaryButton onClick={previewBook} displayText="preview book" />
-      </div>
-    </div>
+        >
+          {primaryBtnText()}
+        </Button>
+        <Button
+          colorScheme="blue"
+          variant="outline"
+          size="wide"
+          onClick={previewBook}
+        >
+          preview book
+        </Button>
+      </Box>
+    </Flex>
   );
 };
 

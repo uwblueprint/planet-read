@@ -2,27 +2,3 @@ datalist {
     display: flex;
     justify-content: space-between;
 }
-
-.filter {
-    background-color: #FAFAFA;
-    display: flex;
-    flex-direction: column;
-    height: 500px;
-    justify-content: space-between;
-    margin-right: 10px;
-    min-width: 400px;
-    padding: 50px 50px 50px 50px;
-}
-
-#filter-level {
-    width: 125px;
-}
-
-h1 {
-    font-size: 36px;
-}
-
-h4 {
-    font-size: 18px;
-    padding-bottom: 5px;
-}

@@ -4,7 +4,7 @@ import Filter from "../homepage/Filter";
 import StoryList from "../homepage/StoryList";
 import { StoryCardProps } from "../homepage/StoryCard";
 import AuthContext from "../../contexts/AuthContext";
-import ToggleButton from "../navigation/ToggleButton";
+import ToggleButton from "../utils/ToggleButton";
 import Header from "../navigation/Header";
 import "./HomePage.css";
 

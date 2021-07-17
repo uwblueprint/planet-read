@@ -1,6 +1,17 @@
 import React from "react";
+import {
+  Box,
+  Flex,
+  Heading,
+  Select,
+  Slider,
+  SliderFilledTrack,
+  SliderThumb,
+  SliderTrack,
+  useStyleConfig,
+} from "@chakra-ui/react";
 
-import ToggleButton from "../navigation/ToggleButton";
+import ToggleButton from "../utils/ToggleButton";
 import "./Filter.css";
 
 export type FilterProps = {
@@ -25,8 +36,8 @@ const Filter = ({
   const handleSelectChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     setLanguage(event.target.value);
   };
-  const handleRangeChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setLevel(parseInt(event.target.value, 10));
+  const handleRangeChange = (next: number) => {
+    setLevel(next);
   };
   const languageOptions = Object.keys(approvedLanguages).map((lang) => (
     <option key={lang} value={lang}>
@@ -40,43 +51,49 @@ const Filter = ({
       <option key={i.toString()} value={i.toString()} label={i.toString()} />,
     );
   }
+  const filterStyle = useStyleConfig("Filter");
   return (
-    <div className="filter">
-      <h1>Filter Stories</h1>
-      <div>
-        <h4>TRANSLATION LANGUAGE</h4>
-        <select
+    <Flex sx={filterStyle}>
+      <Heading>Filter Stories</Heading>
+      <Box>
+        <Heading size="md">TRANSLATION LANGUAGE</Heading>
+        <Select
           name="language"
           id="language"
           value={language}
           onChange={handleSelectChange}
         >
           {languageOptions}
-        </select>
-      </div>
-      <div>
-        <h4>ROLE</h4>
+        </Select>
+      </Box>
+      <Box>
+        <Heading size="md">ROLE</Heading>
         <ToggleButton
           leftStateIsSelected={role}
           leftStateLabel="For Translation"
           rightStateLabel="For Review"
           onToggle={setRole}
         />
-      </div>
-      <div id="filter-level">
-        <h4>LEVEL</h4>
-        <input
-          type="range"
+      </Box>
+      <Box width="125px">
+        <Heading size="md">LEVEL</Heading>
+        <Slider
           min={1}
           max={maxLvl}
-          step="1"
+          step={1}
           list="tickmarks"
-          value={level}
-          onChange={handleRangeChange}
-        />
+          defaultValue={level}
+          onChangeEnd={handleRangeChange}
+        >
+          <SliderTrack>
+            <SliderFilledTrack />
+          </SliderTrack>
+          <SliderThumb />
+        </Slider>
+        {/* TODO: Move to Chakra */}
         <datalist id="tickmarks">{lvlOptions}</datalist>
-      </div>
-    </div>
+      </Box>
+    </Flex>
   );
 };
 

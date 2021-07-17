@@ -25,15 +25,18 @@ const ResetPassword = ({ email }: ResetPasswordProps) => {
   );
 
   const handleErrorOnReset = (errorMessage: string) => {
+    // eslint-disable-next-line no-alert
     alert(errorMessage);
   };
 
   const handleSuccessOnReset = (successMessage: string) => {
+    // eslint-disable-next-line no-alert
     alert(successMessage);
   };
 
   const onResetPasswordClick = async () => {
     if (!isRealEmailAvailable(email!)) {
+      // eslint-disable-next-line no-alert
       alert("Invalid email");
       return;
     }
