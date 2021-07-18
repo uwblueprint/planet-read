@@ -97,18 +97,13 @@ class StoryService(IStoryService):
 
     def get_story_translations(self, user_id, translator, language, level):
         try:
-            return (
+            story_translations = (
                 db.session.query(
                     Story.id.label("story_id"),
                     Story.title.label("title"),
                     Story.description.label("description"),
                     Story.youtube_link.label("youtube_link"),
                     Story.level.label("level"),
-                    StoryTranslation.id.label("id"),
-                    StoryTranslation.language.label("language"),
-                    StoryTranslation.stage.label("stage"),
-                    StoryTranslation.translator_id.label("translator_id"),
-                    StoryTranslation.reviewer_id.label("reviewer_id"),
                 )
                 .join(StoryTranslation, Story.id == StoryTranslation.story_id)
                 .filter(
@@ -118,7 +113,16 @@ class StoryService(IStoryService):
                 )
                 .filter(StoryTranslation.language == language if language else True)
                 .filter(Story.level <= level if level else True)
+                .all()
             )
+            translationsList = []
+            for story_translation in story_translations:
+                story_translation_dict = story_translation._asdict()
+                translationsList.append({
+                    **StoryTranslation.query.get(story_translation_dict["story_id"]).to_dict(include_relationships=True),
+                    **story_translation._asdict(),
+                })
+            return translationsList
         except Exception as error:
             self.logger.error(str(error))
             raise error
@@ -222,18 +226,13 @@ class StoryService(IStoryService):
 
     def get_story_translations_available_for_review(self, language, level):
         try:
-            return (
+            story_translations = (
                 db.session.query(
                     Story.id.label("story_id"),
                     Story.title.label("title"),
                     Story.description.label("description"),
                     Story.youtube_link.label("youtube_link"),
                     Story.level.label("level"),
-                    StoryTranslation.id.label("id"),
-                    StoryTranslation.language.label("language"),
-                    StoryTranslation.stage.label("stage"),
-                    StoryTranslation.translator_id.label("translator_id"),
-                    StoryTranslation.reviewer_id.label("reviewer_id"),
                 )
                 .join(StoryTranslation, Story.id == StoryTranslation.story_id)
                 .filter(Story.level <= level)
@@ -241,6 +240,14 @@ class StoryService(IStoryService):
                 .filter(StoryTranslation.reviewer_id == None)
                 .all()
             )
+            translationsList = []
+            for story_translation in story_translations:
+                story_translation_dict = story_translation._asdict()
+                translationsList.append({
+                    **StoryTranslation.query.get(story_translation_dict["story_id"]).to_dict(include_relationships=True),
+                    **story_translation._asdict(),
+                })
+            return translationsList
 
         except Exception as error:
             self.logger.error(str(error))
