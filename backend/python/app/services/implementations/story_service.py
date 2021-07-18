@@ -118,10 +118,14 @@ class StoryService(IStoryService):
             translationsList = []
             for story_translation in story_translations:
                 story_translation_dict = story_translation._asdict()
-                translationsList.append({
-                    **StoryTranslation.query.get(story_translation_dict["story_id"]).to_dict(include_relationships=True),
-                    **story_translation._asdict(),
-                })
+                translationsList.append(
+                    {
+                        **StoryTranslation.query.get(
+                            story_translation_dict["story_id"]
+                        ).to_dict(include_relationships=True),
+                        **story_translation._asdict(),
+                    }
+                )
             return translationsList
         except Exception as error:
             self.logger.error(str(error))
@@ -243,10 +247,14 @@ class StoryService(IStoryService):
             translationsList = []
             for story_translation in story_translations:
                 story_translation_dict = story_translation._asdict()
-                translationsList.append({
-                    **StoryTranslation.query.get(story_translation_dict["story_id"]).to_dict(include_relationships=True),
-                    **story_translation._asdict(),
-                })
+                translationsList.append(
+                    {
+                        **StoryTranslation.query.get(
+                            story_translation_dict["story_id"]
+                        ).to_dict(include_relationships=True),
+                        **story_translation._asdict(),
+                    }
+                )
             return translationsList
 
         except Exception as error:
