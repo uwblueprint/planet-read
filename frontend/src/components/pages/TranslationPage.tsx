@@ -51,6 +51,9 @@ const TranslationPage = () => {
   const [translatedStoryLines, setTranslatedStoryLines] = useState<StoryLine[]>(
     [],
   );
+  const [changedStoryLines, setChangedStoryLines] = useState<
+    Map<number, StoryLine>
+  >(new Map());
   const [percentageComplete] = useState(25);
 
   const arrayIndex = (lineIndex: number): number =>
@@ -75,9 +78,17 @@ const TranslationPage = () => {
     lineIndex: number,
   ) => {
     const updatedContentArray = [...translatedStoryLines];
-    updatedContentArray[arrayIndex(lineIndex)].translatedContent = newContent;
+    const index = arrayIndex(lineIndex);
+    updatedContentArray[index].translatedContent = newContent;
 
     setTranslatedStoryLines(updatedContentArray);
+    setChangedStoryLines(
+      changedStoryLines.set(lineIndex, updatedContentArray[index]),
+    );
+  };
+
+  const clearUnsavedChangesMap = () => {
+    setChangedStoryLines(new Map());
   };
 
   useQuery(GET_STORY_CONTENTS(storyId, storyTranslationId), {
@@ -139,7 +150,10 @@ const TranslationPage = () => {
           </div>
         </div>
       </div>
-      <Autosave storylines={translatedStoryLines} />
+      <Autosave
+        storylines={Array.from(changedStoryLines.values())}
+        onSuccess={clearUnsavedChangesMap}
+      />
     </div>
   );
 };

@@ -26,10 +26,11 @@ const UPDATE_TRANSLATION = gql`
 
 type AutosaveProps = {
   storylines: StoryLine[];
+  onSuccess: () => void;
 };
 
 // Inspiration from https://www.synthace.com/autosave-with-react-hooks/
-const Autosave = ({ storylines }: AutosaveProps) => {
+const Autosave = ({ storylines, onSuccess }: AutosaveProps) => {
   const handleError = (errorMessage: string) => {
     alert(errorMessage);
   };
@@ -37,8 +38,8 @@ const Autosave = ({ storylines }: AutosaveProps) => {
   const [updateTranslation] = useMutation<{}>(UPDATE_TRANSLATION);
 
   const debouncedSave = useCallback(
-    debounce(async (updatedLines: StoryLine[]) => {
-      const storyTranslationContents = updatedLines.map((line: StoryLine) => {
+    debounce(async (linesToUpdate: StoryLine[]) => {
+      const storyTranslationContents = linesToUpdate.map((line: StoryLine) => {
         return {
           id: line.storyTranslationContentId,
           translationContent: line.translatedContent,
@@ -52,6 +53,8 @@ const Autosave = ({ storylines }: AutosaveProps) => {
 
         if (result.data == null) {
           handleError("Unable to save translation");
+        } else if (linesToUpdate.length > 0) {
+          onSuccess();
         }
       } catch (err) {
         handleError(err ?? "Error occurred, please try again.");
