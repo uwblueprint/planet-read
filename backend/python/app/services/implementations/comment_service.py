@@ -1,3 +1,5 @@
+from datetime import datetime
+
 from flask import current_app
 
 from ...models import db
@@ -12,6 +14,8 @@ class CommentService(ICommentService):
     def create_comment(self, comment):
         try:
             new_comment = Comment(**comment)
+            new_comment.time = datetime.utcnow()
+            new_comment.resolved = False
             comment_index = 0
 
             comments = Comment.query.filter_by(
