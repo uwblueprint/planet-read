@@ -19,22 +19,17 @@ class CommentService(ICommentService):
             new_comment.resolved = False
             comment_index = 0
 
-            max = db.session.query(func.max(Comment.comment_index)).filter(
-                Comment.story_translation_content_id
-                == comment["story_translation_content_id"]
-            )
-            last_comment = (
-                db.session.query(Comment.comment_index.label("comment_index"))
+            max = (
+                db.session.query(func.max(Comment.comment_index))
                 .filter(
                     Comment.story_translation_content_id
-                    == comment["story_translation_content_id"],
-                    Comment.comment_index == max,
+                    == comment["story_translation_content_id"]
                 )
-                .first()
+                .scalar()
             )
 
-            if last_comment is not None:
-                comment_index = last_comment.comment_index + 1
+            if max is not None:
+                comment_index = max + 1
 
             new_comment.comment_index = comment_index
 
