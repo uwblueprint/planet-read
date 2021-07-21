@@ -1,6 +1,6 @@
 const StoryCard = {
   baseStyle: {
-    backgroundColor: "#FAFAFA",
+    backgroundColor: "backgroundLofi",
     border: "2px solid #333333",
     flexDirection: "row",
     flexWrap: "nowrap",

@@ -36,8 +36,8 @@ const Filter = ({
   const handleSelectChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     setLanguage(event.target.value);
   };
-  const handleRangeChange = (next: number) => {
-    setLevel(next);
+  const handleLevelChange = (nextLevel: number) => {
+    setLevel(nextLevel);
   };
   const languageOptions = Object.keys(approvedLanguages).map((lang) => (
     <option key={lang} value={lang}>
@@ -83,7 +83,7 @@ const Filter = ({
           step={1}
           list="tickmarks"
           defaultValue={level}
-          onChangeEnd={handleRangeChange}
+          onChangeEnd={handleLevelChange}
         >
           <SliderTrack>
             <SliderFilledTrack />

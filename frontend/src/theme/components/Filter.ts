@@ -1,6 +1,6 @@
 const Filter = {
   baseStyle: {
-    backgroundColor: "#FAFAFA",
+    backgroundColor: "backgroundLofi",
     flexDirection: "column",
     height: "500px",
     justifyContent: "space-between",

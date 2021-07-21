@@ -41,8 +41,10 @@ const GET_STORY_CONTENTS = (storyId: number, storyTranslationId: number) => gql`
 `;
 
 const TranslationPage = () => {
-  const { storyIdParam, storyTranslationIdParam } =
-    useParams<TranslationPageProps>();
+  const {
+    storyIdParam,
+    storyTranslationIdParam,
+  } = useParams<TranslationPageProps>();
 
   const storyId = +storyIdParam!!;
   const storyTranslationId = +storyTranslationIdParam!!;

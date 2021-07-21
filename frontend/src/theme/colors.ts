@@ -23,18 +23,8 @@ const colors = {
     400: "#CECECE", // Non Interactive
     300: "#ECECEC", // Background Surface
   },
-  vividBlue: "#1A6DE0",
-  mediumBlue: "#3982E8",
-  veryPaleBlue: "#E5F0FF",
-  paleOrange: "#FFE3B4",
-  lightLime: "#EEFCEE",
-  veryPaleRed: "#FFD4D4",
-  veryPaleViolet: "#E0D4FF",
-  darkInteractive: "#1C1C1E",
-  darkDecorative: "#606062",
-  lightDectorative: "#DCDCDC",
-  nonInteractive: "#CECECE",
-  backgroundSurface: "#ECECEC",
+  background: "#ECECEC",
+  backgroundLofi: "#FAFAFA",
 };
 
 export default colors;

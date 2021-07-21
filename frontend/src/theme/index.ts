@@ -9,7 +9,7 @@ import StoryCard from "./components/StoryCard";
 
 const customTheme: Theme = extendTheme({
   fonts: {
-    body: `"Comic Sans MS"`,
+    body: `"Noto Sans"`,
   },
   config: {
     useSystemColorMode: false,
