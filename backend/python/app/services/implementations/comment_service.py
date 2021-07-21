@@ -1,6 +1,7 @@
 from datetime import datetime
 
 from flask import current_app
+from sqlalchemy import func
 
 from ...models import db
 from ...models.comment import Comment
@@ -18,16 +19,25 @@ class CommentService(ICommentService):
             new_comment.resolved = False
             comment_index = 0
 
-            comments = Comment.query.filter_by(
-                story_translation_content_id=comment["story_translation_content_id"]
+            max = db.session.query(func.max(Comment.comment_index)).filter(
+                Comment.story_translation_content_id
+                == comment["story_translation_content_id"]
+            )
+            last_comment = (
+                db.session.query(Comment.comment_index.label("comment_index"))
+                .filter(
+                    Comment.story_translation_content_id
+                    == comment["story_translation_content_id"],
+                    Comment.comment_index == max,
+                )
+                .first()
             )
 
-            if comments.first() is not None:
-                comment_index = (
-                    comments.order_by(Comment.comment_index)[-1].comment_index + 1
-                )
+            if last_comment is not None:
+                comment_index = last_comment.comment_index + 1
 
             new_comment.comment_index = comment_index
+
         except Exception as error:
             self.logger.error(str(error))
             raise error
