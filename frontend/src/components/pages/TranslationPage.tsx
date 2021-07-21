@@ -34,7 +34,8 @@ const GET_STORY_CONTENTS = (storyId: number, storyTranslationId: number) => gql`
         id
         lineIndex
         content: translationContent
-      }
+      },
+      numTranslatedLines
     }
   }
 `;
@@ -54,7 +55,9 @@ const TranslationPage = () => {
   const [changedStoryLines, setChangedStoryLines] = useState<
     Map<number, StoryLine>
   >(new Map());
-  const [percentageComplete] = useState(25);
+  const [numTranslatedLines, setNumTranslatedLines] = useState(0);
+  const [numStoryLines, setNumStoryLines] = useState(0);
+  const [percentageComplete, setPercentageComplete] = useState(0);
 
   const arrayIndex = (lineIndex: number): number =>
     lineIndex - translatedStoryLines[0].lineIndex;
@@ -73,14 +76,35 @@ const TranslationPage = () => {
     }
   };
 
+  const updatePercentageComplete = (
+    translatedLines: number,
+    storyLines: number,
+  ) => {
+    setPercentageComplete((translatedLines / storyLines) * 100);
+    setNumTranslatedLines(translatedLines);
+  };
+
   const onChangeTranslationContent = async (
     newContent: string,
     lineIndex: number,
   ) => {
     const updatedContentArray = [...translatedStoryLines];
     const index = arrayIndex(lineIndex);
-    updatedContentArray[index].translatedContent = newContent;
 
+    if (
+      // user deleted translation line
+      !newContent.trim() &&
+      translatedStoryLines[index]?.translatedContent?.trim()
+    ) {
+      updatePercentageComplete(numTranslatedLines - 1, numStoryLines);
+    } else if (
+      // user added new translation line
+      newContent.trim() &&
+      !translatedStoryLines[index]?.translatedContent?.trim()
+    ) {
+      updatePercentageComplete(numTranslatedLines + 1, numStoryLines);
+    }
+    updatedContentArray[index].translatedContent = newContent;
     setTranslatedStoryLines(updatedContentArray);
     setChangedStoryLines(
       changedStoryLines.set(lineIndex, updatedContentArray[index]),
@@ -97,6 +121,12 @@ const TranslationPage = () => {
       const storyContent = data.storyById.contents;
       const translatedContent = data.storyTranslationById.translationContents;
 
+      setNumStoryLines(data.storyTranslationById.translationContents.length);
+      updatePercentageComplete(
+        data.storyTranslationById.numTranslatedLines,
+        data.storyTranslationById.translationContents.length,
+      );
+
       const contentArray: StoryLine[] = [];
       storyContent.forEach(({ content, lineIndex }: Content) => {
         contentArray.push({
@@ -112,7 +142,6 @@ const TranslationPage = () => {
         contentArray[arrIndex].translatedContent = content;
         contentArray[arrIndex].storyTranslationContentId = id;
       });
-
       setTranslatedStoryLines(contentArray);
     },
   });

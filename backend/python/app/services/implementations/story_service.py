@@ -248,5 +248,5 @@ class StoryService(IStoryService):
 
     def _get_num_translated_lines(self, translation_contents):
         return len(translation_contents) - [
-            _.translation_content for _ in translation_contents
+            _.translation_content.strip() for _ in translation_contents
         ].count("")
