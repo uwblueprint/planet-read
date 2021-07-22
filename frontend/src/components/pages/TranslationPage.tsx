@@ -48,7 +48,6 @@ const TranslationPage = () => {
 
   const storyId = +storyIdParam!!;
   const storyTranslationId = +storyTranslationIdParam!!;
-
   const [translatedStoryLines, setTranslatedStoryLines] = useState<StoryLine[]>(
     [],
   );
@@ -56,8 +55,6 @@ const TranslationPage = () => {
     Map<number, StoryLine>
   >(new Map());
   const [numTranslatedLines, setNumTranslatedLines] = useState(0);
-  const [numStoryLines, setNumStoryLines] = useState(0);
-  const [percentageComplete, setPercentageComplete] = useState(0);
 
   const arrayIndex = (lineIndex: number): number =>
     lineIndex - translatedStoryLines[0].lineIndex;
@@ -76,14 +73,6 @@ const TranslationPage = () => {
     }
   };
 
-  const updatePercentageComplete = (
-    translatedLines: number,
-    storyLines: number,
-  ) => {
-    setPercentageComplete((translatedLines / storyLines) * 100);
-    setNumTranslatedLines(translatedLines);
-  };
-
   const onChangeTranslationContent = async (
     newContent: string,
     lineIndex: number,
@@ -94,15 +83,15 @@ const TranslationPage = () => {
     if (
       // user deleted translation line
       !newContent.trim() &&
-      translatedStoryLines[index]?.translatedContent?.trim()
+      translatedStoryLines[index].translatedContent!!.trim()
     ) {
-      updatePercentageComplete(numTranslatedLines - 1, numStoryLines);
+      setNumTranslatedLines(numTranslatedLines - 1);
     } else if (
       // user added new translation line
       newContent.trim() &&
-      !translatedStoryLines[index]?.translatedContent?.trim()
+      !translatedStoryLines[index].translatedContent!!.trim()
     ) {
-      updatePercentageComplete(numTranslatedLines + 1, numStoryLines);
+      setNumTranslatedLines(numTranslatedLines + 1);
     }
     updatedContentArray[index].translatedContent = newContent;
     setTranslatedStoryLines(updatedContentArray);
@@ -121,11 +110,7 @@ const TranslationPage = () => {
       const storyContent = data.storyById.contents;
       const translatedContent = data.storyTranslationById.translationContents;
 
-      setNumStoryLines(data.storyTranslationById.translationContents.length);
-      updatePercentageComplete(
-        data.storyTranslationById.numTranslatedLines,
-        data.storyTranslationById.translationContents.length,
-      );
+      setNumTranslatedLines(data.storyTranslationById.numTranslatedLines);
 
       const contentArray: StoryLine[] = [];
       storyContent.forEach(({ content, lineIndex }: Content) => {
@@ -175,7 +160,11 @@ const TranslationPage = () => {
         <div className="translation-content">{storyCells}</div>
         <div className="translation-sidebar">
           <div className="translation-progress-bar">
-            <TranslationProgressBar percentageComplete={percentageComplete} />
+            <TranslationProgressBar
+              percentageComplete={
+                (numTranslatedLines / translatedStoryLines.length) * 100
+              }
+            />
           </div>
         </div>
       </div>
