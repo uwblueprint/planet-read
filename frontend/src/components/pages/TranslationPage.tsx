@@ -34,7 +34,8 @@ const GET_STORY_CONTENTS = (storyId: number, storyTranslationId: number) => gql`
         id
         lineIndex
         content: translationContent
-      }
+      },
+      numTranslatedLines
     }
   }
 `;
@@ -47,14 +48,13 @@ const TranslationPage = () => {
 
   const storyId = +storyIdParam!!;
   const storyTranslationId = +storyTranslationIdParam!!;
-
   const [translatedStoryLines, setTranslatedStoryLines] = useState<StoryLine[]>(
     [],
   );
   const [changedStoryLines, setChangedStoryLines] = useState<
     Map<number, StoryLine>
   >(new Map());
-  const [percentageComplete] = useState(25);
+  const [numTranslatedLines, setNumTranslatedLines] = useState(0);
 
   const arrayIndex = (lineIndex: number): number =>
     lineIndex - translatedStoryLines[0].lineIndex;
@@ -79,8 +79,21 @@ const TranslationPage = () => {
   ) => {
     const updatedContentArray = [...translatedStoryLines];
     const index = arrayIndex(lineIndex);
-    updatedContentArray[index].translatedContent = newContent;
 
+    if (
+      // user deleted translation line
+      !newContent.trim() &&
+      translatedStoryLines[index].translatedContent!!.trim()
+    ) {
+      setNumTranslatedLines(numTranslatedLines - 1);
+    } else if (
+      // user added new translation line
+      newContent.trim() &&
+      !translatedStoryLines[index].translatedContent!!.trim()
+    ) {
+      setNumTranslatedLines(numTranslatedLines + 1);
+    }
+    updatedContentArray[index].translatedContent = newContent;
     setTranslatedStoryLines(updatedContentArray);
     setChangedStoryLines(
       changedStoryLines.set(lineIndex, updatedContentArray[index]),
@@ -97,6 +110,8 @@ const TranslationPage = () => {
       const storyContent = data.storyById.contents;
       const translatedContent = data.storyTranslationById.translationContents;
 
+      setNumTranslatedLines(data.storyTranslationById.numTranslatedLines);
+
       const contentArray: StoryLine[] = [];
       storyContent.forEach(({ content, lineIndex }: Content) => {
         contentArray.push({
@@ -112,7 +127,6 @@ const TranslationPage = () => {
         contentArray[arrIndex].translatedContent = content;
         contentArray[arrIndex].storyTranslationContentId = id;
       });
-
       setTranslatedStoryLines(contentArray);
     },
   });
@@ -146,7 +160,11 @@ const TranslationPage = () => {
         <div className="translation-content">{storyCells}</div>
         <div className="translation-sidebar">
           <div className="translation-progress-bar">
-            <TranslationProgressBar percentageComplete={percentageComplete} />
+            <TranslationProgressBar
+              percentageComplete={
+                (numTranslatedLines / translatedStoryLines.length) * 100
+              }
+            />
           </div>
         </div>
       </div>
