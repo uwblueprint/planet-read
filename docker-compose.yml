@@ -25,7 +25,7 @@ services:
       - 8.8.8.8
     volumes:
       - ./backend/python:/app
-      - file_uploads:/var/lib/file_uploads
+      # - file_uploads:/var/lib/file_uploads
     depends_on:
       - db
     env_file:
@@ -35,19 +35,21 @@ services:
     command: --default-authentication-plugin=mysql_native_password --innodb-use-native-aio=0
     ports:
       - 3306:3306
-    volumes:
-      - mysql_data:/var/lib/mysql/
-    env_file:
+    # volumes:
+      # - mysql_data:/var/lib/mysql/
+    env_file: 
       - ./.env
   test-db:
-    image: postgres:12-alpine
+    image: mysql:8.0.25
+    command: --default-authentication-plugin=mysql_native_password --innodb-use-native-aio=0
     ports:
-      - 5433:5432
-    volumes:
-      - postgres_test_data:/var/lib/postgresql_test/data/
+      - 3307:3306
+    # volumes:
+      # - mysql_test_data:/var/lib/mysql_test/
     env_file:
       - ./.env
 
 volumes:
   mysql_data:
-  file_uploads:
+  mysql_test_data:
+  # file_uploads:
