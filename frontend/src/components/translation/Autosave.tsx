@@ -39,6 +39,10 @@ const Autosave = ({ storylines, onSuccess }: AutosaveProps) => {
 
   const debouncedSave = useCallback(
     debounce(async (linesToUpdate: StoryLine[]) => {
+      if (linesToUpdate.length === 0) {
+        return;
+      }
+
       const storyTranslationContents = linesToUpdate.map((line: StoryLine) => {
         return {
           id: line.storyTranslationContentId,
@@ -53,7 +57,7 @@ const Autosave = ({ storylines, onSuccess }: AutosaveProps) => {
 
         if (result.data == null) {
           handleError("Unable to save translation");
-        } else if (linesToUpdate.length > 0) {
+        } else {
           onSuccess();
         }
       } catch (err) {
@@ -64,9 +68,7 @@ const Autosave = ({ storylines, onSuccess }: AutosaveProps) => {
   );
 
   useEffect(() => {
-    if (storylines) {
-      debouncedSave(storylines);
-    }
+    debouncedSave(storylines);
   }, [storylines, debouncedSave]);
 
   return null;
