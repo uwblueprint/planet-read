@@ -4,21 +4,16 @@ import "./EditableCell.css";
 export type EditableCellProps = {
   text: string;
   storyTranslationContentId: number;
-  onChange: (storyTranslationContentId: number, newContent: string) => void;
+  lineIndex: number;
+  onChange: (newContent: string, lineIndex: number) => void;
 };
 
-const EditableCell = ({
-  text,
-  storyTranslationContentId,
-  onChange,
-}: EditableCellProps) => {
+const EditableCell = ({ text, lineIndex, onChange }: EditableCellProps) => {
   return (
     <textarea
       className="input-translation"
       value={text}
-      onChange={(event) =>
-        onChange(storyTranslationContentId, event.target.value)
-      }
+      onChange={(event) => onChange(event.target.value, lineIndex)}
     />
   );
 };

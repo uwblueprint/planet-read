@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { gql, useMutation, useQuery } from "@apollo/client";
+import { gql, useQuery } from "@apollo/client";
 
 import "./TranslationPage.css";
 import { useParams } from "react-router-dom";
@@ -8,17 +8,11 @@ import EditableCell from "../translation/EditableCell";
 import TranslationProgressBar from "../translation/TranslationProgressBar";
 import CheckmarkIcon from "../../assets/checkmark.svg";
 import CommentIcon from "../../assets/comment_no_number.svg";
+import Autosave, { StoryLine } from "../translation/Autosave";
 
 type TranslationPageProps = {
   storyIdParam: string | undefined;
   storyTranslationIdParam: string | undefined;
-};
-
-type StoryLine = {
-  lineIndex: number;
-  originalContent: string;
-  translatedContent?: string;
-  storyTranslationContentId?: number;
 };
 
 type Content = {
@@ -45,27 +39,6 @@ const GET_STORY_CONTENTS = (storyId: number, storyTranslationId: number) => gql`
   }
 `;
 
-type UpdateTranslationResponse = {
-  story: { lineIndex: number };
-};
-const UPDATE_TRANSLATION = gql`
-  mutation updateStoryTranslationContentById(
-    $storyTranslationContentId: Int!
-    $newTranslationContent: String!
-  ) {
-    updateStoryTranslationContentById(
-      storyTranslationContentData: {
-        id: $storyTranslationContentId
-        translationContent: $newTranslationContent
-      }
-    ) {
-      story {
-        lineIndex
-      }
-    }
-  }
-`;
-
 const TranslationPage = () => {
   const {
     storyIdParam,
@@ -78,11 +51,10 @@ const TranslationPage = () => {
   const [translatedStoryLines, setTranslatedStoryLines] = useState<StoryLine[]>(
     [],
   );
+  const [changedStoryLines, setChangedStoryLines] = useState<
+    Map<number, StoryLine>
+  >(new Map());
   const [percentageComplete] = useState(25);
-
-  const handleError = (errorMessage: string) => {
-    alert(errorMessage);
-  };
 
   const arrayIndex = (lineIndex: number): number =>
     lineIndex - translatedStoryLines[0].lineIndex;
@@ -101,35 +73,22 @@ const TranslationPage = () => {
     }
   };
 
-  const [updateTranslation] = useMutation<{
-    updateStoryTranslationContentById: UpdateTranslationResponse;
-  }>(UPDATE_TRANSLATION);
   const onChangeTranslationContent = async (
-    storyTranslationContentId: number,
     newContent: string,
+    lineIndex: number,
   ) => {
-    try {
-      const result = await updateTranslation({
-        variables: {
-          storyTranslationContentId,
-          newTranslationContent: newContent,
-        },
-      });
+    const updatedContentArray = [...translatedStoryLines];
+    const index = arrayIndex(lineIndex);
+    updatedContentArray[index].translatedContent = newContent;
 
-      const lineIndex =
-        result.data?.updateStoryTranslationContentById.story.lineIndex;
-      if (lineIndex !== undefined) {
-        const updatedContentArray = [...translatedStoryLines];
-        const index = arrayIndex(lineIndex);
-        updatedContentArray[index].translatedContent = newContent;
+    setTranslatedStoryLines(updatedContentArray);
+    setChangedStoryLines(
+      changedStoryLines.set(lineIndex, updatedContentArray[index]),
+    );
+  };
 
-        setTranslatedStoryLines(updatedContentArray);
-      } else {
-        handleError("Unable to save translation.");
-      }
-    } catch (err) {
-      handleError(err ?? "Error occurred, please try again.");
-    }
+  const clearUnsavedChangesMap = () => {
+    setChangedStoryLines(new Map());
   };
 
   useQuery(GET_STORY_CONTENTS(storyId, storyTranslationId), {
@@ -171,6 +130,7 @@ const TranslationPage = () => {
         <EditableCell
           text={storyLine.translatedContent!!}
           storyTranslationContentId={storyLine.storyTranslationContentId!!}
+          lineIndex={storyLine.lineIndex}
           onChange={onChangeTranslationContent}
         />
         {translationStatusIcon()}
@@ -190,6 +150,10 @@ const TranslationPage = () => {
           </div>
         </div>
       </div>
+      <Autosave
+        storylines={Array.from(changedStoryLines.values())}
+        onSuccess={clearUnsavedChangesMap}
+      />
     </div>
   );
 };
