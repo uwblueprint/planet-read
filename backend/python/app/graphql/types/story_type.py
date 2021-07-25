@@ -1,5 +1,6 @@
 import graphene
 
+from .comment_type import CommentResponseDTO
 from .language_enum import LanguageEnum
 
 
@@ -59,6 +60,7 @@ class StoryTranslationContentResponseDTO(graphene.ObjectType):
     id = graphene.Int(required=True)
     line_index = graphene.Int(required=True)
     translation_content = graphene.String(required=True)
+    comments = graphene.List(CommentResponseDTO)
 
 
 class StoryTranslationResponseDTO(graphene.ObjectType):
