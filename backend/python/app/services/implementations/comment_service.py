@@ -19,6 +19,7 @@ class CommentService(ICommentService):
             new_comment.resolved = False
             comment_index = 0
 
+            # is there no auto-increment functionality?
             max = (
                 db.session.query(func.max(Comment.comment_index))
                 .filter(

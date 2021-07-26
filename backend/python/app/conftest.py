@@ -19,7 +19,7 @@ def app():
     """
     global my_app
     if my_app is None:
-        my_app = create_app("development")
+        my_app = create_app("testing")
     return my_app
 
 
@@ -51,10 +51,14 @@ def services(app):
     a
     """
     with app.app_context():
+        from .services.implementations.comment_service import CommentService
+        from .services.implementations.entity_service import EntityService
         from .services.implementations.story_service import StoryService
         from .services.implementations.user_service import UserService
 
         return {
+            "comment": CommentService(),
+            "entity": EntityService(),
             "story": StoryService(),
             "user": UserService(),
         }

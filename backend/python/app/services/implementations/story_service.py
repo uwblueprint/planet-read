@@ -16,6 +16,7 @@ class StoryService(IStoryService):
     def get_stories(self):
         # Entity is a SQLAlchemy model, we can use convenient methods provided
         # by SQLAlchemy like query.all() to query the data
+        # inconsistent logging
         return [
             story.to_dict(include_relationships=True) for story in Story.query.all()
         ]
@@ -64,6 +65,7 @@ class StoryService(IStoryService):
             .filter(~Story.translated_languages.contains(language))
             .all()
         )
+        # inconsistent logging
         return [story.to_dict(include_relationships=True) for story in stories]
 
     def create_translation(self, entity):
