@@ -14,6 +14,7 @@ class StoryTranslationContent(db.Model):
     )
     line_index = db.Column(db.Integer, nullable=False)
     translation_content = db.Column(LONGTEXT, nullable=False)
+    comments = db.relationship(Comment)
 
     def to_dict(self, include_relationships=False):
         cls = type(self)

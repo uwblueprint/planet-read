@@ -127,7 +127,6 @@ class StoryService(IStoryService):
         try:
             # TODO: Condense into singular query
             translation = StoryTranslation.query.get(id)
-
             story_details = (
                 db.session.query(
                     Story.id.label("story_id"),
@@ -145,8 +144,17 @@ class StoryService(IStoryService):
             story_details["num_translated_lines"] = self._get_num_translated_lines(
                 translation.translation_contents
             )
+
+            translation_contents = []
+            for tc in translation.translation_contents:
+                tc = tc.to_dict(include_relationships=True)
+                translation_contents.append(tc)
+
+            translation = translation.to_dict(include_relationships=True)
+            translation["translation_contents"] = translation_contents
+
             response = {
-                **translation.to_dict(include_relationships=True),
+                **translation,
                 **story_details,
             }
             return response
