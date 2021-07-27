@@ -7,6 +7,12 @@ class CreateCommentDTO(graphene.InputObjectType):
     content = graphene.String(required=True)
 
 
+class UpdateCommentDTO(graphene.InputObjectType):
+    id = graphene.Int(required=True)
+    resolved = graphene.Boolean(required=True)
+    content = graphene.String(required=True)
+
+
 class CommentResponseDTO(graphene.ObjectType):
     id = graphene.Int()
     story_translation_content_id = graphene.Int(required=True)

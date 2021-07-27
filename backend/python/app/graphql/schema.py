@@ -8,7 +8,7 @@ from .mutations.auth_mutation import (
     ResetPassword,
     SignUp,
 )
-from .mutations.comment_mutation import CreateComment
+from .mutations.comment_mutation import CreateComment, UpdateComment
 from .mutations.entity_mutation import CreateEntity
 from .mutations.file_mutation import CreateFile
 from .mutations.story_mutation import (
@@ -30,7 +30,6 @@ from .queries.story_query import (
     resolve_story_translations_by_user,
 )
 from .queries.user_query import resolve_user_by_email, resolve_user_by_id, resolve_users
-from .types.comment_type import CommentResponseDTO
 from .types.entity_type import EntityResponseDTO
 from .types.file_type import FileDTO
 from .types.story_type import StoryResponseDTO, StoryTranslationResponseDTO
@@ -52,6 +51,7 @@ class Mutation(graphene.ObjectType):
     signup = SignUp.Field()
     refresh = Refresh.Field()
     assign_user_as_reviewer = AssignUserAsReviewer.Field()
+    update_comment = UpdateComment.Field()
     update_story_translation_content_by_id = UpdateStoryTranslationContentById.Field()
     update_story_translation_contents = UpdateStoryTranslationContents.Field()
 

@@ -41,3 +41,26 @@ class CommentService(ICommentService):
         db.session.commit()
 
         return new_comment
+
+    def update_comment(self, updated_comment):
+        try:
+            comment = Comment.query.filter_by(id=updated_comment.id).first()
+            if not comment:
+                raise Exception(
+                    "Comment with id={id} not found".format(id=updated_comment.id)
+                )
+
+            updated_comment.time = datetime.utcnow()
+            for key, value in updated_comment.__dict__.items():
+                setattr(comment, key, value)
+            db.session.commit()
+        except Exception as error:
+            reason = getattr(error, "message", None)
+            self.logger.error(
+                "Failed to update comment. Reason = {reason}".format(
+                    reason=(reason if reason else str(error))
+                )
+            )
+            raise error
+
+        return comment
