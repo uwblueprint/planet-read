@@ -21,3 +21,10 @@ class CommentResponseDTO(graphene.ObjectType):
     time = graphene.DateTime(required=True)
     resolved = graphene.Boolean(required=True)
     content = graphene.String(required=True)
+
+
+class UpdateCommentsResponseDTO(graphene.ObjectType):
+    id = graphene.Int(required=True)
+    time = graphene.DateTime(required=True)
+    resolved = graphene.Boolean(required=True)
+    content = graphene.String(required=True)
