@@ -133,8 +133,6 @@ const TranslationPage = () => {
     onChangeTranslationContent(newContent, lineIndex);
   };
 
-  console.log(versionHistoryStack);
-
   const undoChange = () => {
     if (versionHistoryStack.Undo.length > 0) {
       const { lineIndex, content: newContent } = versionHistoryStack.Undo[
