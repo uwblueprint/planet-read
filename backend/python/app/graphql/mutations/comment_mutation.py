@@ -5,8 +5,8 @@ from ..service import services
 from ..types.comment_type import (
     CommentResponseDTO,
     CreateCommentDTO,
-    UpdateCommentDTO,
-    UpdateCommentsResponseDTO,
+    UpdateCommentRequestDTO,
+    UpdateCommentResponseDTO,
 )
 
 
@@ -26,7 +26,7 @@ class CreateComment(graphene.Mutation):
 
 class UpdateCommentById(graphene.Mutation):
     class Arguments:
-        comment_data = UpdateCommentDTO(required=True)
+        comment_data = UpdateCommentRequestDTO(required=True)
 
     ok = graphene.Boolean()
     comment = graphene.Field(lambda: CommentResponseDTO)
@@ -46,10 +46,10 @@ class UpdateCommentById(graphene.Mutation):
 
 class UpdateComments(graphene.Mutation):
     class Arguments:
-        comments_data = graphene.List(UpdateCommentDTO)
+        comments_data = graphene.List(UpdateCommentRequestDTO)
 
     ok = graphene.Boolean()
-    comments = graphene.Field(lambda: graphene.List(UpdateCommentsResponseDTO))
+    comments = graphene.Field(lambda: graphene.List(UpdateCommentResponseDTO))
 
     @require_authorization_by_role_gql({"User", "Admin"})
     def mutate(root, info, comments_data):

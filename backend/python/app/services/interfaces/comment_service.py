@@ -21,7 +21,7 @@ class ICommentService(ABC):
     def update_comment(self, updated_comment):
         """Update an existing Comment object
 
-        :param updated_comment: UpdateCommentDTO with comment id, resolved status and content
+        :param updated_comment: UpdateCommentRequestDTO
         :return: updated comment object
         :rtype: CommentResponseDTO
         :raises Exception: if id of comment to be updated does not exist
@@ -32,9 +32,9 @@ class ICommentService(ABC):
     def update_comments(self, updated_comments):
         """Bulk update existing Comment objects
 
-        :param updated_comments: list of UpdateCommentDTO's
-        :return: list of UpdateCommentsResponseDTO's
-        :rtype: UpdateCommentsResponseDTO
+        :param updated_comments: list of UpdateCommentRequestDTO's
+        :return: list of UpdateCommentResponseDTO's
+        :rtype: [UpdateCommentResponseDTO]
         :raises Exception: if id of comment to be updated does not exist
         """
         pass

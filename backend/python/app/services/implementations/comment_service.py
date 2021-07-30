@@ -49,7 +49,6 @@ class CommentService(ICommentService):
                 raise Exception(
                     "Comment with id={id} not found".format(id=updated_comment.id)
                 )
-            updated_comment.time = datetime.utcnow()
             for key, value in updated_comment.__dict__.items():
                 setattr(comment, key, value)
             db.session.commit()
@@ -66,13 +65,7 @@ class CommentService(ICommentService):
 
     def update_comments(self, updated_comments):
         try:
-            comments = []
-            for comment_data in updated_comments:
-                updated_comment = comment_data.__dict__
-                updated_comment["time"] = datetime.utcnow()
-                comments.append(updated_comment)
-
-            db.session.bulk_update_mappings(Comment, comments)
+            db.session.bulk_update_mappings(Comment, updated_comments)
             db.session.commit()
 
         except Exception as error:
@@ -84,4 +77,5 @@ class CommentService(ICommentService):
             )
             raise error
 
-        return comments
+        # TODO: return updated comments as list of CommentResponseDTO's
+        return updated_comments

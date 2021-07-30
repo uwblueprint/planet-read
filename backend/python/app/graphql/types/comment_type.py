@@ -7,10 +7,10 @@ class CreateCommentDTO(graphene.InputObjectType):
     content = graphene.String(required=True)
 
 
-class UpdateCommentDTO(graphene.InputObjectType):
+class UpdateCommentRequestDTO(graphene.InputObjectType):
     id = graphene.Int(required=True)
-    resolved = graphene.Boolean(required=True)
-    content = graphene.String(required=True)
+    resolved = graphene.Boolean()
+    content = graphene.String()
 
 
 class CommentResponseDTO(graphene.ObjectType):
@@ -23,8 +23,7 @@ class CommentResponseDTO(graphene.ObjectType):
     content = graphene.String(required=True)
 
 
-class UpdateCommentsResponseDTO(graphene.ObjectType):
+class UpdateCommentResponseDTO(graphene.ObjectType):
     id = graphene.Int(required=True)
-    time = graphene.DateTime(required=True)
-    resolved = graphene.Boolean(required=True)
-    content = graphene.String(required=True)
+    resolved = graphene.Boolean()
+    content = graphene.String()
