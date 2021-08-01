@@ -65,16 +65,17 @@ class AssignUserAsReviewer(graphene.Mutation):
 
 class UpdateStoryTranslationContentById(graphene.Mutation):
     class Arguments:
+        user_id = graphene.ID(required=True)
         story_translation_content_data = StoryTranslationContentRequestDTO(
             required=True
         )
 
     story = graphene.Field(lambda: StoryTranslationContentResponseDTO)
 
-    def mutate(root, info, story_translation_content_data):
+    def mutate(root, info, story_translation_content_data, user_id):
         try:
             new_story_translation = services["story"].update_story_translation_content(
-                story_translation_content_data
+                story_translation_content_data, user_id
             )
             return UpdateStoryTranslationContentById(new_story_translation)
         except Exception as e:
@@ -84,15 +85,16 @@ class UpdateStoryTranslationContentById(graphene.Mutation):
 
 class UpdateStoryTranslationContents(graphene.Mutation):
     class Arguments:
+        user_id = graphene.ID(required=True)
         story_translation_contents = graphene.List(StoryTranslationContentRequestDTO)
 
     story = graphene.Field(lambda: graphene.List(StoryTranslationContentResponseDTO))
 
-    def mutate(root, info, story_translation_contents):
+    def mutate(root, info, story_translation_contents, user_id):
         try:
             new_story_translation_contents = services[
                 "story"
-            ].update_story_translation_contents(story_translation_contents)
+            ].update_story_translation_contents(story_translation_contents, user_id)
             return UpdateStoryTranslationContents(new_story_translation_contents)
         except Exception as e:
             error_message = getattr(e, "message", None)
