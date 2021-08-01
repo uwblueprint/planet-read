@@ -193,7 +193,7 @@ class StoryService(IStoryService):
                     StoryTranslationContent.story_translation_id == StoryTranslation.id,
                 )
                 .filter(
-                    StoryTranslationContent.id == story_translation.story_translation_id
+                    StoryTranslation.id == story_translation.story_translation_id
                 )
                 .first()
             )[0]
