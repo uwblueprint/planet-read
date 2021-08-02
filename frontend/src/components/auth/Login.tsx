@@ -1,4 +1,4 @@
-import { gql, useMutation } from "@apollo/client";
+import { useMutation } from "@apollo/client";
 import React, { useContext, useState } from "react";
 import {
   GoogleLogin,
@@ -7,40 +7,11 @@ import {
 } from "react-google-login";
 import { Redirect } from "react-router-dom";
 import authAPIClient from "../../APIClients/AuthAPIClient";
+import { LOGIN, LOGIN_WITH_GOOGLE } from "../../APIClients/mutations";
 import AuthContext, { AuthenticatedUser } from "../../contexts/AuthContext";
 import ResetPassword from "./ResetPassword";
 
 type GoogleResponse = GoogleLoginResponse | GoogleLoginResponseOffline;
-
-const LOGIN = gql`
-  mutation Login($email: String!, $password: String!) {
-    login(email: $email, password: $password) {
-      id
-      firstName
-      lastName
-      email
-      role
-      approvedLanguages
-      accessToken
-      refreshToken
-    }
-  }
-`;
-
-const LOGIN_WITH_GOOGLE = gql`
-  mutation loginWithGoogle($tokenId: String!) {
-    loginWithGoogle(tokenId: $tokenId) {
-      id
-      firstName
-      lastName
-      email
-      role
-      approvedLanguages
-      accessToken
-      refreshToken
-    }
-  }
-`;
 
 const Login = () => {
   const { authenticatedUser, setAuthenticatedUser } = useContext(AuthContext);
