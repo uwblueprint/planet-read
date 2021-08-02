@@ -21,10 +21,10 @@ type Content = {
   content: string;
 };
 
-interface HistoryStack {
+type HistoryStack = {
   Undo: Array<{ lineIndex: number; content: string }>;
   Redo: Array<{ lineIndex: number; content: string }>;
-}
+};
 
 const GET_STORY_CONTENTS = (storyId: number, storyTranslationId: number) => gql`
   query {
@@ -47,6 +47,7 @@ const GET_STORY_CONTENTS = (storyId: number, storyTranslationId: number) => gql`
 `;
 
 const TranslationPage = () => {
+  const MAX_STACK_SIZE = 100;
   const {
     storyIdParam,
     storyTranslationIdParam,
@@ -62,10 +63,10 @@ const TranslationPage = () => {
   >(new Map());
   const [numTranslatedLines, setNumTranslatedLines] = useState(0);
 
-  const [
-    versionHistoryStack,
-    updateVersionHistoryStack,
-  ] = useState<HistoryStack>({ Undo: [], Redo: [] });
+  const [versionHistoryStack, setVersionHistoryStack] = useState<HistoryStack>({
+    Undo: [],
+    Redo: [],
+  });
 
   const arrayIndex = (lineIndex: number): number =>
     lineIndex - translatedStoryLines[0].lineIndex;
@@ -89,13 +90,6 @@ const TranslationPage = () => {
       default:
         return null;
     }
-  };
-
-  const updateVersionHistory = (content: string, lineIndex: number) => {
-    updateVersionHistoryStack({
-      Undo: [...deepCopy(versionHistoryStack.Undo), { lineIndex, content }],
-      Redo: [],
-    });
   };
 
   const onChangeTranslationContent = async (
@@ -125,11 +119,16 @@ const TranslationPage = () => {
   };
 
   const onUserInput = async (newContent: string, lineIndex: number) => {
-    const oldContent =
-      translatedStoryLines[arrayIndex(lineIndex)].translatedContent;
-    if (oldContent !== undefined) {
-      updateVersionHistory(oldContent, lineIndex);
-    }
+    const oldContent = translatedStoryLines[arrayIndex(lineIndex)]
+      .translatedContent!;
+    const newUndo =
+      versionHistoryStack.Undo.length === MAX_STACK_SIZE
+        ? versionHistoryStack.Undo.slice(1)
+        : versionHistoryStack.Undo;
+    setVersionHistoryStack({
+      Undo: [...deepCopy(newUndo), { lineIndex, content: oldContent }],
+      Redo: [],
+    });
     onChangeTranslationContent(newContent, lineIndex);
   };
 
@@ -138,20 +137,27 @@ const TranslationPage = () => {
       const { lineIndex, content: newContent } = versionHistoryStack.Undo[
         versionHistoryStack.Undo.length - 1
       ];
+      console.log(
+        versionHistoryStack.Undo[versionHistoryStack.Undo.length - 1],
+      );
       const oldContent =
         translatedStoryLines[arrayIndex(lineIndex)].translatedContent;
       if (oldContent !== newContent) {
+        const newRedo =
+          versionHistoryStack.Redo.length === MAX_STACK_SIZE
+            ? versionHistoryStack.Redo.slice(1)
+            : versionHistoryStack.Redo;
         const newHistory = {
           Undo: deepCopy(versionHistoryStack.Undo.slice(0, -1)),
           Redo: [
-            ...deepCopy(versionHistoryStack.Redo),
+            ...deepCopy(newRedo),
             {
               lineIndex,
               content: oldContent,
             },
           ],
         };
-        updateVersionHistoryStack(newHistory);
+        setVersionHistoryStack(newHistory);
         onChangeTranslationContent(newContent, lineIndex);
       }
     }
@@ -165,9 +171,13 @@ const TranslationPage = () => {
       const oldContent =
         translatedStoryLines[arrayIndex(lineIndex)].translatedContent;
       if (oldContent !== newContent) {
+        const newUndo =
+          versionHistoryStack.Undo.length === MAX_STACK_SIZE
+            ? versionHistoryStack.Undo.slice(1)
+            : versionHistoryStack.Undo;
         const newHistory = {
           Undo: [
-            ...deepCopy(versionHistoryStack.Undo),
+            ...deepCopy(newUndo),
             {
               lineIndex,
               content: oldContent,
@@ -175,7 +185,7 @@ const TranslationPage = () => {
           ],
           Redo: deepCopy(versionHistoryStack.Redo.slice(0, -1)),
         };
-        updateVersionHistoryStack(newHistory);
+        setVersionHistoryStack(newHistory);
         onChangeTranslationContent(newContent, lineIndex);
       }
     }
