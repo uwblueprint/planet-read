@@ -4,6 +4,7 @@ import pytest
 from sqlalchemy.engine import create_engine
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import scoped_session, sessionmaker
+from graphene.test import Client
 
 from . import create_app
 
@@ -15,7 +16,7 @@ my_app = None
 @pytest.fixture
 def app():
     """
-    a
+    Returns app configured for testing
     """
     global my_app
     if my_app is None:
@@ -26,7 +27,7 @@ def app():
 @pytest.fixture
 def client(app):
     """
-    a
+    Returns app test client
     """
     return app.test_client()
 
@@ -34,21 +35,34 @@ def client(app):
 @pytest.fixture
 def db(app):
     """
-    a
+    Yields db instance
     """
     from .models import db
 
+    from .models.comment import Comment
+    from .models.entity import Entity
+    from .models.file import File
+    from .models.story import Story
+    from .models.story_content import StoryContent
+    from .models.story_translation import StoryTranslation
+    from .models.story_translation_content import StoryTranslationContent
+    from .models.user import User
+    
     with app.app_context():
-        db.create_all()
-        yield db
+        db.init_app(app)
+
         db.drop_all()
-        db.session.commit()
+        db.create_all()
+
+        yield db
+        
+        db.session.close()
 
 
 @pytest.fixture
 def services(app):
     """
-    a
+    Returns model services
     """
     with app.app_context():
         from .services.implementations.comment_service import CommentService
@@ -62,6 +76,13 @@ def services(app):
             "story": StoryService(),
             "user": UserService(),
         }
+
+@pytest.fixture
+def client(app):
+    with app.app_context():
+        from .graphql.schema import schema
+
+        return Client(schema)
 
 
 # https://itnext.io/setting-up-transactional-tests-with-pytest-and-sqlalchemy-b2d726347629

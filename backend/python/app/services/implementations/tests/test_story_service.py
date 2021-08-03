@@ -3,10 +3,6 @@ import pytest
 from ....models.story import Story
 
 
-def test_answer():
-    assert 5 == 5
-
-
 # https://github.com/apryor6/flask_testing_examples/tree/master/fte
 def test_add_story(app, db):  # noqa
     with app.app_context():
@@ -33,7 +29,8 @@ def test_get_story(app, db, services):
         db.session.add(obj)
         assert db.session.commit() == None
 
-    assert_story_equals_model(services["story"].get_story(obj.id), obj)
+        resp = services["story"].get_story(obj.id)
+        assert_story_equals_model(resp, obj)
 
 
 def test_get_story_raises_exception_for_invalid_id():
