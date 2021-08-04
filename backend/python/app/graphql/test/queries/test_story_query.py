@@ -1,4 +1,4 @@
-def test_stories(db, client):
+def test_stories(app, db, client):
     result = client.execute("""
         {
             stories {

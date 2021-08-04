@@ -1,19 +1,16 @@
-import pytest
-
 from ....models.story import Story
 
 
 # https://github.com/apryor6/flask_testing_examples/tree/master/fte
-def test_add_story(app, db):  # noqa
-    with app.app_context():
-        # This is not a very useful test, as it basically is testing SqlAlchemy; however,
-        # I leave it here as a reference for how to create objects
-        obj = Story(title="title", description="description", youtube_link="", level=1)
-        db.session.add(obj)
-        db.session.commit()
-        fetched = Story.query.all()
-        assert len(fetched) == 1
-        assert fetched[0].title == "title"
+def test_add_story(db):  # noqa
+    # This is not a very useful test, as it basically is testing SqlAlchemy; however,
+    # I leave it here as a reference for how to create objects
+    obj = Story(title="title", description="description", youtube_link="", level=1)
+    db.session.add(obj)
+    db.session.commit()
+    fetched = Story.query.all()
+    assert len(fetched) == 1
+    assert fetched[0].title == "title"
 
 
 def assert_story_equals_model(story_response, story_model):
@@ -23,14 +20,13 @@ def assert_story_equals_model(story_response, story_model):
     assert story_response["level"] == story_model.level
 
 
-def test_get_story(app, db, services):
-    with app.app_context():
-        obj = Story(title="title", description="description", youtube_link="", level=1)
-        db.session.add(obj)
-        assert db.session.commit() == None
+def test_get_story(db, services):
+    obj = Story(title="title", description="description", youtube_link="", level=1)
+    db.session.add(obj)
+    assert db.session.commit() == None
 
-        resp = services["story"].get_story(obj.id)
-        assert_story_equals_model(resp, obj)
+    resp = services["story"].get_story(obj.id)
+    assert_story_equals_model(resp, obj)
 
 
 def test_get_story_raises_exception_for_invalid_id():

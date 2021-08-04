@@ -48,15 +48,15 @@ def db(app):
     from .models.story_translation_content import StoryTranslationContent
     from .models.user import User
     
-    with app.app_context():
-        db.init_app(app)
+    app.app_context().push()
+    db.init_app(app)
 
-        db.drop_all()
-        db.create_all()
+    db.drop_all()
+    db.create_all()
 
-        yield db
-        
-        db.session.close()
+    yield db
+    
+    db.session.close()
 
 
 @pytest.fixture
