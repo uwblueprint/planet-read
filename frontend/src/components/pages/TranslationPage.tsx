@@ -137,9 +137,6 @@ const TranslationPage = () => {
       const { lineIndex, content: newContent } = versionHistoryStack.Undo[
         versionHistoryStack.Undo.length - 1
       ];
-      console.log(
-        versionHistoryStack.Undo[versionHistoryStack.Undo.length - 1],
-      );
       const oldContent =
         translatedStoryLines[arrayIndex(lineIndex)].translatedContent;
       if (oldContent !== newContent) {
