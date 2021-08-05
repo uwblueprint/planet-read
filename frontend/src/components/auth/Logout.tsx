@@ -32,7 +32,8 @@ const Logout = () => {
   useEffect(() => {
     if (error) {
       // TODO: Implement Error State
-      console.log(error);
+      // eslint-disable-next-line no-alert
+      alert(error);
     }
   }, [error]);
 
