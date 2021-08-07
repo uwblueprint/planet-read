@@ -4,7 +4,6 @@ import {
   Badge,
   Box,
   Button,
-  Flex,
   Heading,
   Link,
   Modal,
@@ -67,12 +66,40 @@ const PreviewModal = ({
     },
   });
 
+  const storyContents = content.map((c: string, index: number) => (
+    <Box display="flex" padding="8px 8px 8px 8px">
+      <Box
+        w="3%"
+        text-align="center"
+        float="left"
+        margin="0px 10px 0px 0px"
+        color="black"
+      >
+        <Text fontSize="12px" as="b" align="center">
+          {index + 1}
+        </Text>
+      </Box>
+      <Box
+        bg="blue.50"
+        w="97%"
+        borderRadius="10px"
+        float="right"
+        p={4}
+        color="black"
+        fontSize="12px"
+        as="b"
+      >
+        {c}
+      </Box>
+    </Box>
+  ));
+
   return (
     <Modal
       isOpen={preview}
       onClose={previewBook}
       motionPreset="slideInBottom"
-      size="xl"
+      size="4xl"
     >
       <ModalOverlay />
       <ModalContent>
@@ -87,7 +114,7 @@ const PreviewModal = ({
               <Badge>{`Level ${level}`}</Badge>
               <Badge>{`${convertLanguageTitleCase(language)}`}</Badge>
             </Box>
-            <Box width="25%" float="right">
+            <Box width="25%" float="right" align="right">
               <Button colorScheme="blue" mr={3} onClick={primaryBtnOnClick()}>
                 {primaryBtnText}
               </Button>
@@ -95,39 +122,12 @@ const PreviewModal = ({
           </Box>
           <Box width="95%" display="inline-block">
             <Text fontSize="22px" color="grey">
-              <Link href={youtubeLink}>→ Watch the Audiobook</Link>
+              <Link href={youtubeLink}>→ Watch the English AniBook</Link>
             </Text>
           </Box>
         </ModalHeader>
         <ModalCloseButton />
-        <ModalBody>
-          {content.map((c, index) => (
-            <Box display="inline-block">
-              <Flex
-                width="5%"
-                text-align="left"
-                float="left"
-                display="inline-block"
-              >
-                <Text fontSize="12px" as="b">
-                  {index + 1}
-                </Text>
-              </Flex>
-              <Flex
-                width="95%"
-                borderRadius="10px"
-                float="right"
-                padding="8px 8px 8px 10px"
-                margin="0px 0px 15px 0px"
-                backgroundColor="blue.50"
-              >
-                <Text fontSize="12px" as="b">
-                  {c}
-                </Text>
-              </Flex>
-            </Box>
-          ))}
-        </ModalBody>
+        <ModalBody>{storyContents}</ModalBody>
       </ModalContent>
     </Modal>
   );
