@@ -67,26 +67,26 @@ const PreviewModal = ({
   });
 
   const storyContents = content.map((c: string, index: number) => (
-    <Box display="flex" padding="8px 8px 8px 8px">
+    <Box display="flex" padding={3}>
       <Box
-        w="3%"
+        width="3%"
         text-align="center"
         float="left"
         margin="0px 10px 0px 0px"
         color="black"
       >
-        <Text fontSize="12px" as="b" align="center">
+        <Text fontSize="16px" as="b" align="center">
           {index + 1}
         </Text>
       </Box>
       <Box
-        bg="blue.50"
-        w="97%"
+        backgroundColor="blue.50"
+        width="100%"
         borderRadius="10px"
         float="right"
-        p={4}
+        padding={3}
         color="black"
-        fontSize="12px"
+        fontSize="16px"
         as="b"
       >
         {c}
@@ -103,30 +103,30 @@ const PreviewModal = ({
     >
       <ModalOverlay />
       <ModalContent>
-        <ModalHeader>
-          <Box width="95%">
-            <Box width="70%">
-              <Heading as="h3" size="md">
-                {title}
-              </Heading>
-            </Box>
-            <Box width="75%" padding="10px 0px 10px 0px" float="left">
-              <Badge>{`Level ${level}`}</Badge>
-              <Badge>{`${convertLanguageTitleCase(language)}`}</Badge>
-            </Box>
-            <Box width="25%" float="right" align="right">
-              <Button colorScheme="blue" mr={3} onClick={primaryBtnOnClick()}>
-                {primaryBtnText}
-              </Button>
-            </Box>
+        <ModalCloseButton position="static" marginLeft="auto" />
+        <ModalHeader paddingTop="-10px">
+          <Heading as="h3" size="md">
+            {title}
+          </Heading>
+          <Box width="75%" padding="10px 0px 10px 0px" float="left">
+            <Badge>{`Level ${level}`}</Badge>
+            <Badge>{`${convertLanguageTitleCase(language)}`}</Badge>
           </Box>
-          <Box width="95%" display="inline-block">
-            <Text fontSize="22px" color="grey">
+          <Button
+            float="right"
+            width="21%"
+            colorScheme="blue"
+            mr={3}
+            onClick={primaryBtnOnClick()}
+          >
+            {primaryBtnText}
+          </Button>
+          <Box display="inline-block">
+            <Text fontSize="16px" color="grey">
               <Link href={youtubeLink}>→ Watch the English AniBook</Link>
             </Text>
           </Box>
         </ModalHeader>
-        <ModalCloseButton />
         <ModalBody>{storyContents}</ModalBody>
       </ModalContent>
     </Modal>
