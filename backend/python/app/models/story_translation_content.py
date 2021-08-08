@@ -1,9 +1,9 @@
-from sqlalchemy import inspect
+from sqlalchemy import Enum, inspect
 from sqlalchemy.dialects.mysql import LONGTEXT
 from sqlalchemy.orm.properties import ColumnProperty
 
 from . import db
-from .comment import Comment
+from .story_translation_content_status import StoryTranslationContentStatus
 
 
 class StoryTranslationContent(db.Model):
@@ -13,6 +13,7 @@ class StoryTranslationContent(db.Model):
         db.Integer, db.ForeignKey("story_translations.id"), index=True, nullable=False
     )
     line_index = db.Column(db.Integer, nullable=False)
+    status = db.Column(Enum(StoryTranslationContentStatus))
     translation_content = db.Column(LONGTEXT, nullable=False)
 
     def to_dict(self, include_relationships=False):
