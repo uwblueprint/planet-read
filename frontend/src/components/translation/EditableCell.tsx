@@ -5,15 +5,21 @@ export type EditableCellProps = {
   text: string;
   storyTranslationContentId: number;
   lineIndex: number;
-  onChange: (newContent: string, lineIndex: number) => void;
+  maxChars: number;
+  onChange: (newContent: string, lineIndex: number, maxChars: number) => void;
 };
 
-const EditableCell = ({ text, lineIndex, onChange }: EditableCellProps) => {
+const EditableCell = ({
+  text,
+  lineIndex,
+  maxChars,
+  onChange,
+}: EditableCellProps) => {
   return (
     <textarea
       className="input-translation"
       value={text}
-      onChange={(event) => onChange(event.target.value, lineIndex)}
+      onChange={(event) => onChange(event.target.value, lineIndex, maxChars)}
     />
   );
 };

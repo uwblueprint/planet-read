@@ -118,7 +118,11 @@ const TranslationPage = () => {
     );
   };
 
-  const onUserInput = async (newContent: string, lineIndex: number) => {
+  const onUserInput = async (
+    newContent: string,
+    lineIndex: number,
+    maxChars: number,
+  ) => {
     const oldContent = translatedStoryLines[arrayIndex(lineIndex)]
       .translatedContent!;
     const newUndo =
@@ -129,7 +133,10 @@ const TranslationPage = () => {
       Undo: [...deepCopy(newUndo), { lineIndex, content: oldContent }],
       Redo: [],
     });
-    onChangeTranslationContent(newContent, lineIndex);
+
+    if (maxChars >= newContent.length) {
+      onChangeTranslationContent(newContent, lineIndex);
+    }
   };
 
   const undoChange = () => {
@@ -232,6 +239,7 @@ const TranslationPage = () => {
           text={storyLine.translatedContent!!}
           storyTranslationContentId={storyLine.storyTranslationContentId!!}
           lineIndex={storyLine.lineIndex}
+          maxChars={storyLine.originalContent.length * 2}
           onChange={onUserInput}
         />
         {translationStatusIcon()}
