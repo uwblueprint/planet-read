@@ -20,6 +20,12 @@ type Content = {
   lineIndex: number;
   content: string;
 };
+
+type HistoryStack = {
+  Undo: Array<{ lineIndex: number; content: string }>;
+  Redo: Array<{ lineIndex: number; content: string }>;
+};
+
 const GET_STORY_CONTENTS = (storyId: number, storyTranslationId: number) => gql`
   query {
     storyById(id: ${storyId}) {
@@ -41,6 +47,7 @@ const GET_STORY_CONTENTS = (storyId: number, storyTranslationId: number) => gql`
 `;
 
 const TranslationPage = () => {
+  const MAX_STACK_SIZE = 100;
   const {
     storyIdParam,
     storyTranslationIdParam,
@@ -56,8 +63,20 @@ const TranslationPage = () => {
   >(new Map());
   const [numTranslatedLines, setNumTranslatedLines] = useState(0);
 
+  const [versionHistoryStack, setVersionHistoryStack] = useState<HistoryStack>({
+    Undo: [],
+    Redo: [],
+  });
+
   const arrayIndex = (lineIndex: number): number =>
     lineIndex - translatedStoryLines[0].lineIndex;
+
+  const deepCopy = (lines: Object) => {
+    // This is a funky method to make deep copies on objects with primative values
+    // https://javascript.plainenglish.io/how-to-deep-copy-objects-and-arrays-in-javascript-7c911359b089
+    // Should probably go under some util
+    return JSON.parse(JSON.stringify(lines));
+  };
 
   // TODO replace with real logic
   const translationStatusIcon = (): JSX.Element | null => {
@@ -79,7 +98,6 @@ const TranslationPage = () => {
   ) => {
     const updatedContentArray = [...translatedStoryLines];
     const index = arrayIndex(lineIndex);
-
     if (
       // user deleted translation line
       !newContent.trim() &&
@@ -98,6 +116,76 @@ const TranslationPage = () => {
     setChangedStoryLines(
       changedStoryLines.set(lineIndex, updatedContentArray[index]),
     );
+  };
+
+  const onUserInput = async (newContent: string, lineIndex: number) => {
+    const oldContent = translatedStoryLines[arrayIndex(lineIndex)]
+      .translatedContent!;
+    const newUndo =
+      versionHistoryStack.Undo.length === MAX_STACK_SIZE
+        ? versionHistoryStack.Undo.slice(1)
+        : versionHistoryStack.Undo;
+    setVersionHistoryStack({
+      Undo: [...deepCopy(newUndo), { lineIndex, content: oldContent }],
+      Redo: [],
+    });
+    onChangeTranslationContent(newContent, lineIndex);
+  };
+
+  const undoChange = () => {
+    if (versionHistoryStack.Undo.length > 0) {
+      const { lineIndex, content: newContent } = versionHistoryStack.Undo[
+        versionHistoryStack.Undo.length - 1
+      ];
+      const oldContent =
+        translatedStoryLines[arrayIndex(lineIndex)].translatedContent;
+      if (oldContent !== newContent) {
+        const newRedo =
+          versionHistoryStack.Redo.length === MAX_STACK_SIZE
+            ? versionHistoryStack.Redo.slice(1)
+            : versionHistoryStack.Redo;
+        const newHistory = {
+          Undo: deepCopy(versionHistoryStack.Undo.slice(0, -1)),
+          Redo: [
+            ...deepCopy(newRedo),
+            {
+              lineIndex,
+              content: oldContent,
+            },
+          ],
+        };
+        setVersionHistoryStack(newHistory);
+        onChangeTranslationContent(newContent, lineIndex);
+      }
+    }
+  };
+
+  const redoChange = () => {
+    if (versionHistoryStack.Redo.length > 0) {
+      const { lineIndex, content: newContent } = versionHistoryStack.Redo[
+        versionHistoryStack.Redo.length - 1
+      ];
+      const oldContent =
+        translatedStoryLines[arrayIndex(lineIndex)].translatedContent;
+      if (oldContent !== newContent) {
+        const newUndo =
+          versionHistoryStack.Undo.length === MAX_STACK_SIZE
+            ? versionHistoryStack.Undo.slice(1)
+            : versionHistoryStack.Undo;
+        const newHistory = {
+          Undo: [
+            ...deepCopy(newUndo),
+            {
+              lineIndex,
+              content: oldContent,
+            },
+          ],
+          Redo: deepCopy(versionHistoryStack.Redo.slice(0, -1)),
+        };
+        setVersionHistoryStack(newHistory);
+        onChangeTranslationContent(newContent, lineIndex);
+      }
+    }
   };
 
   const clearUnsavedChangesMap = () => {
@@ -133,7 +221,6 @@ const TranslationPage = () => {
 
   const storyCells = translatedStoryLines.map((storyLine: StoryLine) => {
     const displayLineNumber = storyLine.lineIndex + 1;
-
     return (
       <div
         className="row-translation"
@@ -145,7 +232,7 @@ const TranslationPage = () => {
           text={storyLine.translatedContent!!}
           storyTranslationContentId={storyLine.storyTranslationContentId!!}
           lineIndex={storyLine.lineIndex}
-          onChange={onChangeTranslationContent}
+          onChange={onUserInput}
         />
         {translationStatusIcon()}
       </div>
@@ -157,7 +244,15 @@ const TranslationPage = () => {
       <h1>Story Title Here</h1>
       <h4>View story details</h4>
       <div className="translation-container">
-        <div className="translation-content">{storyCells}</div>
+        <div className="translation-content">
+          <button onClick={undoChange} type="button">
+            Undo
+          </button>
+          <button onClick={redoChange} type="button">
+            Redo
+          </button>
+          {storyCells}
+        </div>
         <div className="translation-sidebar">
           <div className="translation-progress-bar">
             <TranslationProgressBar
