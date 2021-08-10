@@ -254,13 +254,13 @@ else
         INSERT INTO comments 
             (story_translation_content_id, user_id, comment_index, time, resolved, content) 
         VALUES 
-            (51, 1, 0, NOW(), True, 'Not sure if this grammar makes sense'),
-            (51, 4, 1, NOW(), True, 'It\'s fine, go back to grammar school man'),
-            (51, 1, 2, NOW(), True, 'uwu dont need to be so mean man'),
-            (53, 1, 0, NOW(), False, 'this comment is lonely uwu '),
-            (54, 4, 0, NOW(), False, 'this comment is likes to be alone uwu '),
-            (59, 4, 0, NOW(), False, 'this comment is disagreeable'),
-            (59, 1, 1, NOW(), False, 'I agree!');
+            (51, 1, 0, '2021-07-31 01:48:42', True, 'Not sure if this grammar makes sense'),
+            (51, 4, 1, '2021-08-09 12:28:42', True, 'It\'s fine, go back to grammar school man'),
+            (51, 1, 2, '2021-08-10 21:55:42', True, 'uwu dont need to be so mean man'),
+            (53, 1, 0, '2021-07-31 13:22:42', False, 'this comment is lonely uwu '),
+            (54, 4, 0, '2021-08-09 01:38:12', True, 'this comment is likes to be alone uwu '),
+            (59, 4, 0, '2021-08-09 18:23:32', False, 'this comment is disagreeable'),
+            (59, 1, 1, '2021-08-10 21:58:42', False, 'I agree!');
     "
 
     echo "Finished generating story translation contents..." 

@@ -13,7 +13,11 @@ class StoryTranslationContent(db.Model):
         db.Integer, db.ForeignKey("story_translations.id"), index=True, nullable=False
     )
     line_index = db.Column(db.Integer, nullable=False)
-    status = db.Column(Enum(StoryTranslationContentStatus))
+    status = db.Column(
+        Enum(StoryTranslationContentStatus),
+        server_default=StoryTranslationContentStatus.DEFAULT.value,
+        nullable=False,
+    )
     translation_content = db.Column(LONGTEXT, nullable=False)
 
     def to_dict(self, include_relationships=False):
