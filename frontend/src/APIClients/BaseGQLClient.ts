@@ -38,7 +38,6 @@ const injectAccessToken = async (operation: any) => {
   let accessToken = getLocalToken();
   const decodedToken: any = jwt.decode(accessToken);
   if (
-    operation.operationName !== "Refresh" &&
     decodedToken &&
     decodedToken.exp <= Math.round(new Date().getTime() / 1000)
   ) {
