@@ -108,7 +108,7 @@ const PreviewModal = ({
           <Heading as="h3" size="md">
             {title}
           </Heading>
-          <Box width="75%" padding="10px 0px 10px 0px" float="left">
+          <Box padding="10px 0px 10px 0px" float="left">
             <Badge>{`Level ${level}`}</Badge>
             <Badge>{`${convertLanguageTitleCase(language)}`}</Badge>
           </Box>
@@ -121,12 +121,12 @@ const PreviewModal = ({
           >
             {primaryBtnText}
           </Button>
-          <Box display="inline-block">
-            <Text fontSize="16px" color="grey">
-              <Link href={youtubeLink}>→ Watch the English AniBook</Link>
-            </Text>
-          </Box>
         </ModalHeader>
+        <Box display="block" paddingLeft="30px">
+          <Text fontSize="16px" color="grey">
+            <Link href={youtubeLink}>→ Watch the English AniBook</Link>
+          </Text>
+        </Box>
         <ModalBody>{storyContents}</ModalBody>
       </ModalContent>
     </Modal>
