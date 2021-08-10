@@ -139,6 +139,12 @@ const TranslationPage = () => {
     }
   };
 
+  const [maxCharReached, setMaxCharReached] = useState<Number[]>([]);
+
+  const maxCharWarning = (
+    <div>a</div>
+  );
+
   const undoChange = () => {
     if (versionHistoryStack.Undo.length > 0) {
       const { lineIndex, content: newContent } = versionHistoryStack.Undo[
@@ -228,6 +234,7 @@ const TranslationPage = () => {
 
   const storyCells = translatedStoryLines.map((storyLine: StoryLine) => {
     const displayLineNumber = storyLine.lineIndex + 1;
+
     return (
       <div
         className="row-translation"

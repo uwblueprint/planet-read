@@ -17,7 +17,9 @@ const EditableCell = ({
 }: EditableCellProps) => {
   return (
     <textarea
-      className="input-translation"
+      className={
+        text.length === maxChars ? "max-char-reached" : "input-translation"
+      }
       value={text}
       onChange={(event) => onChange(event.target.value, lineIndex, maxChars)}
     />
