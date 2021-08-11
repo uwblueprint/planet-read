@@ -70,7 +70,7 @@ const PreviewModal = ({
   const storyContents = content.map((c: string, index: number) => (
     <Flex padding={3}>
       <Box
-        width="3%"
+        width="30px"
         text-align="center"
         float="left"
         margin="0px 10px 0px 0px"
