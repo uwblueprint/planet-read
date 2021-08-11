@@ -68,9 +68,6 @@ const TranslationPage = () => {
     Redo: [],
   });
 
-  const arrayIndex = (lineIndex: number): number =>
-    lineIndex - translatedStoryLines[0].lineIndex;
-
   const deepCopy = (lines: Object) => {
     // This is a funky method to make deep copies on objects with primative values
     // https://javascript.plainenglish.io/how-to-deep-copy-objects-and-arrays-in-javascript-7c911359b089
@@ -97,30 +94,28 @@ const TranslationPage = () => {
     lineIndex: number,
   ) => {
     const updatedContentArray = [...translatedStoryLines];
-    const index = arrayIndex(lineIndex);
     if (
       // user deleted translation line
       !newContent.trim() &&
-      translatedStoryLines[index].translatedContent!!.trim()
+      translatedStoryLines[lineIndex].translatedContent!!.trim()
     ) {
       setNumTranslatedLines(numTranslatedLines - 1);
     } else if (
       // user added new translation line
       newContent.trim() &&
-      !translatedStoryLines[index].translatedContent!!.trim()
+      !translatedStoryLines[lineIndex].translatedContent!!.trim()
     ) {
       setNumTranslatedLines(numTranslatedLines + 1);
     }
-    updatedContentArray[index].translatedContent = newContent;
+    updatedContentArray[lineIndex].translatedContent = newContent;
     setTranslatedStoryLines(updatedContentArray);
     setChangedStoryLines(
-      changedStoryLines.set(lineIndex, updatedContentArray[index]),
+      changedStoryLines.set(lineIndex, updatedContentArray[lineIndex]),
     );
   };
 
   const onUserInput = async (newContent: string, lineIndex: number) => {
-    const oldContent = translatedStoryLines[arrayIndex(lineIndex)]
-      .translatedContent!;
+    const oldContent = translatedStoryLines[lineIndex].translatedContent!;
     const newUndo =
       versionHistoryStack.Undo.length === MAX_STACK_SIZE
         ? versionHistoryStack.Undo.slice(1)
@@ -137,8 +132,7 @@ const TranslationPage = () => {
       const { lineIndex, content: newContent } = versionHistoryStack.Undo[
         versionHistoryStack.Undo.length - 1
       ];
-      const oldContent =
-        translatedStoryLines[arrayIndex(lineIndex)].translatedContent;
+      const oldContent = translatedStoryLines[lineIndex].translatedContent;
       if (oldContent !== newContent) {
         const newRedo =
           versionHistoryStack.Redo.length === MAX_STACK_SIZE
@@ -165,8 +159,7 @@ const TranslationPage = () => {
       const { lineIndex, content: newContent } = versionHistoryStack.Redo[
         versionHistoryStack.Redo.length - 1
       ];
-      const oldContent =
-        translatedStoryLines[arrayIndex(lineIndex)].translatedContent;
+      const oldContent = translatedStoryLines[lineIndex].translatedContent;
       if (oldContent !== newContent) {
         const newUndo =
           versionHistoryStack.Undo.length === MAX_STACK_SIZE
@@ -222,10 +215,7 @@ const TranslationPage = () => {
   const storyCells = translatedStoryLines.map((storyLine: StoryLine) => {
     const displayLineNumber = storyLine.lineIndex + 1;
     return (
-      <div
-        className="row-translation"
-        key={`row-${arrayIndex(storyLine.lineIndex)}`}
-      >
+      <div className="row-translation" key={`row-${storyLine.lineIndex}`}>
         <p className="line-index">{displayLineNumber}</p>
         <Cell text={storyLine.originalContent} />
         <EditableCell
