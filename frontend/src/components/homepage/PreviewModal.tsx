@@ -4,6 +4,7 @@ import {
   Badge,
   Box,
   Button,
+  Flex,
   Heading,
   Link,
   Modal,
@@ -67,7 +68,7 @@ const PreviewModal = ({
   });
 
   const storyContents = content.map((c: string, index: number) => (
-    <Box display="flex" padding={3}>
+    <Flex padding={3}>
       <Box
         width="3%"
         text-align="center"
@@ -91,7 +92,7 @@ const PreviewModal = ({
       >
         {c}
       </Box>
-    </Box>
+    </Flex>
   ));
 
   return (
