@@ -16,16 +16,16 @@ import {
 } from "../utils/LocalStorageUtils";
 import { REFRESH } from "./mutations";
 
-const getLocalToken = () =>
-  getLocalStorageObjProperty(AUTHENTICATED_USER_KEY, "accessToken");
-
 const httpLink = createHttpLink({
   uri: `${process.env.REACT_APP_BACKEND_URL}/graphql`,
   credentials: "include",
 });
 
 const authFromLocalLink = setContext(async (_, { headers }) => {
-  const accessToken = getLocalToken();
+  const accessToken = getLocalStorageObjProperty(
+    AUTHENTICATED_USER_KEY,
+    "accessToken",
+  );
   return {
     headers: {
       ...headers,
@@ -35,7 +35,10 @@ const authFromLocalLink = setContext(async (_, { headers }) => {
 });
 
 const injectAccessToken = async (operation: any) => {
-  let accessToken = getLocalToken();
+  let accessToken = getLocalStorageObjProperty(
+    AUTHENTICATED_USER_KEY,
+    "accessToken",
+  );
   const decodedToken: any = jwt.decode(accessToken);
   if (
     decodedToken &&
