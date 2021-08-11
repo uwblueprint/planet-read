@@ -1,17 +1,14 @@
 import React from "react";
-import { gql, useMutation } from "@apollo/client";
+import { useMutation } from "@apollo/client";
+import {
+  RESET_PASSWORD,
+  ResetPasswordResponse,
+} from "../../APIClients/mutations";
+import authAPIClient from "../../APIClients/AuthAPIClient";
 
 type ResetPasswordProps = {
   email: string;
 };
-
-const RESET_PASSWORD = gql`
-  mutation ResetPassword($email: String!) {
-    resetPassword(email: $email) {
-      ok
-    }
-  }
-`;
 
 const ResetPassword = ({ email }: ResetPasswordProps) => {
   const isRealEmailAvailable = (emailString: string): boolean => {
@@ -19,8 +16,7 @@ const ResetPassword = ({ email }: ResetPasswordProps) => {
     return re.test(String(emailString).toLowerCase());
   };
 
-  type ResetPassword = { ok: boolean };
-  const [resetPassword] = useMutation<{ resetPassword: ResetPassword }>(
+  const [resetPassword] = useMutation<{ resetPassword: ResetPasswordResponse }>(
     RESET_PASSWORD,
   );
 
@@ -42,9 +38,8 @@ const ResetPassword = ({ email }: ResetPasswordProps) => {
     }
 
     try {
-      const result = await resetPassword({ variables: { email } });
-
-      if (result.data?.resetPassword.ok) {
+      const result = await authAPIClient.resetPassword(email, resetPassword);
+      if (result) {
         handleSuccessOnReset(`Reset email sent to ${email}`);
       } else {
         handleErrorOnReset("Reset password failed.");
