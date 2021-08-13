@@ -1,5 +1,7 @@
 import React from "react";
-import "./EditableCell.css";
+// import "./EditableCell.css";
+
+import { Textarea } from "@chakra-ui/react";
 
 export type EditableCellProps = {
   text: string;
@@ -16,10 +18,11 @@ const EditableCell = ({
   onChange,
 }: EditableCellProps) => {
   return (
-    <textarea
-      className={
-        text.length === maxChars ? "max-char-reached" : "input-translation"
+    <Textarea
+      variant={
+        text.length === maxChars ? "maxCharsReached" : "translationEditable"
       }
+      isInvalid={text.length >= maxChars}
       value={text}
       onChange={(event) => onChange(event.target.value, lineIndex, maxChars)}
     />

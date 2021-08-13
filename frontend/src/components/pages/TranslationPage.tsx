@@ -48,8 +48,10 @@ const GET_STORY_CONTENTS = (storyId: number, storyTranslationId: number) => gql`
 
 const TranslationPage = () => {
   const MAX_STACK_SIZE = 100;
-  const { storyIdParam, storyTranslationIdParam } =
-    useParams<TranslationPageProps>();
+  const {
+    storyIdParam,
+    storyTranslationIdParam,
+  } = useParams<TranslationPageProps>();
 
   const storyId = +storyIdParam!!;
   const storyTranslationId = +storyTranslationIdParam!!;
@@ -117,8 +119,7 @@ const TranslationPage = () => {
     lineIndex: number,
     maxChars: number,
   ) => {
-    const oldContent =
-      translatedStoryLines[arrayIndex(lineIndex)].translatedContent!;
+    const oldContent = translatedStoryLines[lineIndex].translatedContent!;
     const newUndo =
       versionHistoryStack.Undo.length === MAX_STACK_SIZE
         ? versionHistoryStack.Undo.slice(1)
@@ -141,8 +142,9 @@ const TranslationPage = () => {
 
   const undoChange = () => {
     if (versionHistoryStack.Undo.length > 0) {
-      const { lineIndex, content: newContent } =
-        versionHistoryStack.Undo[versionHistoryStack.Undo.length - 1];
+      const { lineIndex, content: newContent } = versionHistoryStack.Undo[
+        versionHistoryStack.Undo.length - 1
+      ];
       const oldContent = translatedStoryLines[lineIndex].translatedContent;
       if (oldContent !== newContent) {
         const newRedo =
@@ -167,8 +169,9 @@ const TranslationPage = () => {
 
   const redoChange = () => {
     if (versionHistoryStack.Redo.length > 0) {
-      const { lineIndex, content: newContent } =
-        versionHistoryStack.Redo[versionHistoryStack.Redo.length - 1];
+      const { lineIndex, content: newContent } = versionHistoryStack.Redo[
+        versionHistoryStack.Redo.length - 1
+      ];
       const oldContent = translatedStoryLines[lineIndex].translatedContent;
       if (oldContent !== newContent) {
         const newUndo =
