@@ -1,6 +1,6 @@
 # 🌏 Planet Read
 
-🐘 Postgres + 🐍 Flask story translation platform.  
+🐬 MySQL + 🐍 Flask story translation platform.  
 
 Made with [starter-code-v2](https://github.com/uwblueprint/starter-code-v2), brought to you by the @uwblueprint/internal-tools team!
 
@@ -32,15 +32,30 @@ And run the project:
 docker-compose up --build
 ```
 
-Don't forget to seed your database with a firebase user: 
+Seed your database with the provided script. Before running, you will need to set environment variables for all of the user secrets, which can be found in the secrets channel.
 ```
-docker ps
-docker exec -it <db-container-id> /bin/bash
-psql -U postgres -d planet-read
-INSERT INTO users (first_name, last_name, auth_id, role, approved_languages) VALUES ('First', 'Last', 'insert-firebase-uid', 'Admin', '{"english":3}');
+./seed_db.sh
 ```
 
-If there are no tables in the DB, go into `/backend/python/app/models/__init__.py` and change the `erase_db_and_sync = False` to True, allow the hot reload to build, and change it back to `False`. Try to seed the database with a user again.
+If there are no tables in the DB, go into `/backend/python/app/models/__init__.py` and change the `erase_db_and_sync = False` to True, allow the hot reload to build, and change it back to `False`. Try to seed the database again.
+
+# Test
+Backend test run using the `pytest` framework on a distinct test database. You may need to rebuild if this is your first time running pytest. The following utils are available for testing:
+```
+# Run all tests
+./utils.sh pytest
+
+# Run all tests in a file
+./utils.sh pytest app/tests/<path/to/file.py>
+
+# Run all tests in a file matching a name pattern
+./utils.sh pytest app/tests/<path/to/file.py> <name pattern>
+```
+
+If you want to run any other pytest commands, run them manually with:
+```
+docker exec <backend-contianer-id> /bin/bash <pytest command>
+```
 
 # Lint
 Frontend has on-save linting. To lint the backend:
