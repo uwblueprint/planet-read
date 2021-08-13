@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React, { useContext, useState } from "react";
 import { gql, useMutation } from "@apollo/client";
 import { useHistory } from "react-router-dom";
 import {
@@ -11,6 +11,7 @@ import {
   useStyleConfig,
 } from "@chakra-ui/react";
 import AuthContext from "../../contexts/AuthContext";
+import PreviewModal from "./PreviewModal";
 import "./StoryCard.css";
 import convertLanguageTitleCase from "../../utils/LanguageUtils";
 
@@ -126,7 +127,10 @@ const StoryCard = ({
     }
   };
 
-  const previewBook = () => history.push("/preview");
+  const [preview, setPreview] = useState(false);
+  const previewBook = () => {
+    setPreview(!preview);
+  };
 
   const openTranslation = () =>
     history.push(`/translation/${storyId}/${storyTranslationId}`);
@@ -184,6 +188,19 @@ const StoryCard = ({
           preview book
         </Button>
       </Box>
+      {preview && (
+        <PreviewModal
+          storyId={storyId}
+          title={title}
+          youtubeLink={youtubeLink}
+          level={level}
+          language={language}
+          previewBook={previewBook}
+          preview={preview}
+          primaryBtnText={primaryBtnText()}
+          primaryBtnOnClick={primaryBtnOnClick}
+        />
+      )}
     </Flex>
   );
 };

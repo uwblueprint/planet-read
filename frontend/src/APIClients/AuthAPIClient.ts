@@ -3,13 +3,14 @@ import {
   MutationFunctionOptions,
   OperationVariables,
 } from "@apollo/client";
-import baseAPIClient from "./BaseAPIClient";
 import AUTHENTICATED_USER_KEY from "../constants/AuthConstants";
 import { AuthenticatedUser } from "../contexts/AuthContext";
 import {
-  getLocalStorageObjProperty,
-  setLocalStorageObjProperty,
-} from "../utils/LocalStorageUtils";
+  LogoutResponse,
+  ResetPasswordResponse,
+  RefreshResponse,
+} from "./mutations";
+import { setLocalStorageObjProperty } from "../utils/LocalStorageUtils";
 
 type LoginFunction = (
   options: MutationFunctionOptions<
@@ -92,17 +93,19 @@ const signup = async (
   return user;
 };
 
-const logout = async (userId: string | undefined): Promise<boolean> => {
-  const bearerToken = `Bearer ${getLocalStorageObjProperty(
-    AUTHENTICATED_USER_KEY,
-    "accessToken",
-  )}`;
+type LogoutFunction = (
+  options: MutationFunctionOptions<
+    { logout: LogoutResponse },
+    OperationVariables
+  >,
+) => Promise<FetchResult<{ logout: LogoutResponse }>>;
+
+const logout = async (
+  userId: string | undefined,
+  logoutFunction: LogoutFunction,
+): Promise<boolean> => {
   try {
-    await baseAPIClient.post(
-      `/auth/logout/${userId}`,
-      {},
-      { headers: { Authorization: bearerToken } },
-    );
+    await logoutFunction({ variables: { userId } });
     localStorage.removeItem(AUTHENTICATED_USER_KEY);
     return true;
   } catch (error) {
@@ -110,36 +113,41 @@ const logout = async (userId: string | undefined): Promise<boolean> => {
   }
 };
 
-const resetPassword = async (email: string | undefined): Promise<boolean> => {
-  const bearerToken = `Bearer ${getLocalStorageObjProperty(
-    AUTHENTICATED_USER_KEY,
-    "accessToken",
-  )}`;
+type ResetPasswordFunction = (
+  options: MutationFunctionOptions<
+    { resetPassword: ResetPasswordResponse },
+    OperationVariables
+  >,
+) => Promise<FetchResult<{ resetPassword: ResetPasswordResponse }>>;
+
+const resetPassword = async (
+  email: string | undefined,
+  resetPasswordFunction: ResetPasswordFunction,
+): Promise<boolean> => {
   try {
-    await baseAPIClient.post(
-      `/auth/resetPassword/${email}`,
-      {},
-      { headers: { Authorization: bearerToken } },
-    );
+    await resetPasswordFunction({ variables: { email } });
     return true;
   } catch (error) {
     return false;
   }
 };
 
+type RefreshFunction = (
+  options: MutationFunctionOptions<
+    { refresh: RefreshResponse },
+    OperationVariables
+  >,
+) => Promise<FetchResult<{ refresh: RefreshResponse }>>;
 // for testing only, refresh does not need to be exposed in the client
-const refresh = async (): Promise<boolean> => {
+const refresh = async (refreshFunction: RefreshFunction): Promise<boolean> => {
   try {
-    const { data } = await baseAPIClient.post(
-      "/auth/refresh",
-      {},
-      { withCredentials: true },
-    );
-    setLocalStorageObjProperty(
-      AUTHENTICATED_USER_KEY,
-      "accessToken",
-      data.accessToken,
-    );
+    const result = await refreshFunction({ variables: {} });
+    const token = result.data?.refresh.accessToken;
+    if (token) {
+      setLocalStorageObjProperty(AUTHENTICATED_USER_KEY, "accessToken", token);
+    } else {
+      return false;
+    }
     return true;
   } catch (error) {
     return false;

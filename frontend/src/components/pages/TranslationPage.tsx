@@ -48,10 +48,8 @@ const GET_STORY_CONTENTS = (storyId: number, storyTranslationId: number) => gql`
 
 const TranslationPage = () => {
   const MAX_STACK_SIZE = 100;
-  const {
-    storyIdParam,
-    storyTranslationIdParam,
-  } = useParams<TranslationPageProps>();
+  const { storyIdParam, storyTranslationIdParam } =
+    useParams<TranslationPageProps>();
 
   const storyId = +storyIdParam!!;
   const storyTranslationId = +storyTranslationIdParam!!;
@@ -67,9 +65,6 @@ const TranslationPage = () => {
     Undo: [],
     Redo: [],
   });
-
-  const arrayIndex = (lineIndex: number): number =>
-    lineIndex - translatedStoryLines[0].lineIndex;
 
   const deepCopy = (lines: Object) => {
     // This is a funky method to make deep copies on objects with primative values
@@ -97,24 +92,23 @@ const TranslationPage = () => {
     lineIndex: number,
   ) => {
     const updatedContentArray = [...translatedStoryLines];
-    const index = arrayIndex(lineIndex);
     if (
       // user deleted translation line
       !newContent.trim() &&
-      translatedStoryLines[index].translatedContent!!.trim()
+      translatedStoryLines[lineIndex].translatedContent!!.trim()
     ) {
       setNumTranslatedLines(numTranslatedLines - 1);
     } else if (
       // user added new translation line
       newContent.trim() &&
-      !translatedStoryLines[index].translatedContent!!.trim()
+      !translatedStoryLines[lineIndex].translatedContent!!.trim()
     ) {
       setNumTranslatedLines(numTranslatedLines + 1);
     }
-    updatedContentArray[index].translatedContent = newContent;
+    updatedContentArray[lineIndex].translatedContent = newContent;
     setTranslatedStoryLines(updatedContentArray);
     setChangedStoryLines(
-      changedStoryLines.set(lineIndex, updatedContentArray[index]),
+      changedStoryLines.set(lineIndex, updatedContentArray[lineIndex]),
     );
   };
 
@@ -123,8 +117,8 @@ const TranslationPage = () => {
     lineIndex: number,
     maxChars: number,
   ) => {
-    const oldContent = translatedStoryLines[arrayIndex(lineIndex)]
-      .translatedContent!;
+    const oldContent =
+      translatedStoryLines[arrayIndex(lineIndex)].translatedContent!;
     const newUndo =
       versionHistoryStack.Undo.length === MAX_STACK_SIZE
         ? versionHistoryStack.Undo.slice(1)
@@ -139,19 +133,17 @@ const TranslationPage = () => {
     }
   };
 
-  const [maxCharReached, setMaxCharReached] = useState<Number[]>([]);
+  // const [maxCharReached, setMaxCharReached] = useState<Number[]>([]);
 
-  const maxCharWarning = (
-    <div>a</div>
-  );
+  // const maxCharWarning = (
+  //   <div>a</div>
+  // );
 
   const undoChange = () => {
     if (versionHistoryStack.Undo.length > 0) {
-      const { lineIndex, content: newContent } = versionHistoryStack.Undo[
-        versionHistoryStack.Undo.length - 1
-      ];
-      const oldContent =
-        translatedStoryLines[arrayIndex(lineIndex)].translatedContent;
+      const { lineIndex, content: newContent } =
+        versionHistoryStack.Undo[versionHistoryStack.Undo.length - 1];
+      const oldContent = translatedStoryLines[lineIndex].translatedContent;
       if (oldContent !== newContent) {
         const newRedo =
           versionHistoryStack.Redo.length === MAX_STACK_SIZE
@@ -175,11 +167,9 @@ const TranslationPage = () => {
 
   const redoChange = () => {
     if (versionHistoryStack.Redo.length > 0) {
-      const { lineIndex, content: newContent } = versionHistoryStack.Redo[
-        versionHistoryStack.Redo.length - 1
-      ];
-      const oldContent =
-        translatedStoryLines[arrayIndex(lineIndex)].translatedContent;
+      const { lineIndex, content: newContent } =
+        versionHistoryStack.Redo[versionHistoryStack.Redo.length - 1];
+      const oldContent = translatedStoryLines[lineIndex].translatedContent;
       if (oldContent !== newContent) {
         const newUndo =
           versionHistoryStack.Undo.length === MAX_STACK_SIZE
@@ -236,10 +226,7 @@ const TranslationPage = () => {
     const displayLineNumber = storyLine.lineIndex + 1;
 
     return (
-      <div
-        className="row-translation"
-        key={`row-${arrayIndex(storyLine.lineIndex)}`}
-      >
+      <div className="row-translation" key={`row-${storyLine.lineIndex}`}>
         <p className="line-index">{displayLineNumber}</p>
         <Cell text={storyLine.originalContent} />
         <EditableCell
