@@ -43,11 +43,15 @@ then
     echo "Erasing the database..."
 
 
-    docker exec -it planet-read_db_1 mysql -u root -proot -e "USE planet-read; DELETE FROM story_translation_contents;"
-    docker exec -it planet-read_db_1 mysql -u root -proot -e "USE planet-read; DELETE FROM story_contents;"
-    docker exec -it planet-read_db_1 mysql -u root -proot -e "USE planet-read; DELETE FROM story_translations;"
-    docker exec -it planet-read_db_1 mysql -u root -proot -e "USE planet-read; DELETE FROM users;"
-    docker exec -it planet-read_db_1 mysql -u root -proot -e "USE planet-read; DELETE FROM stories;"
+    docker exec -it planet-read_db_1 mysql -u root -proot -e "
+        USE planet-read;
+        DELETE FROM comments;
+        DELETE FROM story_translation_contents;
+        DELETE FROM story_contents;
+        DELETE FROM story_translations;
+        DELETE FROM users;
+        DELETE FROM stories;
+    "
 
 
     echo "Erased the database 💥💥💥"
@@ -78,7 +82,7 @@ else
             ('Carl', 'Sagan', '$AUTH_ID_1', 'User', '{\"ENGLISH_US\":4}'),
             ('Miroslav', 'Klose', '$AUTH_ID_2', 'User', '{\"POLISH\":4, \"GERMAN\":4}'),
             ('Kevin', 'De Bryune', '$AUTH_ID_3', 'User', '{\"DUTCH\":4, \"FRENCH\":4}'),
-            ('Dwight', 'D. Eisenhower', '$AUTH_ID_4', 'User', '{\"ENGLISH_UK\":4}'), 
+            ('Dwight', 'D. Eisenhower', '$AUTH_ID_4', 'User', '{\"ENGLISH_UK\":4, \"ENGLISH_US\":4}'), 
             ('Alexander', 'Hamilton', '$AUTH_ID_5', 'User', '{\"MANDARIN\":4}'), 
             ('Angela', 'Merkel', '$AUTH_ID_6', 'Admin', '{\"GERMAN\":4}'), 
             ('Richard', 'Feynman', '$AUTH_ID_7', 'User', '{\"PORTUGESE\":4}');
@@ -86,9 +90,9 @@ else
 
     echo "Finished generating users..." 
 
+    # stories 
     if  [[ "$1" = "kevin" ]] 
     then 
-        # stories 
         docker exec -it planet-read_db_1 mysql -u root -proot -e "USE planet-read; ALTER TABLE stories AUTO_INCREMENT = 1;"
         
         docker exec -it planet-read_db_1 mysql -u root -proot -e "
@@ -105,8 +109,7 @@ else
                 ('Kevin Lobbies Against Expansion of Social Safety Net', 'He complains higher taxes will prevent him from getting a new Gulfstream G650ER for Christmas', 'https://www.youtube.com/watch?v=t8IK0ZqfxNI&t=27s', 2, '[]');
         "
 
-    else 
-        # stories 
+    else
         docker exec -it planet-read_db_1 mysql -u root -proot -e "USE planet-read; ALTER TABLE stories AUTO_INCREMENT = 1;"
         
         docker exec -it planet-read_db_1 mysql -u root -proot -e "
@@ -151,7 +154,7 @@ else
     "
     echo "Finished generating story translations..." 
     
-    # Story content 
+    # story_contents
     docker exec -it planet-read_db_1 mysql -u root -proot -e "USE planet-read; ALTER TABLE story_contents AUTO_INCREMENT = 1;"
 
     for STORY_ID in 1 2 3 4 5 6 7
@@ -176,7 +179,7 @@ else
     
     echo "Finished generating story contents..." 
 
-    # Story translation content 
+    # story_translation_contents
     docker exec -it planet-read_db_1 mysql -u root -proot -e "USE planet-read; ALTER TABLE story_translation_contents AUTO_INCREMENT = 1;"
 
     for STORY_TRANSLATION_ID in 2 3 5 7 11 13 
@@ -239,6 +242,26 @@ else
                 ('$STORY_TRANSLATION_ID', 9, 'But the Hebrew word, the word timshel-\'Thou mayest\'-that gives a choice. It might be the most important word in the world. That says the way is open. That throws it right back on a man. For if \'Thou mayest\'-it is also true that \'Thou mayest not.\' Don\'t you see?\"');
         "
     done 
+
+    # comments
+    echo "Adding comments to The Great Gatsby (id: 6) Story Translation (id: 13) With Carl (id: 1) and Dwight (id: 4)"  
+
+    docker exec -it planet-read_db_1 mysql -u root -proot -e "
+        USE planet-read; 
+        UPDATE story_translations SET reviewer_id=4 WHERE id=13;
+        UPDATE story_translation_contents SET status='APPROVED' WHERE id IN(51, 52, 55, 56, 60);
+        UPDATE story_translation_contents SET status='ACTION_REQUIRED' WHERE id IN(53, 54, 59);
+        INSERT INTO comments 
+            (story_translation_content_id, user_id, comment_index, time, resolved, content) 
+        VALUES 
+            (51, 1, 0, '2021-07-31 01:48:42', True, 'Not sure if this grammar makes sense'),
+            (51, 4, 1, '2021-08-09 12:28:42', True, 'It\'s fine, go back to grammar school man'),
+            (51, 1, 2, '2021-08-10 21:55:42', True, 'uwu dont need to be so mean man'),
+            (53, 1, 0, '2021-07-31 13:22:42', False, 'this comment is lonely uwu '),
+            (54, 4, 0, '2021-08-09 01:38:12', True, 'this comment is likes to be alone uwu '),
+            (59, 4, 0, '2021-08-09 18:23:32', False, 'this comment is disagreeable'),
+            (59, 1, 1, '2021-08-10 21:58:42', False, 'I agree!');
+    "
 
     echo "Finished generating story translation contents..." 
 

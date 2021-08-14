@@ -3,6 +3,7 @@ from sqlalchemy.dialects.mysql import DATETIME, LONGTEXT
 from sqlalchemy.orm.properties import ColumnProperty
 
 from . import db
+from .story_translation_content import StoryTranslationContent
 
 
 class Comment(db.Model):
@@ -16,9 +17,8 @@ class Comment(db.Model):
         index=True,
         nullable=False,
     )
-
+    story_translation_content = db.relationship(StoryTranslationContent)
     user_id = db.Column(db.Integer, db.ForeignKey("users.id"), nullable=False)
-
     comment_index = db.Column(db.Integer, nullable=False)
     time = db.Column(DATETIME, nullable=False)
     resolved = db.Column(db.Boolean, nullable=False)
