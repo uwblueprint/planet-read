@@ -5,7 +5,9 @@ from ...resources.create_user_dto import CreateUserWithGoogleDTO
 from ...resources.token import Token
 from ...utilities.firebase_rest_client import FirebaseRestClient
 from ..interfaces.auth_service import IAuthService
-
+from ...models import db
+from ...models.story_translation import StoryTranslation
+from ...models.story_translation_content import StoryTranslationContent
 
 class AuthService(IAuthService):
     """
@@ -167,5 +169,28 @@ class AuthService(IAuthService):
                 access_token, check_revoked=True
             )
             return decoded_id_token["email"] == requested_email
+        except:
+            return False
+
+    def is_translator(self, access_token, story_translation_content_id):
+        try:
+            decoded_id_token = firebase_admin.auth.verify_id_token(
+                access_token, check_revoked=True
+            )
+            user_id = self.user_service.get_user_id_by_auth_id(
+                decoded_id_token["uid"]
+            )
+            translator_id = (
+                db.session.query(
+                    StoryTranslation.translator_id.label("translator_id"),
+                )
+                .join(
+                    StoryTranslationContent,
+                    StoryTranslationContent.story_translation_id == StoryTranslation.id,
+                )
+                .filter(StoryTranslationContent.id == story_translation_content_id)
+                .first()
+            )[0]
+            return user_id == translator_id
         except:
             return False

@@ -1,5 +1,6 @@
 import graphene
 
+from ...middlewares.auth import require_authorization_as_stories_translator
 from ..service import services
 from ..types.story_type import (
     CreateStoryTranslationRequestDTO,
@@ -87,7 +88,8 @@ class UpdateStoryTranslationContents(graphene.Mutation):
         story_translation_contents = graphene.List(StoryTranslationContentRequestDTO)
 
     story = graphene.Field(lambda: graphene.List(StoryTranslationContentResponseDTO))
-
+    
+    @require_authorization_as_stories_translator()
     def mutate(root, info, story_translation_contents):
         try:
             new_story_translation_contents = services[
