@@ -79,13 +79,13 @@ else
         INSERT INTO users 
             (first_name, last_name, auth_id, role, approved_languages) 
         VALUES 
-            ('Carl', 'Sagan', '$AUTH_ID_1', 'User', '{\"ENGLISH_US\":4}'),
-            ('Miroslav', 'Klose', '$AUTH_ID_2', 'User', '{\"POLISH\":4, \"GERMAN\":4}'),
-            ('Kevin', 'De Bryune', '$AUTH_ID_3', 'User', '{\"DUTCH\":4, \"FRENCH\":4}'),
-            ('Dwight', 'D. Eisenhower', '$AUTH_ID_4', 'User', '{\"ENGLISH_UK\":4, \"ENGLISH_US\":4}'), 
-            ('Alexander', 'Hamilton', '$AUTH_ID_5', 'User', '{\"MANDARIN\":4}'), 
-            ('Angela', 'Merkel', '$AUTH_ID_6', 'Admin', '{\"GERMAN\":4}'), 
-            ('Richard', 'Feynman', '$AUTH_ID_7', 'User', '{\"PORTUGESE\":4}');
+            ('Carl', 'Sagan', 'svqQQRtqlaUu3DBfmuzKt9ZwAVn1', 'User', '{\"ENGLISH_US\":4}'),
+            ('Miroslav', 'Klose', 'Jj7Z5y5TxJe38ij8KSqbHRjjNGU2', 'User', '{\"POLISH\":4, \"GERMAN\":4}'),
+            ('Kevin', 'De Bryune', '53JabEN6MOdaFJjdyJGTzJhpE2a2', 'User', '{\"DUTCH\":4, \"FRENCH\":4}'),
+            ('Dwight', 'D. Eisenhower', 'k0AaHiCui6OZGKNrttRE1X1cZxh2', 'User', '{\"ENGLISH_UK\":4, \"ENGLISH_US\":4}'), 
+            ('Alexander', 'Hamilton', 'Czcc3fbHXcbOgK77uobNs8HVm4u1', 'User', '{\"MANDARIN\":4}'), 
+            ('Angela', 'Merkel', 'prIMnsfGVfXRZkGmny5RhU09oqE2', 'Admin', '{\"GERMAN\":4}'), 
+            ('Richard', 'Feynman', 'zLa2D8tWSiguHXiNDOUaStzwM0G3', 'User', '{\"PORTUGESE\":4}');
     "
 
     echo "Finished generating users..." 
