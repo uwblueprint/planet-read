@@ -54,14 +54,8 @@ class CommentService(ICommentService):
                 .filter_by(story_translation_id=story_translation_id)
                 .all()
             )
-            print(comments)
         except Exception as error:
-            reason = getattr(error, "message", None)
-            self.logger.error(
-                "Failed to update comment. Reason = {reason}".format(
-                    reason=(reason if reason else str(error))
-                )
-            )
+            self.logger.error(str(error))
             raise error
 
         return comments
