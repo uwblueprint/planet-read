@@ -1,5 +1,6 @@
 import { useCallback, useEffect } from "react";
-import { gql, useMutation } from "@apollo/client";
+import { useMutation } from "@apollo/client";
+import { UPDATE_STORY_TRANSLATION_CONTENTS } from "../../APIClients/mutations";
 
 import debounce from "../../utils/DebounceUtils";
 
@@ -9,20 +10,6 @@ export type StoryLine = {
   translatedContent?: string;
   storyTranslationContentId?: number;
 };
-
-const UPDATE_TRANSLATION = gql`
-  mutation updateStoryTranslationContents(
-    $storyTranslationContents: [StoryTranslationContentRequestDTO]
-  ) {
-    updateStoryTranslationContents(
-      storyTranslationContents: $storyTranslationContents
-    ) {
-      story {
-        id
-      }
-    }
-  }
-`;
 
 type AutosaveProps = {
   storylines: StoryLine[];
@@ -35,7 +22,9 @@ const Autosave = ({ storylines, onSuccess }: AutosaveProps) => {
     alert(errorMessage);
   };
 
-  const [updateTranslation] = useMutation<{}>(UPDATE_TRANSLATION);
+  const [updateTranslation] = useMutation<{}>(
+    UPDATE_STORY_TRANSLATION_CONTENTS,
+  );
 
   const debouncedSave = useCallback(
     debounce(async (linesToUpdate: StoryLine[]) => {

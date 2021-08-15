@@ -1,5 +1,5 @@
 import React, { useContext, useState } from "react";
-import { gql, useMutation } from "@apollo/client";
+import { useMutation } from "@apollo/client";
 import { useHistory } from "react-router-dom";
 import {
   Badge,
@@ -14,35 +14,12 @@ import AuthContext from "../../contexts/AuthContext";
 import PreviewModal from "./PreviewModal";
 import "./StoryCard.css";
 import convertLanguageTitleCase from "../../utils/LanguageUtils";
-
-type AssignReviewer = { ok: boolean };
-const ASSIGN_REVIEWER = gql`
-  mutation assignUserAsReviewer($storyTranslationId: ID!, $userId: ID!) {
-    assignUserAsReviewer(
-      storyTranslationId: $storyTranslationId
-      userId: $userId
-    ) {
-      ok
-    }
-  }
-`;
-
-type CreateTranslation = {
-  story: {
-    id: number;
-  };
-};
-const CREATE_TRANSLATION = gql`
-  mutation createStoryTranslation(
-    $storyTranslationData: CreateStoryTranslationRequestDTO!
-  ) {
-    createStoryTranslation(storyTranslationData: $storyTranslationData) {
-      story {
-        id
-      }
-    }
-  }
-`;
+import {
+  ASSIGN_REVIEWER,
+  AssignReviewer,
+  CREATE_TRANSLATION,
+  CreateTranslation,
+} from "../../APIClients/mutations";
 
 export type StoryCardProps = {
   storyId: number;

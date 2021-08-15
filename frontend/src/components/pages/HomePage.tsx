@@ -1,89 +1,15 @@
 import React, { useContext, useState } from "react";
-import { DocumentNode, gql, useQuery } from "@apollo/client";
+import { useQuery } from "@apollo/client";
 import Filter from "../homepage/Filter";
 import StoryList from "../homepage/StoryList";
 import { StoryCardProps } from "../homepage/StoryCard";
 import AuthContext from "../../contexts/AuthContext";
 import ToggleButton from "../utils/ToggleButton";
 import Header from "../navigation/Header";
+import { buildHomePageStoriesQuery } from "../../APIClients/queries";
 import "./HomePage.css";
 
-type QueryInformation = {
-  fieldName: string;
-  string: DocumentNode;
-};
-
 const HomePage = () => {
-  const STORY_FIELDS = `
-  title
-  description
-  youtubeLink
-  level
-  `;
-
-  const buildHomePageStoriesQuery = (
-    displayMyStories: boolean,
-    language: string,
-    isTranslator: boolean,
-    level: number,
-    userId: number,
-  ): QueryInformation => {
-    let result = {};
-
-    if (isTranslator && !displayMyStories) {
-      result = {
-        fieldName: "storiesAvailableForTranslation",
-        string: gql`
-          query {
-            storiesAvailableForTranslation(
-              language: "${language}",
-              level: ${level}
-            ) {
-              storyId: id
-              ${STORY_FIELDS}
-            }
-          }
-        `,
-      };
-    } else if (!isTranslator && !displayMyStories) {
-      result = {
-        fieldName: "storyTranslationsAvailableForReview",
-        string: gql`
-          query {
-            storyTranslationsAvailableForReview(
-              language: "${language}",
-              level: ${level}
-            ) {
-              storyId
-              storyTranslationId: id
-              ${STORY_FIELDS}
-            }
-          }
-        `,
-      };
-    } else if (displayMyStories) {
-      result = {
-        fieldName: "storyTranslationsByUser",
-        string: gql`
-          query {
-            storyTranslationsByUser(
-              userId: ${userId},
-              translator: ${isTranslator},
-              language: "${language}",
-              level: ${level}
-            ) {
-              storyId
-              storyTranslationId: id
-              ${STORY_FIELDS}
-            }
-          }
-        `,
-      };
-    }
-
-    return result as QueryInformation;
-  };
-
   const { authenticatedUser } = useContext(AuthContext);
 
   const approvedLanguages = JSON.parse(

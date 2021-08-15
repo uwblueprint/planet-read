@@ -17,7 +17,7 @@ export const LOGIN = gql`
 `;
 
 export const LOGIN_WITH_GOOGLE = gql`
-  mutation loginWithGoogle($tokenId: String!) {
+  mutation LoginWithGoogle($tokenId: String!) {
     loginWithGoogle(tokenId: $tokenId) {
       id
       firstName
@@ -71,5 +71,70 @@ export interface ResetPasswordResponse {
   ok: boolean;
 }
 
+export const SIGNUP = gql`
+  mutation SignUp(
+    $firstName: String!
+    $lastName: String!
+    $email: String!
+    $password: String!
+  ) {
+    signup(
+      firstName: $firstName
+      lastName: $lastName
+      email: $email
+      password: $password
+    ) {
+      id
+      firstName
+      lastName
+      email
+      role
+      accessToken
+      refreshToken
+    }
+  }
+`;
+
 // Stories
-// TODO: move mutation gql strings here
+export const UPDATE_STORY_TRANSLATION_CONTENTS = gql`
+  mutation UpdateStoryTranslationContents(
+    $storyTranslationContents: [StoryTranslationContentRequestDTO]
+  ) {
+    updateStoryTranslationContents(
+      storyTranslationContents: $storyTranslationContents
+    ) {
+      story {
+        id
+      }
+    }
+  }
+`;
+
+export const CREATE_TRANSLATION = gql`
+  mutation CreateStoryTranslation(
+    $storyTranslationData: CreateStoryTranslationRequestDTO!
+  ) {
+    createStoryTranslation(storyTranslationData: $storyTranslationData) {
+      story {
+        id
+      }
+    }
+  }
+`;
+export type CreateTranslation = {
+  story: {
+    id: number;
+  };
+};
+
+export const ASSIGN_REVIEWER = gql`
+  mutation AssignUserAsReviewer($storyTranslationId: ID!, $userId: ID!) {
+    assignUserAsReviewer(
+      storyTranslationId: $storyTranslationId
+      userId: $userId
+    ) {
+      ok
+    }
+  }
+`;
+export type AssignReviewer = { ok: boolean };

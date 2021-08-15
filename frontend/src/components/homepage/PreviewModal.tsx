@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { gql, useQuery } from "@apollo/client";
+import { useQuery } from "@apollo/client";
 import {
   Badge,
   Box,
@@ -16,6 +16,7 @@ import {
   Text,
 } from "@chakra-ui/react";
 import convertLanguageTitleCase from "../../utils/LanguageUtils";
+import { GET_STORY_CONTENTS } from "../../APIClients/queries";
 
 export type PreviewModalProps = {
   storyId: number;
@@ -41,21 +42,6 @@ const PreviewModal = ({
   primaryBtnOnClick,
 }: PreviewModalProps) => {
   const [content, setContent] = useState<string[]>([]);
-
-  const GET_STORY_CONTENTS = (id: number) =>
-    gql`
-      query {
-        storyById(
-          id: ${id}
-        ) {
-          contents {
-            id
-            lineIndex
-            content
-          }
-        }
-      }
-    `;
 
   useQuery(GET_STORY_CONTENTS(storyId), {
     fetchPolicy: "cache-and-network",

@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { gql, useQuery } from "@apollo/client";
+import { useQuery } from "@apollo/client";
 
 import "./TranslationPage.css";
 import { useParams } from "react-router-dom";
@@ -9,6 +9,7 @@ import TranslationProgressBar from "../translation/TranslationProgressBar";
 import CheckmarkIcon from "../../assets/checkmark.svg";
 import CommentIcon from "../../assets/comment_no_number.svg";
 import Autosave, { StoryLine } from "../translation/Autosave";
+import { GET_STORY_AND_TRANSLATION_CONTENTS } from "../../APIClients/queries";
 
 type TranslationPageProps = {
   storyIdParam: string | undefined;
@@ -25,26 +26,6 @@ type HistoryStack = {
   Undo: Array<{ lineIndex: number; content: string }>;
   Redo: Array<{ lineIndex: number; content: string }>;
 };
-
-const GET_STORY_CONTENTS = (storyId: number, storyTranslationId: number) => gql`
-  query {
-    storyById(id: ${storyId}) {
-      contents {
-        id
-        lineIndex
-        content
-      }
-    }
-    storyTranslationById(id: ${storyTranslationId}) {
-      translationContents {
-        id
-        lineIndex
-        content: translationContent
-      },
-      numTranslatedLines
-    }
-  }
-`;
 
 const TranslationPage = () => {
   const MAX_STACK_SIZE = 100;
@@ -185,7 +166,7 @@ const TranslationPage = () => {
     setChangedStoryLines(new Map());
   };
 
-  useQuery(GET_STORY_CONTENTS(storyId, storyTranslationId), {
+  useQuery(GET_STORY_AND_TRANSLATION_CONTENTS(storyId, storyTranslationId), {
     fetchPolicy: "cache-and-network",
     onCompleted: (data) => {
       const storyContent = data.storyById.contents;
