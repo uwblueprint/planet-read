@@ -6,7 +6,7 @@ import { StoryCardProps } from "../homepage/StoryCard";
 import AuthContext from "../../contexts/AuthContext";
 import ToggleButton from "../utils/ToggleButton";
 import Header from "../navigation/Header";
-import { buildHomePageStoriesQuery } from "../../APIClients/queries";
+import { buildHomePageStoriesQuery } from "../../APIClients/queries/StoryQueries";
 import "./HomePage.css";
 
 const HomePage = () => {

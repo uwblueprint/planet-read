@@ -16,7 +16,7 @@ import {
   Text,
 } from "@chakra-ui/react";
 import convertLanguageTitleCase from "../../utils/LanguageUtils";
-import { GET_STORY_CONTENTS } from "../../APIClients/queries";
+import { GET_STORY_CONTENTS } from "../../APIClients/queries/StoryQueries";
 
 export type PreviewModalProps = {
   storyId: number;

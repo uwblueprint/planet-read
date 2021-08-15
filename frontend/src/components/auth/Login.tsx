@@ -7,7 +7,10 @@ import {
 } from "react-google-login";
 import { Redirect } from "react-router-dom";
 import authAPIClient from "../../APIClients/AuthAPIClient";
-import { LOGIN, LOGIN_WITH_GOOGLE } from "../../APIClients/mutations";
+import {
+  LOGIN,
+  LOGIN_WITH_GOOGLE,
+} from "../../APIClients/mutations/AuthMutations";
 import AuthContext, { AuthenticatedUser } from "../../contexts/AuthContext";
 import ResetPassword from "./ResetPassword";
 

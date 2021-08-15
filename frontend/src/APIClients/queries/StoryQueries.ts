@@ -1,9 +1,8 @@
 import { DocumentNode, gql } from "@apollo/client";
 
-// Stories
 export const GET_STORY_CONTENTS = (id: number) =>
   gql`
-      query {
+      query GetStoryContents {
         storyById(
           id: ${id}
         ) {
@@ -64,7 +63,7 @@ export const buildHomePageStoriesQuery = (
     result = {
       fieldName: "storiesAvailableForTranslation",
       string: gql`
-            query {
+            query StoriesAvailableForTranslation {
               storiesAvailableForTranslation(
                 language: "${language}",
                 level: ${level}
@@ -79,7 +78,7 @@ export const buildHomePageStoriesQuery = (
     result = {
       fieldName: "storyTranslationsAvailableForReview",
       string: gql`
-            query {
+            query StoriesAvailableForTranslation {
               storyTranslationsAvailableForReview(
                 language: "${language}",
                 level: ${level}
@@ -95,7 +94,7 @@ export const buildHomePageStoriesQuery = (
     result = {
       fieldName: "storyTranslationsByUser",
       string: gql`
-            query {
+            query StoriesAvailableForTranslation {
               storyTranslationsByUser(
                 userId: ${userId},
                 translator: ${isTranslator},

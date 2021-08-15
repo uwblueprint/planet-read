@@ -16,10 +16,10 @@ import "./StoryCard.css";
 import convertLanguageTitleCase from "../../utils/LanguageUtils";
 import {
   ASSIGN_REVIEWER,
-  AssignReviewer,
+  AssignReviewerResponse,
   CREATE_TRANSLATION,
-  CreateTranslation,
-} from "../../APIClients/mutations";
+  CreateTranslationResponse,
+} from "../../APIClients/mutations/StoryMutations";
 
 export type StoryCardProps = {
   storyId: number;
@@ -62,7 +62,7 @@ const StoryCard = ({
   };
 
   const [assignUserAsReviewer] = useMutation<{
-    assignUserAsReviewer: AssignReviewer;
+    assignUserAsReviewer: AssignReviewerResponse;
   }>(ASSIGN_REVIEWER);
   const assignReviewer = async () => {
     try {
@@ -80,7 +80,7 @@ const StoryCard = ({
   };
 
   const [createTranslation] = useMutation<{
-    createStoryTranslation: CreateTranslation;
+    createStoryTranslation: CreateTranslationResponse;
   }>(CREATE_TRANSLATION);
   const assignTranslator = async () => {
     try {

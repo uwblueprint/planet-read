@@ -1,6 +1,6 @@
 import { useCallback, useEffect } from "react";
 import { useMutation } from "@apollo/client";
-import { UPDATE_STORY_TRANSLATION_CONTENTS } from "../../APIClients/mutations";
+import { UPDATE_STORY_TRANSLATION_CONTENTS } from "../../APIClients/mutations/StoryMutations";
 
 import debounce from "../../utils/DebounceUtils";
 

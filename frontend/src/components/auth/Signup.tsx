@@ -3,7 +3,7 @@ import { Redirect } from "react-router-dom";
 import { useMutation } from "@apollo/client";
 import authAPIClient from "../../APIClients/AuthAPIClient";
 import AuthContext, { AuthenticatedUser } from "../../contexts/AuthContext";
-import { SIGNUP } from "../../APIClients/mutations";
+import { SIGNUP } from "../../APIClients/mutations/AuthMutations";
 
 const Signup = () => {
   const { authenticatedUser, setAuthenticatedUser } = useContext(AuthContext);

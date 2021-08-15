@@ -9,7 +9,7 @@ import TranslationProgressBar from "../translation/TranslationProgressBar";
 import CheckmarkIcon from "../../assets/checkmark.svg";
 import CommentIcon from "../../assets/comment_no_number.svg";
 import Autosave, { StoryLine } from "../translation/Autosave";
-import { GET_STORY_AND_TRANSLATION_CONTENTS } from "../../APIClients/queries";
+import { GET_STORY_AND_TRANSLATION_CONTENTS } from "../../APIClients/queries/StoryQueries";
 
 type TranslationPageProps = {
   storyIdParam: string | undefined;

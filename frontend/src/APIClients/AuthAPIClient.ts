@@ -9,7 +9,7 @@ import {
   LogoutResponse,
   ResetPasswordResponse,
   RefreshResponse,
-} from "./mutations";
+} from "./mutations/AuthMutations";
 import { setLocalStorageObjProperty } from "../utils/LocalStorageUtils";
 
 type LoginFunction = (
