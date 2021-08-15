@@ -1,6 +1,5 @@
-import { useCallback, useContext, useEffect } from "react";
+import { useCallback, useEffect } from "react";
 import { gql, useMutation } from "@apollo/client";
-import AuthContext from "../../contexts/AuthContext";
 
 import debounce from "../../utils/DebounceUtils";
 
@@ -14,11 +13,9 @@ export type StoryLine = {
 const UPDATE_TRANSLATION = gql`
   mutation updateStoryTranslationContents(
     $storyTranslationContents: [StoryTranslationContentRequestDTO]
-    $userId: ID!
   ) {
     updateStoryTranslationContents(
       storyTranslationContents: $storyTranslationContents
-      userId: $userId
     ) {
       story {
         id
@@ -34,7 +31,6 @@ type AutosaveProps = {
 
 // Inspiration from https://www.synthace.com/autosave-with-react-hooks/
 const Autosave = ({ storylines, onSuccess }: AutosaveProps) => {
-  const { authenticatedUser } = useContext(AuthContext);
   const handleError = (errorMessage: string) => {
     alert(errorMessage);
   };
@@ -58,7 +54,6 @@ const Autosave = ({ storylines, onSuccess }: AutosaveProps) => {
         const result = await updateTranslation({
           variables: {
             storyTranslationContents,
-            userId: +authenticatedUser!!.id,
           },
         });
 

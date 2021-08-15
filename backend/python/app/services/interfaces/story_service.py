@@ -72,7 +72,7 @@ class IStoryService(ABC):
         pass
 
     @abstractmethod
-    def update_story_translation_contents(self, story_translations, user_id):
+    def update_story_translation_contents(self, story_translations):
         """Batch update story translation content entries
         :param story_translations: list of StoryTranslationContentRequestDTO objects
         :return: list of StoryTranslationContentResponseDTO objects

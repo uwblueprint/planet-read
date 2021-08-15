@@ -220,23 +220,9 @@ class StoryService(IStoryService):
             story_translation_content.translation_content,
         )
 
-    def update_story_translation_contents(self, story_translation_contents, user_id):
+    def update_story_translation_contents(self, story_translation_contents):
         try:
             # TODO: return lineIndex too
-            translator_id = (
-                db.session.query(
-                    StoryTranslation.translator_id.label("translator_id"),
-                )
-                .join(
-                    StoryTranslationContent,
-                    StoryTranslationContent.story_translation_id == StoryTranslation.id,
-                )
-                .filter(StoryTranslationContent.id == story_translation_contents[0].id)
-                .first()
-            )[0]
-
-            if translator_id != int(user_id):
-                raise Exception("You are not authorized to make this request.")
             db.session.bulk_update_mappings(
                 StoryTranslationContent, story_translation_contents
             )
