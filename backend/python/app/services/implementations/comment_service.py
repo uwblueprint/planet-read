@@ -47,6 +47,19 @@ class CommentService(ICommentService):
 
         return new_comment
 
+    def get_comments_by_story_translation(self, story_translation_id):
+        try:
+            comments = (
+                Comment.query.join(Comment.story_translation_content, aliased=True)
+                .filter_by(story_translation_id=story_translation_id)
+                .all()
+            )
+        except Exception as error:
+            self.logger.error(str(error))
+            raise error
+
+        return comments
+
     def update_comment(self, updated_comment):
         try:
             comment = Comment.query.filter_by(id=updated_comment.id).first()

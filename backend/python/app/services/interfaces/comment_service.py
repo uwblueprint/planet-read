@@ -18,6 +18,17 @@ class ICommentService(ABC):
         pass
 
     @abstractmethod
+    def get_comments_by_story_translation(self, story_translation_id):
+        """Return a list of Comments from a given StoryTranslation
+
+        :param story_translation_id: story translation id
+        :return: list of comments
+        :rtype: list of CommentResponseDTO
+        :raises Exception: if id of comment to be updated does not exist
+        """
+        pass
+
+    @abstractmethod
     def update_comment(self, updated_comment):
         """Update an existing Comment object
 
