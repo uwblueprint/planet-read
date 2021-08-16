@@ -3,7 +3,7 @@ import { useMutation } from "@apollo/client";
 import {
   RESET_PASSWORD,
   ResetPasswordResponse,
-} from "../../APIClients/mutations";
+} from "../../APIClients/mutations/AuthMutations";
 import authAPIClient from "../../APIClients/AuthAPIClient";
 
 type ResetPasswordProps = {

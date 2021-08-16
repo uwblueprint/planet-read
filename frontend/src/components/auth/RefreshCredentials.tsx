@@ -1,7 +1,10 @@
 import React, { useContext } from "react";
 import { useMutation } from "@apollo/client";
 import AuthContext from "../../contexts/AuthContext";
-import { REFRESH, RefreshResponse } from "../../APIClients/mutations";
+import {
+  REFRESH,
+  RefreshResponse,
+} from "../../APIClients/mutations/AuthMutations";
 import authAPIClient from "../../APIClients/AuthAPIClient";
 
 const RefreshCredentials = () => {
