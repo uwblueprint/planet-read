@@ -50,7 +50,9 @@ def create_app(config_name):
     ] = "mysql://{username}:{password}@{host}:3306/{db}".format(
         username=os.getenv("MYSQL_USER"),
         password=os.getenv("MYSQL_PASSWORD"),
-        host=os.getenv("TEST_DB_HOST") if config_name == "testing" else os.getenv("DB_HOST"),
+        host=os.getenv("TEST_DB_HOST")
+        if config_name == "testing"
+        else os.getenv("DB_HOST"),
         db=os.getenv("MYSQL_DATABASE"),
     )
 
