@@ -10,6 +10,7 @@ import PrivateRoute from "./components/auth/PrivateRoute";
 import HomePage from "./components/pages/HomePage";
 import NotFound from "./components/pages/NotFound";
 import TranslationPage from "./components/pages/TranslationPage";
+import ReviewPage from "./components/pages/ReviewPage";
 import customTheme from "./theme/index";
 
 import AUTHENTICATED_USER_KEY from "./constants/AuthConstants";
@@ -42,6 +43,11 @@ const App = () => {
                 exact
                 path="/translation/:storyIdParam/:storyTranslationIdParam"
                 component={TranslationPage}
+              />
+              <PrivateRoute
+                exact
+                path="/review/:storyIdParam/:storyTranslationIdParam"
+                component={ReviewPage}
               />
               <Route exact path="*" component={NotFound} />
             </Switch>

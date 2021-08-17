@@ -58,6 +58,7 @@ class StoryTranslationContentRequestDTO(graphene.InputObjectType):
 class StoryTranslationContentResponseDTO(graphene.ObjectType):
     id = graphene.Int(required=True)
     line_index = graphene.Int(required=True)
+    status = graphene.String(required=True)
     translation_content = graphene.String(required=True)
 
 

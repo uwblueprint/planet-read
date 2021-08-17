@@ -31,6 +31,7 @@ export const GET_STORY_AND_TRANSLATION_CONTENTS = (
       translationContents {
         id
         lineIndex
+        status
         content: translationContent
       },
       numTranslatedLines
