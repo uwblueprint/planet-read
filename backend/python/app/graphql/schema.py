@@ -15,7 +15,6 @@ from .mutations.story_mutation import (
     AssignUserAsReviewer,
     CreateStory,
     CreateStoryTranslation,
-    UpdateStoryTranslationContentById,
     UpdateStoryTranslationContents,
 )
 from .mutations.user_mutation import CreateUser, UpdateUser
@@ -55,7 +54,6 @@ class Mutation(graphene.ObjectType):
     assign_user_as_reviewer = AssignUserAsReviewer.Field()
     update_comment_by_id = UpdateCommentById.Field()
     update_comments = UpdateComments.Field()
-    update_story_translation_content_by_id = UpdateStoryTranslationContentById.Field()
     update_story_translation_contents = UpdateStoryTranslationContents.Field()
 
 
