@@ -54,13 +54,13 @@ Backend test run using the `pytest` framework on a distinct test database. You m
 
 If you want to run any other pytest commands, run them manually with:
 ```
-docker exec <backend-contianer-id> /bin/bash <pytest command>
+docker exec -it planet-read_py-backend_1 /bin/bash <pytest command>
 ```
 
 # Lint
 Frontend has on-save linting. To lint the backend:
 ```
-docker exec <backend-container-id> /bin/bash -c "black . && isort --profile black ."
+docker exec -it planet-read_py-backend_1 /bin/bash -c "black . && isort --profile black ."
 ```
 
 Follow the [getting started](https://uwblueprint.github.io/starter-code-v2/docs/getting-started) for more details, especially if you desire to use your own firebase and gcp projects.

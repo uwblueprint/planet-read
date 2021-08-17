@@ -24,4 +24,18 @@ class ProductionConfig(Config):
     DEBUG = False
 
 
-app_config = {"development": DevelopmentConfig, "production": ProductionConfig}
+class TestingConfig(Config):
+    """
+    Testing configurations
+    """
+
+    DEBUG = True
+    SQLALCHEMY_ECHO = True
+    TESTING = True
+
+
+app_config = {
+    "development": DevelopmentConfig,
+    "production": ProductionConfig,
+    "testing": TestingConfig,
+}
