@@ -10,6 +10,7 @@ import CheckmarkIcon from "../../assets/checkmark.svg";
 import CommentIcon from "../../assets/comment_no_number.svg";
 import Autosave, { StoryLine } from "../translation/Autosave";
 import { GET_STORY_AND_TRANSLATION_CONTENTS } from "../../APIClients/queries/StoryQueries";
+import FontSizeSlider from "../translation/FontSizeSlider";
 
 type TranslationPageProps = {
   storyIdParam: string | undefined;
@@ -48,6 +49,12 @@ const TranslationPage = () => {
     Undo: [],
     Redo: [],
   });
+
+  const [fontSize, setFontSize] = useState<string>("12px");
+
+  const handleFontSizeChange = (val: string) => {
+    setFontSize(val);
+  };
 
   const deepCopy = (lines: Object) => {
     // This is a funky method to make deep copies on objects with primative values
@@ -198,12 +205,13 @@ const TranslationPage = () => {
     return (
       <div className="row-translation" key={`row-${storyLine.lineIndex}`}>
         <p className="line-index">{displayLineNumber}</p>
-        <Cell text={storyLine.originalContent} />
+        <Cell text={storyLine.originalContent} fontSize={fontSize} />
         <EditableCell
           text={storyLine.translatedContent!!}
           storyTranslationContentId={storyLine.storyTranslationContentId!!}
           lineIndex={storyLine.lineIndex}
           onChange={onUserInput}
+          fontSize={fontSize}
         />
         {translationStatusIcon()}
       </div>
@@ -214,6 +222,7 @@ const TranslationPage = () => {
     <div className="translation-page">
       <h1>Story Title Here</h1>
       <h4>View story details</h4>
+      <FontSizeSlider setFontSize={handleFontSizeChange} />
       <div className="translation-container">
         <div className="translation-content">
           <button onClick={undoChange} type="button">
