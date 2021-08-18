@@ -16,13 +16,13 @@ const FontSizeSlider = ({ setFontSize }: FontSizeSliderProps) => {
   const handleSliderChange = (val: number) => {
     switch (val) {
       case 0:
-        setFontSize("10px");
-        break;
-      case 1:
         setFontSize("12px");
         break;
+      case 1:
+        setFontSize("16px");
+        break;
       case 2:
-        setFontSize("14px");
+        setFontSize("24px");
         break;
       default:
         setFontSize("12px");
@@ -32,11 +32,13 @@ const FontSizeSlider = ({ setFontSize }: FontSizeSliderProps) => {
 
   return (
     <div className="slider-container">
-      <div>
-        <p>aa</p>
+      <div className="slider-labels">
+        <div className="sm-font">Aa</div>
+        <div className="med-font"> Aa</div>
+        <div className="lg-font">Aa</div>
       </div>
       <Slider
-        defaultValue={1}
+        defaultValue={0}
         min={0}
         max={2}
         step={1}
@@ -47,7 +49,7 @@ const FontSizeSlider = ({ setFontSize }: FontSizeSliderProps) => {
           <Box position="relative" right={10} />
           <SliderFilledTrack />
         </SliderTrack>
-        <SliderThumb boxSize={6} />
+        <SliderThumb boxSize={3} />
       </Slider>
     </div>
   );

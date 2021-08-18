@@ -1,3 +1,21 @@
 .slider-container{
     max-width: 100px;
 }
+
+.slider-labels{
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+}
+
+.sm-font{
+    font-size: 12px;
+}
+
+.md-font{
+    font-size: 16px;
+}
+
+.lg-font {
+    font-size: 24px;
+}
