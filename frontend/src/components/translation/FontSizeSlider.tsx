@@ -1,12 +1,12 @@
 import React from "react";
 import {
   Box,
+  Flex,
   Slider,
   SliderTrack,
   SliderFilledTrack,
   SliderThumb,
 } from "@chakra-ui/react";
-import "./FontSizeSlider.css";
 
 type FontSizeSliderProps = {
   setFontSize: (val: string) => void;
@@ -31,12 +31,12 @@ const FontSizeSlider = ({ setFontSize }: FontSizeSliderProps) => {
   };
 
   return (
-    <div className="slider-container">
-      <div className="slider-labels">
-        <div className="sm-font">Aa</div>
-        <div className="med-font"> Aa</div>
-        <div className="lg-font">Aa</div>
-      </div>
+    <Box width="100px">
+      <Flex justify="space-between" align="baseline">
+        <Flex fontSize="12px">Aa</Flex>
+        <Flex fontSize="16px"> Aa</Flex>
+        <Flex fontSize="24px">Aa</Flex>
+      </Flex>
       <Slider
         defaultValue={0}
         min={0}
@@ -51,7 +51,7 @@ const FontSizeSlider = ({ setFontSize }: FontSizeSliderProps) => {
         </SliderTrack>
         <SliderThumb boxSize={3} />
       </Slider>
-    </div>
+    </Box>
   );
 };
 
