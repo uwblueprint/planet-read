@@ -98,7 +98,9 @@ class StoryService(IStoryService):
     def get_story_translations(self, user_id, translator, language, level):
         try:
             stories = (
-                Story.query.join(StoryTranslation, Story.id == StoryTranslation.story_id)
+                Story.query.join(
+                    StoryTranslation, Story.id == StoryTranslation.story_id
+                )
                 .filter(
                     StoryTranslation.translator_id == user_id
                     if translator
@@ -111,7 +113,9 @@ class StoryService(IStoryService):
             )
 
             story_translations = (
-                StoryTranslation.query.join(Story, Story.id == StoryTranslation.story_id)
+                StoryTranslation.query.join(
+                    Story, Story.id == StoryTranslation.story_id
+                )
                 .filter(
                     StoryTranslation.translator_id == user_id
                     if translator
@@ -124,17 +128,19 @@ class StoryService(IStoryService):
             )
 
             for i in range(len(stories)):
-                stories[i] = {**stories[i].to_dict(), **story_translations[i].to_dict(include_relationships=True)}
+                stories[i] = {
+                    **stories[i].to_dict(),
+                    **story_translations[i].to_dict(include_relationships=True),
+                }
 
             return stories
-            
+
         except Exception as error:
             self.logger.error(str(error))
             raise error
 
     def get_story_translation(self, id):
         try:
-
             story_details = (
                 db.session.query(
                     Story.id.label("story_id"),
@@ -149,10 +155,15 @@ class StoryService(IStoryService):
                     StoryTranslation.reviewer_id.label("reviewer_id"),
                     StoryTranslationContent.id.label("content_id"),
                     StoryTranslationContent.line_index.label("line_index"),
-                    StoryTranslationContent.translation_content.label("translation_content"),
+                    StoryTranslationContent.translation_content.label(
+                        "translation_content"
+                    ),
                 )
                 .join(StoryTranslation, Story.id == StoryTranslation.story_id)
-                .join(StoryTranslationContent, StoryTranslationContent.story_translation_id == StoryTranslation.id)
+                .join(
+                    StoryTranslationContent,
+                    StoryTranslationContent.story_translation_id == StoryTranslation.id,
+                )
                 .filter(StoryTranslation.id == id)
                 .all()
             )
@@ -165,7 +176,13 @@ class StoryService(IStoryService):
 
             for story_detail in story_details:
                 story_detail_dict = story_detail._asdict()
-                response["translation_contents"].append({"id" : story_detail_dict["content_id"], "line_index" : story_detail_dict["line_index"], "translation_content" : story_detail_dict["translation_content"]})
+                response["translation_contents"].append(
+                    {
+                        "id": story_detail_dict["content_id"],
+                        "line_index": story_detail_dict["line_index"],
+                        "translation_content": story_detail_dict["translation_content"],
+                    }
+                )
 
             response["num_translated_lines"] = self._get_num_translated_lines(
                 response["translation_contents"]
@@ -245,7 +262,9 @@ class StoryService(IStoryService):
     def get_story_translations_available_for_review(self, language, level):
         try:
             stories = (
-                Story.query.join(StoryTranslation, Story.id == StoryTranslation.story_id)
+                Story.query.join(
+                    StoryTranslation, Story.id == StoryTranslation.story_id
+                )
                 .filter(Story.level <= level)
                 .filter(StoryTranslation.language == language)
                 .filter(StoryTranslation.reviewer_id == None)
@@ -254,7 +273,9 @@ class StoryService(IStoryService):
             )
 
             story_translations = (
-                StoryTranslation.query.join(Story, Story.id == StoryTranslation.story_id)
+                StoryTranslation.query.join(
+                    Story, Story.id == StoryTranslation.story_id
+                )
                 .filter(Story.level <= level)
                 .filter(StoryTranslation.language == language)
                 .filter(StoryTranslation.reviewer_id == None)
@@ -263,7 +284,10 @@ class StoryService(IStoryService):
             )
 
             for i in range(len(stories)):
-                stories[i] = {**stories[i].to_dict(), **story_translations[i].to_dict(include_relationships=True)}
+                stories[i] = {
+                    **stories[i].to_dict(),
+                    **story_translations[i].to_dict(include_relationships=True),
+                }
 
             return stories
 
