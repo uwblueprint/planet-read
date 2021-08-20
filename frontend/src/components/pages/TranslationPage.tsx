@@ -115,12 +115,6 @@ const TranslationPage = () => {
     }
   };
 
-  // const [maxCharReached, setMaxCharReached] = useState<Number[]>([]);
-
-  // const maxCharWarning = (
-  //   <div>a</div>
-  // );
-
   const undoChange = () => {
     if (versionHistoryStack.Undo.length > 0) {
       const { lineIndex, content: newContent } = versionHistoryStack.Undo[
@@ -225,6 +219,35 @@ const TranslationPage = () => {
     );
   });
 
+  const maxCharsExceededWarning = () => {
+    let exceededLines = ""; 
+    translatedStoryLines.map((storyLine: StoryLine) => {
+      if (
+        storyLine.translatedContent &&
+        storyLine.originalContent.length * 2 <= storyLine.translatedContent.length) 
+        {
+        exceededLines += (", " + String(storyLine.lineIndex + 1));
+      }
+    });
+
+    return (
+      <div>
+        <p>
+          You have exceeded the character limit in the following lines: 
+        </p>
+      </div>
+    );
+  };
+  //   const exceededLines = (storyLine: StoryLine) => {
+  //     return <div>{storyLine.lineIndex}</div>;
+  //   }
+  //   return (
+  //     <div>You have exceeded the character limits on the following line(s):
+  //     </div>
+  //   )
+
+  // ));
+
   return (
     <div className="translation-page">
       <h1>Story Title Here</h1>
@@ -237,6 +260,7 @@ const TranslationPage = () => {
           <button onClick={redoChange} type="button">
             Redo
           </button>
+          {maxCharsExceededWarning}
           {storyCells}
         </div>
         <div className="translation-sidebar">

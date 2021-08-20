@@ -12,7 +12,7 @@ const Textarea = {
       width: "40%",
     },
     maxCharsReached: {
-      border: "2px solid red",
+      border: "1px solid red",
       borderRadius: "3px",
       fontSize: "12px",
       height: "fit-content",
