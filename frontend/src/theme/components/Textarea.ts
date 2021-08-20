@@ -1,5 +1,3 @@
-// import { theme } from "@chakra-ui/react";
-
 const Textarea = {
   variants: {
     translationEditable: {

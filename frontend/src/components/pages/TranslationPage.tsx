@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useQuery } from "@apollo/client";
-
+import { Box, Text } from "@chakra-ui/react";
 import "./TranslationPage.css";
 import { useParams } from "react-router-dom";
 import Cell from "../translation/Cell";
@@ -202,7 +202,6 @@ const TranslationPage = () => {
 
   const storyCells = translatedStoryLines.map((storyLine: StoryLine) => {
     const displayLineNumber = storyLine.lineIndex + 1;
-
     return (
       <div className="row-translation" key={`row-${storyLine.lineIndex}`}>
         <p className="line-index">{displayLineNumber}</p>
@@ -220,33 +219,27 @@ const TranslationPage = () => {
   });
 
   const maxCharsExceededWarning = () => {
-    let exceededLines = ""; 
-    translatedStoryLines.map((storyLine: StoryLine) => {
+    const exceededLines: number[] = [];
+    translatedStoryLines.forEach((storyLine: StoryLine) => {
       if (
         storyLine.translatedContent &&
-        storyLine.originalContent.length * 2 <= storyLine.translatedContent.length) 
-        {
-        exceededLines += (", " + String(storyLine.lineIndex + 1));
+        storyLine.originalContent.length * 2 <=
+          storyLine.translatedContent.length
+      ) {
+        exceededLines.push(storyLine.lineIndex + 1);
       }
     });
 
-    return (
-      <div>
-        <p>
-          You have exceeded the character limit in the following lines: 
-        </p>
-      </div>
-    );
+    const exceededLinesJoined = exceededLines.join(", ");
+    return exceededLines.length > 0 ? (
+      <Box>
+        <Text>
+          {"⚠ You have exceeded the character limit in the following lines: "}
+          {exceededLinesJoined}
+        </Text>
+      </Box>
+    ) : null;
   };
-  //   const exceededLines = (storyLine: StoryLine) => {
-  //     return <div>{storyLine.lineIndex}</div>;
-  //   }
-  //   return (
-  //     <div>You have exceeded the character limits on the following line(s):
-  //     </div>
-  //   )
-
-  // ));
 
   return (
     <div className="translation-page">
@@ -260,7 +253,7 @@ const TranslationPage = () => {
           <button onClick={redoChange} type="button">
             Redo
           </button>
-          {maxCharsExceededWarning}
+          {maxCharsExceededWarning()}
           {storyCells}
         </div>
         <div className="translation-sidebar">
