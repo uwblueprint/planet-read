@@ -1,7 +1,10 @@
 import React, { useContext, useEffect } from "react";
 import { useMutation } from "@apollo/client";
 import AuthContext from "../../contexts/AuthContext";
-import { LOGOUT, LogoutResponse } from "../../APIClients/mutations";
+import {
+  LOGOUT,
+  LogoutResponse,
+} from "../../APIClients/mutations/AuthMutations";
 import authAPIClient from "../../APIClients/AuthAPIClient";
 
 const Logout = () => {

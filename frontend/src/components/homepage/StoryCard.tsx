@@ -1,5 +1,5 @@
 import React, { useContext, useState } from "react";
-import { gql, useMutation } from "@apollo/client";
+import { useMutation } from "@apollo/client";
 import { useHistory } from "react-router-dom";
 import {
   Badge,
@@ -14,35 +14,12 @@ import AuthContext from "../../contexts/AuthContext";
 import PreviewModal from "./PreviewModal";
 import "./StoryCard.css";
 import convertLanguageTitleCase from "../../utils/LanguageUtils";
-
-type AssignReviewer = { ok: boolean };
-const ASSIGN_REVIEWER = gql`
-  mutation assignUserAsReviewer($storyTranslationId: ID!, $userId: ID!) {
-    assignUserAsReviewer(
-      storyTranslationId: $storyTranslationId
-      userId: $userId
-    ) {
-      ok
-    }
-  }
-`;
-
-type CreateTranslation = {
-  story: {
-    id: number;
-  };
-};
-const CREATE_TRANSLATION = gql`
-  mutation createStoryTranslation(
-    $storyTranslationData: CreateStoryTranslationRequestDTO!
-  ) {
-    createStoryTranslation(storyTranslationData: $storyTranslationData) {
-      story {
-        id
-      }
-    }
-  }
-`;
+import {
+  ASSIGN_REVIEWER,
+  AssignReviewerResponse,
+  CREATE_TRANSLATION,
+  CreateTranslationResponse,
+} from "../../APIClients/mutations/StoryMutations";
 
 export type StoryCardProps = {
   storyId: number;
@@ -85,7 +62,7 @@ const StoryCard = ({
   };
 
   const [assignUserAsReviewer] = useMutation<{
-    assignUserAsReviewer: AssignReviewer;
+    assignUserAsReviewer: AssignReviewerResponse;
   }>(ASSIGN_REVIEWER);
   const assignReviewer = async () => {
     try {
@@ -103,7 +80,7 @@ const StoryCard = ({
   };
 
   const [createTranslation] = useMutation<{
-    createStoryTranslation: CreateTranslation;
+    createStoryTranslation: CreateTranslationResponse;
   }>(CREATE_TRANSLATION);
   const assignTranslator = async () => {
     try {

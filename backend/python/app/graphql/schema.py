@@ -15,10 +15,10 @@ from .mutations.story_mutation import (
     AssignUserAsReviewer,
     CreateStory,
     CreateStoryTranslation,
-    UpdateStoryTranslationContentById,
     UpdateStoryTranslationContents,
 )
 from .mutations.user_mutation import CreateUser, UpdateUser
+from .queries.comment_query import resolve_comments_by_story_translation
 from .queries.entity_query import resolve_entities
 from .queries.file_query import resolve_file_by_id
 from .queries.story_query import (
@@ -30,6 +30,7 @@ from .queries.story_query import (
     resolve_story_translations_by_user,
 )
 from .queries.user_query import resolve_user_by_email, resolve_user_by_id, resolve_users
+from .types.comment_type import CommentResponseDTO
 from .types.entity_type import EntityResponseDTO
 from .types.file_type import FileDTO
 from .types.story_type import StoryResponseDTO, StoryTranslationResponseDTO
@@ -53,11 +54,13 @@ class Mutation(graphene.ObjectType):
     assign_user_as_reviewer = AssignUserAsReviewer.Field()
     update_comment_by_id = UpdateCommentById.Field()
     update_comments = UpdateComments.Field()
-    update_story_translation_content_by_id = UpdateStoryTranslationContentById.Field()
     update_story_translation_contents = UpdateStoryTranslationContents.Field()
 
 
 class Query(graphene.ObjectType):
+    comments_by_story_translation = graphene.Field(
+        graphene.List(CommentResponseDTO), story_translation_id=graphene.Int()
+    )
     entities = graphene.Field(graphene.List(EntityResponseDTO))
     file_by_id = graphene.Field(FileDTO, id=graphene.Int())
     stories = graphene.Field(graphene.List(StoryResponseDTO))
@@ -86,6 +89,9 @@ class Query(graphene.ObjectType):
         language=graphene.String(),
         level=graphene.Int(),
     )
+
+    def resolve_comments_by_story_translation(root, info, story_translation_id):
+        return resolve_comments_by_story_translation(root, info, story_translation_id)
 
     def resolve_entities(root, info, **kwargs):
         return resolve_entities(root, info, **kwargs)

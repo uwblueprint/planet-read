@@ -1,6 +1,5 @@
 import { gql } from "@apollo/client";
 
-// Auth
 export const LOGIN = gql`
   mutation Login($email: String!, $password: String!) {
     login(email: $email, password: $password) {
@@ -17,7 +16,7 @@ export const LOGIN = gql`
 `;
 
 export const LOGIN_WITH_GOOGLE = gql`
-  mutation loginWithGoogle($tokenId: String!) {
+  mutation LoginWithGoogle($tokenId: String!) {
     loginWithGoogle(tokenId: $tokenId) {
       id
       firstName
@@ -71,5 +70,26 @@ export interface ResetPasswordResponse {
   ok: boolean;
 }
 
-// Stories
-// TODO: move mutation gql strings here
+export const SIGNUP = gql`
+  mutation SignUp(
+    $firstName: String!
+    $lastName: String!
+    $email: String!
+    $password: String!
+  ) {
+    signup(
+      firstName: $firstName
+      lastName: $lastName
+      email: $email
+      password: $password
+    ) {
+      id
+      firstName
+      lastName
+      email
+      role
+      accessToken
+      refreshToken
+    }
+  }
+`;

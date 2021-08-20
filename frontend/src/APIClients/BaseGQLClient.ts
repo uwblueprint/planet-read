@@ -14,7 +14,7 @@ import {
   setLocalStorageObjProperty,
   getLocalStorageObjProperty,
 } from "../utils/LocalStorageUtils";
-import { REFRESH } from "./mutations";
+import { REFRESH } from "./mutations/AuthMutations";
 
 const httpLink = createHttpLink({
   uri: `${process.env.REACT_APP_BACKEND_URL}/graphql`,
