@@ -1,7 +1,7 @@
 from flask_sqlalchemy import SQLAlchemy
 
 db = SQLAlchemy()
-erase_db_and_sync = False
+erase_db_and_sync = True
 
 
 def init_app(app):
