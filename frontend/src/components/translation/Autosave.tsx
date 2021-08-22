@@ -7,7 +7,7 @@ import debounce from "../../utils/DebounceUtils";
 export type StoryLine = {
   lineIndex: number;
   originalContent: string;
-  status: string;
+  status?: string;
   translatedContent?: string;
   storyTranslationContentId?: number;
 };

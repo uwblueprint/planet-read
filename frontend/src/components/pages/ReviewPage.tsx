@@ -3,7 +3,7 @@ import { useQuery } from "@apollo/client";
 
 import "./TranslationPage.css";
 import { useParams } from "react-router-dom";
-import TranslationProgressBar from "../translation/TranslationProgressBar";
+import ProgressBar from "../utils/ProgressBar";
 import TranslationTable from "../translation/TranslationTable";
 import { StoryLine } from "../translation/Autosave";
 import { GET_STORY_AND_TRANSLATION_CONTENTS } from "../../APIClients/queries/StoryQueries";
@@ -54,9 +54,8 @@ const ReviewPage = () => {
       contentArray.sort((a, b) => a.lineIndex - b.lineIndex);
 
       translatedContent.forEach(({ id, content, lineIndex }: Content) => {
-        const arrIndex = lineIndex - contentArray[0].lineIndex;
-        contentArray[arrIndex].translatedContent = content;
-        contentArray[arrIndex].storyTranslationContentId = id;
+        contentArray[lineIndex].translatedContent = content;
+        contentArray[lineIndex].storyTranslationContentId = id;
       });
       setTranslatedStoryLines(contentArray);
     },
@@ -68,14 +67,11 @@ const ReviewPage = () => {
       <h4>View story details</h4>
       <div className="translation-container">
         <div className="translation-content">
-          <TranslationTable
-            translatedStoryLines={translatedStoryLines}
-            disabled
-          />
+          <TranslationTable translatedStoryLines={translatedStoryLines} />
         </div>
         <div className="translation-sidebar">
           <div className="translation-progress-bar">
-            <TranslationProgressBar
+            <ProgressBar
               percentageComplete={
                 (numTranslatedLines / translatedStoryLines.length) * 100
               }

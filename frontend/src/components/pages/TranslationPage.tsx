@@ -3,9 +3,10 @@ import { useQuery } from "@apollo/client";
 import { Box, Text } from "@chakra-ui/react";
 import "./TranslationPage.css";
 import { useParams } from "react-router-dom";
-import TranslationProgressBar from "../translation/TranslationProgressBar";
+import ProgressBar from "../utils/ProgressBar";
 import TranslationTable from "../translation/TranslationTable";
 import Autosave, { StoryLine } from "../translation/Autosave";
+import convertStatusTitleCase from "../../utils/StatusUtils";
 import { GET_STORY_AND_TRANSLATION_CONTENTS } from "../../APIClients/queries/StoryQueries";
 
 type TranslationPageProps = {
@@ -170,17 +171,18 @@ const TranslationPage = () => {
         contentArray.push({
           lineIndex,
           originalContent: content,
-          status: "Default",
         });
       });
 
       contentArray.sort((a, b) => a.lineIndex - b.lineIndex);
 
-      translatedContent.forEach(({ id, content, lineIndex }: Content) => {
-        const arrIndex = lineIndex - contentArray[0].lineIndex;
-        contentArray[arrIndex].translatedContent = content;
-        contentArray[arrIndex].storyTranslationContentId = id;
-      });
+      translatedContent.forEach(
+        ({ id, content, lineIndex, status }: Content) => {
+          contentArray[lineIndex].translatedContent = content;
+          contentArray[lineIndex].storyTranslationContentId = id;
+          contentArray[lineIndex].status = convertStatusTitleCase(status);
+        },
+      );
       setTranslatedStoryLines(contentArray);
     },
   });
@@ -224,11 +226,12 @@ const TranslationPage = () => {
           <TranslationTable
             translatedStoryLines={translatedStoryLines}
             onUserInput={onUserInput}
+            editable
           />
         </div>
         <div className="translation-sidebar">
           <div className="translation-progress-bar">
-            <TranslationProgressBar
+            <ProgressBar
               percentageComplete={
                 (numTranslatedLines / translatedStoryLines.length) * 100
               }

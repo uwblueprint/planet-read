@@ -8,7 +8,7 @@ import { StoryLine } from "./Autosave";
 
 export type TranslationTableProps = {
   translatedStoryLines: StoryLine[];
-  disabled?: boolean;
+  editable?: boolean;
   onUserInput?: (
     newContent: string,
     lineIndex: number,
@@ -18,7 +18,7 @@ export type TranslationTableProps = {
 
 const TranslationTable = ({
   translatedStoryLines,
-  disabled = false,
+  editable = false,
   onUserInput,
 }: TranslationTableProps) => {
   const storyCells = translatedStoryLines.map((storyLine: StoryLine) => {
@@ -27,9 +27,7 @@ const TranslationTable = ({
       <Box className="row-translation" key={`row-${storyLine.lineIndex}`}>
         <p className="line-index">{displayLineNumber}</p>
         <Cell text={storyLine.originalContent} />
-        {disabled ? (
-          <Cell text={storyLine.translatedContent!!} />
-        ) : (
+        {editable ? (
           <EditableCell
             text={storyLine.translatedContent!!}
             storyTranslationContentId={storyLine.storyTranslationContentId!!}
@@ -37,9 +35,11 @@ const TranslationTable = ({
             maxChars={storyLine.originalContent.length * 2}
             onChange={onUserInput!!}
           />
+        ) : (
+          <Cell text={storyLine.translatedContent!!} />
         )}
         <Flex direction="column">
-          <Badge>{storyLine.status}</Badge>
+          <Badge textTransform="capitalize">{storyLine.status}</Badge>
           <Button size="xs">Comment</Button>
         </Flex>
       </Box>
