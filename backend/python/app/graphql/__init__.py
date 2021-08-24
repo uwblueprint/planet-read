@@ -6,7 +6,6 @@ from ..models import db
 from ..services.implementations.auth_service import AuthService
 from ..services.implementations.comment_service import CommentService
 from ..services.implementations.email_service import EmailService
-from ..services.implementations.entity_service import EntityService
 from ..services.implementations.file_service import FileService
 from ..services.implementations.story_service import StoryService
 from ..services.implementations.user_service import UserService
@@ -27,7 +26,6 @@ def init_app(app):
     )
 
     services["comment"] = CommentService(current_app.logger)
-    services["entity"] = EntityService(current_app.logger)
     services["file"] = FileService(current_app.logger)
     services["story"] = StoryService(current_app.logger)
     services["user"] = UserService(current_app.logger)

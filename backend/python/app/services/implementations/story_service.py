@@ -14,7 +14,7 @@ class StoryService(IStoryService):
         self.logger = logger
 
     def get_stories(self):
-        # Entity is a SQLAlchemy model, we can use convenient methods provided
+        # Story is a SQLAlchemy model, we can use convenient methods provided
         # by SQLAlchemy like query.all() to query the data
         return [
             story.to_dict(include_relationships=True) for story in Story.query.all()
@@ -66,9 +66,9 @@ class StoryService(IStoryService):
         )
         return [story.to_dict(include_relationships=True) for story in stories]
 
-    def create_translation(self, entity):
+    def create_translation(self, translation):
         try:
-            new_story_translation = StoryTranslation(**entity.__dict__)
+            new_story_translation = StoryTranslation(**translation.__dict__)
             db.session.add(new_story_translation)
             db.session.commit()
         except Exception as error:

@@ -31,7 +31,6 @@ def db(app):
     """
     from .models import db
     from .models.comment import Comment
-    from .models.entity import Entity
     from .models.file import File
     from .models.story import Story
     from .models.story_content import StoryContent
@@ -53,13 +52,11 @@ def services(app):
     Returns model services
     """
     from .services.implementations.comment_service import CommentService
-    from .services.implementations.entity_service import EntityService
     from .services.implementations.story_service import StoryService
     from .services.implementations.user_service import UserService
 
     return {
         "comment": CommentService(),
-        "entity": EntityService(),
         "story": StoryService(),
         "user": UserService(),
     }
