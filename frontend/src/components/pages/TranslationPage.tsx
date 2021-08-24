@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useQuery } from "@apollo/client";
-
+import { Box, Text } from "@chakra-ui/react";
 import "./TranslationPage.css";
 import { useParams } from "react-router-dom";
 import Cell from "../translation/Cell";
@@ -95,7 +95,11 @@ const TranslationPage = () => {
     );
   };
 
-  const onUserInput = async (newContent: string, lineIndex: number) => {
+  const onUserInput = async (
+    newContent: string,
+    lineIndex: number,
+    maxChars: number,
+  ) => {
     const oldContent = translatedStoryLines[lineIndex].translatedContent!;
     const newUndo =
       versionHistoryStack.Undo.length === MAX_STACK_SIZE
@@ -105,7 +109,10 @@ const TranslationPage = () => {
       Undo: [...deepCopy(newUndo), { lineIndex, content: oldContent }],
       Redo: [],
     });
-    onChangeTranslationContent(newContent, lineIndex);
+
+    if (maxChars >= newContent.length) {
+      onChangeTranslationContent(newContent, lineIndex);
+    }
   };
 
   const undoChange = () => {
@@ -203,12 +210,36 @@ const TranslationPage = () => {
           text={storyLine.translatedContent!!}
           storyTranslationContentId={storyLine.storyTranslationContentId!!}
           lineIndex={storyLine.lineIndex}
+          maxChars={storyLine.originalContent.length * 2}
           onChange={onUserInput}
         />
         {translationStatusIcon()}
       </div>
     );
   });
+
+  const maxCharsExceededWarning = () => {
+    const exceededLines: number[] = [];
+    translatedStoryLines.forEach((storyLine: StoryLine) => {
+      if (
+        storyLine.translatedContent &&
+        storyLine.originalContent.length * 2 <=
+          storyLine.translatedContent.length
+      ) {
+        exceededLines.push(storyLine.lineIndex + 1);
+      }
+    });
+
+    const exceededLinesJoined = exceededLines.join(", ");
+    return exceededLines.length > 0 ? (
+      <Box>
+        <Text>
+          {"⚠ You have exceeded the character limit in the following lines: "}
+          {exceededLinesJoined}
+        </Text>
+      </Box>
+    ) : null;
+  };
 
   return (
     <div className="translation-page">
@@ -222,6 +253,7 @@ const TranslationPage = () => {
           <button onClick={redoChange} type="button">
             Redo
           </button>
+          {maxCharsExceededWarning()}
           {storyCells}
         </div>
         <div className="translation-sidebar">
