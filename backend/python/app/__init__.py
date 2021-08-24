@@ -60,10 +60,9 @@ def create_app(config_name):
     mysql.init_app(app)
     firebase_admin.initialize_app()
 
-    from . import models, rest
+    from . import models
 
     models.init_app(app)
-    rest.init_app(app)
 
     from . import graphql
 
