@@ -1,8 +1,6 @@
 import React from "react";
+import { Badge, Button, Flex, Text } from "@chakra-ui/react";
 
-import "./TranslationTable.css";
-import { Badge, Box, Button, Flex } from "@chakra-ui/react";
-import Cell from "./Cell";
 import EditableCell from "./EditableCell";
 import { StoryLine } from "./Autosave";
 
@@ -26,9 +24,15 @@ const TranslationTable = ({
   const storyCells = translatedStoryLines.map((storyLine: StoryLine) => {
     const displayLineNumber = storyLine.lineIndex + 1;
     return (
-      <Box className="row-translation" key={`row-${storyLine.lineIndex}`}>
-        <p className="line-index">{displayLineNumber}</p>
-        <Cell text={storyLine.originalContent} fontSize={fontSize} />
+      <Flex
+        alignItems="flex-start"
+        direction="row"
+        key={`row-${storyLine.lineIndex}`}
+      >
+        <Text variant="lineIndex">{displayLineNumber}</Text>
+        <Text variant="cell" fontSize={fontSize}>
+          {storyLine.originalContent}
+        </Text>
         {editable ? (
           <EditableCell
             text={storyLine.translatedContent!!}
@@ -39,13 +43,16 @@ const TranslationTable = ({
             fontSize={fontSize}
           />
         ) : (
-          <Cell text={storyLine.translatedContent!!} fontSize={fontSize} />
+          <Text variant="cell" fontSize={fontSize}>
+            {" "}
+            {storyLine.translatedContent!!}{" "}
+          </Text>
         )}
         <Flex direction="column">
           <Badge textTransform="capitalize">{storyLine.status}</Badge>
           <Button size="xs">Comment</Button>
         </Flex>
-      </Box>
+      </Flex>
     );
   });
   return <div>{storyCells}</div>;
