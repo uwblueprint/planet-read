@@ -155,6 +155,7 @@ class StoryService(IStoryService):
                     StoryTranslation.reviewer_id.label("reviewer_id"),
                     StoryTranslationContent.id.label("content_id"),
                     StoryTranslationContent.line_index.label("line_index"),
+                    StoryTranslationContent.status.label("status"),
                     StoryTranslationContent.translation_content.label(
                         "translation_content"
                     ),
@@ -171,6 +172,7 @@ class StoryService(IStoryService):
             response = {**story_details[0]._asdict()}
             response.pop("content_id")
             response.pop("line_index")
+            response.pop("status")
             response.pop("translation_content")
             response["translation_contents"] = []
 
@@ -180,6 +182,7 @@ class StoryService(IStoryService):
                     {
                         "id": story_detail_dict["content_id"],
                         "line_index": story_detail_dict["line_index"],
+                        "status": story_detail_dict["status"],
                         "translation_content": story_detail_dict["translation_content"],
                     }
                 )

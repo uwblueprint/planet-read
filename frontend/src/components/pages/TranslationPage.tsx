@@ -3,12 +3,10 @@ import { useQuery } from "@apollo/client";
 import { Box, Text } from "@chakra-ui/react";
 import "./TranslationPage.css";
 import { useParams } from "react-router-dom";
-import Cell from "../translation/Cell";
-import EditableCell from "../translation/EditableCell";
-import TranslationProgressBar from "../translation/TranslationProgressBar";
-import CheckmarkIcon from "../../assets/checkmark.svg";
-import CommentIcon from "../../assets/comment_no_number.svg";
+import ProgressBar from "../utils/ProgressBar";
+import TranslationTable from "../translation/TranslationTable";
 import Autosave, { StoryLine } from "../translation/Autosave";
+import convertStatusTitleCase from "../../utils/StatusUtils";
 import { GET_STORY_AND_TRANSLATION_CONTENTS } from "../../APIClients/queries/StoryQueries";
 
 type TranslationPageProps = {
@@ -20,6 +18,7 @@ type Content = {
   id: number;
   lineIndex: number;
   content: string;
+  status: string;
 };
 
 type HistoryStack = {
@@ -54,20 +53,6 @@ const TranslationPage = () => {
     // https://javascript.plainenglish.io/how-to-deep-copy-objects-and-arrays-in-javascript-7c911359b089
     // Should probably go under some util
     return JSON.parse(JSON.stringify(lines));
-  };
-
-  // TODO replace with real logic
-  const translationStatusIcon = (): JSX.Element | null => {
-    const randomNum = Math.floor(Math.random() * 3);
-
-    switch (randomNum) {
-      case 0:
-        return <img src={CheckmarkIcon} alt="Approved line" />;
-      case 1:
-        return <img src={CommentIcon} alt="Line with feedback" />;
-      default:
-        return null;
-    }
   };
 
   const onChangeTranslationContent = async (
@@ -191,31 +176,15 @@ const TranslationPage = () => {
 
       contentArray.sort((a, b) => a.lineIndex - b.lineIndex);
 
-      translatedContent.forEach(({ id, content, lineIndex }: Content) => {
-        const arrIndex = lineIndex - contentArray[0].lineIndex;
-        contentArray[arrIndex].translatedContent = content;
-        contentArray[arrIndex].storyTranslationContentId = id;
-      });
+      translatedContent.forEach(
+        ({ id, content, lineIndex, status }: Content) => {
+          contentArray[lineIndex].translatedContent = content;
+          contentArray[lineIndex].storyTranslationContentId = id;
+          contentArray[lineIndex].status = convertStatusTitleCase(status);
+        },
+      );
       setTranslatedStoryLines(contentArray);
     },
-  });
-
-  const storyCells = translatedStoryLines.map((storyLine: StoryLine) => {
-    const displayLineNumber = storyLine.lineIndex + 1;
-    return (
-      <div className="row-translation" key={`row-${storyLine.lineIndex}`}>
-        <p className="line-index">{displayLineNumber}</p>
-        <Cell text={storyLine.originalContent} />
-        <EditableCell
-          text={storyLine.translatedContent!!}
-          storyTranslationContentId={storyLine.storyTranslationContentId!!}
-          lineIndex={storyLine.lineIndex}
-          maxChars={storyLine.originalContent.length * 2}
-          onChange={onUserInput}
-        />
-        {translationStatusIcon()}
-      </div>
-    );
   });
 
   const maxCharsExceededWarning = () => {
@@ -254,11 +223,15 @@ const TranslationPage = () => {
             Redo
           </button>
           {maxCharsExceededWarning()}
-          {storyCells}
+          <TranslationTable
+            translatedStoryLines={translatedStoryLines}
+            onUserInput={onUserInput}
+            editable
+          />
         </div>
         <div className="translation-sidebar">
           <div className="translation-progress-bar">
-            <TranslationProgressBar
+            <ProgressBar
               percentageComplete={
                 (numTranslatedLines / translatedStoryLines.length) * 100
               }
