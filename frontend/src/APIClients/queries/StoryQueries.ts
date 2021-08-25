@@ -113,3 +113,31 @@ export const buildHomePageStoriesQuery = (
 
   return result as QueryInformation;
 };
+
+export const buildCommentsQuery = (
+  storyTranslationId: number,
+): QueryInformation => {
+  // TODO: add more query parameters
+  return {
+    fieldName: "commentsByStoryTranslation",
+    string: gql`
+          query ComentsByStoryTranslation {
+            commentsByStoryTranslation( storyTranslationId: ${storyTranslationId} ){
+              id
+              commentIndex
+              content
+              storyTranslationContentId
+            }
+          }
+        `,
+  } as QueryInformation;
+};
+
+export type CommentResponse = {
+  id: number;
+  userId: number;
+  commentIndex: number;
+  time: string;
+  resolved: boolean;
+  content: string;
+};
