@@ -12,7 +12,6 @@ import {
 } from "@chakra-ui/react";
 import AuthContext from "../../contexts/AuthContext";
 import PreviewModal from "./PreviewModal";
-import "./StoryCard.css";
 import convertLanguageTitleCase from "../../utils/LanguageUtils";
 import {
   ASSIGN_REVIEWER,
@@ -129,42 +128,57 @@ const StoryCard = ({
 
   return (
     <Flex id={`story-${storyId}`} sx={storyCardStyle}>
-      <iframe
-        className="youtube-thumbnail"
-        src={embedLink(youtubeLink)}
-        title="YouTube video player"
-        frameBorder="0"
-        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-        allowFullScreen
-      />
-      <Box flexBasis="40%" padding="17px 0px 17px 26px">
+      <Box
+        css={{
+          "webkit-border-radius": "8px",
+          "-moz-border-radius": "8px",
+          "border-radius": "8px",
+          overflow: "hidden",
+        }}
+      >
+        <iframe
+          style={{ width: "100%" }}
+          src={embedLink(youtubeLink)}
+          title="YouTube video player"
+          frameBorder="0"
+          allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+          allowFullScreen
+        />
+      </Box>
+      <Box flexBasis="50%" padding="0px 0px 17px 26px">
         <Flex direction="column" wrap="wrap">
           <Heading size="md">{title}</Heading>
-          <Flex direction="row">
+          <Flex direction="row" paddingBottom="10px">
             <Badge>{`Level ${level}`}</Badge>
             <Badge>{`${convertLanguageTitleCase(language)}`}</Badge>
           </Flex>
         </Flex>
-        <Text>{description}</Text>
+        <Text size="xs">{description}</Text>
       </Box>
-      <Box flexBasis="40%" paddingTop="30px" textAlign="center">
+      <Flex
+        direction="column"
+        flexBasis="30%"
+        paddingTop="30px"
+        alignItems="center"
+        textAlign="center"
+      >
         <Button
-          colorScheme="blue"
           variant="solid"
-          size="wide"
+          size="secondary"
+          marginBottom="5px"
           onClick={primaryBtnOnClick()}
         >
           {primaryBtnText()}
         </Button>
         <Button
-          colorScheme="blue"
           variant="outline"
-          size="wide"
+          size="secondary"
+          marginTop="5px"
           onClick={previewBook}
         >
           preview book
         </Button>
-      </Box>
+      </Flex>
       {preview && (
         <PreviewModal
           storyId={storyId}

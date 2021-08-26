@@ -1,8 +1,9 @@
 const colors = {
   blue: {
     500: "#1A6DE0", // Vivid Blue
-    300: "#3982E8", // Medium Blue
-    50: "#E5F0FF", // Very Pale Blue
+    300: "#64A1CD", // Medium Blue
+    100: "#ECF1F4", // Accent Blue
+    50: "#ECF1F432", // Accent Blue 32%
   },
   orange: {
     50: "#FFE3B4", // Pale Orange
@@ -23,8 +24,7 @@ const colors = {
     400: "#CECECE", // Non Interactive
     300: "#ECECEC", // Background Surface
   },
-  background: "#ECECEC",
-  backgroundLofi: "#FAFAFA",
+  background: "#ECF1F4",
 };
 
 export default colors;
