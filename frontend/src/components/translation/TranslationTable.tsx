@@ -14,19 +14,21 @@ export type TranslationTableProps = {
     lineIndex: number,
     maxChars: number,
   ) => Promise<void>;
+  fontSize: string;
 };
 
 const TranslationTable = ({
   translatedStoryLines,
   editable = false,
   onUserInput,
+  fontSize,
 }: TranslationTableProps) => {
   const storyCells = translatedStoryLines.map((storyLine: StoryLine) => {
     const displayLineNumber = storyLine.lineIndex + 1;
     return (
       <Box className="row-translation" key={`row-${storyLine.lineIndex}`}>
         <p className="line-index">{displayLineNumber}</p>
-        <Cell text={storyLine.originalContent} />
+        <Cell text={storyLine.originalContent} fontSize={fontSize} />
         {editable ? (
           <EditableCell
             text={storyLine.translatedContent!!}
@@ -34,9 +36,10 @@ const TranslationTable = ({
             lineIndex={storyLine.lineIndex}
             maxChars={storyLine.originalContent.length * 2}
             onChange={onUserInput!!}
+            fontSize={fontSize}
           />
         ) : (
-          <Cell text={storyLine.translatedContent!!} />
+          <Cell text={storyLine.translatedContent!!} fontSize={fontSize} />
         )}
         <Flex direction="column">
           <Badge textTransform="capitalize">{storyLine.status}</Badge>

@@ -235,6 +235,7 @@ const TranslationPage = () => {
             translatedStoryLines={translatedStoryLines}
             onUserInput={onUserInput}
             editable
+            fontSize={fontSize}
           />
         </div>
         <div className="translation-sidebar">
