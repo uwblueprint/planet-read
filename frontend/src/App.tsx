@@ -7,13 +7,10 @@ import { ApolloProvider } from "@apollo/client";
 import Login from "./components/auth/Login";
 import Signup from "./components/auth/Signup";
 import PrivateRoute from "./components/auth/PrivateRoute";
-import CreatePage from "./components/pages/CreatePage";
-import Default from "./components/pages/Default";
-import DisplayPage from "./components/pages/DisplayPage";
 import HomePage from "./components/pages/HomePage";
 import NotFound from "./components/pages/NotFound";
 import TranslationPage from "./components/pages/TranslationPage";
-import UpdatePage from "./components/pages/UpdatePage";
+import ReviewPage from "./components/pages/ReviewPage";
 import customTheme from "./theme/index";
 
 import AUTHENTICATED_USER_KEY from "./constants/AuthConstants";
@@ -39,25 +36,18 @@ const App = () => {
         >
           <Router>
             <Switch>
-              <PrivateRoute exact path="/" component={Default} />
               <Route exact path="/login" component={Login} />
               <Route exact path="/signup" component={Signup} />
-              <PrivateRoute
-                exact
-                path="/entity/create"
-                component={CreatePage}
-              />
-              <PrivateRoute
-                exact
-                path="/entity/update"
-                component={UpdatePage}
-              />
-              <PrivateRoute exact path="/entity" component={DisplayPage} />
-              <PrivateRoute exact path="/stories" component={HomePage} />
+              <PrivateRoute exact path="/" component={HomePage} />
               <PrivateRoute
                 exact
                 path="/translation/:storyIdParam/:storyTranslationIdParam"
                 component={TranslationPage}
+              />
+              <PrivateRoute
+                exact
+                path="/review/:storyIdParam/:storyTranslationIdParam"
+                component={ReviewPage}
               />
               <Route exact path="*" component={NotFound} />
             </Switch>

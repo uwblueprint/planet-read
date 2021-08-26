@@ -35,7 +35,7 @@ class IStoryService(ABC):
         :param content: array of strings representing story content
         :return: dictionary of Story object
         :rtype: dictionary
-        :raises Exception: if entity fields are invalid
+        :raises Exception: if story fields are invalid
         """
         pass
 

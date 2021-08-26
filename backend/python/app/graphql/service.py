@@ -4,13 +4,11 @@ flask app has started. Create dummy services here that will be
 updated with live app loggers during __init__.py
 """
 from ..services.implementations.comment_service import CommentService
-from ..services.implementations.entity_service import EntityService
 from ..services.implementations.story_service import StoryService
 from ..services.implementations.user_service import UserService
 
 services = {
     "comment": CommentService(),
-    "entity": EntityService(),
     "story": StoryService(),
     "user": UserService(),
 }

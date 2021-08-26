@@ -6,6 +6,7 @@ import Badge from "./components/Badge";
 import Button from "./components/Button";
 import Filter from "./components/Filter";
 import StoryCard from "./components/StoryCard";
+import Textarea from "./components/Textarea";
 
 const customTheme: Theme = extendTheme({
   fonts: {
@@ -21,6 +22,7 @@ const customTheme: Theme = extendTheme({
     Button,
     Filter,
     StoryCard,
+    Textarea,
   },
 });
 

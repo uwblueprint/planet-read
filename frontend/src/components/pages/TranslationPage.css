@@ -39,19 +39,6 @@ h4 {
     background: #B3B3B3;
 }
 
-.row-translation {
-    align-items: flex-start;
-    display: flex;
-    flex-direction: row;
-}
-
-.line-index {
-    font-size: 20px;
-    font-weight: 600;
-    margin: 10px 20px 10px 0px;
-    width: 10px;
-}
-
 img {
     height: 15px;
     margin: 5px 20px 0px 10px;

@@ -1,14 +1,12 @@
 import React, { useState } from "react";
 import { useQuery } from "@apollo/client";
-
+import { Box, Text } from "@chakra-ui/react";
 import "./TranslationPage.css";
 import { useParams } from "react-router-dom";
-import Cell from "../translation/Cell";
-import EditableCell from "../translation/EditableCell";
-import TranslationProgressBar from "../translation/TranslationProgressBar";
-import CheckmarkIcon from "../../assets/checkmark.svg";
-import CommentIcon from "../../assets/comment_no_number.svg";
+import ProgressBar from "../utils/ProgressBar";
+import TranslationTable from "../translation/TranslationTable";
 import Autosave, { StoryLine } from "../translation/Autosave";
+import convertStatusTitleCase from "../../utils/StatusUtils";
 import { GET_STORY_AND_TRANSLATION_CONTENTS } from "../../APIClients/queries/StoryQueries";
 import FontSizeSlider from "../translation/FontSizeSlider";
 
@@ -21,6 +19,7 @@ type Content = {
   id: number;
   lineIndex: number;
   content: string;
+  status: string;
 };
 
 type HistoryStack = {
@@ -63,20 +62,6 @@ const TranslationPage = () => {
     return JSON.parse(JSON.stringify(lines));
   };
 
-  // TODO replace with real logic
-  const translationStatusIcon = (): JSX.Element | null => {
-    const randomNum = Math.floor(Math.random() * 3);
-
-    switch (randomNum) {
-      case 0:
-        return <img src={CheckmarkIcon} alt="Approved line" />;
-      case 1:
-        return <img src={CommentIcon} alt="Line with feedback" />;
-      default:
-        return null;
-    }
-  };
-
   const onChangeTranslationContent = async (
     newContent: string,
     lineIndex: number,
@@ -102,7 +87,11 @@ const TranslationPage = () => {
     );
   };
 
-  const onUserInput = async (newContent: string, lineIndex: number) => {
+  const onUserInput = async (
+    newContent: string,
+    lineIndex: number,
+    maxChars: number,
+  ) => {
     const oldContent = translatedStoryLines[lineIndex].translatedContent!;
     const newUndo =
       versionHistoryStack.Undo.length === MAX_STACK_SIZE
@@ -112,7 +101,10 @@ const TranslationPage = () => {
       Undo: [...deepCopy(newUndo), { lineIndex, content: oldContent }],
       Redo: [],
     });
-    onChangeTranslationContent(newContent, lineIndex);
+
+    if (maxChars >= newContent.length) {
+      onChangeTranslationContent(newContent, lineIndex);
+    }
   };
 
   const undoChange = () => {
@@ -191,32 +183,39 @@ const TranslationPage = () => {
 
       contentArray.sort((a, b) => a.lineIndex - b.lineIndex);
 
-      translatedContent.forEach(({ id, content, lineIndex }: Content) => {
-        const arrIndex = lineIndex - contentArray[0].lineIndex;
-        contentArray[arrIndex].translatedContent = content;
-        contentArray[arrIndex].storyTranslationContentId = id;
-      });
+      translatedContent.forEach(
+        ({ id, content, lineIndex, status }: Content) => {
+          contentArray[lineIndex].translatedContent = content;
+          contentArray[lineIndex].storyTranslationContentId = id;
+          contentArray[lineIndex].status = convertStatusTitleCase(status);
+        },
+      );
       setTranslatedStoryLines(contentArray);
     },
   });
 
-  const storyCells = translatedStoryLines.map((storyLine: StoryLine) => {
-    const displayLineNumber = storyLine.lineIndex + 1;
-    return (
-      <div className="row-translation" key={`row-${storyLine.lineIndex}`}>
-        <p className="line-index">{displayLineNumber}</p>
-        <Cell text={storyLine.originalContent} fontSize={fontSize} />
-        <EditableCell
-          text={storyLine.translatedContent!!}
-          storyTranslationContentId={storyLine.storyTranslationContentId!!}
-          lineIndex={storyLine.lineIndex}
-          onChange={onUserInput}
-          fontSize={fontSize}
-        />
-        {translationStatusIcon()}
-      </div>
-    );
-  });
+  const maxCharsExceededWarning = () => {
+    const exceededLines: number[] = [];
+    translatedStoryLines.forEach((storyLine: StoryLine) => {
+      if (
+        storyLine.translatedContent &&
+        storyLine.originalContent.length * 2 <=
+          storyLine.translatedContent.length
+      ) {
+        exceededLines.push(storyLine.lineIndex + 1);
+      }
+    });
+
+    const exceededLinesJoined = exceededLines.join(", ");
+    return exceededLines.length > 0 ? (
+      <Box>
+        <Text>
+          {"⚠ You have exceeded the character limit in the following lines: "}
+          {exceededLinesJoined}
+        </Text>
+      </Box>
+    ) : null;
+  };
 
   return (
     <div className="translation-page">
@@ -231,11 +230,16 @@ const TranslationPage = () => {
           <button onClick={redoChange} type="button">
             Redo
           </button>
-          {storyCells}
+          {maxCharsExceededWarning()}
+          <TranslationTable
+            translatedStoryLines={translatedStoryLines}
+            onUserInput={onUserInput}
+            editable
+          />
         </div>
         <div className="translation-sidebar">
           <div className="translation-progress-bar">
-            <TranslationProgressBar
+            <ProgressBar
               percentageComplete={
                 (numTranslatedLines / translatedStoryLines.length) * 100
               }
