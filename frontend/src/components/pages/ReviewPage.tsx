@@ -8,6 +8,7 @@ import TranslationTable from "../translation/TranslationTable";
 import { StoryLine } from "../translation/Autosave";
 import { GET_STORY_AND_TRANSLATION_CONTENTS } from "../../APIClients/queries/StoryQueries";
 import CommentsPanel from "../review/CommentsPanel";
+import FontSizeSlider from "../translation/FontSizeSlider";
 
 type ReviewPageProps = {
   storyIdParam: string | undefined;
@@ -33,6 +34,12 @@ const ReviewPage = () => {
     [],
   );
   const [numTranslatedLines, setNumTranslatedLines] = useState(0);
+
+  const [fontSize, setFontSize] = useState<string>("12px");
+
+  const handleFontSizeChange = (val: string) => {
+    setFontSize(val);
+  };
 
   useQuery(GET_STORY_AND_TRANSLATION_CONTENTS(storyId, storyTranslationId), {
     fetchPolicy: "cache-and-network",
@@ -65,9 +72,13 @@ const ReviewPage = () => {
     <div className="translation-page">
       <h1>Story Title Here</h1>
       <h4>View story details</h4>
+      <FontSizeSlider setFontSize={handleFontSizeChange} />
       <div className="translation-container">
         <div className="translation-content">
-          <TranslationTable translatedStoryLines={translatedStoryLines} />
+          <TranslationTable
+            translatedStoryLines={translatedStoryLines}
+            fontSize={fontSize}
+          />
         </div>
         <div className="translation-sidebar">
           <div className="translation-progress-bar">

@@ -8,6 +8,7 @@ import TranslationTable from "../translation/TranslationTable";
 import Autosave, { StoryLine } from "../translation/Autosave";
 import convertStatusTitleCase from "../../utils/StatusUtils";
 import { GET_STORY_AND_TRANSLATION_CONTENTS } from "../../APIClients/queries/StoryQueries";
+import FontSizeSlider from "../translation/FontSizeSlider";
 
 type TranslationPageProps = {
   storyIdParam: string | undefined;
@@ -47,6 +48,12 @@ const TranslationPage = () => {
     Undo: [],
     Redo: [],
   });
+
+  const [fontSize, setFontSize] = useState<string>("12px");
+
+  const handleFontSizeChange = (val: string) => {
+    setFontSize(val);
+  };
 
   const deepCopy = (lines: Object) => {
     // This is a funky method to make deep copies on objects with primative values
@@ -214,6 +221,7 @@ const TranslationPage = () => {
     <div className="translation-page">
       <h1>Story Title Here</h1>
       <h4>View story details</h4>
+      <FontSizeSlider setFontSize={handleFontSizeChange} />
       <div className="translation-container">
         <div className="translation-content">
           <button onClick={undoChange} type="button">
@@ -227,6 +235,7 @@ const TranslationPage = () => {
             translatedStoryLines={translatedStoryLines}
             onUserInput={onUserInput}
             editable
+            fontSize={fontSize}
           />
         </div>
         <div className="translation-sidebar">
