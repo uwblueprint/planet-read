@@ -1,6 +1,6 @@
 import React, { useContext, useState } from "react";
 import { useQuery } from "@apollo/client";
-import { Flex, Box } from "@chakra-ui/react";
+import { Box, Flex } from "@chakra-ui/react";
 
 import Filter from "../homepage/Filter";
 import StoryList from "../homepage/StoryList";
@@ -53,7 +53,7 @@ const HomePage = () => {
           language={language}
           setLanguage={setLanguage}
           role={isTranslator}
-          setRole={setIsTranslator}
+          setIsTranslator={setIsTranslator}
         />
         <Flex
           direction="column"

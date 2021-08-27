@@ -1,30 +1,32 @@
 const colors = {
   blue: {
-    500: "#1A6DE0", // Vivid Blue
-    300: "#64A1CD", // Medium Blue
-    100: "#ECF1F4", // Accent Blue
-    50: "#ECF1F432", // Accent Blue 32%
+    50: "#E5F0FF",
+    100: "#1D6CA5",
+    // necessary for button color scheme
+    500: "#1D6CA5",
   },
   orange: {
-    50: "#FFE3B4", // Pale Orange
+    50: "#FFE3B4",
+    100: "#C89234",
   },
   green: {
-    50: "#EEFCEE", // Light Lime
+    50: "#EEFCEE",
+    100: "#6E8E6E",
   },
   red: {
-    50: "#FFD4D4", // Very Pale Red
+    50: "#FFD4D4",
   },
   purple: {
-    50: "#E0D4FF", // Very Pale Violet
+    50: "#E0D4FF",
   },
-  black: "#1C1C1E",
   gray: {
-    600: "#606062", // Dark Decorative
-    200: "#DCDCDC", // Light Decorative
-    400: "#CECECE", // Non Interactive
-    300: "#ECECEC", // Background Surface
+    50: "#F9FAFC",
+    100: "#F1F4F7",
+    200: "#DCDCDC",
+    300: "#CECECE",
+    400: "#606062",
+    500: "#1C1C1E",
   },
-  background: "#ECF1F4",
 };
 
 export default colors;

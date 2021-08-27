@@ -149,8 +149,10 @@ const StoryCard = ({
         <Flex direction="column" wrap="wrap">
           <Heading size="md">{title}</Heading>
           <Flex direction="row" paddingBottom="10px">
-            <Badge>{`Level ${level}`}</Badge>
-            <Badge>{`${convertLanguageTitleCase(language)}`}</Badge>
+            <Badge background="orange.50">{`Level ${level}`}</Badge>
+            <Badge background="purple.50">{`${convertLanguageTitleCase(
+              language,
+            )}`}</Badge>
           </Flex>
         </Flex>
         <Text size="xs">{description}</Text>
@@ -163,7 +165,7 @@ const StoryCard = ({
         textAlign="center"
       >
         <Button
-          variant="solid"
+          colorScheme="blue"
           size="secondary"
           marginBottom="5px"
           onClick={primaryBtnOnClick()}

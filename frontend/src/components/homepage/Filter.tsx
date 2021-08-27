@@ -18,7 +18,7 @@ export type FilterProps = {
   language: string;
   setLanguage: (newState: string) => void;
   role: boolean;
-  setRole: (newState: boolean) => void;
+  setIsTranslator: (newState: boolean) => void;
 };
 
 const Filter = ({
@@ -28,13 +28,13 @@ const Filter = ({
   language,
   setLanguage,
   role,
-  setRole,
+  setIsTranslator,
 }: FilterProps) => {
   const handleSelectChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     setLanguage(event.target.value);
   };
   const handleRoleChange = (nextRole: string) => {
-    setRole(nextRole === "Translator");
+    setIsTranslator(nextRole === "Translator");
   };
   const handleLevelChangeStr = (nextLevel: string) => {
     setLevel(parseInt(nextLevel.replace("Level ", ""), 10));

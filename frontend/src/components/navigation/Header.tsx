@@ -10,7 +10,8 @@ type HeaderProps = {
 const Header = ({ currentPageTitle }: HeaderProps) => {
   return (
     <Flex
-      background="blue.100"
+      border="1px solid"
+      borderColor="gray.100"
       direction="row"
       padding="20px 0px 20px 0px"
       width="100%"
