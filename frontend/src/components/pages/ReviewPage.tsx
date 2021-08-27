@@ -89,7 +89,7 @@ const ReviewPage = () => {
             />
           </div>
         </div>
-        <CommentsPanel />
+        <CommentsPanel storyTranslationId={storyTranslationId} />
       </div>
     </div>
   );
