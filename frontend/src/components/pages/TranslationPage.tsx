@@ -1,7 +1,9 @@
 import React, { useState } from "react";
 import { useQuery } from "@apollo/client";
-import { Box, Text } from "@chakra-ui/react";
-import "./TranslationPage.css";
+import { Icon } from "@chakra-ui/icon";
+import { Box, IconButton, Flex, Text } from "@chakra-ui/react";
+import { MdRedo, MdUndo } from "react-icons/md";
+
 import { useParams } from "react-router-dom";
 import ProgressBar from "../utils/ProgressBar";
 import TranslationTable from "../translation/TranslationTable";
@@ -218,18 +220,26 @@ const TranslationPage = () => {
   };
 
   return (
-    <div className="translation-page">
-      <h1>Story Title Here</h1>
-      <h4>View story details</h4>
+    <Box margin="20px 20px 0px 20px">
+      <Text size="lg">Story Title Here</Text>
+      <Text as="ins">View story details</Text>
       <FontSizeSlider setFontSize={handleFontSizeChange} />
-      <div className="translation-container">
-        <div className="translation-content">
-          <button onClick={undoChange} type="button">
-            Undo
-          </button>
-          <button onClick={redoChange} type="button">
-            Redo
-          </button>
+      <Flex>
+        <Flex direction="column" width="75vw">
+          <Flex direction="row">
+            <IconButton
+              variant="ghost"
+              aria-label="Undo Change"
+              onClick={undoChange}
+              icon={<Icon as={MdUndo} />}
+            />
+            <IconButton
+              variant="ghost"
+              aria-label="Redo Change"
+              onClick={redoChange}
+              icon={<Icon as={MdRedo} />}
+            />
+          </Flex>
           {maxCharsExceededWarning()}
           <TranslationTable
             translatedStoryLines={translatedStoryLines}
@@ -237,22 +247,20 @@ const TranslationPage = () => {
             editable
             fontSize={fontSize}
           />
-        </div>
-        <div className="translation-sidebar">
-          <div className="translation-progress-bar">
-            <ProgressBar
-              percentageComplete={
-                (numTranslatedLines / translatedStoryLines.length) * 100
-              }
-            />
-          </div>
-        </div>
-      </div>
+        </Flex>
+        <Box margin="20px 30px 0 0">
+          <ProgressBar
+            percentageComplete={
+              (numTranslatedLines / translatedStoryLines.length) * 100
+            }
+          />
+        </Box>
+      </Flex>
       <Autosave
         storylines={Array.from(changedStoryLines.values())}
         onSuccess={clearUnsavedChangesMap}
       />
-    </div>
+    </Box>
   );
 };
 

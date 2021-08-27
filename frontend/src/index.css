@@ -16,3 +16,20 @@ code {
   --dark-blue: #1D6CA5;
   --interactive-grey: #606062;
 }
+
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #EDEDED;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #C4C4C4;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  /* Don't know what colour we want here */
+  background: #B3B3B3;
+}

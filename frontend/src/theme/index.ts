@@ -5,8 +5,9 @@ import colors from "./colors";
 import Badge from "./components/Badge";
 import Button from "./components/Button";
 import Filter from "./components/Filter";
-import StoryCard from "./components/StoryCard";
+import Text from "./components/Text";
 import Textarea from "./components/Textarea";
+import StoryCard from "./components/StoryCard";
 
 const customTheme: Theme = extendTheme({
   fonts: {
@@ -21,8 +22,9 @@ const customTheme: Theme = extendTheme({
     Badge,
     Button,
     Filter,
-    StoryCard,
+    Text,
     Textarea,
+    StoryCard,
   },
 });
 
