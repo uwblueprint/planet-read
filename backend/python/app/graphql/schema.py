@@ -55,38 +55,44 @@ class Mutation(graphene.ObjectType):
 
 class Query(graphene.ObjectType):
     comments_by_story_translation = graphene.Field(
-        graphene.List(CommentResponseDTO), story_translation_id=graphene.Int()
+        graphene.List(CommentResponseDTO),
+        story_translation_id=graphene.Int(required=True),
+        resolved=graphene.Boolean(),
     )
-    file_by_id = graphene.Field(FileDTO, id=graphene.Int())
+    file_by_id = graphene.Field(FileDTO, id=graphene.Int(required=True))
     stories = graphene.Field(graphene.List(StoryResponseDTO))
-    story_by_id = graphene.Field(StoryResponseDTO, id=graphene.Int())
+    story_by_id = graphene.Field(StoryResponseDTO, id=graphene.Int(required=True))
     story_translations_by_user = graphene.Field(
         graphene.List(StoryTranslationResponseDTO),
-        user_id=graphene.Int(),
-        translator=graphene.Boolean(),
-        language=graphene.String(),
-        level=graphene.Int(),
+        user_id=graphene.Int(required=True),
+        translator=graphene.Boolean(required=True),
+        language=graphene.String(required=True),
+        level=graphene.Int(required=True),
     )
     story_translation_by_id = graphene.Field(
         StoryTranslationResponseDTO,
-        id=graphene.Int(),
+        id=graphene.Int(required=True),
     )
     users = graphene.Field(graphene.List(UserDTO))
-    user_by_id = graphene.Field(UserDTO, id=graphene.Int())
-    user_by_email = graphene.Field(UserDTO, email=graphene.String())
+    user_by_id = graphene.Field(UserDTO, id=graphene.Int(required=True))
+    user_by_email = graphene.Field(UserDTO, email=graphene.String(required=True))
     story_translations_available_for_review = graphene.Field(
         graphene.List(StoryTranslationResponseDTO),
-        language=graphene.String(),
-        level=graphene.Int(),
+        language=graphene.String(required=True),
+        level=graphene.Int(required=True),
     )
     stories_available_for_translation = graphene.Field(
         graphene.List(StoryResponseDTO),
-        language=graphene.String(),
-        level=graphene.Int(),
+        language=graphene.String(required=True),
+        level=graphene.Int(required=True),
     )
 
-    def resolve_comments_by_story_translation(root, info, story_translation_id):
-        return resolve_comments_by_story_translation(root, info, story_translation_id)
+    def resolve_comments_by_story_translation(
+        root, info, story_translation_id, resolved=None
+    ):
+        return resolve_comments_by_story_translation(
+            root, info, story_translation_id, resolved
+        )
 
     def resolve_file_by_id(root, info, id):
         return resolve_file_by_id(root, info, id)
