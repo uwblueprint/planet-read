@@ -1,7 +1,9 @@
+import os
+
 from flask_sqlalchemy import SQLAlchemy
 
 db = SQLAlchemy()
-erase_db_and_sync = False
+erase_db_and_sync = os.getenv("ERASE_DB_AND_SYNC", "False") == "True"
 
 
 def init_app(app):

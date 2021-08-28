@@ -1,5 +1,6 @@
 import os
 from logging.config import dictConfig
+import re
 
 import firebase_admin
 from flask import Flask
@@ -36,7 +37,14 @@ def create_app(config_name):
     mysql = MySQL()
     app.config.from_object(app_config[config_name])
 
-    app.config["CORS_ORIGINS"] = ["http://localhost:3000"]
+    if os.getenv("IS_PREVIEW_DEPLOY", "False") == "True":
+        app.config["CORS_ORIGINS"] = re.compile("https://planet-read-uwbp.*")
+    else:
+        app.config["CORS_ORIGINS"] = [
+            "http://localhost:3000",
+            "https://planet-read-uwbp.web.app",
+            "https://planet-read-uwbp.firebaseapp.com",
+        ]
     app.config["CORS_SUPPORTS_CREDENTIALS"] = True
     CORS(app)
 

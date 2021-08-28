@@ -20,7 +20,7 @@ def init_app(app):
         view_func=ResponseCookieGraphQLView.as_view(
             "graphql",
             schema=schema,
-            graphiql=True,
+            graphiql=os.getenv("FLASK_CONFIG") == "development",
             context={"session": db.session},
         ),
     )
