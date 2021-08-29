@@ -1,10 +1,32 @@
 const Button = {
+  baseStyle: {
+    fontSize: "14px",
+    textAlign: "center",
+    textTransform: "uppercase",
+    height: "40px",
+    width: "160px",
+  },
   sizes: {
-    wide: {
-      height: "40px",
-      lineHeight: "24px",
-      margin: "5px",
-      width: "216px",
+    primary: {
+      width: "30px",
+    },
+    secondary: {
+      color: "blue.100",
+    },
+    tertiary: {
+      color: "black",
+      textDecoration: "underline",
+    },
+  },
+  variants: {
+    outline: {
+      background: "white",
+      borderColor: "gray.50",
+      color: "blue.100",
+    },
+    ghost: {
+      background: "transparent",
+      textDecoration: "none",
     },
   },
 };

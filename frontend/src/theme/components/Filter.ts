@@ -1,11 +1,11 @@
 const Filter = {
   baseStyle: {
-    backgroundColor: "backgroundLofi",
+    boxShadow: "0 0 12px -9px rgba(0, 0, 0, 0.7)",
     flexDirection: "column",
-    height: "500px",
+    height: "800px",
     justifyContent: "space-between",
     marginRight: "10px",
-    minWidth: "400px",
+    minWidth: "292px",
     padding: "50px 50px 50px 50px",
   },
 };

@@ -1,7 +1,7 @@
 import React from "react";
+import { Box, Flex, Heading, Image } from "@chakra-ui/react";
 import Logo from "../../assets/planet-read-logo.svg";
 import PlaceholderUserIcon from "../../assets/user-icon.svg";
-import "./Header.css";
 
 type HeaderProps = {
   currentPageTitle: string;
@@ -9,14 +9,22 @@ type HeaderProps = {
 
 const Header = ({ currentPageTitle }: HeaderProps) => {
   return (
-    <div className="header-bar">
-      <div className="header-information">
-        <img id="header-logo" src={Logo} alt="Planet READ logo" />
-        <h1>{currentPageTitle}</h1>
-      </div>
+    <Flex
+      border="1px solid"
+      borderColor="gray.100"
+      direction="row"
+      padding="20px 0px 20px 0px"
+      width="100%"
+    >
+      <Flex alignItems="center" paddingLeft="20px">
+        <Heading size="md">{currentPageTitle}</Heading>
+        <Image width="40px" src={Logo} alt="PlanetREAD logo" />
+      </Flex>
       {/* TODO: this is not real */}
-      <img id="header-user-icon" src={PlaceholderUserIcon} alt="User icon" />
-    </div>
+      <Box marginLeft="auto">
+        <Image width="40px" src={PlaceholderUserIcon} alt="User icon" />
+      </Box>
+    </Flex>
   );
 };
 

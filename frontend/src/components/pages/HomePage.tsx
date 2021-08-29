@@ -1,13 +1,14 @@
 import React, { useContext, useState } from "react";
 import { useQuery } from "@apollo/client";
+import { Box, Flex } from "@chakra-ui/react";
+
 import Filter from "../homepage/Filter";
 import StoryList from "../homepage/StoryList";
 import { StoryCardProps } from "../homepage/StoryCard";
 import AuthContext from "../../contexts/AuthContext";
-import ToggleButton from "../utils/ToggleButton";
+import ButtonRadioGroup from "../utils/ButtonRadioGroup";
 import Header from "../navigation/Header";
 import { buildHomePageStoriesQuery } from "../../APIClients/queries/StoryQueries";
-import "./HomePage.css";
 
 const HomePage = () => {
   const { authenticatedUser } = useContext(AuthContext);
@@ -24,6 +25,10 @@ const HomePage = () => {
   const [level, setLevel] = useState<number>(approvedLanguages[language]);
   const [stories, setStories] = useState<StoryCardProps[] | null>(null);
 
+  const handleDisplayMyStoriesChange = (nextOption: string) => {
+    setDisplayMyStories(nextOption === "My Work");
+  };
+
   const query = buildHomePageStoriesQuery(
     displayMyStories,
     language,
@@ -38,9 +43,9 @@ const HomePage = () => {
     onCompleted: (data) => setStories(data[query.fieldName]),
   });
   return (
-    <div>
-      <Header currentPageTitle="Stories" />
-      <div id="homepage-body">
+    <Box>
+      <Header currentPageTitle="Add My Language" />
+      <Flex direction="row">
         <Filter
           approvedLanguages={approvedLanguages}
           level={level}
@@ -48,25 +53,31 @@ const HomePage = () => {
           language={language}
           setLanguage={setLanguage}
           role={isTranslator}
-          setRole={setIsTranslator}
+          setIsTranslator={setIsTranslator}
         />
-        <div id="homepage-stories-display">
-          <div id="homepage-display-state-toggle-section">
-            <ToggleButton
-              leftStateIsSelected={displayMyStories}
-              leftStateLabel="My Work"
-              rightStateLabel="Browse Stories"
-              onToggle={setDisplayMyStories}
-            />
-          </div>
+        <Flex
+          direction="column"
+          alignItems="center"
+          padding="25px 0px 0px 100px"
+          width="1000px"
+        >
+          <ButtonRadioGroup
+            size="tertiary"
+            stacked={false}
+            unselectedVariant="ghost"
+            options={["My Work", "Browse Stories"]}
+            name="My Work and Browse Stories toggle"
+            defaultValue="My Work"
+            onChange={handleDisplayMyStoriesChange}
+          />
           <StoryList
             stories={stories}
             language={language}
             displayMyStories={displayMyStories}
           />
-        </div>
-      </div>
-    </div>
+        </Flex>
+      </Flex>
+    </Box>
   );
 };
 

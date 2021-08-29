@@ -1,11 +1,12 @@
 const StoryCard = {
   baseStyle: {
-    backgroundColor: "backgroundLofi",
-    border: "2px solid #333333",
+    background: "gray.100",
+    borderRadius: "20px",
     flexDirection: "row",
     flexWrap: "nowrap",
-    margin: "10px 0px 10px 0px",
-    minWidth: "924px",
+    margin: "15px 0px 15px 0px",
+    padding: "10px",
+    minWidth: "1000px",
   },
 };
 export default StoryCard;

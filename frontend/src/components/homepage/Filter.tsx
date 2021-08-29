@@ -2,17 +2,14 @@ import React from "react";
 import {
   Box,
   Flex,
+  Divider,
   Heading,
   Select,
-  Slider,
-  SliderFilledTrack,
-  SliderThumb,
-  SliderTrack,
   useStyleConfig,
 } from "@chakra-ui/react";
 
-import ToggleButton from "../utils/ToggleButton";
-import "./Filter.css";
+import ButtonRadioGroup from "../utils/ButtonRadioGroup";
+import convertLanguageTitleCase from "../../utils/LanguageUtils";
 
 export type FilterProps = {
   approvedLanguages: { [name: string]: number };
@@ -21,7 +18,7 @@ export type FilterProps = {
   language: string;
   setLanguage: (newState: string) => void;
   role: boolean;
-  setRole: (newState: boolean) => void;
+  setIsTranslator: (newState: boolean) => void;
 };
 
 const Filter = ({
@@ -31,17 +28,20 @@ const Filter = ({
   language,
   setLanguage,
   role,
-  setRole,
+  setIsTranslator,
 }: FilterProps) => {
   const handleSelectChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     setLanguage(event.target.value);
   };
-  const handleLevelChange = (nextLevel: number) => {
-    setLevel(nextLevel);
+  const handleRoleChange = (nextRole: string) => {
+    setIsTranslator(nextRole === "Translator");
+  };
+  const handleLevelChangeStr = (nextLevel: string) => {
+    setLevel(parseInt(nextLevel.replace("Level ", ""), 10));
   };
   const languageOptions = Object.keys(approvedLanguages).map((lang) => (
     <option key={lang} value={lang}>
-      {lang}
+      {convertLanguageTitleCase(lang)}
     </option>
   ));
   const maxLvl = approvedLanguages[language];
@@ -54,11 +54,13 @@ const Filter = ({
   const filterStyle = useStyleConfig("Filter");
   return (
     <Flex sx={filterStyle}>
-      <Heading>Filter Stories</Heading>
+      <Heading size="lg">Filters</Heading>
+      <Divider />
       <Box>
-        <Heading size="md">TRANSLATION LANGUAGE</Heading>
+        <Heading size="sm">Translation Language</Heading>
         <Select
-          name="language"
+          size="sm"
+          variant="filled"
           id="language"
           value={language}
           onChange={handleSelectChange}
@@ -66,32 +68,25 @@ const Filter = ({
           {languageOptions}
         </Select>
       </Box>
+      <Divider />
       <Box>
-        <Heading size="md">ROLE</Heading>
-        <ToggleButton
-          leftStateIsSelected={role}
-          leftStateLabel="For Translation"
-          rightStateLabel="For Review"
-          onToggle={setRole}
+        <Heading size="sm">Role Required</Heading>
+        <ButtonRadioGroup
+          name="Role"
+          options={["Translator", "Reviewer"]}
+          onChange={handleRoleChange}
+          defaultValue={role ? "Translator" : "Reviewer"}
         />
       </Box>
-      <Box width="125px">
-        <Heading size="md">LEVEL</Heading>
-        <Slider
-          min={1}
-          max={maxLvl}
-          step={1}
-          list="tickmarks"
-          defaultValue={level}
-          onChangeEnd={handleLevelChange}
-        >
-          <SliderTrack>
-            <SliderFilledTrack />
-          </SliderTrack>
-          <SliderThumb />
-        </Slider>
-        {/* TODO: Move to Chakra */}
-        <datalist id="tickmarks">{lvlOptions}</datalist>
+      <Divider />
+      <Box>
+        <Heading size="sm">Access Level</Heading>
+        <ButtonRadioGroup
+          name="Level"
+          options={["Level 1", "Level 2", "Level 3", "Level 4"]}
+          onChange={handleLevelChangeStr}
+          defaultValue={`Level ${level}`}
+        />
       </Box>
     </Flex>
   );
