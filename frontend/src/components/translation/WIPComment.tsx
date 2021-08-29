@@ -49,11 +49,12 @@ const WIPComment = ({
                 ${authenticatedUser!!.lastName}`;
   return (
     <Flex
+      border="1px solid"
+      borderColor="blue.50"
+      padding="14px 15px"
       direction="column"
       style={{
-        boxShadow: "0px 2px 8px 4px rgba(0, 0, 0, 0.05)",
-        padding: "14px 15px",
-        borderRadius: 3,
+        borderRadius: 8,
         width: "320px",
       }}
     >
