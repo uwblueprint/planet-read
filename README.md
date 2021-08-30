@@ -63,6 +63,25 @@ Frontend has on-save linting. To lint the backend:
 docker exec -it planet-read_py-backend_1 /bin/bash -c "black . && isort --profile black ."
 ```
 
+# Database Migrations
+We are currently using Flask-Migrate to handle our database migrations. To update your database, run:
+```
+docker exec -it planet-read_py-backend_1 /bin/bash -c "flask db upgrade"
+```
+To reset your database, run:
+```
+docker exec -it planet-read_py-backend_1 /bin/bash -c "flask db downgrade"
+``` 
+
+
+A new migration will need to be generated when database changes are made. Import any new tables into [backend/python/app/models/\_\_init__.py](backend/python/app/models/__init__.py) and run: 
+```
+docker exec -it planet-read_py-backend_1 /bin/bash -c "flask db migrate -m '<description of your migration>'"
+```
+Ensure that a new revision file is created in the directory [backend/python/migrations/versions](backend/python/migrations/versions).
+
+<br>
+
 Follow the [getting started](https://uwblueprint.github.io/starter-code-v2/docs/getting-started) for more details, especially if you desire to use your own firebase and gcp projects.
 
 Happy hacking! 💻🚀
