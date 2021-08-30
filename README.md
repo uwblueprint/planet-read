@@ -78,7 +78,7 @@ A new migration will need to be generated when database changes are made. Import
 ```
 docker exec -it planet-read_py-backend_1 /bin/bash -c "flask db migrate -m '<description of your migration>'"
 ```
-Ensure that a new revision file is created in the directory [backend/python/migrations/versions](backend/python/migrations/versions).
+Ensure that a new revision file is created in the directory [backend/python/migrations/versions](backend/python/migrations/versions). __Do not__ change the alembic revision/identifiers. Generally these auto-generated revision files will encompass all schema changes, and thus do not need to be modified!
 
 <br>
 

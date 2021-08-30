@@ -5,7 +5,7 @@ from flask_sqlalchemy import SQLAlchemy
 
 db = SQLAlchemy()
 migrate = Migrate()
-erase_db_and_sync = os.getenv("ERASE_DB_AND_SYNC", "False") == "True"
+erase_db_and_sync = False
 
 
 def init_app(app):

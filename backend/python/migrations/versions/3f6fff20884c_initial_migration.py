@@ -26,7 +26,7 @@ def upgrade():
         sa.Column("path", sa.String(length=255), nullable=False),
         sa.PrimaryKeyConstraint("id"),
     )
-    users = op.create_table(
+    op.create_table(
         "users",
         sa.Column("id", sa.Integer(), nullable=False),
         sa.Column("first_name", mysql.TEXT(), nullable=False),
@@ -46,7 +46,7 @@ def upgrade():
         ),
         sa.PrimaryKeyConstraint("id"),
     )
-    stories = op.create_table(
+    op.create_table(
         "stories",
         sa.Column("id", sa.Integer(), nullable=False),
         sa.Column("title", mysql.TEXT(), nullable=False),
@@ -56,7 +56,7 @@ def upgrade():
         sa.Column("translated_languages", sa.JSON(), nullable=True),
         sa.PrimaryKeyConstraint("id"),
     )
-    story_contents = op.create_table(
+    op.create_table(
         "story_contents",
         sa.Column("id", sa.Integer(), nullable=False),
         sa.Column("story_id", sa.Integer(), nullable=False),
@@ -71,7 +71,7 @@ def upgrade():
     op.create_index(
         op.f("ix_story_contents_story_id"), "story_contents", ["story_id"], unique=False
     )
-    story_translations = op.create_table(
+    op.create_table(
         "story_translations",
         sa.Column("id", sa.Integer(), nullable=False),
         sa.Column("story_id", sa.Integer(), nullable=False),
@@ -110,7 +110,7 @@ def upgrade():
         unique=False,
     )
 
-    story_translation_contents = op.create_table(
+    op.create_table(
         "story_translation_contents",
         sa.Column("id", sa.Integer(), nullable=False),
         sa.Column("story_translation_id", sa.Integer(), nullable=False),
@@ -140,7 +140,7 @@ def upgrade():
         ["story_translation_id"],
         unique=False,
     )
-    comments = op.create_table(
+    op.create_table(
         "comments",
         sa.Column("id", sa.Integer(), nullable=False),
         sa.Column("story_translation_content_id", sa.Integer(), nullable=False),
@@ -166,316 +166,6 @@ def upgrade():
         unique=False,
     )
     ### end Alembic commands ###
-
-    # seed database
-    op.bulk_insert(
-        users,
-        [
-            {
-                "first_name": "Carl",
-                "last_name": "Sagan",
-                "auth_id": os.getenv("AUTH_ID_1"),
-                "role": "User",
-                "approved_languages": '{"ENGLISH_US":4}',
-            },
-            {
-                "first_name": "Miroslav",
-                "last_name": "Klose",
-                "auth_id": os.getenv("AUTH_ID_2"),
-                "role": "User",
-                "approved_languages": '{"POLISH":4, "GERMAN":4}',
-            },
-            {
-                "first_name": "Kevin",
-                "last_name": "De Bryune",
-                "auth_id": os.getenv("AUTH_ID_3"),
-                "role": "User",
-                "approved_languages": '{"DUTCH":4, "FRENCH":4}',
-            },
-            {
-                "first_name": "Dwight",
-                "last_name": "D. Eisenhower",
-                "auth_id": os.getenv("AUTH_ID_4"),
-                "role": "User",
-                "approved_languages": '{"ENGLISH_UK":4, "ENGLISH_US":4}',
-            },
-            {
-                "first_name": "Alexander",
-                "last_name": "Hamilton",
-                "auth_id": os.getenv("AUTH_ID_5"),
-                "role": "User",
-                "approved_languages": '{"MANDARIN":4}',
-            },
-            {
-                "first_name": "Angela",
-                "last_name": "Merkel",
-                "auth_id": os.getenv("AUTH_ID_6"),
-                "role": "Admin",
-                "approved_languages": '{"GERMAN":4}',
-            },
-            {
-                "first_name": "Richard",
-                "last_name": "Feynman",
-                "auth_id": os.getenv("AUTH_ID_7"),
-                "role": "User",
-                "approved_languages": '{"PORTUGESE":4}',
-            },
-        ],
-    )
-    op.bulk_insert(
-        stories,
-        [
-            {
-                "title": "East of Eden",
-                "description": "John Steinbeck",
-                "youtube_link": "https://www.youtube.com/watch?v=DHyUYg8X31c",
-                "level": 4,
-                "translated_languages": '["GERMAN", "ENGLISH_UK"]',
-            },
-            {
-                "title": "War and Peace",
-                "description": "Leo Tolstoy",
-                "youtube_link": "https://www.youtube.com/watch?v=Da-2h2B4faU&t=4s",
-                "level": 1,
-                "translated_languages": '["GERMAN", "POLISH"]',
-            },
-            {
-                "title": "A Tale of Two Cities",
-                "description": "Charles Dickens",
-                "youtube_link": "https://www.youtube.com/watch?v=DHyUYg8X31c",
-                "level": 3,
-                "translated_languages": '["MANDARIN", "ENGLISH_UK"]',
-            },
-            {
-                "title": "Pride and Prejudice",
-                "description": "Jane Austen",
-                "youtube_link": "https://www.youtube.com/watch?v=DHyUYg8X31c",
-                "level": 4,
-                "translated_languages": '["GERMAN", "ENGLISH_UK"]',
-            },
-            {
-                "title": "To Kill a Mockingbird",
-                "description": "Harper Lee",
-                "youtube_link": "https://www.youtube.com/watch?v=DHyUYg8X31c",
-                "level": 3,
-                "translated_languages": '["GERMAN", "ENGLISH_UK", "PORTUGUESE", "DUTCH"]',
-            },
-            {
-                "title": "The Great Gatsby",
-                "description": "F. Scott Fitzgerald",
-                "youtube_link": "https://www.youtube.com/watch?v=DHyUYg8X31c",
-                "level": 4,
-                "translated_languages": '["ENGLISH_US"]',
-            },
-            {
-                "title": "1984",
-                "description": "George Orwell",
-                "youtube_link": "https://www.youtube.com/watch?v=Da-2h2B4faU&t=4s",
-                "level": 2,
-                "translated_languages": "[]",
-            },
-        ],
-    )
-    STORY_CONTENTS = [
-        "\"Every two weeks I went to a meeting with them, and in my room here I covered pages with writing. I bought every known Hebrew dictionary. But the old gentlemen were always ahead of me. It wasn't long before they were ahead of our rabbi; he brought a colleague in. ",
-        "Mr. Hamilton, you should have sat through some of those nights of argument and discussion. The questions, the inspection, oh, the lovely thinking-the beautiful thinking.",
-        "After two years we felt that we could approach your sixteen verses of the fourth chapter of Genesis. ",
-        "My old gentlemen felt that these words were very important too-'Thou shalt' and 'Do thou.' And this was the gold from our mining: 'Thou mayest.' 'Thou mayest rule over sin.' ",
-        '\The old gentlemen smiled and nodded and felt the years were well spent. It brought them out of their Chinese shells too, and right now they are studying Greek." ',
-        "Samuel said, \"It's a fantastic story. And I've tried to follow and maybe I've missed somewhere. Why is this word so important?\"",
-        "Lee's hand shook as he filled the delicate cups. He drank his down in one gulp. \"Don't you see?\" he cried. ",
-        '"The American Standard translation orders men to triumph over sin, and you can call sin ignorance. ',
-        "The King James translation makes a promise in 'Thou shalt,' meaning that men will surely triumph over sin.",
-        "But the Hebrew word, the word timshel-'Thou mayest'-that gives a choice. It might be the most important word in the world. That says the way is open. That throws it right back on a man. For if 'Thou mayest'-it is also true that 'Thou mayest not.' Don't you see?\"",
-    ]
-
-    generated_story_contents = []
-    for story_id in range(1, 8):
-        contents = [
-            {"story_id": story_id, "line_index": i, "content": STORY_CONTENTS[i]}
-            for i in range(10)
-        ]
-        generated_story_contents.extend(contents)
-    op.bulk_insert(story_contents, generated_story_contents)
-
-    op.bulk_insert(
-        story_translations,
-        [
-            {
-                "story_id": 1,
-                "language": "GERMAN",
-                "stage": "TRANSLATE",
-                "translator_id": 6,
-            },
-            {
-                "story_id": 1,
-                "language": "ENGLISH_UK",
-                "stage": "TRANSLATE",
-                "translator_id": 4,
-            },
-            {
-                "story_id": 2,
-                "language": "GERMAN",
-                "stage": "TRANSLATE",
-                "translator_id": 2,
-            },
-            {
-                "story_id": 2,
-                "language": "POLISH",
-                "stage": "TRANSLATE",
-                "translator_id": 2,
-            },
-            {
-                "story_id": 3,
-                "language": "MANDARIN",
-                "stage": "TRANSLATE",
-                "translator_id": 5,
-            },
-            {
-                "story_id": 3,
-                "language": "ENGLISH_UK",
-                "stage": "TRANSLATE",
-                "translator_id": 4,
-            },
-            {
-                "story_id": 4,
-                "language": "GERMAN",
-                "stage": "TRANSLATE",
-                "translator_id": 6,
-            },
-            {
-                "story_id": 4,
-                "language": "ENGLISH_UK",
-                "stage": "TRANSLATE",
-                "translator_id": 4,
-            },
-            {
-                "story_id": 5,
-                "language": "GERMAN",
-                "stage": "TRANSLATE",
-                "translator_id": 2,
-            },
-            {
-                "story_id": 5,
-                "language": "ENGLISH_UK",
-                "stage": "TRANSLATE",
-                "translator_id": 1,
-            },
-            {
-                "story_id": 5,
-                "language": "PORTUGUESE",
-                "stage": "TRANSLATE",
-                "translator_id": 7,
-            },
-            {
-                "story_id": 5,
-                "language": "DUTCH",
-                "stage": "TRANSLATE",
-                "translator_id": 3,
-            },
-            {
-                "story_id": 6,
-                "language": "ENGLISH_US",
-                "stage": "TRANSLATE",
-                "translator_id": 1,
-            },
-        ],
-    )
-
-    generated_story_translation_contents = []
-    for story_translation_id in [2, 3, 5, 7, 11, 13]:
-        contents = [
-            {
-                "story_translation_id": story_translation_id,
-                "line_index": i,
-                "translation_content": STORY_CONTENTS[i],
-            }
-            for i in range(10)
-        ]
-        generated_story_translation_contents.extend(contents)
-    for story_translation_id in [1, 4, 6, 8, 9, 10]:
-        contents = [
-            {
-                "story_translation_id": story_translation_id,
-                "line_index": i,
-                "translation_content": "",
-            }
-            for i in range(10)
-        ]
-        generated_story_translation_contents.extend(contents)
-    for story_translation_id in [12]:
-        contents = [
-            {
-                "story_translation_id": story_translation_id,
-                "line_index": i,
-                "translation_content": STORY_CONTENTS[i] if i == 9 else "",
-            }
-            for i in range(10)
-        ]
-        generated_story_translation_contents.extend(contents)
-    op.bulk_insert(story_translation_contents, generated_story_translation_contents)
-
-    op.bulk_insert(
-        comments,
-        [
-            {
-                "story_translation_content_id": 51,
-                "user_id": 1,
-                "comment_index": 0,
-                "time": "2021-07-31 01:48:42",
-                "resolved": True,
-                "content": "Not sure if this grammar makes sense",
-            },
-            {
-                "story_translation_content_id": 51,
-                "user_id": 4,
-                "comment_index": 1,
-                "time": "2021-08-09 12:28:42",
-                "resolved": True,
-                "content": "It's fine, go back to grammar school man",
-            },
-            {
-                "story_translation_content_id": 51,
-                "user_id": 1,
-                "comment_index": 2,
-                "time": "2021-08-10 21:55:42",
-                "resolved": True,
-                "content": "uwu dont need to be so mean man",
-            },
-            {
-                "story_translation_content_id": 53,
-                "user_id": 1,
-                "comment_index": 0,
-                "time": "2021-07-31 13:22:42",
-                "resolved": False,
-                "content": "this comment is lonely uwu ",
-            },
-            {
-                "story_translation_content_id": 54,
-                "user_id": 4,
-                "comment_index": 0,
-                "time": "2021-08-09 01:38:12",
-                "resolved": True,
-                "content": "this comment is likes to be alone uwu ",
-            },
-            {
-                "story_translation_content_id": 59,
-                "user_id": 4,
-                "comment_index": 0,
-                "time": "2021-08-09 18:23:32",
-                "resolved": False,
-                "content": "this comment is disagreeable",
-            },
-            {
-                "story_translation_content_id": 59,
-                "user_id": 1,
-                "comment_index": 1,
-                "time": "2021-08-10 21:58:42",
-                "resolved": False,
-                "content": "I agree!",
-            },
-        ],
-    )
 
 
 def downgrade():
