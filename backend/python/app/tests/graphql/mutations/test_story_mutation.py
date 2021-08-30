@@ -1,22 +1,23 @@
-import re
-
 from ....models.story import Story
+from ....models.story_content import StoryContent
 
 
 def test_create_story(app, db, client):
+    new_story = Story(
+        title="title test",
+        description="this should explain things",
+        youtube_link="don't think we validate this yet",
+        level=10001,
+    )
+    contents = ["line 1", "line 2", "line 3"]
+
     result = client.execute(
         """
-        mutation {
+        mutation CreateStory(
+            $contents: [String]!, $storyData: StoryRequestDTO!
+        ) {
             createStory(
-                contents: [
-                    "line 1", "line 2", "line 3",
-                ],
-                storyData: {
-                    title: "title test",
-                    description: "this should explain things",
-                    youtubeLink: "don't think we validate this yet",
-                    level: 10001
-                }
+                contents: $contents, storyData: $storyData
             ) {
                 ok
                 story {
@@ -35,44 +36,44 @@ def test_create_story(app, db, client):
                 }      
             }
         }
-    """
-    )
-
-    assert dict(result["data"]) == {
-        "createStory": {
-            "ok": True,
-            "story": {
-                "id": 1,
-                "title": "title test",
-                "description": "this should explain things",
-                "youtubeLink": "don't think we validate this yet",
-                "translatedLanguages": None,
-                "level": 10001,
-                "contents": [
-                    {"id": 1, "storyId": "1", "lineIndex": 0, "content": "line 1"},
-                    {"id": 2, "storyId": "1", "lineIndex": 1, "content": "line 2"},
-                    {"id": 3, "storyId": "1", "lineIndex": 2, "content": "line 3"},
-                ],
+        """,
+        variables={
+            "contents": contents,
+            "storyData": {
+                "title": new_story.title,
+                "description": new_story.description,
+                "youtubeLink": new_story.youtube_link,
+                "level": new_story.level,
             },
-        }
-    }
-
-    test_db_obj = (
-        Story.query.order_by(Story.id.desc())
-        .first()
-        .to_dict(include_relationships=True)
+        },
     )
-    # will want this somewhere globally i assume
-    pattern = re.compile(r"(?<!^)(?=[A-Z])")
 
-    for field_name, value in result["data"]["createStory"]["story"].items():
-        if field_name == "contents":
-            value = [
-                {to_snake_case(pattern, k): v for k, v in content.items()}
-                for content in value
-            ]
+    returned_dict = result["data"]["createStory"]
+    story_db_id = returned_dict["story"]["id"]
+    test_db_story = Story.query.get(story_db_id).to_dict(include_relationships=False)
+    test_db_story_contents = StoryContent.query.filter_by(story_id=story_db_id).all()
 
-        assert value == test_db_obj[to_snake_case(pattern, field_name)]
+    assert returned_dict["ok"]
+    assert returned_dict["story"]["title"] == new_story.title
+    assert returned_dict["story"]["description"] == new_story.description
+    assert returned_dict["story"]["youtubeLink"] == new_story.youtube_link
+    assert returned_dict["story"]["translatedLanguages"] == None
+    assert returned_dict["story"]["level"] == new_story.level
+
+    new_story.id = story_db_id
+    assert test_db_story == new_story.to_dict(include_relationships=False)
+
+    for i in range(len(contents)):
+        returned_dict_line_content = returned_dict["story"]["contents"][i]
+        # type mismatch
+        assert returned_dict_line_content["storyId"] == str(story_db_id)
+        assert returned_dict_line_content["lineIndex"] == i
+        assert returned_dict_line_content["content"] == contents[i]
+
+        test_db_obj_line_content = test_db_story_contents[i].to_dict()
+        assert test_db_obj_line_content["story_id"] == story_db_id
+        assert test_db_obj_line_content["line_index"] == i
+        assert test_db_obj_line_content["content"] == contents[i]
 
 
 def test_create_story_exception(db, client):
@@ -100,10 +101,6 @@ def test_assign_user_as_reviewer_exception(db, client):
 
 
 def test_assign_user_as_reviewer_invalid_user_id(db, client):
-    pass
-
-
-def test_assign_user_as_reviewer_user_not_approved(db, client):
     pass
 
 
@@ -159,5 +156,6 @@ def test_update_story_translation_contents_story_translation_not_created(db, cli
     pass
 
 
-def to_snake_case(pattern, string):
-    return pattern.sub("_", string).lower()
+def to_title_case(string):
+    words = string.split("_")
+    return [words[i][0].upper() + words[i][1:] for i in len(words) if i != 0].join()

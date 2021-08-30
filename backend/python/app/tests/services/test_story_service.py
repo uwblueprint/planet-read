@@ -1,4 +1,5 @@
 from ...models.story import Story
+from ..helpers.story_helpers import assert_story_equals_model
 
 
 # https://github.com/apryor6/flask_testing_examples/tree/master/fte
@@ -9,15 +10,7 @@ def test_add_story(app, db):  # noqa
     db.session.add(obj)
     db.session.commit()
     fetched = Story.query.all()
-    assert len(fetched) == 1
-    assert fetched[0].title == "title"
-
-
-def assert_story_equals_model(story_response, story_model):
-    assert story_response["title"] == story_model.title
-    assert story_response["description"] == story_model.description
-    assert story_response["youtube_link"] == story_model.youtube_link
-    assert story_response["level"] == story_model.level
+    assert fetched[-1].title == "title"
 
 
 def test_get_story(app, db, services):
