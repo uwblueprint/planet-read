@@ -4,6 +4,7 @@ import re
 
 import firebase_admin
 from flask import Flask
+from flask.cli import ScriptInfo
 from flask_cors import CORS
 from flask_sqlalchemy import SQLAlchemy
 from flaskext.mysql import MySQL
@@ -35,7 +36,9 @@ def create_app(config_name):
 
     app = Flask(__name__)
     mysql = MySQL()
-    app.config.from_object(app_config[config_name])
+
+    if type(config_name) is not ScriptInfo:
+        app.config.from_object(app_config[config_name])
 
     if os.getenv("IS_PREVIEW_DEPLOY", "False") == "True":
         app.config["CORS_ORIGINS"] = re.compile("https://planet-read-uwbp.*")
