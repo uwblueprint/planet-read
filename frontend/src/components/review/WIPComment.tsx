@@ -68,14 +68,16 @@ const WIPComment = ({
       />
       <Flex direction="row">
         <Button
-          size="md"
+          size="secondary"
           colorScheme="blue"
           onClick={createNewComment}
           isDisabled={text.length < 1}
         >
           Comment
         </Button>
-        <Button size="md">Cancel</Button>
+        <Button size="secondary" variant="outline">
+          Cancel
+        </Button>
       </Flex>
     </Flex>
   );
