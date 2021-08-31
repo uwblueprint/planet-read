@@ -114,22 +114,38 @@ export const buildHomePageStoriesQuery = (
   return result as QueryInformation;
 };
 
+const COMMENT_FIELDS = `
+    id
+    commentIndex
+    content
+    storyTranslationContentId
+    `;
+
 export const buildCommentsQuery = (
   storyTranslationId: number,
+  resolved: boolean | null,
 ): QueryInformation => {
-  // TODO: add more query parameters
+  let queryString = gql`
+    query ComentsByStoryTranslation {
+      commentsByStoryTranslation( storyTranslationId: ${storyTranslationId} ){
+        ${COMMENT_FIELDS}
+      }
+    }
+  `;
+
+  if (resolved === true || resolved === false) {
+    queryString = gql`
+    query ComentsByStoryTranslation {
+      commentsByStoryTranslation( storyTranslationId: ${storyTranslationId}, resolved: ${resolved} ){
+        ${COMMENT_FIELDS}
+      }
+    }
+  `;
+  }
+
   return {
     fieldName: "commentsByStoryTranslation",
-    string: gql`
-          query ComentsByStoryTranslation {
-            commentsByStoryTranslation( storyTranslationId: ${storyTranslationId} ){
-              id
-              commentIndex
-              content
-              storyTranslationContentId
-            }
-          }
-        `,
+    string: queryString,
   } as QueryInformation;
 };
 

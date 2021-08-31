@@ -47,10 +47,15 @@ class CommentService(ICommentService):
 
         return new_comment
 
-    def get_comments_by_story_translation(self, story_translation_id):
+    def get_comments_by_story_translation(self, story_translation_id, resolved=None):
         try:
+            comment_query_base = (
+                Comment.query
+                if resolved is None
+                else Comment.query.filter_by(resolved=resolved)
+            )
             comments = (
-                Comment.query.join(Comment.story_translation_content, aliased=True)
+                comment_query_base.join(Comment.story_translation_content, aliased=True)
                 .filter_by(story_translation_id=story_translation_id)
                 .all()
             )
