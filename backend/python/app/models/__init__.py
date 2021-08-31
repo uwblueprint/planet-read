@@ -3,6 +3,8 @@ import os
 from flask_migrate import Migrate
 from flask_sqlalchemy import SQLAlchemy
 
+from .insert_test_data import insert_test_data
+
 db = SQLAlchemy()
 migrate = Migrate()
 erase_db_and_sync = False
@@ -28,3 +30,4 @@ def init_app(app):
 
         # recreate tables
         db.create_all()
+        insert_test_data(db)
