@@ -2,6 +2,8 @@ import os
 
 from flask_sqlalchemy import SQLAlchemy
 
+from .insert_test_data import insert_test_data
+
 db = SQLAlchemy()
 erase_db_and_sync = os.getenv("ERASE_DB_AND_SYNC", "False") == "True"
 
@@ -25,3 +27,4 @@ def init_app(app):
 
         # recreate tables
         db.create_all()
+        insert_test_data(db)

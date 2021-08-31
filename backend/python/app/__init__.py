@@ -1,6 +1,6 @@
 import os
-from logging.config import dictConfig
 import re
+from logging.config import dictConfig
 
 import firebase_admin
 from flask import Flask
