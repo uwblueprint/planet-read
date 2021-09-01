@@ -1,5 +1,4 @@
 import { extendTheme } from "@chakra-ui/react";
-import { Theme } from "@chakra-ui/theme";
 
 import colors from "./colors";
 import Badge from "./components/Badge";
@@ -10,7 +9,7 @@ import Text from "./components/Text";
 import Textarea from "./components/Textarea";
 import StoryCard from "./components/StoryCard";
 
-const customTheme: Theme = extendTheme({
+const customTheme = extendTheme({
   fonts: {
     body: `"Noto Sans"`,
   },
