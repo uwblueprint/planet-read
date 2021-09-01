@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useQuery } from "@apollo/client";
 import { Icon } from "@chakra-ui/icon";
 import { Box, Button, Divider, Flex, IconButton, Text } from "@chakra-ui/react";
@@ -27,8 +27,10 @@ type Content = {
 };
 
 type HistoryStack = {
-  Undo: Array<{ lineIndex: number; content: string }>;
-  Redo: Array<{ lineIndex: number; content: string }>;
+  Undo: Array<StoryLine[]>;
+  Redo: Array<StoryLine[]>;
+  // Undo: Array<{ lineIndex: number; content: string }>;
+  // Redo: Array<{ lineIndex: number; content: string }>;
 };
 
 const TranslationPage = () => {
@@ -99,77 +101,77 @@ const TranslationPage = () => {
     );
   };
 
+  function saveVersionState() {
+    if (
+      versionHistoryStack.Undo.length > 0 &&
+      JSON.stringify(translatedStoryLines) !==
+        JSON.stringify(
+          versionHistoryStack.Undo[versionHistoryStack.Undo.length - 1],
+        ) &&
+      versionHistoryStack.Undo.length < MAX_STACK_SIZE
+    ) {
+      setVersionHistoryStack({
+        Undo: [
+          ...deepCopy(versionHistoryStack.Undo),
+          deepCopy(translatedStoryLines),
+        ],
+        Redo: [],
+      });
+    }
+  }
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      saveVersionState();
+    }, 1000);
+    return () => {
+      clearInterval(interval);
+    };
+  }, [versionHistoryStack]);
+
   const onUserInput = async (
     newContent: string,
     lineIndex: number,
     maxChars: number,
   ) => {
-    const oldContent = translatedStoryLines[lineIndex].translatedContent!;
-    const newUndo =
-      versionHistoryStack.Undo.length === MAX_STACK_SIZE
-        ? versionHistoryStack.Undo.slice(1)
-        : versionHistoryStack.Undo;
-    setVersionHistoryStack({
-      Undo: [...deepCopy(newUndo), { lineIndex, content: oldContent }],
-      Redo: [],
-    });
-
     if (maxChars >= newContent.length) {
       onChangeTranslationContent(newContent, lineIndex);
     }
   };
 
   const undoChange = () => {
-    if (versionHistoryStack.Undo.length > 0) {
-      const { lineIndex, content: newContent } = versionHistoryStack.Undo[
-        versionHistoryStack.Undo.length - 1
-      ];
-      const oldContent = translatedStoryLines[lineIndex].translatedContent;
-      if (oldContent !== newContent) {
-        const newRedo =
-          versionHistoryStack.Redo.length === MAX_STACK_SIZE
-            ? versionHistoryStack.Redo.slice(1)
-            : versionHistoryStack.Redo;
-        const newHistory = {
-          Undo: deepCopy(versionHistoryStack.Undo.slice(0, -1)),
-          Redo: [
-            ...deepCopy(newRedo),
-            {
-              lineIndex,
-              content: oldContent,
-            },
-          ],
-        };
-        setVersionHistoryStack(newHistory);
-        onChangeTranslationContent(newContent, lineIndex);
-      }
+    if (versionHistoryStack.Undo.length > 1) {
+      const newContent =
+        versionHistoryStack.Undo[versionHistoryStack.Undo.length - 2];
+      const newRedo =
+        versionHistoryStack.Redo.length === MAX_STACK_SIZE
+          ? versionHistoryStack.Redo.slice(1)
+          : versionHistoryStack.Redo;
+      const newHistory = {
+        Undo: deepCopy(versionHistoryStack.Undo.slice(0, -1)),
+        Redo: [...deepCopy(newRedo), translatedStoryLines],
+      };
+      setVersionHistoryStack(newHistory);
+      setTranslatedStoryLines(newContent);
+      setNumTranslatedLines(newContent.length);
     }
   };
 
   const redoChange = () => {
-    if (versionHistoryStack.Redo.length > 0) {
-      const { lineIndex, content: newContent } = versionHistoryStack.Redo[
-        versionHistoryStack.Redo.length - 1
-      ];
-      const oldContent = translatedStoryLines[lineIndex].translatedContent;
-      if (oldContent !== newContent) {
-        const newUndo =
-          versionHistoryStack.Undo.length === MAX_STACK_SIZE
-            ? versionHistoryStack.Undo.slice(1)
-            : versionHistoryStack.Undo;
-        const newHistory = {
-          Undo: [
-            ...deepCopy(newUndo),
-            {
-              lineIndex,
-              content: oldContent,
-            },
-          ],
-          Redo: deepCopy(versionHistoryStack.Redo.slice(0, -1)),
-        };
-        setVersionHistoryStack(newHistory);
-        onChangeTranslationContent(newContent, lineIndex);
-      }
+    if (versionHistoryStack.Redo.length > 1) {
+      const newContent =
+        versionHistoryStack.Redo[versionHistoryStack.Redo.length - 2];
+      const newUndo =
+        versionHistoryStack.Undo.length === MAX_STACK_SIZE
+          ? versionHistoryStack.Redo.slice(1)
+          : versionHistoryStack.Redo;
+      const newHistory = {
+        Undo: [...deepCopy(newUndo), translatedStoryLines],
+        Redo: deepCopy(versionHistoryStack.Redo.slice(0, -1)),
+      };
+      setVersionHistoryStack(newHistory);
+      setTranslatedStoryLines(newContent);
+      setNumTranslatedLines(newContent.length);
     }
   };
 
@@ -204,6 +206,10 @@ const TranslationPage = () => {
         },
       );
       setTranslatedStoryLines(contentArray);
+      setVersionHistoryStack({
+        Undo: [deepCopy(contentArray)],
+        Redo: [],
+      });
     },
   });
 
