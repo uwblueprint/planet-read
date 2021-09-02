@@ -9,6 +9,7 @@ import { StoryLine } from "../translation/Autosave";
 import { GET_STORY_AND_TRANSLATION_CONTENTS } from "../../APIClients/queries/StoryQueries";
 import CommentsPanel from "../review/CommentsPanel";
 import FontSizeSlider from "../translation/FontSizeSlider";
+import convertLanguageTitleCase from "../../utils/LanguageUtils";
 
 type ReviewPageProps = {
   storyIdParam: string | undefined;
@@ -36,6 +37,7 @@ const ReviewPage = () => {
   const [numTranslatedLines, setNumTranslatedLines] = useState(0);
 
   const [fontSize, setFontSize] = useState<string>("12px");
+  const [language, setLanguage] = useState<string>("");
 
   const handleFontSizeChange = (val: string) => {
     setFontSize(val);
@@ -46,7 +48,7 @@ const ReviewPage = () => {
     onCompleted: (data) => {
       const storyContent = data.storyById.contents;
       const translatedContent = data.storyTranslationById.translationContents;
-
+      setLanguage(data.storyTranslationById.language);
       setNumTranslatedLines(data.storyTranslationById.numTranslatedLines);
 
       const contentArray: StoryLine[] = [];
@@ -78,6 +80,7 @@ const ReviewPage = () => {
           <TranslationTable
             translatedStoryLines={translatedStoryLines}
             fontSize={fontSize}
+            translatedLanguage={convertLanguageTitleCase(language)}
           />
         </Flex>
         <Box margin="20px 30px 0 0">

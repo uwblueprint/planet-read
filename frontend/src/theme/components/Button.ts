@@ -17,6 +17,11 @@ const Button = {
       color: "black",
       textDecoration: "underline",
     },
+    undoRedo: {
+      width: "36px",
+      height: "36px",
+      fontSize: "20px",
+    },
   },
   variants: {
     outline: {

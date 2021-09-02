@@ -21,6 +21,7 @@ export const GET_STORY_AND_TRANSLATION_CONTENTS = (
 ) => gql`
   query GetStoryAndTranslationContents{
     storyById(id: ${storyId}) {
+      title
       contents {
         id
         lineIndex
@@ -28,12 +29,13 @@ export const GET_STORY_AND_TRANSLATION_CONTENTS = (
       }
     }
     storyTranslationById(id: ${storyTranslationId}) {
+      language
       translationContents {
         id
         lineIndex
         status
         content: translationContent
-      },
+      }
       numTranslatedLines
     }
   }
