@@ -21,5 +21,5 @@
 ## Checklist
 - [ ] My PR name is descriptive and in imperative tense
 - [ ] My commit messages are descriptive and in imperative tense. My commits are atomic and trivial commits are squashed or fixup'd into non-trivial commits
-- [ ] For backend changes, I have run the appropriate linters:  `docker exec -it <backend-container-id> /bin/bash -c "black . && isort --profile black ."`
+- [ ] For backend changes, I have run the appropriate linters:  `docker exec -it <backend-container-id> /bin/bash -c "black . && isort --profile black ."` and I have generated new migrations: `flask db migrate -m "<your message>"`
 - [ ] I have requested a review from the PL, as well as other devs who have background knowledge on this PR or who will be building on top of this PR

@@ -1,9 +1,11 @@
 import os
 
+from flask_migrate import Migrate
 from flask_sqlalchemy import SQLAlchemy
 
 db = SQLAlchemy()
-erase_db_and_sync = os.getenv("ERASE_DB_AND_SYNC", "False") == "True"
+migrate = Migrate()
+erase_db_and_sync = False
 
 
 def init_app(app):
@@ -17,6 +19,7 @@ def init_app(app):
 
     app.app_context().push()
     db.init_app(app)
+    migrate.init_app(app, db)
 
     if erase_db_and_sync:
         # drop tables
