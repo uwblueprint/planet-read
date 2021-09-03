@@ -1,14 +1,19 @@
 import os
 
+from flask_sqlalchemy import SQLAlchemy
 
-def insert_test_data(db):
-    from .comment import Comment
-    from .file import File
-    from .story import Story
-    from .story_content import StoryContent
-    from .story_translation import StoryTranslation
-    from .story_translation_content import StoryTranslationContent
-    from .user import User
+from app import create_app
+
+db = SQLAlchemy()
+
+
+def insert_test_data():
+    from app.models.comment import Comment
+    from app.models.story import Story
+    from app.models.story_content import StoryContent
+    from app.models.story_translation import StoryTranslation
+    from app.models.story_translation_content import StoryTranslationContent
+    from app.models.user import User
 
     # users
     db.engine.execute("ALTER TABLE users AUTO_INCREMENT = 1;")
@@ -158,7 +163,7 @@ def insert_test_data(db):
     db.session.bulk_save_objects(
         [
             StoryTranslation(
-                story_id=1, language="GERMAN", stage="TRANSLATE", translator_id=5
+                story_id=1, language="GERMAN", stage="TRANSLATE", translator_id=6
             ),
             StoryTranslation(
                 story_id=1,
@@ -329,3 +334,8 @@ def insert_test_data(db):
         ]
     )
     db.session().commit()
+
+
+if __name__ == "__main__":
+    app = create_app("development")
+    insert_test_data()
