@@ -7,10 +7,23 @@ function convertStatusTitleCase(status: string) {
     case "APPROVED":
       return "Approved";
     case "ACTION_REQUIRED":
-      return "Action Required";
+      return "Action";
     default:
       return statusEnum.replace(/_/g, " ");
   }
 }
 
-export { convertStatusTitleCase as default };
+function getStatusVariant(status: string | undefined) {
+  switch (status) {
+    case "Pending":
+      return "pending";
+    case "Approved":
+      return "approved";
+    case "Action":
+      return "action";
+    default:
+      return "";
+  }
+}
+
+export { convertStatusTitleCase, getStatusVariant };

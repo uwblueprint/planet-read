@@ -21,7 +21,10 @@ const Text = {
     statusHeader: {
       fontSize: "16px",
       padding: "12px",
-      minWidth: "160px",
+      width: "130px",
+    },
+    comment: {
+      fontSize: "14px",
     },
   },
 };

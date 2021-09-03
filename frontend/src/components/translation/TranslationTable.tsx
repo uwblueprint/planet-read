@@ -1,8 +1,8 @@
 import React from "react";
 import { Badge, Button, Flex, Text } from "@chakra-ui/react";
-
 import EditableCell from "./EditableCell";
 import { StoryLine } from "./Autosave";
+import { getStatusVariant } from "../../utils/StatusUtils";
 
 export type TranslationTableProps = {
   translatedStoryLines: StoryLine[];
@@ -52,9 +52,15 @@ const TranslationTable = ({
             {storyLine.translatedContent!!}{" "}
           </Text>
         )}
-        <Flex direction="column" width="160px">
-          <Badge textTransform="capitalize">{storyLine.status}</Badge>
-          <Button size="xs">Comment</Button>
+        <Flex direction="column" width="130px" margin="10px">
+          <Badge
+            textTransform="capitalize"
+            variant={getStatusVariant(storyLine.status)}
+            margin="0 0 10px 0"
+          >
+            {storyLine.status}
+          </Badge>
+          <Button variant="addComment">Comment</Button>
         </Flex>
       </Flex>
     );
@@ -64,8 +70,12 @@ const TranslationTable = ({
       <Flex alignItems="flex-start" direction="row">
         <Text variant="lineIndex">Line</Text>
         <Flex direction="row" width="100%">
-          <Text variant="cellHeader">Translate from {originalLanguage}</Text>
-          <Text variant="cellHeader">Translate to {translatedLanguage}</Text>
+          <Text variant="cellHeader">
+            Translate from <strong>{originalLanguage}</strong>
+          </Text>
+          <Text variant="cellHeader">
+            Translate to <strong>{translatedLanguage}</strong>
+          </Text>
         </Flex>
         <Text variant="statusHeader">Status</Text>
       </Flex>

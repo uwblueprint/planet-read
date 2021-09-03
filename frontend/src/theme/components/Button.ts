@@ -33,6 +33,14 @@ const Button = {
       background: "transparent",
       textDecoration: "none",
     },
+    addComment: {
+      border: "1px solid",
+      borderColor: "gray.50",
+      background: "white",
+      color: "blue.100",
+      width: "100px",
+      fontSize: "14px",
+    },
   },
 };
 export default Button;

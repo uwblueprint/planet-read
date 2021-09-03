@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import { useQuery } from "@apollo/client";
-
-import { Box, Text, Select } from "@chakra-ui/react";
+import { Box, Button, Flex, Text, Select } from "@chakra-ui/react";
 import {
   CommentResponse,
   buildCommentsQuery,
@@ -15,7 +14,7 @@ const CommentsPanel = ({ storyTranslationId }: CommentPanelProps) => {
   const [comments, setComments] = useState<CommentResponse[]>([]);
   const [filterIndex, setFilterIndex] = useState(0);
 
-  const filterOptions = ["Show All", "Show Resolved", "Show Unresolved"];
+  const filterOptions = ["All", "Resolved", "Unresolved"];
   const filterToResolved = [null, true, false];
   const commentsQuery = buildCommentsQuery(
     storyTranslationId,
@@ -34,9 +33,27 @@ const CommentsPanel = ({ storyTranslationId }: CommentPanelProps) => {
     setFilterIndex(event.target.selectedIndex);
   };
 
-  const commentsComponents = comments.map((comment: CommentResponse) => (
-    <Text key={comment.id}>{JSON.stringify(comment)}</Text>
-  ));
+  const CommentsComponent = () => {
+    if (comments.length > 0) {
+      return (
+        <Box>
+          {comments.map((comment: CommentResponse) => (
+            // TODO: replace with actual comment component
+            <Text key={comment.id} variant="comment">
+              {JSON.stringify(comment.content)}
+            </Text>
+          ))}
+        </Box>
+      );
+    }
+    return (
+      <Text variant="comment">
+        Looks like there aren’t any comments yet! Select the Comment button
+        above to begin leaving comments.
+      </Text>
+    );
+  };
+
   const filterOptionsComponent = filterOptions.map((op) => (
     <option key={op} value={op}>
       {op}
@@ -44,17 +61,23 @@ const CommentsPanel = ({ storyTranslationId }: CommentPanelProps) => {
   ));
 
   return (
-    <Box backgroundColor="gray.300" float="right" width="250px">
-      <Select
-        name="comment filter"
-        id="comment filter"
-        value={filterOptions[filterIndex]}
-        onChange={handleCommentFilterSelectChange}
-      >
-        {filterOptionsComponent}
-      </Select>
-      Comments
-      {commentsComponents}
+    <Box backgroundColor="gray.100" float="right" width="350px" padding="20px">
+      <Flex marginBottom="50px">
+        <Button colorScheme="blue" size="secondary" margin="0 10px 0 0">
+          Comment
+        </Button>
+        <Select
+          name="comment filter"
+          id="comment filter"
+          value={filterOptions[filterIndex]}
+          variant="commentsFilter"
+          onChange={handleCommentFilterSelectChange}
+          width="160px"
+        >
+          {filterOptionsComponent}
+        </Select>
+      </Flex>
+      <CommentsComponent />
     </Box>
   );
 };

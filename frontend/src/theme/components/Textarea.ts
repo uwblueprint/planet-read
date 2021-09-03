@@ -1,7 +1,9 @@
 const Textarea = {
   variants: {
     translationEditable: {
-      border: "1px solid black",
+      border: "1px solid",
+      borderColor: "gray.300",
+      color: "gray.500",
       borderRadius: "3px",
       fontSize: "12px",
       height: "fit-content",

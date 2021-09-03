@@ -128,7 +128,7 @@ export const buildCommentsQuery = (
   resolved: boolean | null,
 ): QueryInformation => {
   let queryString = gql`
-    query ComentsByStoryTranslation {
+    query CommentsByStoryTranslation {
       commentsByStoryTranslation( storyTranslationId: ${storyTranslationId} ){
         ${COMMENT_FIELDS}
       }
@@ -137,7 +137,7 @@ export const buildCommentsQuery = (
 
   if (resolved === true || resolved === false) {
     queryString = gql`
-    query ComentsByStoryTranslation {
+    query CommentsByStoryTranslation {
       commentsByStoryTranslation( storyTranslationId: ${storyTranslationId}, resolved: ${resolved} ){
         ${COMMENT_FIELDS}
       }

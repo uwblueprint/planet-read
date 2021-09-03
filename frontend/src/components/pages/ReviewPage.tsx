@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useQuery } from "@apollo/client";
-import { Box, Flex, Text } from "@chakra-ui/react";
+import { Box, Divider, Flex } from "@chakra-ui/react";
 
 import { useParams } from "react-router-dom";
 import ProgressBar from "../utils/ProgressBar";
@@ -10,6 +10,7 @@ import { GET_STORY_AND_TRANSLATION_CONTENTS } from "../../APIClients/queries/Sto
 import CommentsPanel from "../review/CommentsPanel";
 import FontSizeSlider from "../translation/FontSizeSlider";
 import convertLanguageTitleCase from "../../utils/LanguageUtils";
+import Header from "../translation/Header";
 
 type ReviewPageProps = {
   storyIdParam: string | undefined;
@@ -37,6 +38,7 @@ const ReviewPage = () => {
   const [numTranslatedLines, setNumTranslatedLines] = useState(0);
 
   const [fontSize, setFontSize] = useState<string>("12px");
+  const [title, setTitle] = useState<string>("");
   const [language, setLanguage] = useState<string>("");
 
   const handleFontSizeChange = (val: string) => {
@@ -49,6 +51,7 @@ const ReviewPage = () => {
       const storyContent = data.storyById.contents;
       const translatedContent = data.storyTranslationById.translationContents;
       setLanguage(data.storyTranslationById.language);
+      setTitle(data.storyById.title);
       setNumTranslatedLines(data.storyTranslationById.numTranslatedLines);
 
       const contentArray: StoryLine[] = [];
@@ -71,24 +74,28 @@ const ReviewPage = () => {
   });
 
   return (
-    <Box margin="20px 20px 0px 20px">
-      <Text size="lg">Story Title Here</Text>
-      <Text as="ins">View story details</Text>
-      <FontSizeSlider setFontSize={handleFontSizeChange} />
-      <Flex>
-        <Flex direction="column" width="75vw">
-          <TranslationTable
-            translatedStoryLines={translatedStoryLines}
-            fontSize={fontSize}
-            translatedLanguage={convertLanguageTitleCase(language)}
-          />
-        </Flex>
-        <Box margin="20px 30px 0 0">
-          <ProgressBar
-            percentageComplete={
-              (numTranslatedLines / translatedStoryLines.length) * 100
-            }
-          />
+    <Box height="100vh" overflow="hidden">
+      <Header title={title} />
+      <Divider />
+      <Flex justify="space-between">
+        <Box minWidth="75vw" maxWidth="75vw">
+          <FontSizeSlider setFontSize={handleFontSizeChange} />
+          <Flex>
+            <Flex direction="column" width="75vw">
+              <TranslationTable
+                translatedStoryLines={translatedStoryLines}
+                fontSize={fontSize}
+                translatedLanguage={convertLanguageTitleCase(language)}
+              />
+            </Flex>
+            <Box margin="20px 30px 0 0">
+              <ProgressBar
+                percentageComplete={
+                  (numTranslatedLines / translatedStoryLines.length) * 100
+                }
+              />
+            </Box>
+          </Flex>
         </Box>
         <CommentsPanel storyTranslationId={storyTranslationId} />
       </Flex>
