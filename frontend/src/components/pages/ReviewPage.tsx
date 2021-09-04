@@ -87,11 +87,13 @@ const ReviewPage = () => {
             percentageComplete={
               (numTranslatedLines / translatedStoryLines.length) * 100
             }
+            type="Translation"
           />
           <ProgressBar
             percentageComplete={
               (numApprovedLines / translatedStoryLines.length) * 100
             }
+            type="Review"
           />
         </Box>
         <CommentsPanel storyTranslationId={storyTranslationId} />
