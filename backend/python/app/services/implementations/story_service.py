@@ -310,8 +310,8 @@ class StoryService(IStoryService):
 
     def _get_num_approved_lines(self, translation_contents):
         count = 0
-        for translation_content in translation_contents: 
-            if translation_content["status"] == StoryTranslationContentStatus.APPROVED: 
-                count += 1 
-        
-        return count 
+        for translation_content in translation_contents:
+            if translation_content["status"] == StoryTranslationContentStatus.APPROVED:
+                count += 1
+
+        return count
