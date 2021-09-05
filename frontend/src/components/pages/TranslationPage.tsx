@@ -1,6 +1,8 @@
 import React, { useState } from "react";
 import { useQuery } from "@apollo/client";
+import { Icon } from "@chakra-ui/icon";
 import { Box, Button, Divider, Flex, IconButton, Text } from "@chakra-ui/react";
+import { MdRedo, MdUndo } from "react-icons/md";
 import { useParams } from "react-router-dom";
 import ProgressBar from "../utils/ProgressBar";
 import TranslationTable from "../translation/TranslationTable";
@@ -9,9 +11,7 @@ import { convertStatusTitleCase } from "../../utils/StatusUtils";
 import { GET_STORY_AND_TRANSLATION_CONTENTS } from "../../APIClients/queries/StoryQueries";
 import FontSizeSlider from "../translation/FontSizeSlider";
 import convertLanguageTitleCase from "../../utils/LanguageUtils";
-import UndoIcon from "../../assets/Undo";
-import RedoIcon from "../../assets/Redo";
-import Header from "../translation/Header";
+import Header from "../navigation/Header";
 import CommentsPanel from "../review/CommentsPanel";
 
 type TranslationPageProps = {
@@ -228,7 +228,7 @@ const TranslationPage = () => {
       <Header title={title} />
       <Divider />
       <Flex justify="space-between">
-        <Box minWidth="calc(100vw - 350px)" maxWidth="75vw">
+        <Box width="100%">
           <Flex justify="space-between" alignItems="center" margin="10px 30px">
             <FontSizeSlider setFontSize={handleFontSizeChange} />
             <Flex direction="row">
@@ -237,14 +237,14 @@ const TranslationPage = () => {
                 variant="ghost"
                 aria-label="Undo Change"
                 onClick={undoChange}
-                icon={<UndoIcon />}
+                icon={<Icon as={MdUndo} />}
               />
               <IconButton
                 variant="ghost"
                 size="undoRedo"
                 aria-label="Redo Change"
                 onClick={redoChange}
-                icon={<RedoIcon />}
+                icon={<Icon as={MdRedo} />}
               />
             </Flex>
           </Flex>
@@ -265,10 +265,6 @@ const TranslationPage = () => {
                 translatedLanguage={convertLanguageTitleCase(language)}
               />
             </Flex>
-            <Autosave
-              storylines={Array.from(changedStoryLines.values())}
-              onSuccess={clearUnsavedChangesMap}
-            />
             <Flex
               margin="20px 10px"
               justify="space-between"
@@ -287,6 +283,10 @@ const TranslationPage = () => {
         </Box>
         <CommentsPanel storyTranslationId={storyTranslationId} />
       </Flex>
+      <Autosave
+        storylines={Array.from(changedStoryLines.values())}
+        onSuccess={clearUnsavedChangesMap}
+      />
     </Box>
   );
 };

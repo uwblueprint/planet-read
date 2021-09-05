@@ -10,7 +10,7 @@ import { GET_STORY_AND_TRANSLATION_CONTENTS } from "../../APIClients/queries/Sto
 import CommentsPanel from "../review/CommentsPanel";
 import FontSizeSlider from "../translation/FontSizeSlider";
 import convertLanguageTitleCase from "../../utils/LanguageUtils";
-import Header from "../translation/Header";
+import Header from "../navigation/Header";
 
 type ReviewPageProps = {
   storyIdParam: string | undefined;
@@ -78,24 +78,36 @@ const ReviewPage = () => {
       <Header title={title} />
       <Divider />
       <Flex justify="space-between">
-        <Box minWidth="75vw" maxWidth="75vw">
-          <FontSizeSlider setFontSize={handleFontSizeChange} />
-          <Flex>
-            <Flex direction="column" width="75vw">
+        <Box width="100%">
+          <Flex justify="space-between" alignItems="center" margin="10px 30px">
+            <FontSizeSlider setFontSize={handleFontSizeChange} />
+          </Flex>
+          <Divider />
+          <Box margin="0 0 0 20px">
+            <Flex
+              direction="column"
+              overflowY="auto"
+              height="calc(100vh - 250px)"
+            >
               <TranslationTable
                 translatedStoryLines={translatedStoryLines}
                 fontSize={fontSize}
+                originalLanguage="English"
                 translatedLanguage={convertLanguageTitleCase(language)}
               />
             </Flex>
-            <Box margin="20px 30px 0 0">
+            <Flex
+              margin="20px 10px"
+              justify="space-between"
+              alignItems="center"
+            >
               <ProgressBar
                 percentageComplete={
                   (numTranslatedLines / translatedStoryLines.length) * 100
                 }
               />
-            </Box>
-          </Flex>
+            </Flex>
+          </Box>
         </Box>
         <CommentsPanel storyTranslationId={storyTranslationId} />
       </Flex>

@@ -22,7 +22,7 @@ function getStatusVariant(status: string | undefined) {
     case "Action":
       return "action";
     default:
-      return "";
+      return status?.toLowerCase();
   }
 }
 

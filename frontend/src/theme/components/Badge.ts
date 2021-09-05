@@ -16,7 +16,7 @@ const Badge = {
       backgroundColor: "orange.50",
       color: "orange.100",
     },
-    resolved: {
+    approved: {
       backgroundColor: "green.50",
       color: "green.100",
     },

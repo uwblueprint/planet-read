@@ -4,7 +4,7 @@ import { Box, Button, Flex, Text, Select } from "@chakra-ui/react";
 import {
   CommentResponse,
   buildCommentsQuery,
-} from "../../APIClients/queries/StoryQueries";
+} from "../../APIClients/queries/CommentQueries";
 
 export type CommentPanelProps = {
   storyTranslationId: number;
