@@ -75,3 +75,4 @@ class StoryTranslationResponseDTO(graphene.ObjectType):
     youtube_link = graphene.String(required=True)
     level = graphene.Int(required=True)
     num_translated_lines = graphene.Int()
+    num_approved_lines = graphene.Int()

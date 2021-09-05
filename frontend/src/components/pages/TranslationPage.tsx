@@ -253,6 +253,7 @@ const TranslationPage = () => {
             percentageComplete={
               (numTranslatedLines / translatedStoryLines.length) * 100
             }
+            type="Translation"
           />
         </Box>
       </Flex>

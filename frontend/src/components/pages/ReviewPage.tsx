@@ -34,6 +34,7 @@ const ReviewPage = () => {
     [],
   );
   const [numTranslatedLines, setNumTranslatedLines] = useState(0);
+  const [numApprovedLines, setNumApprovedLines] = useState(0);
 
   const [fontSize, setFontSize] = useState<string>("12px");
 
@@ -48,6 +49,7 @@ const ReviewPage = () => {
       const translatedContent = data.storyTranslationById.translationContents;
 
       setNumTranslatedLines(data.storyTranslationById.numTranslatedLines);
+      setNumApprovedLines(data.storyTranslationById.numApprovedLines);
 
       const contentArray: StoryLine[] = [];
       storyContent.forEach(({ content, lineIndex }: Content) => {
@@ -85,6 +87,13 @@ const ReviewPage = () => {
             percentageComplete={
               (numTranslatedLines / translatedStoryLines.length) * 100
             }
+            type="Translation"
+          />
+          <ProgressBar
+            percentageComplete={
+              (numApprovedLines / translatedStoryLines.length) * 100
+            }
+            type="Review"
           />
         </Box>
         <CommentsPanel storyTranslationId={storyTranslationId} />
