@@ -99,18 +99,22 @@ const ReviewPage = () => {
               />
             </Flex>
             <Flex margin="20px 10px" justify="flex-start" alignItems="center">
-              <ProgressBar
-                percentageComplete={
-                  (numTranslatedLines / translatedStoryLines.length) * 100
-                }
-                type="Translation"
-              />
-              <ProgressBar
-                percentageComplete={
-                  (numApprovedLines / translatedStoryLines.length) * 100
-                }
-                type="Review"
-              />
+              <Box margin="0 10px 0 0">
+                <ProgressBar
+                  percentageComplete={
+                    (numTranslatedLines / translatedStoryLines.length) * 100
+                  }
+                  type="Translation"
+                />
+              </Box>
+              <Box>
+                <ProgressBar
+                  percentageComplete={
+                    (numApprovedLines / translatedStoryLines.length) * 100
+                  }
+                  type="Review"
+                />
+              </Box>
             </Flex>
           </Box>
         </Box>
