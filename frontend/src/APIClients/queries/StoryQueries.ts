@@ -37,6 +37,7 @@ export const GET_STORY_AND_TRANSLATION_CONTENTS = (
         content: translationContent
       }
       numTranslatedLines
+      numApprovedLines
     }
   }
 `;

@@ -36,6 +36,7 @@ const ReviewPage = () => {
     [],
   );
   const [numTranslatedLines, setNumTranslatedLines] = useState(0);
+  const [numApprovedLines, setNumApprovedLines] = useState(0);
 
   const [fontSize, setFontSize] = useState<string>("12px");
   const [title, setTitle] = useState<string>("");
@@ -53,6 +54,7 @@ const ReviewPage = () => {
       setLanguage(data.storyTranslationById.language);
       setTitle(data.storyById.title);
       setNumTranslatedLines(data.storyTranslationById.numTranslatedLines);
+      setNumApprovedLines(data.storyTranslationById.numApprovedLines);
 
       const contentArray: StoryLine[] = [];
       storyContent.forEach(({ content, lineIndex }: Content) => {
@@ -96,15 +98,18 @@ const ReviewPage = () => {
                 translatedLanguage={convertLanguageTitleCase(language)}
               />
             </Flex>
-            <Flex
-              margin="20px 10px"
-              justify="space-between"
-              alignItems="center"
-            >
+            <Flex margin="20px 10px" justify="flex-start" alignItems="center">
               <ProgressBar
                 percentageComplete={
                   (numTranslatedLines / translatedStoryLines.length) * 100
                 }
+                type="Translation"
+              />
+              <ProgressBar
+                percentageComplete={
+                  (numApprovedLines / translatedStoryLines.length) * 100
+                }
+                type="Review"
               />
             </Flex>
           </Box>

@@ -274,6 +274,7 @@ const TranslationPage = () => {
                 percentageComplete={
                   (numTranslatedLines / translatedStoryLines.length) * 100
                 }
+                type="Translation"
               />
               <Button colorScheme="blue" size="secondary" margin="0 10px 0">
                 SEND FOR REVIEW

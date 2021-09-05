@@ -6,6 +6,7 @@ from ...models.story import Story
 from ...models.story_content import StoryContent
 from ...models.story_translation import StoryTranslation
 from ...models.story_translation_content import StoryTranslationContent
+from ...models.story_translation_content_status import StoryTranslationContentStatus
 from ..interfaces.story_service import IStoryService
 
 
@@ -191,6 +192,10 @@ class StoryService(IStoryService):
                 response["translation_contents"]
             )
 
+            response["num_approved_lines"] = self._get_num_approved_lines(
+                response["translation_contents"]
+            )
+
             return response
 
         except Exception as error:
@@ -302,3 +307,11 @@ class StoryService(IStoryService):
         return len(translation_contents) - [
             _["translation_content"].strip() for _ in translation_contents
         ].count("")
+
+    def _get_num_approved_lines(self, translation_contents):
+        count = 0
+        for translation_content in translation_contents:
+            if translation_content["status"] == StoryTranslationContentStatus.APPROVED:
+                count += 1
+
+        return count
