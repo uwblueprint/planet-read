@@ -1,4 +1,5 @@
 import os
+import sys
 
 from flask_sqlalchemy import SQLAlchemy
 
@@ -6,15 +7,15 @@ from app import create_app
 
 db = SQLAlchemy()
 
+from app.models.comment import Comment
+from app.models.story import Story
+from app.models.story_content import StoryContent
+from app.models.story_translation import StoryTranslation
+from app.models.story_translation_content import StoryTranslationContent
+from app.models.user import User
+
 
 def insert_test_data():
-    from app.models.comment import Comment
-    from app.models.story import Story
-    from app.models.story_content import StoryContent
-    from app.models.story_translation import StoryTranslation
-    from app.models.story_translation_content import StoryTranslationContent
-    from app.models.user import User
-
     # users
     db.engine.execute("ALTER TABLE users AUTO_INCREMENT = 1;")
     db.engine.execute(
@@ -37,13 +38,13 @@ def insert_test_data():
         "INSERT IGNORE INTO stories \
                 (id, title, description, youtube_link, level, translated_languages) \
             VALUES \
-                (1, 'East of Eden', 'John Steinbeck', 'https://www.youtube.com/watch?v=DHyUYg8X31c', 4, '[\"GERMAN\", \"ENGLISH_UK\"]'), \
-                (2, 'War and Peace', 'Leo Tolstoy', 'https://www.youtube.com/watch?v=Da-2h2B4faU&t=4s', 1, '[\"GERMAN\", \"POLISH\"]'), \
-                (3, 'A Tale of Two Cities', 'Charles Dickens', 'https://www.youtube.com/watch?v=DHyUYg8X31c', 3, '[\"MANDARIN\", \"ENGLISH_UK\"]'), \
-                (4, 'Pride and Prejudice', 'Jane Austen', 'https://www.youtube.com/watch?v=DHyUYg8X31c', 4, '[\"GERMAN\", \"ENGLISH_UK\"]'), \
-                (5, 'To Kill a Mockingbird', 'Harper Lee', 'https://www.youtube.com/watch?v=DHyUYg8X31c', 3, '[\"GERMAN\", \"ENGLISH_UK\", \"PORTUGUESE\", \"DUTCH\"]'), \
-                (6, 'The Great Gatsby', 'F. Scott Fitzgerald', 'https://www.youtube.com/watch?v=DHyUYg8X31c', 4, '[\"ENGLISH_US\"]'), \
-                (7, '1984', 'George Orwell', 'https://www.youtube.com/watch?v=Da-2h2B4faU&t=4s', 2, '[]');"
+                (1, 'East of Eden', 'Follow the intertwined destinies of two families whose generations reenact the poisonous rivalry of Cain and Abel.', 'https://www.youtube.com/watch?v=redECmF7wh8', 4, '[\"GERMAN\", \"ENGLISH_UK\"]'), \
+                (2, 'War and Peace', 'War and Peace is a literary work mixed with chapters on history and philosophy by the Russian author Leo Tolstoy.', 'https://www.youtube.com/watch?v=4dn7TEjnbPY', 1, '[\"GERMAN\", \"POLISH\"]'), \
+                (3, 'A Tale of Two Cities', 'An 1859 historical novel by Charles Dickens, set in London and Paris before and during the French Revolution.', 'https://www.youtube.com/watch?v=5czA_L_eOp4', 3, '[\"MANDARIN\", \"ENGLISH_UK\"]'), \
+                (4, 'Pride and Prejudice', 'Pride and Prejudice preaches the difference between superficial goodness and actual goodness.', 'https://www.youtube.com/watch?v=5xTh44G6RYs', 4, '[\"GERMAN\", \"ENGLISH_UK\"]'), \
+                (5, 'To Kill a Mockingbird', 'To Kill a Mockingbird is a novel by the American author Harper Lee. A sentence cannot do this novel justice.', 'https://www.youtube.com/watch?v=3xM8hvEE2dI', 3, '[\"GERMAN\", \"ENGLISH_UK\", \"PORTUGUESE\", \"DUTCH\"]'), \
+                (6, 'The Great Gatsby', 'Set in the Jazz Age on Long Island, near New York City, the novel depicts mysterious millionaire Jay Gatsby and Gatsby and Daisy Buchanan.', 'https://www.youtube.com/watch?v=e6Iu29TNfkM', 4, '[\"ENGLISH_US\"]'), \
+                (7, 'Nineteen Eighty-Four', 'Nineteen Eighty-Four, often referred to as 1984, is a dystopian social science fiction novel by the English novelist George Orwell.', 'https://www.youtube.com/watch?v=h9JIKngJnCU', 2, '[]');"
     )
 
     generic_content = [
@@ -161,6 +162,24 @@ def insert_test_data():
     )
 
 
+def erase_db():
+    db.session.query(Comment).delete()
+    db.session.commit()
+    db.session.query(StoryTranslationContent).delete()
+    db.session.commit()
+    db.session.query(StoryContent).delete()
+    db.session.commit()
+    db.session.query(StoryTranslation).delete()
+    db.session.commit()
+    db.session.query(User).delete()
+    db.session.commit()
+    db.session.query(Story).delete()
+    db.session.commit()
+
+
 if __name__ == "__main__":
     app = create_app("development")
-    insert_test_data()
+    if "erase" in sys.argv:
+        erase_db()
+    else:
+        insert_test_data()
