@@ -44,7 +44,7 @@ const HomePage = () => {
   });
   return (
     <Box>
-      <Header title="" />
+      <Header />
       <Divider />
       <Flex direction="row">
         <Filter

@@ -48,8 +48,8 @@ const CommentsPanel = ({ storyTranslationId }: CommentPanelProps) => {
     }
     return (
       <Text variant="comment">
-        Looks like there aren’t any comments yet! Select the Comment button
-        above to begin leaving comments.
+        Looks like there aren`&apos;`t any comments yet! Select the Comment
+        button above to begin leaving comments.
       </Text>
     );
   };
@@ -63,7 +63,7 @@ const CommentsPanel = ({ storyTranslationId }: CommentPanelProps) => {
   return (
     <Box backgroundColor="gray.100" float="right" width="350px" padding="20px">
       <Flex marginBottom="50px">
-        <Button colorScheme="blue" size="secondary" margin="0 10px 0 0">
+        <Button colorScheme="blue" size="secondary" marginRight="10px">
           Comment
         </Button>
         <Select

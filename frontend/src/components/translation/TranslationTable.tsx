@@ -56,7 +56,7 @@ const TranslationTable = ({
           <Badge
             textTransform="capitalize"
             variant={getStatusVariant(storyLine.status)}
-            margin="0 0 10px 0"
+            marginBottom="10px"
           >
             {storyLine.status}
           </Badge>

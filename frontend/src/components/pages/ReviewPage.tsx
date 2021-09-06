@@ -76,51 +76,59 @@ const ReviewPage = () => {
   });
 
   return (
-    <Box height="100vh" overflow="hidden">
+    <Flex
+      height="100vh"
+      direction="column"
+      position="absolute"
+      top="0"
+      bottom="0"
+      left="0"
+      right="0"
+    >
       <Header title={title} />
       <Divider />
-      <Flex justify="space-between">
-        <Box width="100%">
+      <Flex justify="space-between" flex={1} minHeight={0}>
+        <Flex width="100%" direction="column">
           <Flex justify="space-between" alignItems="center" margin="10px 30px">
             <FontSizeSlider setFontSize={handleFontSizeChange} />
           </Flex>
           <Divider />
-          <Box margin="0 0 0 20px">
-            <Flex
-              direction="column"
-              overflowY="auto"
-              height="calc(100vh - 250px)"
-            >
-              <TranslationTable
-                translatedStoryLines={translatedStoryLines}
-                fontSize={fontSize}
-                originalLanguage="English"
-                translatedLanguage={convertLanguageTitleCase(language)}
+          <Flex
+            marginLeft="20px"
+            direction="column"
+            flex={1}
+            minHeight={0}
+            overflowY="auto"
+          >
+            <TranslationTable
+              translatedStoryLines={translatedStoryLines}
+              fontSize={fontSize}
+              originalLanguage="English"
+              translatedLanguage={convertLanguageTitleCase(language)}
+            />
+          </Flex>
+          <Flex margin="20px 30px" justify="flex-start" alignItems="center">
+            <Box marginRight="10px">
+              <ProgressBar
+                percentageComplete={
+                  (numTranslatedLines / translatedStoryLines.length) * 100
+                }
+                type="Translation"
               />
-            </Flex>
-            <Flex margin="20px 10px" justify="flex-start" alignItems="center">
-              <Box margin="0 10px 0 0">
-                <ProgressBar
-                  percentageComplete={
-                    (numTranslatedLines / translatedStoryLines.length) * 100
-                  }
-                  type="Translation"
-                />
-              </Box>
-              <Box>
-                <ProgressBar
-                  percentageComplete={
-                    (numApprovedLines / translatedStoryLines.length) * 100
-                  }
-                  type="Review"
-                />
-              </Box>
-            </Flex>
-          </Box>
-        </Box>
+            </Box>
+            <Box>
+              <ProgressBar
+                percentageComplete={
+                  (numApprovedLines / translatedStoryLines.length) * 100
+                }
+                type="Review"
+              />
+            </Box>
+          </Flex>
+        </Flex>
         <CommentsPanel storyTranslationId={storyTranslationId} />
       </Flex>
-    </Box>
+    </Flex>
   );
 };
 

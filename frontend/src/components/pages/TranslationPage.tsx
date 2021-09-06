@@ -224,11 +224,19 @@ const TranslationPage = () => {
     ) : null;
   };
   return (
-    <Box height="100vh" overflow="hidden">
+    <Flex
+      height="100vh"
+      direction="column"
+      position="absolute"
+      top="0"
+      bottom="0"
+      left="0"
+      right="0"
+    >
       <Header title={title} />
       <Divider />
-      <Flex justify="space-between">
-        <Box width="100%">
+      <Flex justify="space-between" flex={1} minHeight={0}>
+        <Flex width="100%" direction="column">
           <Flex justify="space-between" alignItems="center" margin="10px 30px">
             <FontSizeSlider setFontSize={handleFontSizeChange} />
             <Flex direction="row">
@@ -249,46 +257,42 @@ const TranslationPage = () => {
             </Flex>
           </Flex>
           <Divider />
-          <Box margin="0 0 0 20px">
-            <Flex
-              direction="column"
-              overflowY="auto"
-              height="calc(100vh - 250px)"
-            >
-              {maxCharsExceededWarning()}
-              <TranslationTable
-                translatedStoryLines={translatedStoryLines}
-                onUserInput={onUserInput}
-                editable
-                fontSize={fontSize}
-                originalLanguage="English"
-                translatedLanguage={convertLanguageTitleCase(language)}
-              />
-            </Flex>
-            <Flex
-              margin="20px 10px"
-              justify="space-between"
-              alignItems="center"
-            >
-              <ProgressBar
-                percentageComplete={
-                  (numTranslatedLines / translatedStoryLines.length) * 100
-                }
-                type="Translation"
-              />
-              <Button colorScheme="blue" size="secondary" margin="0 10px 0">
-                SEND FOR REVIEW
-              </Button>
-            </Flex>
-          </Box>
-        </Box>
+          <Flex
+            marginLeft="20px"
+            direction="column"
+            flex={1}
+            minHeight={0}
+            overflowY="auto"
+          >
+            {maxCharsExceededWarning()}
+            <TranslationTable
+              translatedStoryLines={translatedStoryLines}
+              onUserInput={onUserInput}
+              editable
+              fontSize={fontSize}
+              originalLanguage="English"
+              translatedLanguage={convertLanguageTitleCase(language)}
+            />
+          </Flex>
+          <Flex margin="20px 30px" justify="space-between" alignItems="center">
+            <ProgressBar
+              percentageComplete={
+                (numTranslatedLines / translatedStoryLines.length) * 100
+              }
+              type="Translation"
+            />
+            <Button colorScheme="blue" size="secondary" margin="0 10px 0">
+              SEND FOR REVIEW
+            </Button>
+          </Flex>
+        </Flex>
         <CommentsPanel storyTranslationId={storyTranslationId} />
       </Flex>
       <Autosave
         storylines={Array.from(changedStoryLines.values())}
         onSuccess={clearUnsavedChangesMap}
       />
-    </Box>
+    </Flex>
   );
 };
 
