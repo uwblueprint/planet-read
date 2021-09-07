@@ -1,46 +1,98 @@
 # 🌏 Planet Read
 
-🐬 MySQL + 🐍 Flask story translation platform.  
+🐬 MySQL + 🐍 Flask story translation platform.
 
 Made with [starter-code-v2](https://github.com/uwblueprint/starter-code-v2), brought to you by the @uwblueprint/internal-tools team!
 
 # Getting Started
+
 ## Vault
+
 Get [started with vault](https://www.notion.so/uwblueprintexecs/Secret-Management-2d5b59ef0987415e93ec951ce05bf03e). To grab the project's secrets, run
+
 ```
 vault kv get -format=json kv/planet-read | python update_secret_files.py
 ```
+
 You should have three new files in your repo after this:
+
 - `.env`
 - `backend/.env`
 - `backend/python/firebaseServiceAccount.json`
+
 ## Prereqs
+
 Verify that you have docker and npx installed:
+
 ```
 docker info
 docker-compose --version
 npx -v
 ```
+
 # Build and Run
-Note: if you have already built the project before, run this first: 
+
+Note: if you have already built the project before, run this first:
+
 ```
 docker-compose down --volumes
 ```
 
-And run the project:
+This will take down the database and all it's data too.
+If you don't need to rebuild packages between switching branches, you probably don't _need_ `--volumes`.
+
+To run the project:
+
 ```
 docker-compose up --build
 ```
 
-Seed your database with the provided script. Before running, you will need to set environment variables for all of the user secrets, which can be found in the secrets channel.
+To create tables in the DB, run
+
 ```
-./seed_db.sh
+docker exec -it planet-read_py-backend_1 /bin/bash -c "flask db upgrade"
 ```
 
-If there are no tables in the DB, go into `/backend/python/app/models/__init__.py` and change the `erase_db_and_sync = False` to True, allow the hot reload to build, and change it back to `False`. Try to seed the database again.
+Insert test data into the database with the provided script. Your environment variables need to be correctly configured in `.env`
+
+```
+docker exec -it planet-read_py-backend_1 /bin/bash -c "python -m tools.insert_test_data"
+```
+
+# Lint
+
+Frontend has on-save linting. To lint the backend:
+
+```
+docker exec -it planet-read_py-backend_1 /bin/bash -c "black . && isort --profile black ."
+```
+
+# Database Migrations
+
+We are currently using Flask-Migrate to handle our database migrations. To update your database, run:
+
+```
+docker exec -it planet-read_py-backend_1 /bin/bash -c "flask db upgrade"
+```
+
+To reset your database, run:
+
+```
+docker exec -it planet-read_py-backend_1 /bin/bash -c "flask db downgrade"
+```
+
+A new migration will need to be generated when database changes are made. Import any new tables into [backend/python/app/models/\_\_init\_\_.py](backend/python/app/models/__init__.py) and run:
+
+```
+docker exec -it planet-read_py-backend_1 /bin/bash -c "flask db migrate -m '<description of your migration>'"
+```
+
+Ensure that a new revision file is created in the directory [backend/python/migrations/versions](backend/python/migrations/versions). **Do not** change the alembic revision/identifiers. Generally these auto-generated revision files will encompass all schema changes, and thus do not need to be modified!
 
 # Test
+
 Backend test run using the `pytest` framework on a distinct test database. You may need to rebuild if this is your first time running pytest. The following utils are available for testing:
+
 ```
 # Run all tests
 ./utils.sh pytest
@@ -53,34 +105,23 @@ Backend test run using the `pytest` framework on a distinct test database. You m
 ```
 
 If you want to run any other pytest commands, run them manually with:
+
 ```
 docker exec -it planet-read_py-backend_1 /bin/bash <pytest command>
 ```
 
-# Lint
-Frontend has on-save linting. To lint the backend:
-```
-docker exec -it planet-read_py-backend_1 /bin/bash -c "black . && isort --profile black ."
-```
+# Deployment
 
-# Database Migrations
-We are currently using Flask-Migrate to handle our database migrations. To update your database, run:
-```
-docker exec -it planet-read_py-backend_1 /bin/bash -c "flask db upgrade"
-```
-To reset your database, run:
-```
-docker exec -it planet-read_py-backend_1 /bin/bash -c "flask db downgrade"
-``` 
+Main branch Frontend deployment: https://planet-read-uwbp.web.app/
+Main branch Backend deployment: https://uwbp-planet-read-preview.herokuapp.com/
 
+We maintain firebase and a heroku deployment for frontend & backend.
 
-A new migration will need to be generated when database changes are made. Import any new tables into [backend/python/app/models/\_\_init__.py](backend/python/app/models/__init__.py) and run: 
-```
-docker exec -it planet-read_py-backend_1 /bin/bash -c "flask db migrate -m '<description of your migration>'"
-```
-Ensure that a new revision file is created in the directory [backend/python/migrations/versions](backend/python/migrations/versions). __Do not__ change the alembic revision/identifiers. Generally these auto-generated revision files will encompass all schema changes, and thus do not need to be modified!
+The heroku app is the backend at the head of the main branch. The database is rebuilt and filled with `insert_test_data.py` data on each deployment.
 
-<br>
+Each pr has it's own firebase deployment. Each deployment points to the same heroku app at master, so frontend pr deployment links with any backend changes should be used with caution.
+
+# Other
 
 Follow the [getting started](https://uwblueprint.github.io/starter-code-v2/docs/getting-started) for more details, especially if you desire to use your own firebase and gcp projects.
 
