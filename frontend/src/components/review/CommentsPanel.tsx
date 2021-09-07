@@ -33,7 +33,7 @@ const CommentsPanel = ({ storyTranslationId }: CommentPanelProps) => {
     setFilterIndex(event.target.selectedIndex);
   };
 
-  const CommentsComponent = () => {
+  const CommentsList = () => {
     if (comments.length > 0) {
       return (
         <Box>
@@ -77,7 +77,7 @@ const CommentsPanel = ({ storyTranslationId }: CommentPanelProps) => {
           {filterOptionsComponent}
         </Select>
       </Flex>
-      <CommentsComponent />
+      <CommentsList />
     </Box>
   );
 };
