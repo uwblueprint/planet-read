@@ -21,6 +21,7 @@ export const GET_STORY_AND_TRANSLATION_CONTENTS = (
 ) => gql`
   query GetStoryAndTranslationContents{
     storyById(id: ${storyId}) {
+      title
       contents {
         id
         lineIndex
@@ -28,12 +29,13 @@ export const GET_STORY_AND_TRANSLATION_CONTENTS = (
       }
     }
     storyTranslationById(id: ${storyTranslationId}) {
+      language
       translationContents {
         id
         lineIndex
         status
         content: translationContent
-      },
+      }
       numTranslatedLines
       numApprovedLines
     }
@@ -113,48 +115,4 @@ export const buildHomePageStoriesQuery = (
   }
 
   return result as QueryInformation;
-};
-
-const COMMENT_FIELDS = `
-    id
-    commentIndex
-    content
-    storyTranslationContentId
-    `;
-
-export const buildCommentsQuery = (
-  storyTranslationId: number,
-  resolved: boolean | null,
-): QueryInformation => {
-  let queryString = gql`
-    query ComentsByStoryTranslation {
-      commentsByStoryTranslation( storyTranslationId: ${storyTranslationId} ){
-        ${COMMENT_FIELDS}
-      }
-    }
-  `;
-
-  if (resolved === true || resolved === false) {
-    queryString = gql`
-    query ComentsByStoryTranslation {
-      commentsByStoryTranslation( storyTranslationId: ${storyTranslationId}, resolved: ${resolved} ){
-        ${COMMENT_FIELDS}
-      }
-    }
-  `;
-  }
-
-  return {
-    fieldName: "commentsByStoryTranslation",
-    string: queryString,
-  } as QueryInformation;
-};
-
-export type CommentResponse = {
-  id: number;
-  userId: number;
-  commentIndex: number;
-  time: string;
-  resolved: boolean;
-  content: string;
 };

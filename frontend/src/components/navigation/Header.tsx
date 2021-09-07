@@ -1,29 +1,25 @@
 import React from "react";
-import { Box, Flex, Heading, Image } from "@chakra-ui/react";
+import { Flex, Heading, Image } from "@chakra-ui/react";
 import Logo from "../../assets/planet-read-logo.svg";
 import PlaceholderUserIcon from "../../assets/user-icon.svg";
 
-type HeaderProps = {
-  currentPageTitle: string;
+export type HeaderProps = {
+  title?: string;
 };
 
-const Header = ({ currentPageTitle }: HeaderProps) => {
+const Header = ({ title }: HeaderProps) => {
   return (
-    <Flex
-      border="1px solid"
-      borderColor="gray.100"
-      direction="row"
-      padding="20px 0px 20px 0px"
-      width="100%"
-    >
-      <Flex alignItems="center" paddingLeft="20px">
-        <Heading size="md">{currentPageTitle}</Heading>
-        <Image width="40px" src={Logo} alt="PlanetREAD logo" />
+    <Flex justify="space-between" alignItems="center" margin="20px 30px">
+      <Flex width="300px" justify="flex-start" alignItems="center">
+        <Heading size="md" marginRight="10px">
+          Add my Language
+        </Heading>
+        <Image width="40px" src={Logo} alt="Planet read logo" />
       </Flex>
-      {/* TODO: this is not real */}
-      <Box marginLeft="auto">
+      <Heading size="lg">{title || ""}</Heading>
+      <Flex width="300px" justify="flex-end">
         <Image width="40px" src={PlaceholderUserIcon} alt="User icon" />
-      </Box>
+      </Flex>
     </Flex>
   );
 };

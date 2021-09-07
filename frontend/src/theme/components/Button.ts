@@ -17,6 +17,11 @@ const Button = {
       color: "black",
       textDecoration: "underline",
     },
+    undoRedo: {
+      width: "36px",
+      height: "36px",
+      fontSize: "20px",
+    },
   },
   variants: {
     outline: {
@@ -27,6 +32,14 @@ const Button = {
     ghost: {
       background: "transparent",
       textDecoration: "none",
+    },
+    addComment: {
+      border: "1px solid",
+      borderColor: "gray.50",
+      background: "white",
+      color: "blue.100",
+      width: "100px",
+      fontSize: "14px",
     },
   },
 };

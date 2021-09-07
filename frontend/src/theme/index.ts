@@ -7,6 +7,7 @@ import Filter from "./components/Filter";
 import Heading from "./components/Heading";
 import Text from "./components/Text";
 import Textarea from "./components/Textarea";
+import Select from "./components/Select";
 import StoryCard from "./components/StoryCard";
 
 const customTheme = extendTheme({
@@ -25,6 +26,7 @@ const customTheme = extendTheme({
     Heading,
     Text,
     Textarea,
+    Select,
     StoryCard,
   },
 });

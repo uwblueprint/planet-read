@@ -1,6 +1,6 @@
 import React, { useContext, useState } from "react";
 import { useQuery } from "@apollo/client";
-import { Box, Flex } from "@chakra-ui/react";
+import { Box, Divider, Flex } from "@chakra-ui/react";
 
 import Filter from "../homepage/Filter";
 import StoryList from "../homepage/StoryList";
@@ -44,7 +44,8 @@ const HomePage = () => {
   });
   return (
     <Box>
-      <Header currentPageTitle="Add My Language" />
+      <Header />
+      <Divider />
       <Flex direction="row">
         <Filter
           approvedLanguages={approvedLanguages}

@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useQuery } from "@apollo/client";
-import { Box, Flex, Text } from "@chakra-ui/react";
+import { Box, Divider, Flex } from "@chakra-ui/react";
 
 import { useParams } from "react-router-dom";
 import ProgressBar from "../utils/ProgressBar";
@@ -9,6 +9,8 @@ import { StoryLine } from "../translation/Autosave";
 import { GET_STORY_AND_TRANSLATION_CONTENTS } from "../../APIClients/queries/StoryQueries";
 import CommentsPanel from "../review/CommentsPanel";
 import FontSizeSlider from "../translation/FontSizeSlider";
+import convertLanguageTitleCase from "../../utils/LanguageUtils";
+import Header from "../navigation/Header";
 
 type ReviewPageProps = {
   storyIdParam: string | undefined;
@@ -37,6 +39,8 @@ const ReviewPage = () => {
   const [numApprovedLines, setNumApprovedLines] = useState(0);
 
   const [fontSize, setFontSize] = useState<string>("12px");
+  const [title, setTitle] = useState<string>("");
+  const [language, setLanguage] = useState<string>("");
 
   const handleFontSizeChange = (val: string) => {
     setFontSize(val);
@@ -47,7 +51,8 @@ const ReviewPage = () => {
     onCompleted: (data) => {
       const storyContent = data.storyById.contents;
       const translatedContent = data.storyTranslationById.translationContents;
-
+      setLanguage(data.storyTranslationById.language);
+      setTitle(data.storyById.title);
       setNumTranslatedLines(data.storyTranslationById.numTranslatedLines);
       setNumApprovedLines(data.storyTranslationById.numApprovedLines);
 
@@ -71,34 +76,59 @@ const ReviewPage = () => {
   });
 
   return (
-    <Box margin="20px 20px 0px 20px">
-      <Text size="lg">Story Title Here</Text>
-      <Text as="ins">View story details</Text>
-      <FontSizeSlider setFontSize={handleFontSizeChange} />
-      <Flex>
-        <Flex direction="column" width="75vw">
-          <TranslationTable
-            translatedStoryLines={translatedStoryLines}
-            fontSize={fontSize}
-          />
+    <Flex
+      height="100vh"
+      direction="column"
+      position="absolute"
+      top="0"
+      bottom="0"
+      left="0"
+      right="0"
+    >
+      <Header title={title} />
+      <Divider />
+      <Flex justify="space-between" flex={1} minHeight={0}>
+        <Flex width="100%" direction="column">
+          <Flex justify="space-between" alignItems="center" margin="10px 30px">
+            <FontSizeSlider setFontSize={handleFontSizeChange} />
+          </Flex>
+          <Divider />
+          <Flex
+            marginLeft="20px"
+            direction="column"
+            flex={1}
+            minHeight={0}
+            overflowY="auto"
+          >
+            <TranslationTable
+              translatedStoryLines={translatedStoryLines}
+              fontSize={fontSize}
+              originalLanguage="English"
+              translatedLanguage={convertLanguageTitleCase(language)}
+            />
+          </Flex>
+          <Flex margin="20px 30px" justify="flex-start" alignItems="center">
+            <Box marginRight="10px">
+              <ProgressBar
+                percentageComplete={
+                  (numTranslatedLines / translatedStoryLines.length) * 100
+                }
+                type="Translation"
+              />
+            </Box>
+            <Box>
+              <ProgressBar
+                percentageComplete={
+                  (numApprovedLines / translatedStoryLines.length) * 100
+                }
+                type="Review"
+              />
+            </Box>
+          </Flex>
         </Flex>
-        <Box margin="20px 30px 0 0">
-          <ProgressBar
-            percentageComplete={
-              (numTranslatedLines / translatedStoryLines.length) * 100
-            }
-            type="Translation"
-          />
-          <ProgressBar
-            percentageComplete={
-              (numApprovedLines / translatedStoryLines.length) * 100
-            }
-            type="Review"
-          />
-        </Box>
         <CommentsPanel storyTranslationId={storyTranslationId} />
       </Flex>
-    </Box>
+    </Flex>
   );
 };
 

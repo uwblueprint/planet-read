@@ -1,17 +1,30 @@
 const Text = {
   variants: {
     cell: {
-      backgroundColor: "blue.50",
+      backgroundColor: "gray.100",
       borderRadius: "3px",
       fontSize: "12px",
-      margin: "0px 10px 10px 10px",
+      width: "50%",
       padding: "10px",
-      width: "40%",
+      margin: "12px",
+    },
+    cellHeader: {
+      borderRadius: "3px",
+      width: "50%",
+      margin: "12px",
     },
     lineIndex: {
-      fontSize: "20px",
-      fontWeight: "600",
-      width: "30px",
+      fontSize: "16px",
+      minWidth: "40px",
+      margin: "12px",
+    },
+    statusHeader: {
+      fontSize: "16px",
+      padding: "12px",
+      width: "130px",
+    },
+    comment: {
+      fontSize: "14px",
     },
   },
 };
