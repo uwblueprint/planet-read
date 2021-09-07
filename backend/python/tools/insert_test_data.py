@@ -1,4 +1,5 @@
 import os
+import sys
 
 from flask_sqlalchemy import SQLAlchemy
 
@@ -6,247 +7,121 @@ from app import create_app
 
 db = SQLAlchemy()
 
+from app.models.comment import Comment
+from app.models.story import Story
+from app.models.story_content import StoryContent
+from app.models.story_translation import StoryTranslation
+from app.models.story_translation_content import StoryTranslationContent
+from app.models.user import User
+
 
 def insert_test_data():
-    from app.models.comment import Comment
-    from app.models.story import Story
-    from app.models.story_content import StoryContent
-    from app.models.story_translation import StoryTranslation
-    from app.models.story_translation_content import StoryTranslationContent
-    from app.models.user import User
-
     # users
     db.engine.execute("ALTER TABLE users AUTO_INCREMENT = 1;")
-    db.session.bulk_save_objects(
-        [
-            User(
-                first_name="Carl",
-                last_name="Sagan",
-                auth_id=os.getenv("AUTH_ID_1", ""),
-                role="User",
-                approved_languages='{"ENGLISH_US":4}',
-            ),
-            User(
-                first_name="Miroslav",
-                last_name="Klose",
-                auth_id=os.getenv("AUTH_ID_2", ""),
-                role="User",
-                approved_languages='{"POLISH":4, "GERMAN":4}',
-            ),
-            User(
-                first_name="Kevin",
-                last_name="De Bryune",
-                auth_id=os.getenv("AUTH_ID_3", ""),
-                role="User",
-                approved_languages='{"DUTCH":4, "FRENCH":4}',
-            ),
-            User(
-                first_name="Dwight",
-                last_name="D. Eisenhower",
-                auth_id=os.getenv("AUTH_ID_4", ""),
-                role="User",
-                approved_languages='{"ENGLISH_UK":4, "ENGLISH_US":4}',
-            ),
-            User(
-                first_name="Alexander",
-                last_name="Hamilton",
-                auth_id=os.getenv("AUTH_ID_5", ""),
-                role="User",
-                approved_languages='{"MANDARIN":4}',
-            ),
-            User(
-                first_name="Angela",
-                last_name="Merkel",
-                auth_id=os.getenv("AUTH_ID_6", ""),
-                role="Admin",
-                approved_languages='{"GERMAN":4}',
-            ),
-            User(
-                first_name="Richard",
-                last_name="Feynman",
-                auth_id=os.getenv("AUTH_ID_7", ""),
-                role="User",
-                approved_languages='{"PORTUGESE":4}',
-            ),
-        ]
+    db.engine.execute(
+        f"INSERT IGNORE INTO users \
+            (first_name, last_name, auth_id, role, approved_languages) \
+        VALUES \
+            ('Carl', 'Sagan', '{os.getenv('AUTH_ID_1', '')}', 'User', '{{\"ENGLISH_US\":4}}'), \
+            ('Miroslav', 'Klose', '{os.getenv('AUTH_ID_2', '')}', 'User', '{{\"POLISH\":4, \"GERMAN\":4}}'), \
+            ('Kevin', 'De Bryune', '{os.getenv('AUTH_ID_3', '')}', 'User', '{{\"DUTCH\":4, \"FRENCH\":4}}'), \
+            ('Dwight', 'D. Eisenhower', '{os.getenv('AUTH_ID_4', '')}', 'User', '{{\"ENGLISH_UK\":4, \"ENGLISH_US\":4}}'), \
+            ('Alexander', 'Hamilton', '{os.getenv('AUTH_ID_5', '')}', 'User', '{{\"MANDARIN\":4}}'), \
+            ('Angela', 'Merkel', '{os.getenv('AUTH_ID_6', '')}', 'Admin', '{{\"GERMAN\":4}}'), \
+            ('Richard', 'Feynman', '{os.getenv('AUTH_ID_7', '')}', 'User', '{{\"PORTUGESE\":4}}'); \
+    "
     )
-    db.session().commit()
 
     # stories
     db.engine.execute("ALTER TABLE stories AUTO_INCREMENT = 1;")
-    db.session.bulk_save_objects(
-        [
-            Story(
-                title="East of Eden",
-                description="Follow the intertwined destinies of two families whose generations reenact the poisonous rivalry of Cain and Abel.",
-                youtube_link="https://www.youtube.com/watch?v=redECmF7wh8",
-                level=4,
-                translated_languages=["GERMAN", "ENGLISH_UK"],
-            ),
-            Story(
-                title="War and Peace",
-                description="War and Peace is a literary work mixed with chapters on history and philosophy by the Russian author Leo Tolstoy.",
-                youtube_link="https://www.youtube.com/watch?v=4dn7TEjnbPY",
-                level=1,
-                translated_languages=["GERMAN", "POLISH"],
-            ),
-            Story(
-                title="A Tale of Two Cities",
-                description="An 1859 historical novel by Charles Dickens, set in London and Paris before and during the French Revolution.",
-                youtube_link="https://www.youtube.com/watch?v=5czA_L_eOp4",
-                level=3,
-                translated_languages=["MANDARIN", "ENGLISH_UK"],
-            ),
-            Story(
-                title="Pride and Prejudice",
-                description="Pride and Prejudice preaches the difference between superficial goodness and actual goodness.",
-                youtube_link="https://www.youtube.com/watch?v=5xTh44G6RYs",
-                level=4,
-                translated_languages=["GERMAN", "ENGLISH_UK"],
-            ),
-            Story(
-                title="To Kill a Mockingbird",
-                description="To Kill a Mockingbird is a novel by the American author Harper Lee. A sentence cannot do this novel justice.",
-                youtube_link="https://www.youtube.com/watch?v=3xM8hvEE2dI",
-                level=3,
-                translated_languages=[
-                    "GERMAN",
-                    "ENGLISH_UK",
-                    "PORTUGUESE",
-                    "DUTCH",
-                ],
-            ),
-            Story(
-                title="The Great Gatsby",
-                description="Set in the Jazz Age on Long Island, near New York City, the novel depicts mysterious millionaire Jay Gatsby and Gatsby and Daisy Buchanan.",
-                youtube_link="https://www.youtube.com/watch?v=e6Iu29TNfkM",
-                level=4,
-                translated_languages=["ENGLISH_UK"],
-            ),
-            Story(
-                title="Nineteen Eighty-Four",
-                description="Nineteen Eighty-Four, often referred to as 1984, is a dystopian social science fiction novel by the English novelist George Orwell.",
-                youtube_link="https://www.youtube.com/watch?v=h9JIKngJnCU",
-                level=2,
-                translated_languages=[],
-            ),
-        ]
+    db.engine.execute(
+        "INSERT IGNORE INTO stories \
+                (id, title, description, youtube_link, level, translated_languages) \
+            VALUES \
+                (1, 'East of Eden', 'Follow the intertwined destinies of two families whose generations reenact the poisonous rivalry of Cain and Abel.', 'https://www.youtube.com/watch?v=redECmF7wh8', 4, '[\"GERMAN\", \"ENGLISH_UK\"]'), \
+                (2, 'War and Peace', 'War and Peace is a literary work mixed with chapters on history and philosophy by the Russian author Leo Tolstoy.', 'https://www.youtube.com/watch?v=4dn7TEjnbPY', 1, '[\"GERMAN\", \"POLISH\"]'), \
+                (3, 'A Tale of Two Cities', 'An 1859 historical novel by Charles Dickens, set in London and Paris before and during the French Revolution.', 'https://www.youtube.com/watch?v=5czA_L_eOp4', 3, '[\"MANDARIN\", \"ENGLISH_UK\"]'), \
+                (4, 'Pride and Prejudice', 'Pride and Prejudice preaches the difference between superficial goodness and actual goodness.', 'https://www.youtube.com/watch?v=5xTh44G6RYs', 4, '[\"GERMAN\", \"ENGLISH_UK\"]'), \
+                (5, 'To Kill a Mockingbird', 'To Kill a Mockingbird is a novel by the American author Harper Lee. A sentence cannot do this novel justice.', 'https://www.youtube.com/watch?v=3xM8hvEE2dI', 3, '[\"GERMAN\", \"ENGLISH_UK\", \"PORTUGUESE\", \"DUTCH\"]'), \
+                (6, 'The Great Gatsby', 'Set in the Jazz Age on Long Island, near New York City, the novel depicts mysterious millionaire Jay Gatsby and Gatsby and Daisy Buchanan.', 'https://www.youtube.com/watch?v=e6Iu29TNfkM', 4, '[\"ENGLISH_US\"]'), \
+                (7, 'Nineteen Eighty-Four', 'Nineteen Eighty-Four, often referred to as 1984, is a dystopian social science fiction novel by the English novelist George Orwell.', 'https://www.youtube.com/watch?v=h9JIKngJnCU', 2, '[]');"
     )
-    db.session().commit()
+
     generic_content = [
         "Every two weeks I went to a meeting with them, and in my room here I covered pages with writing. I bought every known Hebrew dictionary. But the old gentlemen were always ahead of me. It wasn't long before they were ahead of our rabbi; he brought a colleague in.",
         "Mr. Hamilton, you should have sat through some of those nights of argument and discussion. The questions, the inspection, oh, the lovely thinking-the beautiful thinking.",
         "After two years we felt that we could approach your sixteen verses of the fourth chapter of Genesis. ",
         "My old gentlemen felt that these words were very important too-'Thou shalt' and 'Do thou.' And this was the gold from our mining: 'Thou mayest.' 'Thou mayest rule over sin.' ",
-        'The old gentlemen smiled and nodded and felt the years were well spent. It brought them out of their Chinese shells too, and right now they are studying Greek."',
-        "Samuel said, \"It's a fantastic story. And I've tried to follow and maybe I've missed somewhere. Why is this word so important?\"",
-        "Lee's hand shook as he filled the delicate cups. He drank his down in one gulp. \"Don't you see?\" he cried. ",
-        '"The American Standard translation orders men to triumph over sin, and you can call sin ignorance. ',
+        "The old gentlemen smiled and nodded and felt the years were well spent. It brought them out of their Chinese shells too, and right now they are studying Greek.",
+        "Samuel said, 'It's a fantastic story. And I've tried to follow and maybe I've missed somewhere. Why is this word so important?'",
+        "Lee's hand shook as he filled the delicate cups. He drank his down in one gulp. 'Don't you see?' he cried. ",
+        "The American Standard translation orders men to triumph over sin, and you can call sin ignorance.",
         "The King James translation makes a promise in 'Thou shalt,' meaning that men will surely triumph over sin. ",
-        "But the Hebrew word, the word timshel-'Thou mayest'-that gives a choice. It might be the most important word in the world. That says the way is open. That throws it right back on a man. For if 'Thou mayest'-it is also true that 'Thou mayest not.' Don't you see?\"",
+        "But the Hebrew word, the word timshel-'Thou mayest'-that gives a choice. It might be the most important word in the world. That says the way is open. That throws it right back on a man. For if 'Thou mayest'-it is also true that 'Thou mayest not.' Don't you see?",
     ]
 
     # story contents
     db.engine.execute("ALTER TABLE story_contents AUTO_INCREMENT = 1;")
     for story_id in range(1, 8):
         for i, content in enumerate(generic_content):
-            db.session.add(
-                StoryContent(
-                    story_id=story_id,
-                    line_index=i,
-                    content=content,
-                ),
+            id = (story_id - 1) * 10 + i + 1
+            db.engine.execute(
+                f'INSERT IGNORE INTO story_contents \
+                        (id, story_id, line_index, content) \
+                    VALUES \
+                        ({id}, {story_id}, {i}, "{content}") \
+                '
             )
 
     # story translations
     db.engine.execute("ALTER TABLE story_translations AUTO_INCREMENT = 1;")
-    db.session.bulk_save_objects(
-        [
-            StoryTranslation(
-                story_id=1, language="GERMAN", stage="TRANSLATE", translator_id=6
-            ),
-            StoryTranslation(
-                story_id=1,
-                language="ENGLISH_UK",
-                stage="TRANSLATE",
-                translator_id=4,
-            ),
-            StoryTranslation(
-                story_id=2, language="GERMAN", stage="TRANSLATE", translator_id=2
-            ),
-            StoryTranslation(
-                story_id=2, language="POLISH", stage="TRANSLATE", translator_id=4
-            ),
-            StoryTranslation(
-                story_id=3, language="MANDARIN", stage="TRANSLATE", translator_id=5
-            ),
-            StoryTranslation(
-                story_id=3,
-                language="ENGLISH_UK",
-                stage="TRANSLATE",
-                translator_id=4,
-            ),
-            StoryTranslation(
-                story_id=4, language="GERMAN", stage="TRANSLATE", translator_id=6
-            ),
-            StoryTranslation(
-                story_id=4,
-                language="ENGLISH_UK",
-                stage="TRANSLATE",
-                translator_id=4,
-            ),
-            StoryTranslation(
-                story_id=5, language="GERMAN", stage="TRANSLATE", translator_id=2
-            ),
-            StoryTranslation(
-                story_id=5,
-                language="ENGLISH_UK",
-                stage="TRANSLATE",
-                translator_id=1,
-            ),
-            StoryTranslation(
-                story_id=5,
-                language="PORTUGUESE",
-                stage="TRANSLATE",
-                translator_id=7,
-            ),
-            StoryTranslation(
-                story_id=5, language="DUTCH", stage="TRANSLATE", translator_id=3
-            ),
-            StoryTranslation(
-                story_id=6,
-                language="ENGLISH_US",
-                stage="TRANSLATE",
-                translator_id=1,
-            ),
-        ]
+    db.engine.execute(
+        "INSERT IGNORE INTO story_translations \
+            (id, story_id, language, stage, translator_id) \
+        VALUES \
+            (1, 1, 'GERMAN', 'TRANSLATE', 6), \
+            (2, 1, 'ENGLISH_UK', 'TRANSLATE', 4), \
+            (3, 2, 'GERMAN', 'TRANSLATE', 2), \
+            (4, 2, 'POLISH', 'TRANSLATE', 2), \
+            (5, 3, 'MANDARIN', 'TRANSLATE', 5), \
+            (6, 3, 'ENGLISH_UK', 'TRANSLATE', 4), \
+            (7, 4, 'GERMAN', 'TRANSLATE', 6), \
+            (8, 4, 'ENGLISH_UK', 'TRANSLATE', 4), \
+            (9, 5, 'GERMAN', 'TRANSLATE', 2), \
+            (10, 5, 'ENGLISH_UK', 'TRANSLATE', 1), \
+            (11, 5, 'PORTUGUESE', 'TRANSLATE', 7), \
+            (12, 5, 'DUTCH', 'TRANSLATE', 3), \
+            (13, 6, 'ENGLISH_US', 'TRANSLATE', 1);"
     )
-    db.session().commit()
 
     # story translation contents
     db.engine.execute("ALTER TABLE story_translation_contents AUTO_INCREMENT = 1;")
     full_translation = [2, 3, 5, 7, 11, 13]
+    story_count = 0
     for story_translation_id in full_translation:
         for i, content in enumerate(generic_content):
-            db.session.add(
-                StoryTranslationContent(
-                    story_translation_id=story_translation_id,
-                    line_index=i,
-                    translation_content=content,
-                )
+            id = story_count * 10 + i + 1
+            db.engine.execute(
+                f'INSERT IGNORE INTO story_translation_contents \
+                        (id, story_translation_id, line_index, translation_content) \
+                    VALUES \
+                        ({id}, {story_translation_id}, {i}, "{content}") \
+                '
             )
+        story_count += 1
 
     empty_translation = [1, 4, 6, 8, 9, 10, 12]
     for story_translation_id in empty_translation:
         for line_index in range(9):
-            db.session.add(
-                StoryTranslationContent(
-                    story_translation_id=story_translation_id,
-                    line_index=line_index,
-                    translation_content="",
-                ),
+            id = story_count * 10 + line_index + 1
+            db.engine.execute(
+                f'INSERT IGNORE INTO story_translation_contents \
+                        (id, story_translation_id, line_index, translation_content) \
+                    VALUES \
+                        ({id}, {story_translation_id}, {line_index}, "") \
+                '
             )
-    db.session().commit()
+        story_count += 1
 
     # comments
     # Adding comments to The Great Gatsby (id: 6)
@@ -273,69 +148,38 @@ def insert_test_data():
         synchronize_session="fetch",
     )
     db.session().commit()
-    db.session.bulk_save_objects(
-        [
-            Comment(
-                story_translation_content_id=51,
-                user_id=1,
-                comment_index=0,
-                time="2021-07-31 01:48:42",
-                resolved=True,
-                content="Not sure if this grammar makes sense",
-            ),
-            Comment(
-                story_translation_content_id=51,
-                user_id=4,
-                comment_index=1,
-                time="2021-08-09 12:28:42",
-                resolved=True,
-                content="It's fine, go back to grammar school man",
-            ),
-            Comment(
-                story_translation_content_id=51,
-                user_id=1,
-                comment_index=2,
-                time="2021-08-10 21:55:42",
-                resolved=True,
-                content="uwu dont need to be so mean man",
-            ),
-            Comment(
-                story_translation_content_id=53,
-                user_id=1,
-                comment_index=0,
-                time="2021-07-31 13:22:42",
-                resolved=False,
-                content="this comment is lonely uwu",
-            ),
-            Comment(
-                story_translation_content_id=54,
-                user_id=4,
-                comment_index=0,
-                time="2021-08-09 01:38:12",
-                resolved=True,
-                content="this comment is likes to be alone uwu",
-            ),
-            Comment(
-                story_translation_content_id=59,
-                user_id=4,
-                comment_index=0,
-                time="2021-08-09 18:23:32",
-                resolved=False,
-                content="this comment is disagreeable",
-            ),
-            Comment(
-                story_translation_content_id=59,
-                user_id=1,
-                comment_index=1,
-                time="2021-08-10 21:58:42",
-                resolved=False,
-                content="I agree!",
-            ),
-        ]
+    db.engine.execute(
+        "INSERT IGNORE INTO comments \
+            (id, story_translation_content_id, user_id, comment_index, time, resolved, content) \
+        VALUES \
+            (1, 51, 1, 0, '2021-07-31 01:48:42', True, 'Not sure if this grammar makes sense'), \
+            (2, 51, 4, 1, '2021-08-09 12:28:42', True, 'It''s fine, go back to grammar school man'), \
+            (3, 51, 1, 2, '2021-08-10 21:55:42', True, 'uwu dont need to be so mean man'), \
+            (4, 53, 1, 0, '2021-07-31 13:22:42', False, 'this comment is lonely uwu '), \
+            (5, 54, 4, 0, '2021-08-09 01:38:12', True, 'this comment is likes to be alone uwu '), \
+            (6, 59, 4, 0, '2021-08-09 18:23:32', False, 'this comment is disagreeable'), \
+            (7, 59, 1, 1, '2021-08-10 21:58:42', False, 'I agree!');"
     )
-    db.session().commit()
+
+
+def erase_db():
+    db.session.query(Comment).delete()
+    db.session.commit()
+    db.session.query(StoryTranslationContent).delete()
+    db.session.commit()
+    db.session.query(StoryContent).delete()
+    db.session.commit()
+    db.session.query(StoryTranslation).delete()
+    db.session.commit()
+    db.session.query(User).delete()
+    db.session.commit()
+    db.session.query(Story).delete()
+    db.session.commit()
 
 
 if __name__ == "__main__":
     app = create_app("development")
-    insert_test_data()
+    if "erase" in sys.argv:
+        erase_db()
+    else:
+        insert_test_data()
