@@ -1,6 +1,8 @@
 import React, { useContext, useState } from "react";
 import { useQuery } from "@apollo/client";
-import { Box, Divider, Flex } from "@chakra-ui/react";
+import { Box, Button, Divider, Flex } from "@chakra-ui/react";
+import { Icon } from "@chakra-ui/icon";
+import { MdKeyboardArrowUp } from "react-icons/md";
 
 import Filter from "../homepage/Filter";
 import StoryList from "../homepage/StoryList";
@@ -24,6 +26,15 @@ const HomePage = () => {
   const [isTranslator, setIsTranslator] = useState<boolean>(true);
   const [level, setLevel] = useState<number>(approvedLanguages[language]);
   const [stories, setStories] = useState<StoryCardProps[] | null>(null);
+
+  const handleScrollToTop = () => {
+    setTimeout(function () {
+      window.scrollTo({
+        top: 0,
+        behavior: "smooth",
+      });
+    }, 0);
+  };
 
   const handleDisplayMyStoriesChange = (nextOption: string) => {
     setDisplayMyStories(nextOption === "My Work");
@@ -78,6 +89,12 @@ const HomePage = () => {
           />
         </Flex>
       </Flex>
+      <Button onClick={handleScrollToTop}>
+        <Flex direction="column" alignItems="centre">
+          <Icon as={MdKeyboardArrowUp} />
+          TOP
+        </Flex>
+      </Button>
     </Box>
   );
 };
