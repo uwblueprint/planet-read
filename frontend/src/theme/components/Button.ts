@@ -41,6 +41,16 @@ const Button = {
       width: "100px",
       fontSize: "14px",
     },
+    scrollToTop: {
+      background: "white",
+      border: "1px solid",
+      borderColor: "gray.300",
+      bottom: "10px",
+      fontSize: "14px",
+      position: "fixed",
+      right: "10px",
+      width: "50px",
+    },
   },
 };
 export default Button;
