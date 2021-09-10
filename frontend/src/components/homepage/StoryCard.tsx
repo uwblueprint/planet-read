@@ -126,8 +126,8 @@ const StoryCard = ({
   };
   const storyCardStyle = useStyleConfig("StoryCard");
 
-  const truncateDescription = () => {
-    return `${description.substring(0, 100).trim()}...`;
+  const truncateText = (text: string, length: number) => {
+    return `${text.substring(0, length).trim()}...`;
   };
 
   return (
@@ -159,7 +159,7 @@ const StoryCard = ({
             )}`}</Badge>
           </Flex>
         </Flex>
-        <Text size="xs">{truncateDescription()}</Text>
+        <Text size="xs">{truncateText(description, 100)}</Text>
       </Box>
       <Flex
         direction="column"
