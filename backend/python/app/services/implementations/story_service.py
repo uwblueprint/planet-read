@@ -61,7 +61,7 @@ class StoryService(IStoryService):
 
     def get_stories_available_for_translation(self, language, level):
         stories = (
-            Story.query.filter(Story.level <= level)
+            Story.query.filter(Story.level == level)
             .filter(~Story.translated_languages.contains(language))
             .all()
         )
@@ -108,7 +108,7 @@ class StoryService(IStoryService):
                     else StoryTranslation.reviewer_id == user_id
                 )
                 .filter(StoryTranslation.language == language if language else True)
-                .filter(Story.level <= level if level else True)
+                .filter(Story.level == level if level else True)
                 .order_by(Story.id)
                 .all()
             )
@@ -123,7 +123,7 @@ class StoryService(IStoryService):
                     else StoryTranslation.reviewer_id == user_id
                 )
                 .filter(StoryTranslation.language == language if language else True)
-                .filter(Story.level <= level if level else True)
+                .filter(Story.level == level if level else True)
                 .order_by(Story.id)
                 .all()
             )
@@ -273,7 +273,7 @@ class StoryService(IStoryService):
                 Story.query.join(
                     StoryTranslation, Story.id == StoryTranslation.story_id
                 )
-                .filter(Story.level <= level)
+                .filter(Story.level == level)
                 .filter(StoryTranslation.language == language)
                 .filter(StoryTranslation.reviewer_id == None)
                 .order_by(Story.id)
@@ -284,7 +284,7 @@ class StoryService(IStoryService):
                 StoryTranslation.query.join(
                     Story, Story.id == StoryTranslation.story_id
                 )
-                .filter(Story.level <= level)
+                .filter(Story.level == level)
                 .filter(StoryTranslation.language == language)
                 .filter(StoryTranslation.reviewer_id == None)
                 .order_by(Story.id)
