@@ -47,7 +47,7 @@ const StoryCard = ({
     /*
     Transforms originalYoutubeLink into embed link appropriate for iframe.
       If already given link in the embed version, does nothing.
-    
+
     Example:
     - Real link: https://www.youtube.com/watch?v=_OBlgSz8sSM
     - Embed link: https://www.youtube.com/embed/_OBlgSz8sSM
@@ -126,6 +126,10 @@ const StoryCard = ({
   };
   const storyCardStyle = useStyleConfig("StoryCard");
 
+  const truncateText = (text: string, length: number) => {
+    return `${text.substring(0, length).trim()}...`;
+  };
+
   return (
     <Flex id={`story-${storyId}`} sx={storyCardStyle}>
       <Box
@@ -155,7 +159,7 @@ const StoryCard = ({
             )}`}</Badge>
           </Flex>
         </Flex>
-        <Text size="xs">{description}</Text>
+        <Text size="xs">{truncateText(description, 100)}</Text>
       </Box>
       <Flex
         direction="column"
