@@ -14,7 +14,8 @@ class AuthDTO(Token, UserDTO):
         role,
         resume,
         profile_pic,
-        approved_languages,
+        approved_languages_translation,
+        approved_languages_review,
     ):
         Token.__init__(self, access_token, refresh_token)
         UserDTO.__init__(
@@ -26,5 +27,6 @@ class AuthDTO(Token, UserDTO):
             role,
             resume,
             profile_pic,
-            approved_languages,
+            approved_languages_translation,
+            approved_languages_review,
         )

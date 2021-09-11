@@ -153,7 +153,8 @@ class UserService(IUserService):
                 "role": user.role,
                 "resume": user.resume,
                 "profile_pic": user.profile_pic,
-                "approved_languages": user.approved_languages,
+                "approved_languages_translation": user.approved_languages_translation,
+                "approved_languages_review": user.approved_languages_review,
             }
 
             try:
@@ -206,7 +207,8 @@ class UserService(IUserService):
                     User.role: user.role,
                     User.resume: user.resume,
                     User.profile_pic: user.profile_pic,
-                    User.approved_languages: user.approved_languages,
+                    User.approved_languages_translation: user.approved_languages_translation,
+                    User.approved_languages_review: user.approved_languages_review,
                 }
             )
 

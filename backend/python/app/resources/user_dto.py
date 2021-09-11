@@ -8,7 +8,8 @@ class UserDTO:
         role,
         resume=None,
         profile_pic=None,
-        approved_languages=None,
+        approved_languages_translation=None,
+        approved_languages_review=None,
     ):
         self.id = id
         self.first_name = first_name
@@ -17,4 +18,5 @@ class UserDTO:
         self.role = role
         self.resume = resume
         self.profile_pic = profile_pic
-        self.approved_languages = approved_languages
+        self.approved_languages_translation = approved_languages_translation
+        self.approved_languages_review = approved_languages_review
