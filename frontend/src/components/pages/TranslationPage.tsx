@@ -233,6 +233,7 @@ const TranslationPage = () => {
                 setCommentStoryTranslationContentId
               }
               translator
+              setTranslatedStoryLines={setTranslatedStoryLines}
             />
           </Flex>
           <Flex margin="20px 30px" justify="space-between" alignItems="center">

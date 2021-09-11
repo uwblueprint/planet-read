@@ -102,3 +102,15 @@ class IStoryService(ABC):
         :rtype: list of StoryTranslationResponseDTO's
         """
         pass
+
+    @abstractmethod
+    def update_story_translation_content_status(
+        self, story_translation_content_id, status
+    ):
+        """Update a single story translation content status
+        :param story_translation_content: StoryTranslationContentRequestDTO id and updated
+        status for story translation
+        :return: StoryTranslationContentResponseDTO
+        :rtype: StoryTranslationContentResponseDTO
+        """
+        pass

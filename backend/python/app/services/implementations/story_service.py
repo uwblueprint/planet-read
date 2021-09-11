@@ -1,6 +1,10 @@
 from flask import current_app
 
-from ...graphql.types.story_type import StageEnum, StoryTranslationContentResponseDTO
+from ...graphql.types.story_type import (
+    StageEnum,
+    StoryTranslationContentResponseDTO,
+    StoryTranslationUpdateStatusResponseDTO,
+)
 from ...middlewares.auth import get_user_id_from_request
 from ...models import db
 from ...models.story import Story
@@ -394,6 +398,31 @@ class StoryService(IStoryService):
         except Exception as error:
             self.logger.error(str(error))
             raise error
+
+    def update_story_translation_content_status(
+        self, story_translation_content_id, status
+    ):
+        try:
+            story_translation_content = StoryTranslationContent.query.filter_by(
+                id=story_translation_content_id
+            ).first()
+
+            story_translation_content.status = status
+            db.session.commit()
+        except Exception as error:
+            reason = getattr(error, "message", None)
+            self.logger.error(
+                "Failed to update story translation status. Reason = {reason}".format(
+                    reason=(reason if reason else str(error))
+                )
+            )
+            raise error
+
+        return StoryTranslationUpdateStatusResponseDTO(
+            story_translation_content_id,
+            story_translation_content.line_index,
+            status,
+        )
 
     def _get_num_translated_lines(self, translation_contents):
         return len(translation_contents) - [

@@ -1,11 +1,12 @@
 import React, { useState } from "react";
 import { useQuery } from "@apollo/client";
 import { Box, Divider, Flex } from "@chakra-ui/react";
-
 import { useParams } from "react-router-dom";
+
 import ProgressBar from "../utils/ProgressBar";
 import TranslationTable from "../translation/TranslationTable";
 import { StoryLine } from "../translation/Autosave";
+import { convertStatusTitleCase } from "../../utils/StatusUtils";
 import { GET_STORY_AND_TRANSLATION_CONTENTS } from "../../APIClients/queries/StoryQueries";
 import CommentsPanel from "../review/CommentsPanel";
 import FontSizeSlider from "../translation/FontSizeSlider";
@@ -68,16 +69,18 @@ const ReviewPage = () => {
         contentArray.push({
           lineIndex,
           originalContent: content,
-          status: "Default",
         });
       });
 
       contentArray.sort((a, b) => a.lineIndex - b.lineIndex);
 
-      translatedContent.forEach(({ id, content, lineIndex }: Content) => {
-        contentArray[lineIndex].translatedContent = content;
-        contentArray[lineIndex].storyTranslationContentId = id;
-      });
+      translatedContent.forEach(
+        ({ id, content, lineIndex, status }: Content) => {
+          contentArray[lineIndex].translatedContent = content;
+          contentArray[lineIndex].storyTranslationContentId = id;
+          contentArray[lineIndex].status = convertStatusTitleCase(status);
+        },
+      );
       setTranslatedStoryLines(contentArray);
     },
   });
@@ -118,6 +121,9 @@ const ReviewPage = () => {
                 setCommentStoryTranslationContentId
               }
               translator={false}
+              setTranslatedStoryLines={setTranslatedStoryLines}
+              numApprovedLines={numApprovedLines}
+              setNumApprovedLines={setNumApprovedLines}
             />
           </Flex>
           <Flex margin="20px 30px" justify="flex-start" alignItems="center">

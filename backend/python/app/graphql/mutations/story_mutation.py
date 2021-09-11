@@ -1,6 +1,7 @@
 import graphene
 
 from ...middlewares.auth import require_authorization_as_story_translator
+from ...models.story_translation_content_status import StoryTranslationContentStatus
 from ..service import services
 from ..types.story_type import (
     CreateStoryTranslationRequestDTO,
@@ -9,6 +10,7 @@ from ..types.story_type import (
     StoryResponseDTO,
     StoryTranslationContentRequestDTO,
     StoryTranslationContentResponseDTO,
+    StoryTranslationUpdateStatusResponseDTO,
     UpdateStoryTranslationStageRequestDTO,
 )
 
@@ -78,6 +80,24 @@ class UpdateStoryTranslationContents(graphene.Mutation):
                 "story"
             ].update_story_translation_contents(story_translation_contents)
             return UpdateStoryTranslationContents(new_story_translation_contents)
+        except Exception as e:
+            error_message = getattr(e, "message", None)
+            raise Exception(error_message if error_message else str(e))
+
+
+class UpdateStoryTranslationContentStatus(graphene.Mutation):
+    class Arguments:
+        story_translation_content_id = graphene.Int(required=True)
+        status = graphene.String(required=True)
+
+    story = graphene.Field(lambda: StoryTranslationUpdateStatusResponseDTO)
+    # TODO: require authorization as reviewer
+    def mutate(root, info, story_translation_content_id, status):
+        try:
+            new_story = services["story"].update_story_translation_content_status(
+                story_translation_content_id, status
+            )
+            return UpdateStoryTranslationContentStatus(new_story)
         except Exception as e:
             error_message = getattr(e, "message", None)
             raise Exception(error_message if error_message else str(e))

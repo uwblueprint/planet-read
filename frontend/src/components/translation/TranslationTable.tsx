@@ -2,6 +2,7 @@ import React from "react";
 import { Badge, Button, Flex, Text, Tooltip } from "@chakra-ui/react";
 import EditableCell from "./EditableCell";
 import { StoryLine } from "./Autosave";
+import StatusBadge from "../review/StatusBadge";
 import { getStatusVariant } from "../../utils/StatusUtils";
 import { TRANSLATION_PAGE_TOOL_TIP_COPY } from "../../utils/Copy";
 
@@ -16,10 +17,13 @@ export type TranslationTableProps = {
   ) => Promise<void>;
   fontSize: string;
   translatedLanguage: string;
-  originalLanguage?: string;
+  originalLanguage: string;
+  setTranslatedStoryLines: (storyLines: StoryLine[]) => void;
   commentLine: number;
   setCommentLine: (line: number) => void;
   setCommentStoryTranslationContentId: (id: number) => void;
+  numApprovedLines?: number;
+  setNumApprovedLines?: (numLines: number) => void;
 };
 
 const TranslationTable = ({
@@ -29,10 +33,13 @@ const TranslationTable = ({
   fontSize,
   translatedLanguage,
   originalLanguage,
+  setTranslatedStoryLines,
   commentLine,
   setCommentLine,
   setCommentStoryTranslationContentId,
   translator,
+  numApprovedLines,
+  setNumApprovedLines,
 }: TranslationTableProps) => {
   const handleCommentButton = (
     displayLineNumber: number,
@@ -75,14 +82,24 @@ const TranslationTable = ({
             </Text>
           </Tooltip>
         )}
-        <Flex direction="column" width="130px" margin="10px">
-          <Badge
-            textTransform="capitalize"
-            variant={getStatusVariant(storyLine.status)}
-            marginBottom="10px"
-          >
-            {storyLine.status}
-          </Badge>
+        <Flex direction="column" width="140px" margin="5px">
+          {!editable ? (
+            <StatusBadge
+              translatedStoryLines={translatedStoryLines}
+              setTranslatedStoryLines={setTranslatedStoryLines}
+              storyLine={storyLine}
+              numApprovedLines={numApprovedLines!!}
+              setNumApprovedLines={setNumApprovedLines!!}
+            />
+          ) : (
+            <Badge
+              textTransform="capitalize"
+              variant={getStatusVariant(storyLine.status)}
+              marginBottom="10px"
+            >
+              {storyLine.status}
+            </Badge>
+          )}
           {commentLine > -1 && (
             <Button
               variant="addComment"
