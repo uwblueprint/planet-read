@@ -218,6 +218,23 @@ class StoryService(IStoryService):
             self.logger.error("User can't be assigned as a reviewer")
             raise Exception("User can't be assigned as a reviewer")
 
+    def update_story_translation_contents(self, story_translation_contents):
+        try:
+            # TODO: return lineIndex too
+            db.session.bulk_update_mappings(
+                StoryTranslationContent, story_translation_contents
+            )
+            db.session.commit()
+            return story_translation_contents
+        except Exception as error:
+            reason = getattr(error, "message", None)
+            self.logger.error(
+                "Failed to update story translation content. Reason = {reason}".format(
+                    reason=(reason if reason else str(error))
+                )
+            )
+            raise error
+
     def update_story_translation_content(self, story_translation_content):
         try:
             story_translation = StoryTranslationContent.query.filter_by(
@@ -249,23 +266,6 @@ class StoryService(IStoryService):
             story_translation.line_index,
             story_translation_content.translation_content,
         )
-
-    def update_story_translation_contents(self, story_translation_contents):
-        try:
-            # TODO: return lineIndex too
-            db.session.bulk_update_mappings(
-                StoryTranslationContent, story_translation_contents
-            )
-            db.session.commit()
-            return story_translation_contents
-        except Exception as error:
-            reason = getattr(error, "message", None)
-            self.logger.error(
-                "Failed to update story translation content. Reason = {reason}".format(
-                    reason=(reason if reason else str(error))
-                )
-            )
-            raise error
 
     def get_story_translations_available_for_review(self, language, level):
         try:
@@ -301,6 +301,54 @@ class StoryService(IStoryService):
 
         except Exception as error:
             self.logger.error(str(error))
+            raise error
+
+    def update_story_translation_content_status(self, story_translation_content): 
+        try:
+            story_translation = StoryTranslationContent.query.filter_by(
+                id=story_translation_content.id
+            ).first()
+
+            if not story_translation:
+                raise Exception(
+                    "story_translation_content_id {id} not found".format(
+                        id=story_translation_content.id
+                    )
+                )
+
+            story_translation.status = (
+                story_translation_content.status
+            )
+            db.session.commit()
+        except Exception as error:
+            reason = getattr(error, "message", None)
+            self.logger.error(
+                "Failed to update story translation status. Reason = {reason}".format(
+                    reason=(reason if reason else str(error))
+                )
+            )
+            raise error
+
+        return StoryTranslationContentResponseDTO(
+            story_translation_content.id,
+            story_translation.line_index,
+            story_translation_content.status,
+        )
+
+    def update_all_story_translation_content_status(self, story_translation_contents): 
+        try:
+            db.session.bulk_update_mappings(
+                StoryTranslationContent, story_translation_contents
+            )
+            db.session.commit()
+            return story_translation_contents
+        except Exception as error:
+            reason = getattr(error, "message", None)
+            self.logger.error(
+                "Failed to update story translation content status. Reason = {reason}".format(
+                    reason=(reason if reason else str(error))
+                )
+            )
             raise error
 
     def _get_num_translated_lines(self, translation_contents):

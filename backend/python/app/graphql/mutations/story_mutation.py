@@ -80,3 +80,38 @@ class UpdateStoryTranslationContents(graphene.Mutation):
         except Exception as e:
             error_message = getattr(e, "message", None)
             raise Exception(error_message if error_message else str(e))
+
+
+class UpdateStoryTranslationContentStatus(graphene.Mutation): 
+    class Arguments: 
+        story_translation_content = StoryTranslationContentRequestDTO(required=True)
+
+    # TODO: require authorization as reviewer 
+    def mutate(root, info, story_translation_content): 
+        try:
+            new_story_translation_content_status = services[
+                "story"
+            ].update_story_translation_content_status(story_translation_content)
+            return UpdateStoryTranslationContentStatus(new_story_translation_content_status)
+        except Exception as e:
+            error_message = getattr(e, "message", None)
+            raise Exception(error_message if error_message else str(e))
+
+
+class UpdateAllStoryTranslationContentStatus(graphene.Mutation): 
+    class Arguments: 
+        story_translation_contents = graphene.List(StoryTranslationContentRequestDTO)
+
+    story = graphene.Field(lambda: graphene.List(StoryTranslationContentResponseDTO))
+
+    # TODO: require authorization as reviewer 
+    def mutate(root, info, story_translation_contents): 
+        try:
+            new_story_translation_content_status = services[
+                "story"
+            ].update_all_story_translation_content_status(story_translation_contents)
+            return UpdateAllStoryTranslationContentStatus(new_story_translation_content_status)
+        except Exception as e:
+            error_message = getattr(e, "message", None)
+            raise Exception(error_message if error_message else str(e))
+    

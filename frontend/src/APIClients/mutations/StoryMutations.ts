@@ -14,6 +14,20 @@ export const UPDATE_STORY_TRANSLATION_CONTENTS = gql`
   }
 `;
 
+export const UPDATE_STORY_TRANSLATION_CONTENT_STATUS = gql`
+  mutation UpdateStoryTranslationContent(
+    $storyTranslationContent: StoryTranslationContentRequestDTO
+  ) {
+    updateStoryTranslationContentStatus(
+      storyTranslationContent: $storyTranslationContent
+    ) {
+      story {
+        id
+      }
+    }
+  }
+`;
+
 export const CREATE_TRANSLATION = gql`
   mutation CreateStoryTranslation(
     $storyTranslationData: CreateStoryTranslationRequestDTO!
