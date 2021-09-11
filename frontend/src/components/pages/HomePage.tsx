@@ -1,6 +1,8 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { useQuery } from "@apollo/client";
-import { Box, Divider, Flex } from "@chakra-ui/react";
+import { Box, Button, Divider, Flex } from "@chakra-ui/react";
+import { Icon } from "@chakra-ui/icon";
+import { MdKeyboardArrowUp } from "react-icons/md";
 
 import Filter from "../homepage/Filter";
 import StoryList from "../homepage/StoryList";
@@ -24,6 +26,26 @@ const HomePage = () => {
   const [isTranslator, setIsTranslator] = useState<boolean>(true);
   const [level, setLevel] = useState<number>(approvedLanguages[language]);
   const [stories, setStories] = useState<StoryCardProps[] | null>(null);
+
+  const [showScrollToTop, setShowScrollToTop] = useState(false);
+
+  useEffect(() => {
+    window.addEventListener("scroll", () => {
+      // Show scroll to top button if user scrolls down vertically more than 100px
+      if (window.scrollY > 100) {
+        setShowScrollToTop(true);
+      } else {
+        setShowScrollToTop(false);
+      }
+    });
+  }, []);
+
+  const handleScrollToTop = () => {
+    window.scrollTo({
+      top: 0,
+      behavior: "smooth",
+    });
+  };
 
   const handleDisplayMyStoriesChange = (nextOption: string) => {
     setDisplayMyStories(nextOption === "My Work");
@@ -78,6 +100,11 @@ const HomePage = () => {
           />
         </Flex>
       </Flex>
+      {showScrollToTop && (
+        <Button onClick={handleScrollToTop} size="lg" variant="scrollToTop">
+          <Icon as={MdKeyboardArrowUp} height={8} width={8} />
+        </Button>
+      )}
     </Box>
   );
 };
