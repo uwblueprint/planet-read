@@ -1,5 +1,32 @@
 from ....models.story import Story
 from ....models.story_content import StoryContent
+from ...helpers.story_helpers import assert_story_equals_model
+
+CREATE_STORY = """
+    mutation CreateStory(
+        $contents: [String]!, $storyData: StoryRequestDTO!
+    ) {
+        createStory(
+            contents: $contents, storyData: $storyData
+        ) {
+            ok
+            story {
+                id
+                title
+                description
+                youtubeLink
+                translatedLanguages
+                level
+                contents {
+                    id
+                    storyId
+                    lineIndex
+                    content
+                }
+            }      
+        }
+    }
+"""
 
 
 def test_create_story(app, db, client):
@@ -12,31 +39,7 @@ def test_create_story(app, db, client):
     contents = ["line 1", "line 2", "line 3"]
 
     result = client.execute(
-        """
-        mutation CreateStory(
-            $contents: [String]!, $storyData: StoryRequestDTO!
-        ) {
-            createStory(
-                contents: $contents, storyData: $storyData
-            ) {
-                ok
-                story {
-                    id
-                    title
-                    description
-                    youtubeLink
-                    translatedLanguages
-                    level
-                    contents {
-                        id
-                        storyId
-                        lineIndex
-                        content
-                    }
-                }      
-            }
-        }
-        """,
+        CREATE_STORY,
         variables={
             "contents": contents,
             "storyData": {
@@ -54,11 +57,9 @@ def test_create_story(app, db, client):
     test_db_story_contents = StoryContent.query.filter_by(story_id=story_db_id).all()
 
     assert returned_dict["ok"]
-    assert returned_dict["story"]["title"] == new_story.title
-    assert returned_dict["story"]["description"] == new_story.description
-    assert returned_dict["story"]["youtubeLink"] == new_story.youtube_link
-    assert returned_dict["story"]["translatedLanguages"] == None
-    assert returned_dict["story"]["level"] == new_story.level
+    story_dict = returned_dict["story"]
+
+    assert_story_equals_model(story_dict, new_story)
 
     new_story.id = story_db_id
     assert test_db_story == new_story.to_dict(include_relationships=False)
@@ -76,15 +77,7 @@ def test_create_story(app, db, client):
         assert test_db_obj_line_content["content"] == contents[i]
 
 
-def test_create_story_exception(db, client):
-    pass
-
-
 def test_create_story_translation(db, client):
-    pass
-
-
-def test_create_story_translation_exception(db, client):
     pass
 
 
@@ -93,10 +86,6 @@ def test_create_story_translation_translation_already_created(db, client):
 
 
 def test_assign_user_as_reviewer(db, client):
-    pass
-
-
-def test_assign_user_as_reviewer_exception(db, client):
     pass
 
 
@@ -116,10 +105,6 @@ def test_update_story_translation_by_id(db, client):
     pass
 
 
-def test_update_story_translation_by_id_exception(db, client):
-    pass
-
-
 def test_update_story_translation_by_id_invalid_id(db, client):
     pass
 
@@ -134,15 +119,11 @@ def test_update_story_translation_by_id_story_translation_not_created(db, client
     pass
 
 
-def update_story_translation_contents(db, client):
+def test_update_story_translation_contents(db, client):
     pass
 
 
-def update_story_translation_contents_exception(db, client):
-    pass
-
-
-def update_story_translation_contents_invalid_ids(db, client):
+def test_update_story_translation_contents_invalid_ids(db, client):
     pass
 
 
@@ -154,8 +135,3 @@ def test_update_story_translation_contents_story_translation_not_assigned_to_use
 
 def test_update_story_translation_contents_story_translation_not_created(db, client):
     pass
-
-
-def to_title_case(string):
-    words = string.split("_")
-    return [words[i][0].upper() + words[i][1:] for i in len(words) if i != 0].join()

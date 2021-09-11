@@ -1,44 +1,45 @@
 from ....models.story import Story
 from ....models.story_content import StoryContent
+from ...helpers.story_helpers import (
+    assert_story_equals_model,
+    guarantee_story_table_not_empty,
+)
+
+GET_STORIES = """
+    query GetStories {
+        stories {
+            id
+            title
+            description
+            level
+            youtubeLink
+            translatedLanguages
+            contents  {
+                id
+                storyId
+                lineIndex
+                content
+            }      
+        }
+    }
+"""
 
 
 def test_stories(app, db, client):
-    result = client.execute(
-        """
-        {
-            stories {
-                id
-                title
-                description
-                level
-                youtubeLink
-                translatedLanguages
-                contents  {
-                    id
-                    storyId
-                    lineIndex
-                    content
-                }      
-            }
-        }
-    """
-    )
+    guarantee_story_table_not_empty(db)
+
+    result = client.execute(GET_STORIES)
+    returned_arr = result["data"]["stories"]
 
     stories_db = Story.query.all()
     story_contents_db = StoryContent.query.all()
     story_contents_db_dict = {sc.id: sc for sc in story_contents_db}
-    returned_arr = result["data"]["stories"]
-    assert len(stories_db) == len(returned_arr)
+    assert len(returned_arr) == len(stories_db)
 
-    for story_model, story_dict in zip(stories_db, returned_arr):
+    for story_dict, story_model in zip(returned_arr, stories_db):
         story_db_id = story_dict["id"]
 
-        print(story_dict)
-        assert story_dict["title"] == story_model.title
-        assert story_dict["description"] == story_model.description
-        assert story_dict["youtubeLink"] == story_model.youtube_link
-        assert story_dict["translatedLanguages"] == None
-        assert story_dict["level"] == story_model.level
+        assert_story_equals_model(story_dict, story_model)
 
         for content_dict in story_dict["contents"]:
             content_db = story_contents_db_dict[content_dict["id"]]
