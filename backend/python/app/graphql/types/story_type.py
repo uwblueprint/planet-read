@@ -4,7 +4,6 @@ from .language_enum import LanguageEnum
 
 
 class StageEnum(graphene.Enum):
-    START = "START"
     TRANSLATE = "TRANSLATE"
     REVIEW = "REVIEW"
     PUBLISH = "PUBLISH"
