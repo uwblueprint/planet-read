@@ -22,13 +22,13 @@ def insert_test_data():
         f"INSERT IGNORE INTO users \
             (first_name, last_name, auth_id, role, approved_languages_translation, approved_languages_review) \
         VALUES \
-            ('Carl', 'Sagan', '{os.getenv('AUTH_ID_1', '')}', 'User', '{{\"ENGLISH_US\":4}}', '{{\"PORTUGESE\":4}}'), \
-            ('Miroslav', 'Klose', '{os.getenv('AUTH_ID_2', '')}', 'User', '{{\"POLISH\":4, \"GERMAN\":4}}', '{{\"ENGLISH_US\":4}}'), \
-            ('Kevin', 'De Bryune', '{os.getenv('AUTH_ID_3', '')}', 'User', '{{\"DUTCH\":4, \"FRENCH\":4}}', '{{\"POLISH\":4, \"GERMAN\":4}}'), \
-            ('Dwight', 'D. Eisenhower', '{os.getenv('AUTH_ID_4', '')}', 'User', '{{\"ENGLISH_UK\":4, \"ENGLISH_US\":4}}', '{{\"DUTCH\":4, \"FRENCH\":4}}'), \
-            ('Alexander', 'Hamilton', '{os.getenv('AUTH_ID_5', '')}', 'User', '{{\"MANDARIN\":4}}', '{{\"ENGLISH_UK\":4, \"ENGLISH_US\":4}}'), \
-            ('Angela', 'Merkel', '{os.getenv('AUTH_ID_6', '')}', 'Admin', '{{\"GERMAN\":4}}', '{{\"MANDARIN\":4}}'), \
-            ('Richard', 'Feynman', '{os.getenv('AUTH_ID_7', '')}', 'User', '{{\"PORTUGESE\":4}}', '{{\"GERMAN\":4}}'); \
+            ('Carl', 'Sagan', '{os.getenv('AUTH_ID_1', '')}', 'User', '{{\"ENGLISH_US\":4}}', NULL), \
+            ('Miroslav', 'Klose', '{os.getenv('AUTH_ID_2', '')}', 'User', '{{\"POLISH\":4, \"GERMAN\":4}}', '{{\"POLISH\":3}}'), \
+            ('Kevin', 'De Bryune', '{os.getenv('AUTH_ID_3', '')}', 'User', '{{\"DUTCH\":4, \"FRENCH\":4}}', '{{\"DUTCH\":2, \"FRENCH\":4}}'), \
+            ('Dwight', 'D. Eisenhower', '{os.getenv('AUTH_ID_4', '')}', 'User', '{{\"ENGLISH_UK\":4, \"ENGLISH_US\":4}}', '{{\"ENGLISH_UK\":2, \"ENGLISH_US\":4}}'), \
+            ('Alexander', 'Hamilton', '{os.getenv('AUTH_ID_5', '')}', 'User', '{{\"MANDARIN\":4}}', '{{\"MANDARIN\":2}}'), \
+            ('Angela', 'Merkel', '{os.getenv('AUTH_ID_6', '')}', 'Admin', '{{\"GERMAN\":4}}', '{{\"GERMAN\":4}}'), \
+            ('Richard', 'Feynman', '{os.getenv('AUTH_ID_7', '')}', 'User', '{{\"PORTUGESE\":4}}', '{{\"PORTUGESE\":1}}'); \
     "
     )
 
@@ -132,7 +132,8 @@ def insert_test_data():
     dwight = User.query.filter_by(first_name="Dwight").first()
     the_gg = Story.query.filter_by(title="The Great Gatsby").first()
     st = (
-        StoryTranslation.query.filter_by(story_id=the_gg.id)
+        db.session.query(StoryTranslation)
+        .filter_by(story_id=the_gg.id)
         .filter_by(language="ENGLISH_US")
         .first()
     )
@@ -147,7 +148,7 @@ def insert_test_data():
         {StoryTranslationContent.status: "ACTION_REQUIRED"},
         synchronize_session="fetch",
     )
-    db.session().commit()
+    db.session.commit()
     db.engine.execute(
         "INSERT IGNORE INTO comments \
             (id, story_translation_content_id, user_id, comment_index, time, resolved, content) \
