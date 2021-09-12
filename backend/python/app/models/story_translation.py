@@ -5,7 +5,7 @@ from sqlalchemy.orm.properties import ColumnProperty
 from . import db
 from .story_translation_content import StoryTranslationContent
 
-stages_enum = db.Enum("START", "TRANSLATE", "REVIEW", "PUBLISH", name="stages")
+stages_enum = db.Enum("TRANSLATE", "REVIEW", "PUBLISH", name="stages")
 
 
 class StoryTranslation(db.Model):

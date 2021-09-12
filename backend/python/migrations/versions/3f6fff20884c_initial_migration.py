@@ -1,7 +1,7 @@
 """initial migration
 
 Revision ID: 3f6fff20884c
-Revises: 
+Revises:
 Create Date: 2021-08-30 16:07:51.455852
 
 """
@@ -78,7 +78,7 @@ def upgrade():
         sa.Column("language", mysql.TEXT(), nullable=False),
         sa.Column(
             "stage",
-            sa.Enum("START", "TRANSLATE", "REVIEW", "PUBLISH", name="stages"),
+            sa.Enum("TRANSLATE", "REVIEW", "PUBLISH", name="stages"),
             nullable=False,
         ),
         sa.Column("translator_id", sa.Integer(), nullable=True),

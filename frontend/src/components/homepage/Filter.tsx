@@ -12,7 +12,7 @@ import ButtonRadioGroup from "../utils/ButtonRadioGroup";
 import convertLanguageTitleCase from "../../utils/LanguageUtils";
 
 export type FilterProps = {
-  approvedLanguages: { [name: string]: number };
+  approvedLanguagesTranslation: { [name: string]: number };
   level: number;
   setLevel: (newState: number) => void;
   language: string;
@@ -22,7 +22,7 @@ export type FilterProps = {
 };
 
 const Filter = ({
-  approvedLanguages,
+  approvedLanguagesTranslation,
   level,
   setLevel,
   language,
@@ -39,12 +39,14 @@ const Filter = ({
   const handleLevelChangeStr = (nextLevel: string) => {
     setLevel(parseInt(nextLevel.replace("Level ", ""), 10));
   };
-  const languageOptions = Object.keys(approvedLanguages).map((lang) => (
-    <option key={lang} value={lang}>
-      {convertLanguageTitleCase(lang)}
-    </option>
-  ));
-  const maxLvl = approvedLanguages[language];
+  const languageOptions = Object.keys(approvedLanguagesTranslation).map(
+    (lang) => (
+      <option key={lang} value={lang}>
+        {convertLanguageTitleCase(lang)}
+      </option>
+    ),
+  );
+  const maxLvl = approvedLanguagesTranslation[language];
   const lvlOptions = [];
   for (let i = 1; i <= maxLvl; i += 1) {
     lvlOptions.push(
