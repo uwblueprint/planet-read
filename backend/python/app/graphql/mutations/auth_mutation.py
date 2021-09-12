@@ -52,7 +52,8 @@ class Login(graphene.Mutation):
     last_name = graphene.String()
     role = graphene.Field(RoleEnum)
     email = graphene.String()
-    approved_languages = graphene.String()
+    approved_languages_translation = graphene.String()
+    approved_languages_review = graphene.String()
 
     def mutate(root, info, email, password):
         try:
@@ -65,7 +66,8 @@ class Login(graphene.Mutation):
             last_name = auth_dto.last_name
             role = auth_dto.role
             email = auth_dto.email
-            approved_languages = auth_dto.approved_languages
+            approved_languages_translation = auth_dto.approved_languages_translation
+            approved_languages_review = auth_dto.approved_languages_review
 
             return Login(
                 access_token,
@@ -75,7 +77,8 @@ class Login(graphene.Mutation):
                 last_name,
                 role,
                 email,
-                approved_languages,
+                approved_languages_translation,
+                approved_languages_review,
             )
         except Exception as e:
             error_message = getattr(e, "message", None)
@@ -93,7 +96,8 @@ class LoginWithGoogle(graphene.Mutation):
     last_name = graphene.String()
     role = graphene.Field(RoleEnum)
     email = graphene.String()
-    approved_languages = graphene.String()
+    approved_languages_translation = graphene.String()
+    approved_languages_review = graphene.String()
 
     def mutate(root, info, tokenId):
         try:
@@ -106,7 +110,8 @@ class LoginWithGoogle(graphene.Mutation):
             last_name = auth_dto.last_name
             role = auth_dto.role
             email = auth_dto.email
-            approved_languages = auth_dto.approved_languages
+            approved_languages_translation = (auth_dto.approved_languages_translation,)
+            approved_languages_review = (auth_dto.approved_languages_review,)
 
             return LoginWithGoogle(
                 access_token,
@@ -116,7 +121,8 @@ class LoginWithGoogle(graphene.Mutation):
                 last_name,
                 role,
                 email,
-                approved_languages,
+                approved_languages_translation,
+                approved_languages_review,
             )
         except Exception as e:
             error_message = getattr(e, "message", None)

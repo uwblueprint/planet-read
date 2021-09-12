@@ -15,16 +15,18 @@ import { buildHomePageStoriesQuery } from "../../APIClients/queries/StoryQueries
 const HomePage = () => {
   const { authenticatedUser } = useContext(AuthContext);
 
-  const approvedLanguages = JSON.parse(
-    authenticatedUser!!.approvedLanguages.replace(/'/g, '"'),
+  const approvedLanguagesTranslation = JSON.parse(
+    authenticatedUser!!.approvedLanguagesTranslation.replace(/'/g, '"'),
   );
 
   const [displayMyStories, setDisplayMyStories] = useState<boolean>(true);
   const [language, setLanguage] = useState<string>(
-    Object.keys(approvedLanguages)[0],
+    Object.keys(approvedLanguagesTranslation)[0],
   );
   const [isTranslator, setIsTranslator] = useState<boolean>(true);
-  const [level, setLevel] = useState<number>(approvedLanguages[language]);
+  const [level, setLevel] = useState<number>(
+    approvedLanguagesTranslation[language],
+  );
   const [stories, setStories] = useState<StoryCardProps[] | null>(null);
 
   const [showScrollToTop, setShowScrollToTop] = useState(false);
@@ -70,7 +72,7 @@ const HomePage = () => {
       <Divider />
       <Flex direction="row">
         <Filter
-          approvedLanguages={approvedLanguages}
+          approvedLanguagesTranslation={approvedLanguagesTranslation}
           level={level}
           setLevel={setLevel}
           language={language}

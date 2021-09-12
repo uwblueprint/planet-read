@@ -7,7 +7,7 @@ export type AuthenticatedUser = {
   email: string;
   role: "Admin" | "User";
   accessToken: string;
-  approvedLanguages: string;
+  approvedLanguagesTranslation: string;
 } | null;
 
 type AuthContextType = {

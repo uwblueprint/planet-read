@@ -204,8 +204,8 @@ class StoryService(IStoryService):
 
     def assign_user_as_reviewer(self, user, story_translation):
         if (
-            story_translation["language"] in user.approved_languages
-            and user.approved_languages[story_translation["language"]]
+            story_translation["language"] in user.approved_languages_review
+            and user.approved_languages_review[story_translation["language"]]
             >= story_translation["level"]
             and story_translation["stage"] == "TRANSLATE"
             and not story_translation["reviewer_id"]
