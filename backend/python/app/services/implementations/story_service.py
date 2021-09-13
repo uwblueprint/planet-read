@@ -235,38 +235,6 @@ class StoryService(IStoryService):
             )
             raise error
 
-    def update_story_translation_content(self, story_translation_content):
-        try:
-            story_translation = StoryTranslationContent.query.filter_by(
-                id=story_translation_content.id
-            ).first()
-
-            if not story_translation:
-                raise Exception(
-                    "story_translation_content_id {id} not found".format(
-                        id=story_translation_content.id
-                    )
-                )
-
-            story_translation.translation_content = (
-                story_translation_content.translation_content
-            )
-            db.session.commit()
-        except Exception as error:
-            reason = getattr(error, "message", None)
-            self.logger.error(
-                "Failed to update story translation content. Reason = {reason}".format(
-                    reason=(reason if reason else str(error))
-                )
-            )
-            raise error
-
-        return StoryTranslationContentResponseDTO(
-            story_translation_content.id,
-            story_translation.line_index,
-            story_translation_content.translation_content,
-        )
-
     def get_story_translations_available_for_review(self, language, level):
         try:
             stories = (
@@ -303,21 +271,21 @@ class StoryService(IStoryService):
             self.logger.error(str(error))
             raise error
 
-    def update_story_translation_content_status(self, story_translation_content): 
+    def update_story_translation_content_status(self, story_translation_id, status): 
         try:
             story_translation = StoryTranslationContent.query.filter_by(
-                id=story_translation_content.id
+                id=story_translation_id
             ).first()
 
             if not story_translation:
                 raise Exception(
                     "story_translation_content_id {id} not found".format(
-                        id=story_translation_content.id
+                        id=story_translation_id
                     )
                 )
 
             story_translation.status = (
-                story_translation_content.status
+                status
             )
             db.session.commit()
         except Exception as error:
@@ -335,7 +303,7 @@ class StoryService(IStoryService):
             story_translation_content.status,
         )
 
-    def update_all_story_translation_content_status(self, story_translation_contents): 
+    def update_all_story_translation_content_status(self, story_translation_ids, status): 
         try:
             db.session.bulk_update_mappings(
                 StoryTranslationContent, story_translation_contents

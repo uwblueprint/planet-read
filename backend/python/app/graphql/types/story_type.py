@@ -8,7 +8,6 @@ class StageEnum(graphene.Enum):
     REVIEW = "REVIEW"
     PUBLISH = "PUBLISH"
 
-
 class StoryContentsResponseDTO(graphene.ObjectType):
     id = graphene.Int(required=True)
     story_id = graphene.String(required=True)

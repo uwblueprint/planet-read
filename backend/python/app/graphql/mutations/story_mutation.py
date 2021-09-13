@@ -2,6 +2,7 @@ import graphene
 
 from ...middlewares.auth import require_authorization_as_story_translator
 from ..service import services
+from ...models.story_translation_content_status import StoryTranslationContentStatus
 from ..types.story_type import (
     CreateStoryTranslationRequestDTO,
     CreateStoryTranslationResponseDTO,
@@ -84,15 +85,17 @@ class UpdateStoryTranslationContents(graphene.Mutation):
 
 class UpdateStoryTranslationContentStatus(graphene.Mutation): 
     class Arguments: 
-        story_translation_content = StoryTranslationContentRequestDTO(required=True)
+        story_translation_id = graphene.ID(required=True)
+        status = graphene.String(required=True)
 
+    ok = graphene.Boolean() 
     # TODO: require authorization as reviewer 
-    def mutate(root, info, story_translation_content): 
+    def mutate(root, info, story_translation_id, status): 
         try:
-            new_story_translation_content_status = services[
+            services[
                 "story"
-            ].update_story_translation_content_status(story_translation_content)
-            return UpdateStoryTranslationContentStatus(new_story_translation_content_status)
+            ].update_story_translation_content_status(story_translation_id, status)
+            return UpdateStoryTranslationContentStatus(ok=True)
         except Exception as e:
             error_message = getattr(e, "message", None)
             raise Exception(error_message if error_message else str(e))
@@ -100,17 +103,18 @@ class UpdateStoryTranslationContentStatus(graphene.Mutation):
 
 class UpdateAllStoryTranslationContentStatus(graphene.Mutation): 
     class Arguments: 
-        story_translation_contents = graphene.List(StoryTranslationContentRequestDTO)
+        story_translation_ids = graphene.List(graphene.ID, required=True)
+        status = graphene.String(required=True)
 
-    story = graphene.Field(lambda: graphene.List(StoryTranslationContentResponseDTO))
+    ok = graphene.Boolean() 
 
     # TODO: require authorization as reviewer 
-    def mutate(root, info, story_translation_contents): 
+    def mutate(root, info, story_translation_ids, status): 
         try:
-            new_story_translation_content_status = services[
+            services[
                 "story"
-            ].update_all_story_translation_content_status(story_translation_contents)
-            return UpdateAllStoryTranslationContentStatus(new_story_translation_content_status)
+            ].update_all_story_translation_content_status(story_translation_ids, status)
+            return UpdateAllStoryTranslationContentStatus(ok=True)
         except Exception as e:
             error_message = getattr(e, "message", None)
             raise Exception(error_message if error_message else str(e))
