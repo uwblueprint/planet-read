@@ -1,5 +1,15 @@
 import React from "react";
-import { Badge, Button, Flex, Text } from "@chakra-ui/react";
+import {
+  Badge,
+  Button,
+  Flex,
+  Text,
+  Menu,
+  MenuButton,
+  MenuList,
+  MenuItem,
+} from "@chakra-ui/react";
+import { ChevronDownIcon } from "@chakra-ui/icons";
 import EditableCell from "./EditableCell";
 import { StoryLine } from "./Autosave";
 import { getStatusVariant } from "../../utils/StatusUtils";
@@ -53,13 +63,31 @@ const TranslationTable = ({
           </Text>
         )}
         <Flex direction="column" width="130px" margin="10px">
-          <Badge
-            textTransform="capitalize"
-            variant={getStatusVariant(storyLine.status)}
-            marginBottom="10px"
-          >
-            {storyLine.status}
-          </Badge>
+          {!editable ? (
+            <Menu>
+              <MenuButton as={Button} rightIcon={<ChevronDownIcon />}>
+                <Badge
+                  textTransform="capitalize"
+                  variant={getStatusVariant(storyLine.status)}
+                  marginBottom="10px"
+                >
+                  {storyLine.status}
+                </Badge>
+              </MenuButton>
+              <MenuList>
+                <MenuItem>Approve</MenuItem>
+                <MenuItem>Action Required</MenuItem>
+              </MenuList>
+            </Menu>
+          ) : (
+            <Badge
+              textTransform="capitalize"
+              variant={getStatusVariant(storyLine.status)}
+              marginBottom="10px"
+            >
+              {storyLine.status}
+            </Badge>
+          )}
           <Button variant="addComment">Comment</Button>
         </Flex>
       </Flex>

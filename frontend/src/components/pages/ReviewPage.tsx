@@ -1,7 +1,16 @@
 import React, { useState } from "react";
 import { useQuery } from "@apollo/client";
-import { Box, Divider, Flex } from "@chakra-ui/react";
-
+import {
+  Box,
+  Button,
+  Divider,
+  Flex,
+  Menu,
+  MenuButton,
+  MenuList,
+  MenuItem,
+} from "@chakra-ui/react";
+import { ChevronDownIcon } from "@chakra-ui/icons";
 import { useParams } from "react-router-dom";
 import ProgressBar from "../utils/ProgressBar";
 import TranslationTable from "../translation/TranslationTable";
@@ -91,6 +100,15 @@ const ReviewPage = () => {
         <Flex width="100%" direction="column">
           <Flex justify="space-between" alignItems="center" margin="10px 30px">
             <FontSizeSlider setFontSize={handleFontSizeChange} />
+            <Menu>
+              <MenuButton as={Button} rightIcon={<ChevronDownIcon />}>
+                Approve
+              </MenuButton>
+              <MenuList>
+                <MenuItem>Approve All</MenuItem>
+                <MenuItem>Action Required</MenuItem>
+              </MenuList>
+            </Menu>
           </Flex>
           <Divider />
           <Flex
