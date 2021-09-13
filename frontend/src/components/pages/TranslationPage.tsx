@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { useQuery } from "@apollo/client";
 import { Icon } from "@chakra-ui/icon";
 import { Box, Button, Divider, Flex, IconButton, Text } from "@chakra-ui/react";
@@ -26,13 +26,6 @@ type Content = {
   status: string;
 };
 
-type HistoryStack = {
-  Undo: Array<StoryLine[]>;
-  Redo: Array<StoryLine[]>;
-  // Undo: Array<{ lineIndex: number; content: string }>;
-  // Redo: Array<{ lineIndex: number; content: string }>;
-};
-
 const TranslationPage = () => {
   const MAX_STACK_SIZE = 100;
   const {
@@ -50,10 +43,11 @@ const TranslationPage = () => {
   >(new Map());
   const [numTranslatedLines, setNumTranslatedLines] = useState(0);
 
-  const [versionHistoryStack, setVersionHistoryStack] = useState<HistoryStack>({
-    Undo: [],
-    Redo: [],
-  });
+  const [versionHistoryStack, setVersionHistoryStack] = useState<
+    Array<StoryLine[]>
+  >([]);
+  const [currentVersion, setCurrentVersion] = useState<number>(0);
+  const versionUpdateTimeout = useRef(false);
 
   const [fontSize, setFontSize] = useState<string>("12px");
   const [title, setTitle] = useState<string>("");
@@ -101,33 +95,38 @@ const TranslationPage = () => {
     );
   };
 
-  function saveVersionState() {
+  const saveVersionState = () => {
     if (
-      versionHistoryStack.Undo.length > 0 &&
+      versionHistoryStack.length > 0 &&
+      currentVersion === versionHistoryStack.length &&
       JSON.stringify(translatedStoryLines) !==
-        JSON.stringify(
-          versionHistoryStack.Undo[versionHistoryStack.Undo.length - 1],
-        ) &&
-      versionHistoryStack.Undo.length < MAX_STACK_SIZE
+        JSON.stringify(versionHistoryStack[currentVersion])
     ) {
-      setVersionHistoryStack({
-        Undo: [
-          ...deepCopy(versionHistoryStack.Undo),
-          deepCopy(translatedStoryLines),
-        ],
-        Redo: [],
-      });
+      setVersionHistoryStack(
+        versionHistoryStack.length === MAX_STACK_SIZE
+          ? [
+              ...deepCopy(versionHistoryStack.slice(1)),
+              deepCopy(translatedStoryLines),
+            ]
+          : [...deepCopy(versionHistoryStack), deepCopy(translatedStoryLines)],
+      );
+      setCurrentVersion(
+        versionHistoryStack.length === MAX_STACK_SIZE
+          ? MAX_STACK_SIZE - 1
+          : versionHistoryStack.length,
+      );
     }
-  }
+  };
 
+  // Approach from https://leewarrick.com/blog/how-to-debounce/ (the throttling stuff)
   useEffect(() => {
-    const interval = setInterval(() => {
+    if (versionUpdateTimeout.current) return;
+    versionUpdateTimeout.current = true;
+    setTimeout(() => {
+      versionUpdateTimeout.current = false;
       saveVersionState();
-    }, 1000);
-    return () => {
-      clearInterval(interval);
-    };
-  }, [versionHistoryStack]);
+    }, 750);
+  }, [translatedStoryLines]);
 
   const onUserInput = async (
     newContent: string,
@@ -136,43 +135,35 @@ const TranslationPage = () => {
   ) => {
     if (maxChars >= newContent.length) {
       onChangeTranslationContent(newContent, lineIndex);
+      setVersionHistoryStack([
+        ...deepCopy(versionHistoryStack.slice(0, currentVersion + 1)),
+      ]);
+      setCurrentVersion(
+        versionHistoryStack.length === MAX_STACK_SIZE
+          ? MAX_STACK_SIZE - 1
+          : versionHistoryStack.length,
+      );
     }
   };
 
   const undoChange = () => {
-    if (versionHistoryStack.Undo.length > 1) {
-      const newContent =
-        versionHistoryStack.Undo[versionHistoryStack.Undo.length - 2];
-      const newRedo =
-        versionHistoryStack.Redo.length === MAX_STACK_SIZE
-          ? versionHistoryStack.Redo.slice(1)
-          : versionHistoryStack.Redo;
-      const newHistory = {
-        Undo: deepCopy(versionHistoryStack.Undo.slice(0, -1)),
-        Redo: [...deepCopy(newRedo), translatedStoryLines],
-      };
-      setVersionHistoryStack(newHistory);
+    console.log(currentVersion, versionHistoryStack);
+    if (currentVersion > 0) {
+      const newContent = versionHistoryStack[currentVersion - 1];
+      setCurrentVersion(currentVersion - 1);
       setTranslatedStoryLines(newContent);
       setNumTranslatedLines(newContent.length);
     }
   };
 
   const redoChange = () => {
-    if (versionHistoryStack.Redo.length > 1) {
-      const newContent =
-        versionHistoryStack.Redo[versionHistoryStack.Redo.length - 2];
-      const newUndo =
-        versionHistoryStack.Undo.length === MAX_STACK_SIZE
-          ? versionHistoryStack.Redo.slice(1)
-          : versionHistoryStack.Redo;
-      const newHistory = {
-        Undo: [...deepCopy(newUndo), translatedStoryLines],
-        Redo: deepCopy(versionHistoryStack.Redo.slice(0, -1)),
-      };
-      setVersionHistoryStack(newHistory);
+    if (currentVersion < versionHistoryStack.length - 1) {
+      const newContent = versionHistoryStack[currentVersion + 1];
+      setCurrentVersion(currentVersion + 1);
       setTranslatedStoryLines(newContent);
       setNumTranslatedLines(newContent.length);
     }
+    console.log(currentVersion);
   };
 
   const clearUnsavedChangesMap = () => {
@@ -206,10 +197,8 @@ const TranslationPage = () => {
         },
       );
       setTranslatedStoryLines(contentArray);
-      setVersionHistoryStack({
-        Undo: [deepCopy(contentArray)],
-        Redo: [],
-      });
+      setVersionHistoryStack([deepCopy(contentArray)]);
+      setCurrentVersion(0);
     },
   });
 
