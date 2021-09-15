@@ -143,6 +143,7 @@ const ReviewPage = () => {
           isCommenting={isCommenting}
           setIsCommenting={setIsCommenting}
           commentLine={commentLine}
+          setCommentLine={setCommentLine}
         />
       </Flex>
     </Flex>

@@ -302,6 +302,7 @@ const TranslationPage = () => {
           setIsCommenting={setIsCommenting}
           commentLine={commentLine}
           storyTranslationId={storyTranslationId}
+          setCommentLine={setCommentLine}
         />
       </Flex>
       <Autosave

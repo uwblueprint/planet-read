@@ -13,6 +13,7 @@ export type CommentPanelProps = {
   isCommenting: boolean;
   commentLine: number;
   storyTranslationContentId: number;
+  setCommentLine: (line: number) => void;
 };
 
 const CommentsPanel = ({
@@ -21,6 +22,7 @@ const CommentsPanel = ({
   isCommenting,
   commentLine,
   storyTranslationContentId,
+  setCommentLine,
 }: CommentPanelProps) => {
   const [comments, setComments] = useState<CommentResponse[]>([]);
   const [filterIndex, setFilterIndex] = useState(0);
@@ -81,6 +83,7 @@ const CommentsPanel = ({
           marginRight="10px"
           onClick={() => {
             setIsCommenting(!isCommenting);
+            setCommentLine(0);
           }}
         >
           Comment
@@ -96,7 +99,7 @@ const CommentsPanel = ({
           {filterOptionsComponent}
         </Select>
       </Flex>
-      {commentLine !== 0 && (
+      {isCommenting && commentLine !== 0 && (
         <WIPComment
           lineIndex={commentLine}
           storyTranslationContentId={storyTranslationContentId}
