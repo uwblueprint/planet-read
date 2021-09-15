@@ -10,6 +10,7 @@ from ..types.story_type import (
     StoryResponseDTO,
     StoryTranslationContentRequestDTO,
     StoryTranslationContentResponseDTO,
+    StoryTranslationUpdateStatusResponseDTO, 
 )
 
 
@@ -85,17 +86,17 @@ class UpdateStoryTranslationContents(graphene.Mutation):
 
 class UpdateStoryTranslationContentStatus(graphene.Mutation): 
     class Arguments: 
-        story_translation_id = graphene.ID(required=True)
+        story_translation_id = graphene.Int(required=True)
         status = graphene.String(required=True)
 
-    ok = graphene.Boolean() 
+    story = graphene.Field(lambda: StoryTranslationUpdateStatusResponseDTO) 
     # TODO: require authorization as reviewer 
     def mutate(root, info, story_translation_id, status): 
         try:
-            services[
+            new_story = services[
                 "story"
             ].update_story_translation_content_status(story_translation_id, status)
-            return UpdateStoryTranslationContentStatus(ok=True)
+            return UpdateStoryTranslationContentStatus(new_story)
         except Exception as e:
             error_message = getattr(e, "message", None)
             raise Exception(error_message if error_message else str(e))
@@ -103,18 +104,18 @@ class UpdateStoryTranslationContentStatus(graphene.Mutation):
 
 class UpdateAllStoryTranslationContentStatus(graphene.Mutation): 
     class Arguments: 
-        story_translation_ids = graphene.List(graphene.ID, required=True)
+        story_translation_ids = graphene.List(graphene.Int, required=True)
         status = graphene.String(required=True)
 
-    ok = graphene.Boolean() 
+    story = graphene.Field(lambda: graphene.List(StoryTranslationUpdateStatusResponseDTO)) 
 
     # TODO: require authorization as reviewer 
     def mutate(root, info, story_translation_ids, status): 
         try:
-            services[
+            new_stories = services[
                 "story"
             ].update_all_story_translation_content_status(story_translation_ids, status)
-            return UpdateAllStoryTranslationContentStatus(ok=True)
+            return UpdateAllStoryTranslationContentStatus(new_stories)
         except Exception as e:
             error_message = getattr(e, "message", None)
             raise Exception(error_message if error_message else str(e))

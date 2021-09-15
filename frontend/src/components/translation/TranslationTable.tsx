@@ -37,6 +37,8 @@ const TranslationTable = ({
 }: TranslationTableProps) => {
   const storyCells = translatedStoryLines.map((storyLine: StoryLine) => {
     const displayLineNumber = storyLine.lineIndex + 1;
+
+    console.log(storyLine);
     return (
       <Flex
         alignItems="flex-start"
@@ -64,21 +66,22 @@ const TranslationTable = ({
         )}
         <Flex direction="column" width="130px" margin="10px">
           {!editable ? (
-            <Menu>
-              <MenuButton as={Button} rightIcon={<ChevronDownIcon />}>
-                <Badge
-                  textTransform="capitalize"
-                  variant={getStatusVariant(storyLine.status)}
-                  marginBottom="10px"
-                >
+            <Badge
+              textTransform="capitalize"
+              variant={getStatusVariant(storyLine.status)}
+              marginBottom="10px"
+            >
+              <Menu>
+                <MenuButton as={Button}>
                   {storyLine.status}
-                </Badge>
-              </MenuButton>
-              <MenuList>
-                <MenuItem>Approve</MenuItem>
-                <MenuItem>Action Required</MenuItem>
-              </MenuList>
-            </Menu>
+                  <ChevronDownIcon />
+                </MenuButton>
+                <MenuList>
+                  <MenuItem>Approve</MenuItem>
+                  <MenuItem>Action Required</MenuItem>
+                </MenuList>
+              </Menu>
+            </Badge>
           ) : (
             <Badge
               textTransform="capitalize"

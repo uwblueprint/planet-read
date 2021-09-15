@@ -74,3 +74,8 @@ class StoryTranslationResponseDTO(graphene.ObjectType):
     level = graphene.Int(required=True)
     num_translated_lines = graphene.Int()
     num_approved_lines = graphene.Int()
+
+class StoryTranslationUpdateStatusResponseDTO(graphene.ObjectType): 
+    id = graphene.Int(required=True)
+    line_index = graphene.Int(required=True)
+    status = graphene.String(required=True)

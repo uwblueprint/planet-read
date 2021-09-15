@@ -297,7 +297,7 @@ class StoryService(IStoryService):
             )
             raise error
 
-        return StoryTranslationContentResponseDTO(
+        return StoryTranslationUpdateStatusResponseDTO(
             story_translation_content.id,
             story_translation.line_index,
             story_translation_content.status,
