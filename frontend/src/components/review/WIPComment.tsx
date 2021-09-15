@@ -10,11 +10,13 @@ import {
 export type WIPCommentProps = {
   storyTranslationContentId: number;
   lineIndex: number;
+  setIsCommenting: (isCommenting: boolean) => void;
 };
 
 const WIPComment = ({
   storyTranslationContentId,
   lineIndex,
+  setIsCommenting,
 }: WIPCommentProps) => {
   const handleError = (errorMessage: string) => {
     // eslint-disable-next-line no-alert
@@ -29,6 +31,7 @@ const WIPComment = ({
   }>(CREATE_COMMMENT);
 
   const createNewComment = async () => {
+    setIsCommenting(false);
     try {
       const commentData = {
         storyTranslationContentId,
@@ -75,7 +78,11 @@ const WIPComment = ({
         >
           Comment
         </Button>
-        <Button size="secondary" variant="outline">
+        <Button
+          size="secondary"
+          variant="outline"
+          onClick={() => setIsCommenting(false)}
+        >
           Cancel
         </Button>
       </Flex>

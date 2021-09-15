@@ -57,6 +57,13 @@ const TranslationPage = () => {
   const [title, setTitle] = useState<string>("");
   const [language, setLanguage] = useState<string>("");
 
+  const [isCommenting, setIsCommenting] = useState<boolean>(false);
+  const [commentLine, setCommentLine] = useState(0);
+  const [
+    storyTranslationContentId,
+    setStoryTranslationContentId,
+  ] = useState<number>(-1);
+
   const handleFontSizeChange = (val: string) => {
     setFontSize(val);
   };
@@ -272,6 +279,9 @@ const TranslationPage = () => {
               fontSize={fontSize}
               originalLanguage="English"
               translatedLanguage={convertLanguageTitleCase(language)}
+              isCommenting={isCommenting}
+              setCommentLine={setCommentLine}
+              setStoryTranslationContentId={setStoryTranslationContentId}
             />
           </Flex>
           <Flex margin="20px 30px" justify="space-between" alignItems="center">
@@ -286,7 +296,13 @@ const TranslationPage = () => {
             </Button>
           </Flex>
         </Flex>
-        <CommentsPanel storyTranslationId={storyTranslationId} />
+        <CommentsPanel
+          storyTranslationContentId={storyTranslationContentId}
+          isCommenting={isCommenting}
+          setIsCommenting={setIsCommenting}
+          commentLine={commentLine}
+          storyTranslationId={storyTranslationId}
+        />
       </Flex>
       <Autosave
         storylines={Array.from(changedStoryLines.values())}
