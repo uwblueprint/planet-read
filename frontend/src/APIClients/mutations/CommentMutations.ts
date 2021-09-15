@@ -27,3 +27,27 @@ export type CreateCommentResponse = {
     content: string;
   };
 };
+
+export const UPDATE_COMMENT_BY_ID = gql`
+  mutation UpdateCommentById($commentData: UpdateCommentRequestDTO!) {
+    updateCommentById(commentData: $commentData) {
+      ok
+      comment {
+        id
+        commentIndex
+        resolved
+        content
+      }
+    }
+  }
+`;
+
+export type UpdateCommentResponse = {
+  ok: boolean;
+  comment: {
+    id: number;
+    commentIndex: number;
+    resolved: boolean;
+    content: string;
+  };
+};
