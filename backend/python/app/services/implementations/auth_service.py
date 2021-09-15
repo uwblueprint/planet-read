@@ -174,16 +174,30 @@ class AuthService(IAuthService):
             return False
 
     def is_translator(self, access_token, story_translation_content_id):
+        return self._is_story_role(
+            access_token, story_translation_content_id, is_role_translator=True
+        )
+
+    def is_reviewer(self, access_token, story_translation_content_id):
+        return self._is_story_role(
+            access_token, story_translation_content_id, is_role_translator=False
+        )
+
+    def _is_story_role(
+        self, access_token, story_translation_content_id, is_role_translator
+    ):
         try:
             decoded_id_token = firebase_admin.auth.verify_id_token(
                 access_token, check_revoked=True
             )
             user_id = self.user_service.get_user_id_by_auth_id(decoded_id_token["uid"])
-            translator_id = (
-                db.session.query(
-                    StoryTranslation.translator_id.label("translator_id"),
-                )
-                .join(
+            query_base = (
+                db.session.query(StoryTranslation.translator_id)
+                if is_role_translator
+                else db.session.query(StoryTranslation.reviewer_id)
+            )
+            role_id = (
+                query_base.join(
                     StoryTranslationContent,
                     StoryTranslationContent.story_translation_id == StoryTranslation.id,
                 )
@@ -191,6 +205,6 @@ class AuthService(IAuthService):
                 .first()
             )[0]
 
-            return int(user_id) == translator_id
+            return int(user_id) == role_id
         except:
             return False

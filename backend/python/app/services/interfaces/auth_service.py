@@ -101,3 +101,35 @@ class IAuthService(ABC):
         :rtype: bool
         """
         pass
+
+    @abstractmethod
+    def is_translator(self, access_token, story_translation_content_id):
+        """
+        Determine if the provided access token is valid and issued to the requested user
+        and the user is a translator of the story translation of the given
+        story translation content id.
+
+        :param access_token: user's access token
+        :type access_token: str
+        :param story_translation_content_id: story translation content id being attempted to change
+        :type story_translation_content_id: str
+        :return: true if user is translator of story translation, false otherwise
+        :rtype: bool
+        """
+        pass
+
+    @abstractmethod
+    def is_reviewer(self, access_token, story_translation_content_id):
+        """
+        Determine if the provided access token is valid and issued to the requested user
+        and the user is a reviewer of the story translation of the given
+        story translation content id.
+
+        :param access_token: user's access token
+        :type access_token: str
+        :param story_translation_content_id: story translation content id being attempted to change
+        :type story_translation_content_id: str
+        :return: true if user is reviewer of story translation, false otherwise
+        :rtype: bool
+        """
+        pass

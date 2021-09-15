@@ -1,5 +1,6 @@
 from functools import wraps
 
+import firebase_admin.auth
 from flask import current_app, jsonify, request
 
 from ..services.implementations.auth_service import AuthService
@@ -8,7 +9,9 @@ from ..services.implementations.user_service import UserService
 user_service = UserService(current_app.logger)
 auth_service = AuthService(current_app.logger, user_service)
 
-
+"""
+Get authorization access token from flask request object
+"""
 def get_access_token(request):
     auth_header = request.headers.get("Authorization")
     if auth_header:
@@ -16,6 +19,17 @@ def get_access_token(request):
         if len(auth_header_parts) >= 2 and auth_header_parts[0].lower() == "bearer":
             return auth_header_parts[1]
     return None
+
+"""
+Get user id from flask request object
+"""
+def get_user_id_from_request():
+    access_token = get_access_token(request)
+    decoded_id_token = firebase_admin.auth.verify_id_token(
+        access_token, check_revoked=True
+    )
+    user_id = auth_service.user_service.get_user_id_by_auth_id(decoded_id_token["uid"])
+    return user_id
 
 
 """
