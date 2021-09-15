@@ -60,6 +60,7 @@ const WIPComment = ({
         borderRadius: 8,
         width: "320px",
       }}
+      backgroundColor="white"
     >
       <b>Line {lineIndex}</b>
       <p>{name}</p>
