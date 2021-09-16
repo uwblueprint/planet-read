@@ -9,19 +9,15 @@ import WIPComment from "./WIPComment";
 
 export type CommentPanelProps = {
   storyTranslationId: number;
-  setIsCommenting: (isCommenting: boolean) => void;
-  isCommenting: boolean;
   commentLine: number;
-  storyTranslationContentId: number;
   setCommentLine: (line: number) => void;
+  commentStoryTranslationContentId: number;
 };
 
 const CommentsPanel = ({
   storyTranslationId,
-  setIsCommenting,
-  isCommenting,
   commentLine,
-  storyTranslationContentId,
+  commentStoryTranslationContentId,
   setCommentLine,
 }: CommentPanelProps) => {
   const [comments, setComments] = useState<CommentResponse[]>([]);
@@ -74,6 +70,11 @@ const CommentsPanel = ({
     </option>
   ));
 
+  const handleCommentButton = () => {
+    if (commentLine === -1) setCommentLine(0);
+    else setCommentLine(-1);
+  };
+
   return (
     <Box backgroundColor="gray.100" float="right" width="350px" padding="20px">
       <Flex marginBottom="50px">
@@ -81,10 +82,7 @@ const CommentsPanel = ({
           colorScheme="blue"
           size="secondary"
           marginRight="10px"
-          onClick={() => {
-            setIsCommenting(!isCommenting);
-            setCommentLine(0);
-          }}
+          onClick={handleCommentButton}
         >
           Comment
         </Button>
@@ -99,11 +97,11 @@ const CommentsPanel = ({
           {filterOptionsComponent}
         </Select>
       </Flex>
-      {isCommenting && commentLine !== 0 && (
+      {commentLine > 0 && (
         <WIPComment
           lineIndex={commentLine}
-          storyTranslationContentId={storyTranslationContentId}
-          setIsCommenting={setIsCommenting}
+          commentStoryTranslationContentId={commentStoryTranslationContentId}
+          setCommentLine={setCommentLine}
         />
       )}
       <CommentsList />

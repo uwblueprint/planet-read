@@ -57,11 +57,10 @@ const TranslationPage = () => {
   const [title, setTitle] = useState<string>("");
   const [language, setLanguage] = useState<string>("");
 
-  const [isCommenting, setIsCommenting] = useState<boolean>(false);
-  const [commentLine, setCommentLine] = useState(0);
+  const [commentLine, setCommentLine] = useState(-1);
   const [
-    storyTranslationContentId,
-    setStoryTranslationContentId,
+    commentStoryTranslationContentId,
+    setCommentStoryTranslationContentId,
   ] = useState<number>(-1);
 
   const handleFontSizeChange = (val: string) => {
@@ -279,9 +278,11 @@ const TranslationPage = () => {
               fontSize={fontSize}
               originalLanguage="English"
               translatedLanguage={convertLanguageTitleCase(language)}
-              isCommenting={isCommenting}
+              commentLine={commentLine}
               setCommentLine={setCommentLine}
-              setStoryTranslationContentId={setStoryTranslationContentId}
+              setCommentStoryTranslationContentId={
+                setCommentStoryTranslationContentId
+              }
             />
           </Flex>
           <Flex margin="20px 30px" justify="space-between" alignItems="center">
@@ -297,9 +298,7 @@ const TranslationPage = () => {
           </Flex>
         </Flex>
         <CommentsPanel
-          storyTranslationContentId={storyTranslationContentId}
-          isCommenting={isCommenting}
-          setIsCommenting={setIsCommenting}
+          commentStoryTranslationContentId={commentStoryTranslationContentId}
           commentLine={commentLine}
           storyTranslationId={storyTranslationId}
           setCommentLine={setCommentLine}

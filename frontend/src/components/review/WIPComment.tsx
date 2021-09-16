@@ -8,15 +8,15 @@ import {
 } from "../../APIClients/mutations/CommentMutations";
 
 export type WIPCommentProps = {
-  storyTranslationContentId: number;
+  commentStoryTranslationContentId: number;
   lineIndex: number;
-  setIsCommenting: (isCommenting: boolean) => void;
+  setCommentLine: (line: number) => void;
 };
 
 const WIPComment = ({
-  storyTranslationContentId,
+  commentStoryTranslationContentId,
   lineIndex,
-  setIsCommenting,
+  setCommentLine,
 }: WIPCommentProps) => {
   const handleError = (errorMessage: string) => {
     // eslint-disable-next-line no-alert
@@ -31,10 +31,9 @@ const WIPComment = ({
   }>(CREATE_COMMMENT);
 
   const createNewComment = async () => {
-    setIsCommenting(false);
     try {
       const commentData = {
-        storyTranslationContentId,
+        storyTranslationContentId: commentStoryTranslationContentId,
         userId: authenticatedUser!!.id,
         content: text,
       };
@@ -43,6 +42,7 @@ const WIPComment = ({
       });
       if (result.data?.createComment.ok) {
         setText("");
+        setCommentLine(0);
       }
     } catch (err) {
       handleError(err ?? "Error occurred, please try again.");
@@ -82,7 +82,7 @@ const WIPComment = ({
         <Button
           size="secondary"
           variant="outline"
-          onClick={() => setIsCommenting(false)}
+          onClick={() => setCommentLine(0)}
         >
           Cancel
         </Button>

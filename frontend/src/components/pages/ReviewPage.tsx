@@ -42,12 +42,11 @@ const ReviewPage = () => {
   const [title, setTitle] = useState<string>("");
   const [language, setLanguage] = useState<string>("");
 
-  const [isCommenting, setIsCommenting] = useState(false);
-  const [commentLine, setCommentLine] = useState(0);
+  const [commentLine, setCommentLine] = useState(-1);
 
   const [
-    storyTranslationContentId,
-    setStoryTranslationContentId,
+    commentStoryTranslationContentId,
+    setCommentStoryTranslationContentId,
   ] = useState<number>(-1);
 
   const handleFontSizeChange = (val: string) => {
@@ -113,9 +112,11 @@ const ReviewPage = () => {
               fontSize={fontSize}
               originalLanguage="English"
               translatedLanguage={convertLanguageTitleCase(language)}
-              isCommenting={isCommenting}
+              commentLine={commentLine}
               setCommentLine={setCommentLine}
-              setStoryTranslationContentId={setStoryTranslationContentId}
+              setCommentStoryTranslationContentId={
+                setCommentStoryTranslationContentId
+              }
             />
           </Flex>
           <Flex margin="20px 30px" justify="flex-start" alignItems="center">
@@ -138,11 +139,9 @@ const ReviewPage = () => {
           </Flex>
         </Flex>
         <CommentsPanel
-          storyTranslationId={storyTranslationId}
-          storyTranslationContentId={storyTranslationContentId}
-          isCommenting={isCommenting}
-          setIsCommenting={setIsCommenting}
+          commentStoryTranslationContentId={commentStoryTranslationContentId}
           commentLine={commentLine}
+          storyTranslationId={storyTranslationId}
           setCommentLine={setCommentLine}
         />
       </Flex>
