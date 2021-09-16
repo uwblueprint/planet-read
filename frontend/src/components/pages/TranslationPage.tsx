@@ -1,16 +1,16 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState } from "react";
 import { useQuery } from "@apollo/client";
-import { Icon } from "@chakra-ui/icon";
-import { Box, Button, Divider, Flex, IconButton, Text } from "@chakra-ui/react";
-import { MdRedo, MdUndo } from "react-icons/md";
+import { Box, Button, Divider, Flex, Text } from "@chakra-ui/react";
 import { useParams } from "react-router-dom";
 import ProgressBar from "../utils/ProgressBar";
 import TranslationTable from "../translation/TranslationTable";
+import UndoRedo from "../translation/UndoRedo";
 import Autosave, { StoryLine } from "../translation/Autosave";
 import { convertStatusTitleCase } from "../../utils/StatusUtils";
 import { GET_STORY_AND_TRANSLATION_CONTENTS } from "../../APIClients/queries/StoryQueries";
 import FontSizeSlider from "../translation/FontSizeSlider";
 import convertLanguageTitleCase from "../../utils/LanguageUtils";
+import deepCopy from "../../utils/DeepCopyUtils";
 import Header from "../navigation/Header";
 import CommentsPanel from "../review/CommentsPanel";
 
@@ -32,26 +32,26 @@ const TranslationPage = () => {
     storyIdParam,
     storyTranslationIdParam,
   } = useParams<TranslationPageProps>();
-
+  // Story Data
   const storyId = +storyIdParam!!;
   const storyTranslationId = +storyTranslationIdParam!!;
   const [translatedStoryLines, setTranslatedStoryLines] = useState<StoryLine[]>(
     [],
   );
+  const [title, setTitle] = useState<string>("");
+  const [language, setLanguage] = useState<string>("");
+  // AutoSave
   const [changedStoryLines, setChangedStoryLines] = useState<
     Map<number, StoryLine>
   >(new Map());
   const [numTranslatedLines, setNumTranslatedLines] = useState(0);
-
+  // UndoRedo
   const [versionHistoryStack, setVersionHistoryStack] = useState<
     Array<StoryLine[]>
   >([]);
   const [currentVersion, setCurrentVersion] = useState<number>(0);
-  const versionUpdateTimeout = useRef(false);
-
+  // Font Size Slider
   const [fontSize, setFontSize] = useState<string>("12px");
-  const [title, setTitle] = useState<string>("");
-  const [language, setLanguage] = useState<string>("");
 
   const [commentLine, setCommentLine] = useState(-1);
   const [
@@ -61,13 +61,6 @@ const TranslationPage = () => {
 
   const handleFontSizeChange = (val: string) => {
     setFontSize(val);
-  };
-
-  const deepCopy = (lines: Object) => {
-    // This is a funky method to make deep copies on objects with primative values
-    // https://javascript.plainenglish.io/how-to-deep-copy-objects-and-arrays-in-javascript-7c911359b089
-    // Should probably go under some util
-    return JSON.parse(JSON.stringify(lines));
   };
 
   const onChangeTranslationContent = async (
@@ -95,39 +88,6 @@ const TranslationPage = () => {
     );
   };
 
-  const saveVersionState = () => {
-    if (
-      versionHistoryStack.length > 0 &&
-      currentVersion === versionHistoryStack.length &&
-      JSON.stringify(translatedStoryLines) !==
-        JSON.stringify(versionHistoryStack[currentVersion])
-    ) {
-      setVersionHistoryStack(
-        versionHistoryStack.length === MAX_STACK_SIZE
-          ? [
-              ...deepCopy(versionHistoryStack.slice(1)),
-              deepCopy(translatedStoryLines),
-            ]
-          : [...deepCopy(versionHistoryStack), deepCopy(translatedStoryLines)],
-      );
-      setCurrentVersion(
-        versionHistoryStack.length === MAX_STACK_SIZE
-          ? MAX_STACK_SIZE - 1
-          : versionHistoryStack.length,
-      );
-    }
-  };
-
-  // Approach from https://leewarrick.com/blog/how-to-debounce/ (the throttling stuff)
-  useEffect(() => {
-    if (versionUpdateTimeout.current) return;
-    versionUpdateTimeout.current = true;
-    setTimeout(() => {
-      versionUpdateTimeout.current = false;
-      saveVersionState();
-    }, 750);
-  }, [translatedStoryLines]);
-
   const onUserInput = async (
     newContent: string,
     lineIndex: number,
@@ -144,26 +104,6 @@ const TranslationPage = () => {
           : versionHistoryStack.length,
       );
     }
-  };
-
-  const undoChange = () => {
-    console.log(currentVersion, versionHistoryStack);
-    if (currentVersion > 0) {
-      const newContent = versionHistoryStack[currentVersion - 1];
-      setCurrentVersion(currentVersion - 1);
-      setTranslatedStoryLines(newContent);
-      setNumTranslatedLines(newContent.length);
-    }
-  };
-
-  const redoChange = () => {
-    if (currentVersion < versionHistoryStack.length - 1) {
-      const newContent = versionHistoryStack[currentVersion + 1];
-      setCurrentVersion(currentVersion + 1);
-      setTranslatedStoryLines(newContent);
-      setNumTranslatedLines(newContent.length);
-    }
-    console.log(currentVersion);
   };
 
   const clearUnsavedChangesMap = () => {
@@ -240,22 +180,16 @@ const TranslationPage = () => {
         <Flex width="100%" direction="column">
           <Flex justify="space-between" alignItems="center" margin="10px 30px">
             <FontSizeSlider setFontSize={handleFontSizeChange} />
-            <Flex direction="row">
-              <IconButton
-                size="undoRedo"
-                variant="ghost"
-                aria-label="Undo Change"
-                onClick={undoChange}
-                icon={<Icon as={MdUndo} />}
-              />
-              <IconButton
-                variant="ghost"
-                size="undoRedo"
-                aria-label="Redo Change"
-                onClick={redoChange}
-                icon={<Icon as={MdRedo} />}
-              />
-            </Flex>
+            <UndoRedo
+              currentVersion={currentVersion}
+              setCurrentVersion={setCurrentVersion}
+              versionHistoryStack={versionHistoryStack}
+              setVersionHistoryStack={setVersionHistoryStack}
+              translatedStoryLines={translatedStoryLines}
+              setTranslatedStoryLines={setTranslatedStoryLines}
+              setNumTranslatedLines={setNumTranslatedLines}
+              MAX_STACK_SIZE={MAX_STACK_SIZE}
+            />
           </Flex>
           <Divider />
           <Flex
