@@ -5,12 +5,21 @@ import {
   CommentResponse,
   buildCommentsQuery,
 } from "../../APIClients/queries/CommentQueries";
+import WIPComment from "./WIPComment";
 
 export type CommentPanelProps = {
   storyTranslationId: number;
+  commentLine: number;
+  setCommentLine: (line: number) => void;
+  commentStoryTranslationContentId: number;
 };
 
-const CommentsPanel = ({ storyTranslationId }: CommentPanelProps) => {
+const CommentsPanel = ({
+  storyTranslationId,
+  commentLine,
+  commentStoryTranslationContentId,
+  setCommentLine,
+}: CommentPanelProps) => {
   const [comments, setComments] = useState<CommentResponse[]>([]);
   const [filterIndex, setFilterIndex] = useState(0);
 
@@ -37,6 +46,7 @@ const CommentsPanel = ({ storyTranslationId }: CommentPanelProps) => {
     if (comments.length > 0) {
       return (
         <Box>
+          {/* TODO: show correct placement of the WIPComment component once existing comment is displayed */}
           {comments.map((comment: CommentResponse) => (
             // TODO: replace with actual comment component
             <Text key={comment.id} variant="comment">
@@ -60,10 +70,20 @@ const CommentsPanel = ({ storyTranslationId }: CommentPanelProps) => {
     </option>
   ));
 
+  const handleCommentButton = () => {
+    if (commentLine === -1) setCommentLine(0);
+    else setCommentLine(-1);
+  };
+
   return (
     <Box backgroundColor="gray.100" float="right" width="350px" padding="20px">
       <Flex marginBottom="50px">
-        <Button colorScheme="blue" size="secondary" marginRight="10px">
+        <Button
+          colorScheme="blue"
+          size="secondary"
+          marginRight="10px"
+          onClick={handleCommentButton}
+        >
           Comment
         </Button>
         <Select
@@ -77,6 +97,13 @@ const CommentsPanel = ({ storyTranslationId }: CommentPanelProps) => {
           {filterOptionsComponent}
         </Select>
       </Flex>
+      {commentLine > 0 && (
+        <WIPComment
+          lineIndex={commentLine}
+          commentStoryTranslationContentId={commentStoryTranslationContentId}
+          setCommentLine={setCommentLine}
+        />
+      )}
       <CommentsList />
     </Box>
   );
