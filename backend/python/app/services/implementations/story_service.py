@@ -1,6 +1,6 @@
 from flask import current_app
 
-from ...graphql.types.story_type import StoryTranslationContentResponseDTO
+from ...graphql.types.story_type import StageEnum, StoryTranslationContentResponseDTO
 from ...models import db
 from ...models.story import Story
 from ...models.story_content import StoryContent
@@ -8,6 +8,7 @@ from ...models.story_translation import StoryTranslation
 from ...models.story_translation_content import StoryTranslationContent
 from ...models.story_translation_content_status import StoryTranslationContentStatus
 from ..interfaces.story_service import IStoryService
+from ...middlewares.auth import get_user_id_from_request
 
 
 class StoryService(IStoryService):
@@ -266,6 +267,21 @@ class StoryService(IStoryService):
                 )
             )
             raise error
+
+    def update_story_translation_stage(self, story_translation_data):
+        story_translation = StoryTranslation.query.filter_by(id=story_translation_data["id"]).first()
+        new_stage = story_translation_data["stage"]
+        user_id = get_user_id_from_request();
+
+        if (new_stage == StageEnum.TRANSLATE and story_translation.reviewer_id == user_id
+            or new_stage == StageEnum.REVIEW and story_translation.translator_id == user_id
+        ):
+            story_translation.stage = new_stage 
+            db.session.commit()
+        else:
+            error = "User is not authorized to update translation stage to: {stage}".format(stage=new_stage)
+            self.logger.error(error)
+            raise Exception(error)
 
     def get_story_translations_available_for_review(self, language, level):
         try:
