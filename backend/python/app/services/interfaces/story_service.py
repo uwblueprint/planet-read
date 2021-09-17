@@ -84,7 +84,7 @@ class IStoryService(ABC):
     def update_story_translation_stage(self, story_translation_data):
         """Update the stage of a story translation
         :param story_translation_data: UpdateStoryTranslationStageRequestDTO
-        :raises Exception: if the user is not authorized to move the translation to the given stage 
+        :raises Exception: if the user is not authorized to move the translation to the given stage
         """
         pass
 

@@ -54,6 +54,7 @@ class Mutation(graphene.ObjectType):
     update_story_translation_contents = UpdateStoryTranslationContents.Field()
     update_story_translation_stage = UpdateStoryTranslationStage.Field()
 
+
 class Query(graphene.ObjectType):
     comments_by_story_translation = graphene.Field(
         graphene.List(CommentResponseDTO),

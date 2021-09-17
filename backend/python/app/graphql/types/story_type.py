@@ -76,6 +76,7 @@ class StoryTranslationResponseDTO(graphene.ObjectType):
     num_translated_lines = graphene.Int()
     num_approved_lines = graphene.Int()
 
+
 class UpdateStoryTranslationStageRequestDTO(graphene.InputObjectType):
     id = graphene.Int(required=True)
     stage = graphene.Field(StageEnum, required=True)

@@ -82,6 +82,7 @@ class UpdateStoryTranslationContents(graphene.Mutation):
             error_message = getattr(e, "message", None)
             raise Exception(error_message if error_message else str(e))
 
+
 class UpdateStoryTranslationStage(graphene.Mutation):
     class Arguments:
         story_translation_data = UpdateStoryTranslationStageRequestDTO(required=True)
