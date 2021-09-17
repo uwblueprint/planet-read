@@ -13,7 +13,7 @@ from . import create_app
 my_app = None
 
 
-@pytest.fixture
+@pytest.fixture(scope="session")
 def app():
     """
     Returns app configured for testing
@@ -24,7 +24,7 @@ def app():
     return my_app
 
 
-@pytest.fixture
+@pytest.fixture(scope="session")
 def db(app):
     """
     Yields db instance
@@ -46,7 +46,7 @@ def db(app):
     db.session.close()
 
 
-@pytest.fixture
+@pytest.fixture(scope="session")
 def services(app):
     """
     Returns model services
@@ -62,7 +62,7 @@ def services(app):
     }
 
 
-@pytest.fixture
+@pytest.fixture(scope="session")
 def client(app):
     """
     Returns graphene client for test query/mutation
