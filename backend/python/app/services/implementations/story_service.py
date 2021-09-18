@@ -71,8 +71,18 @@ class StoryService(IStoryService):
     def create_translation(self, translation):
         try:
             new_story_translation = StoryTranslation(**translation.__dict__)
-            db.session.add(new_story_translation)
-            db.session.commit()
+            story_translations_translating = self._get_stories_user_translating(
+                new_story_translation.translator_id
+            )
+            languages_currently_translating = self._get_story_translation_languages(
+                story_translations_translating
+            )
+            if new_story_translation.language in languages_currently_translating:
+                self.logger.error("User can't be assigned as a translator")
+                raise Exception("User can't be assigned as a translator")
+            else:
+                db.session.add(new_story_translation)
+                db.session.commit()
         except Exception as error:
             self.logger.error(str(error))
             raise error
@@ -204,8 +214,13 @@ class StoryService(IStoryService):
             raise error
 
     def assign_user_as_reviewer(self, user, story_translation):
+        story_translations_reviewing = self._get_stories_user_reviewing(user.id)
+        languages_currently_reviewing = self._get_story_translation_languages(
+            story_translations_reviewing
+        )
         if (
             story_translation["language"] in user.approved_languages_review
+            and story_translation["language"] not in languages_currently_reviewing
             and user.approved_languages_review[story_translation["language"]]
             >= story_translation["level"]
             and story_translation["stage"] == "TRANSLATE"
@@ -343,3 +358,22 @@ class StoryService(IStoryService):
                 count += 1
 
         return count
+
+    def _get_stories_user_translating(self, user_id):
+        return (
+            StoryTranslation.query.filter(StoryTranslation.translator_id == user_id)
+            .filter(StoryTranslation.stage != "PUBLISH")
+            .all()
+        )
+
+    def _get_stories_user_reviewing(self, user_id):
+        return (
+            StoryTranslation.query.filter(StoryTranslation.reviewer_id == user_id)
+            .filter(StoryTranslation.stage != "PUBLISH")
+            .all()
+        )
+
+    def _get_story_translation_languages(self, story_translations):
+        return set(
+            [story_translation.language for story_translation in story_translations]
+        )
