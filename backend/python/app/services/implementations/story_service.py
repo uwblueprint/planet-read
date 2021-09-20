@@ -269,28 +269,31 @@ class StoryService(IStoryService):
             raise error
 
     def update_story_translation_stage(self, story_translation_data):
-        story_translation = StoryTranslation.query.filter_by(
-            id=story_translation_data["id"]
-        ).first()
-        new_stage = story_translation_data["stage"]
-        user_id = get_user_id_from_request()
+        try:
+            story_translation = StoryTranslation.query.filter_by(
+                id=story_translation_data["id"]
+            ).first()
+            new_stage = story_translation_data["stage"]
+            # TODO: remove cast to int once get_user_id_from_request is updated
+            user_id = int(get_user_id_from_request())
 
-        if (
-            new_stage == StageEnum.TRANSLATE
-            and story_translation.reviewer_id == user_id
-            or new_stage == StageEnum.REVIEW
-            and story_translation.translator_id == user_id
-        ):
-            story_translation.stage = new_stage
-            db.session.commit()
-        else:
-            error = (
-                "User is not authorized to update translation stage to: {stage}".format(
+            if (
+                new_stage == StageEnum.TRANSLATE
+                and user_id == story_translation.reviewer_id
+            ) or (
+                new_stage == StageEnum.REVIEW
+                and user_id == story_translation.translator_id
+            ):
+                story_translation.stage = new_stage
+                db.session.commit()
+            else:
+                error = "User is not authorized to update translation stage to: {stage}".format(
                     stage=new_stage
                 )
-            )
+                raise Exception(error)
+        except Exception as error:
             self.logger.error(error)
-            raise Exception(error)
+            raise error
 
     def get_story_translations_available_for_review(self, language, level):
         try:
