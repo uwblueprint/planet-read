@@ -61,6 +61,7 @@ class IStoryService(ABC):
         """
         pass
 
+    # Deprecated: function is not currently in use (story translation stage logic has not been tested)
     @abstractmethod
     def update_story_translation_content(self, story_translation_content):
         """Update a single story translation content entry
