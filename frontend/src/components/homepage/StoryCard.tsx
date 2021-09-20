@@ -137,9 +137,9 @@ const StoryCard = ({
     <Flex id={`story-${storyId}`} sx={storyCardStyle}>
       <Box
         css={{
-          "webkit-border-radius": "8px",
-          "-moz-border-radius": "8px",
-          "border-radius": "8px",
+          webkitBorderRadius: "8px",
+          MozBorderRadius: "8px",
+          borderRadius: "8px",
           overflow: "hidden",
         }}
       >

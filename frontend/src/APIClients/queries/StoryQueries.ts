@@ -73,7 +73,6 @@ export const buildHomePageStoriesQuery = (
                 level: ${level}
               ) {
                 storyId: id
-                language
                 ${STORY_FIELDS}
               }
             }
@@ -90,7 +89,6 @@ export const buildHomePageStoriesQuery = (
               ) {
                 storyId
                 storyTranslationId: id
-                language
                 ${STORY_FIELDS}
               }
             }

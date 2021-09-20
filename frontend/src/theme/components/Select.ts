@@ -13,16 +13,6 @@ const Select = {
         color: "blue.100",
       },
     },
-    disabled: {
-      field: {
-        opacity: 0.25,
-        pointerEvents: "none",
-      },
-      icon: {
-        opacity: 0.25,
-        pointerEvents: "none",
-      },
-    },
   },
 };
 

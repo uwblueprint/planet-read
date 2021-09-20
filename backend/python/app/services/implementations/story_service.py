@@ -71,8 +71,10 @@ class StoryService(IStoryService):
     def create_translation(self, translation):
         try:
             new_story_translation = StoryTranslation(**translation.__dict__)
-            story_translations_translating = self._get_stories_user_translating(
-                new_story_translation.translator_id
+            story_translations_translating = (
+                self._get_story_translations_user_translating(
+                    new_story_translation.translator_id
+                )
             )
             languages_currently_translating = self._get_story_translation_languages(
                 story_translations_translating
@@ -110,9 +112,8 @@ class StoryService(IStoryService):
     def get_story_translations(self, user_id, is_translator, language, level, stage):
         try:
             if is_translator is None:
-                role_filter = (
-                    (StoryTranslation.translator_id == user_id)
-                    | (StoryTranslation.reviewer_id == user_id)
+                role_filter = (StoryTranslation.translator_id == user_id) | (
+                    StoryTranslation.reviewer_id == user_id
                 )
             elif is_translator:
                 role_filter = StoryTranslation.translator_id == user_id
@@ -218,7 +219,9 @@ class StoryService(IStoryService):
             raise error
 
     def assign_user_as_reviewer(self, user, story_translation):
-        story_translations_reviewing = self._get_stories_user_reviewing(user.id)
+        story_translations_reviewing = self._get_story_translations_user_reviewing(
+            user.id
+        )
         languages_currently_reviewing = self._get_story_translation_languages(
             story_translations_reviewing
         )
@@ -363,14 +366,14 @@ class StoryService(IStoryService):
 
         return count
 
-    def _get_stories_user_translating(self, user_id):
+    def _get_story_translations_user_translating(self, user_id):
         return (
             StoryTranslation.query.filter(StoryTranslation.translator_id == user_id)
             .filter(StoryTranslation.stage != "PUBLISH")
             .all()
         )
 
-    def _get_stories_user_reviewing(self, user_id):
+    def _get_story_translations_user_reviewing(self, user_id):
         return (
             StoryTranslation.query.filter(StoryTranslation.reviewer_id == user_id)
             .filter(StoryTranslation.stage != "PUBLISH")
@@ -378,6 +381,8 @@ class StoryService(IStoryService):
         )
 
     def _get_story_translation_languages(self, story_translations):
-        return set(
+        languages = set(
             [story_translation.language for story_translation in story_translations]
         )
+        print(languages)
+        return languages

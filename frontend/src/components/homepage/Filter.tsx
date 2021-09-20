@@ -56,15 +56,16 @@ const Filter = ({
     );
   }
   const filterStyle = useStyleConfig("Filter");
+  const disabledStyle = useStyleConfig("Disabled");
   return (
     <Flex sx={filterStyle}>
       <Heading size="lg">Filters</Heading>
       <Divider />
-      <Box>
+      <Box sx={isDisabled ? disabledStyle : undefined}>
         <Heading size="sm">Translation Language</Heading>
         <Select
           size="sm"
-          variant={isDisabled ? "disabled" : "filled"}
+          variant="filled"
           id="language"
           value={language}
           onChange={handleSelectChange}
@@ -73,25 +74,23 @@ const Filter = ({
         </Select>
       </Box>
       <Divider />
-      <Box>
+      <Box sx={isDisabled ? disabledStyle : undefined}>
         <Heading size="sm">Role Required</Heading>
         <ButtonRadioGroup
           name="Role"
           options={["Translator", "Reviewer"]}
           onChange={handleRoleChange}
           defaultValue={role ? "Translator" : "Reviewer"}
-          isDisabled={isDisabled}
         />
       </Box>
       <Divider />
-      <Box>
+      <Box sx={isDisabled ? disabledStyle : undefined}>
         <Heading size="sm">Access Level</Heading>
         <ButtonRadioGroup
           name="Level"
           options={["Level 1", "Level 2", "Level 3", "Level 4"]}
           onChange={handleLevelChangeStr}
           defaultValue={`Level ${level}`}
-          isDisabled={isDisabled}
         />
       </Box>
     </Flex>
