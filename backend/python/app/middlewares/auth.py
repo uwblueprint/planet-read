@@ -9,10 +9,9 @@ from ..services.implementations.user_service import UserService
 user_service = UserService(current_app.logger)
 auth_service = AuthService(current_app.logger, user_service)
 
-"""
-Get authorization access token from flask request object
-"""
+
 def get_access_token(request):
+    """Get authorization access token from flask request object"""
     auth_header = request.headers.get("Authorization")
     if auth_header:
         auth_header_parts = auth_header.split(" ")
@@ -20,10 +19,9 @@ def get_access_token(request):
             return auth_header_parts[1]
     return None
 
-"""
-Get user id from flask request object
-"""
+
 def get_user_id_from_request():
+    """Get user id from flask request object"""
     access_token = get_access_token(request)
     decoded_id_token = firebase_admin.auth.verify_id_token(
         access_token, check_revoked=True

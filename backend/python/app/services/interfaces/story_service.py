@@ -81,6 +81,14 @@ class IStoryService(ABC):
         pass
 
     @abstractmethod
+    def update_story_translation_stage(self, story_translation_data):
+        """Update the stage of a story translation
+        :param story_translation_data: UpdateStoryTranslationStageRequestDTO
+        :raises Exception: if the user is not authorized to move the translation to the given stage
+        """
+        pass
+
+    @abstractmethod
     def get_story_translations_available_for_review(self, language, level):
         """
         Return a list of stories available to be reviewed by user
