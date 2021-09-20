@@ -9,10 +9,15 @@ import {
   MenuList,
   MenuItem,
 } from "@chakra-ui/react";
+import { useMutation } from "@apollo/client";
 import { ChevronDownIcon } from "@chakra-ui/icons";
 import EditableCell from "./EditableCell";
 import { StoryLine } from "./Autosave";
 import { getStatusVariant } from "../../utils/StatusUtils";
+import {
+  UPDATE_STORY_TRANSLATION_CONTENT_STATUS,
+  UpdateStoryTranslationContentStatusResponse,
+} from "../../APIClients/mutations/StoryMutations";
 
 export type TranslationTableProps = {
   translatedStoryLines: StoryLine[];
@@ -37,6 +42,9 @@ const TranslationTable = ({
 }: TranslationTableProps) => {
   const storyCells = translatedStoryLines.map((storyLine: StoryLine) => {
     const displayLineNumber = storyLine.lineIndex + 1;
+    const [updateStatus] = useMutation<{
+      response: UpdateStoryTranslationContentStatusResponse;
+    }>(UPDATE_STORY_TRANSLATION_CONTENT_STATUS);
 
     console.log(storyLine);
     return (
@@ -77,7 +85,18 @@ const TranslationTable = ({
                   <ChevronDownIcon />
                 </MenuButton>
                 <MenuList>
-                  <MenuItem>Approve</MenuItem>
+                  <MenuItem
+                    onClick={() =>
+                      updateStatus({
+                        variables: {
+                          storyTranslationId: storyLine.storyTranslationContentId!!,
+                          status: "APPROVED",
+                        },
+                      })
+                    }
+                  >
+                    Approve
+                  </MenuItem>
                   <MenuItem>Action Required</MenuItem>
                 </MenuList>
               </Menu>

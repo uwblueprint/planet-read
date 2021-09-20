@@ -1,6 +1,6 @@
 from flask import current_app
 
-from ...graphql.types.story_type import StoryTranslationContentResponseDTO
+from ...graphql.types.story_type import StoryTranslationContentResponseDTO, StoryTranslationUpdateStatusResponseDTO
 from ...models import db
 from ...models.story import Story
 from ...models.story_content import StoryContent
@@ -298,18 +298,30 @@ class StoryService(IStoryService):
             raise error
 
         return StoryTranslationUpdateStatusResponseDTO(
-            story_translation_content.id,
+            story_translation_id,
             story_translation.line_index,
-            story_translation_content.status,
+            status,
         )
 
     def update_all_story_translation_content_status(self, story_translation_ids, status): 
         try:
-            db.session.bulk_update_mappings(
-                StoryTranslationContent, story_translation_contents
-            )
-            db.session.commit()
-            return story_translation_contents
+            for id in story_translation_ids: 
+                story_translation = StoryTranslationContent.query.filter_by(
+                    id=id
+                ).first()
+
+                if not story_translation:
+                    raise Exception(
+                        "story_translation_content_id {id} not found".format(
+                            id=id
+                        )
+                    )
+
+                story_translation.status = (
+                    status
+                )
+                db.session.commit()
+
         except Exception as error:
             reason = getattr(error, "message", None)
             self.logger.error(
@@ -318,6 +330,12 @@ class StoryService(IStoryService):
                 )
             )
             raise error
+
+        return StoryTranslationUpdateStatusResponseDTO(
+            story_translation_ids[0],
+            story_translation_ids[0],
+            status,
+        )
 
     def _get_num_translated_lines(self, translation_contents):
         return len(translation_contents) - [

@@ -1,7 +1,5 @@
 import { gql } from "@apollo/client";
 
-// ASK:::
-// How are tehse parameters passed in?
 export const UPDATE_STORY_TRANSLATION_CONTENTS = gql`
   mutation UpdateStoryTranslationContents(
     $storyTranslationContents: [StoryTranslationContentRequestDTO]
@@ -16,13 +14,13 @@ export const UPDATE_STORY_TRANSLATION_CONTENTS = gql`
   }
 `;
 
-export const UPDATE_STORY_TRANSLATION_CONTENT_STATUS = () => gql`
+export const UPDATE_STORY_TRANSLATION_CONTENT_STATUS = gql`
   mutation UpdateStoryTranslationContent(
-    $story_translation_id: Int!
+    $storyTranslationId: Int!
     $status: String!
   ) {
     updateStoryTranslationContentStatus(
-      story_translation_id: $story_translation_id
+      storyTranslationId: $storyTranslationId
       status: $status
     ) {
       story {
@@ -31,6 +29,28 @@ export const UPDATE_STORY_TRANSLATION_CONTENT_STATUS = () => gql`
     }
   }
 `;
+
+export const UPDATE_ALL_STORY_TRANSLATION_CONTENT_STATUS = gql`
+  mutation UpdateAllStoryTranslationContent(
+    $storyTranslationIds: [Int!]
+    $status: String!
+  ) {
+    updateAllStoryTranslationContentStatus(
+      storyTranslationIds: $storyTranslationId
+      status: $status
+    ) {
+      story {
+        id
+      }
+    }
+  }
+`;
+
+export type UpdateStoryTranslationContentStatusResponse = {
+  story: {
+    id: number;
+  };
+};
 
 export const CREATE_TRANSLATION = gql`
   mutation CreateStoryTranslation(
