@@ -29,6 +29,8 @@ export type StoryCardProps = {
   level: number;
   language: string;
   isMyStory: boolean;
+  translatorId?: number;
+  reviewerId?: number;
 };
 
 const StoryCard = ({
@@ -40,6 +42,7 @@ const StoryCard = ({
   level,
   language,
   isMyStory,
+  translatorId,
 }: StoryCardProps) => {
   const { authenticatedUser } = useContext(AuthContext);
   const history = useHistory();
@@ -157,6 +160,13 @@ const StoryCard = ({
             <Badge background="purple.50">{`${convertLanguageTitleCase(
               language,
             )}`}</Badge>
+            {isMyStory && (
+              <Badge background="green.50">
+                {+authenticatedUser!!.id === translatorId
+                  ? "Translator"
+                  : "Reviewer"}
+              </Badge>
+            )}
           </Flex>
         </Flex>
         <Text size="xs">{truncateText(description, 100)}</Text>

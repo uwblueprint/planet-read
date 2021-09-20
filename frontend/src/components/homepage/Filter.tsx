@@ -19,6 +19,7 @@ export type FilterProps = {
   setLanguage: (newState: string) => void;
   role: boolean;
   setIsTranslator: (newState: boolean) => void;
+  isDisabled?: boolean;
 };
 
 const Filter = ({
@@ -29,6 +30,7 @@ const Filter = ({
   setLanguage,
   role,
   setIsTranslator,
+  isDisabled = false,
 }: FilterProps) => {
   const handleSelectChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     setLanguage(event.target.value);
@@ -62,7 +64,7 @@ const Filter = ({
         <Heading size="sm">Translation Language</Heading>
         <Select
           size="sm"
-          variant="filled"
+          variant={isDisabled ? "disabled" : "filled"}
           id="language"
           value={language}
           onChange={handleSelectChange}
@@ -78,6 +80,7 @@ const Filter = ({
           options={["Translator", "Reviewer"]}
           onChange={handleRoleChange}
           defaultValue={role ? "Translator" : "Reviewer"}
+          isDisabled={isDisabled}
         />
       </Box>
       <Divider />
@@ -88,6 +91,7 @@ const Filter = ({
           options={["Level 1", "Level 2", "Level 3", "Level 4"]}
           onChange={handleLevelChangeStr}
           defaultValue={`Level ${level}`}
+          isDisabled={isDisabled}
         />
       </Box>
     </Flex>

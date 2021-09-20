@@ -14,11 +14,23 @@ function RadioCard(props: any) {
   const input = getInputProps();
   const checkbox = getCheckboxProps();
 
-  const buttonStyle = useStyleConfig("Button", { size: props.size });
-  const buttonStyleUnselected = useStyleConfig("Button", {
-    size: props.size,
-    variant: props.unselectedVariant,
-  });
+  const buttonStyle = props.isDisabled
+    ? useStyleConfig("Button", {
+        size: props.size,
+        variant: "disabled",
+      })
+    : useStyleConfig("Button", {
+        size: props.size,
+      });
+  const buttonStyleUnselected = props.isDisabled
+    ? useStyleConfig("Button", {
+        size: props.size,
+        variant: "disabled",
+      })
+    : useStyleConfig("Button", {
+        size: props.size,
+        variant: props.unselectedVariant,
+      });
 
   return (
     <Box as="label">
@@ -44,6 +56,7 @@ export type ButtonRadioGroupProps = {
   defaultValue: string;
   options: string[];
   onChange: (newState: string) => void;
+  isDisabled?: boolean;
 };
 
 function ButtonRadioGroup({
@@ -54,6 +67,7 @@ function ButtonRadioGroup({
   defaultValue,
   options,
   onChange,
+  isDisabled = false,
 }: ButtonRadioGroupProps) {
   const { getRootProps, getRadioProps } = useRadioGroup({
     name,
@@ -71,6 +85,7 @@ function ButtonRadioGroup({
           <RadioCard
             key={value}
             size={size}
+            isDisabled={isDisabled}
             unselectedVariant={unselectedVariant}
             {...radio}
           >

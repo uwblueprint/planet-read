@@ -79,6 +79,7 @@ const HomePage = () => {
           setLanguage={setLanguage}
           role={isTranslator}
           setIsTranslator={setIsTranslator}
+          isDisabled={displayMyStories}
         />
         <Flex
           direction="column"
@@ -95,11 +96,7 @@ const HomePage = () => {
             defaultValue="My Work"
             onChange={handleDisplayMyStoriesChange}
           />
-          <StoryList
-            stories={stories}
-            language={language}
-            displayMyStories={displayMyStories}
-          />
+          <StoryList stories={stories} displayMyStories={displayMyStories} />
         </Flex>
       </Flex>
       {showScrollToTop && (

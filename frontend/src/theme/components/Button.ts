@@ -51,6 +51,10 @@ const Button = {
       right: "10px",
       width: "50px",
     },
+    disabled: {
+      opacity: 0.25,
+      pointerEvents: "none",
+    },
   },
 };
 export default Button;
