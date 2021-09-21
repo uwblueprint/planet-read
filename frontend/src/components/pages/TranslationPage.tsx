@@ -49,6 +49,12 @@ const TranslationPage = () => {
   const [versionHistoryStack, setVersionHistoryStack] = useState<
     Array<StoryLine[]>
   >([]);
+  const [snapShotLineIndexes, snapSnapShotLineIndexes] = useState<Set<number>>(
+    new Set(),
+  );
+  const [versionSnapShotStack, setVersionSnapShotStack] = useState<
+    Array<number[]>
+  >([]);
   const [currentVersion, setCurrentVersion] = useState<number>(0);
   // Font Size Slider
   const [fontSize, setFontSize] = useState<string>("12px");
@@ -68,6 +74,7 @@ const TranslationPage = () => {
     lineIndex: number,
   ) => {
     const updatedContentArray = [...translatedStoryLines];
+    snapSnapShotLineIndexes((val: Set<number>) => new Set(val.add(lineIndex)));
     if (
       // user deleted translation line
       !newContent.trim() &&
@@ -97,6 +104,9 @@ const TranslationPage = () => {
       onChangeTranslationContent(newContent, lineIndex);
       setVersionHistoryStack([
         ...deepCopy(versionHistoryStack.slice(0, currentVersion + 1)),
+      ]);
+      setVersionSnapShotStack([
+        ...deepCopy(versionSnapShotStack.slice(0, currentVersion + 1)),
       ]);
       setCurrentVersion(
         versionHistoryStack.length === MAX_STACK_SIZE
@@ -138,6 +148,7 @@ const TranslationPage = () => {
       );
       setTranslatedStoryLines(contentArray);
       setVersionHistoryStack([deepCopy(contentArray)]);
+      setVersionSnapShotStack([]);
       setCurrentVersion(0);
     },
   });
@@ -185,9 +196,12 @@ const TranslationPage = () => {
               setCurrentVersion={setCurrentVersion}
               versionHistoryStack={versionHistoryStack}
               setVersionHistoryStack={setVersionHistoryStack}
+              versionSnapShotStack={versionSnapShotStack}
+              setVersionSnapShotStack={setVersionSnapShotStack}
+              snapShotLineIndexes={snapShotLineIndexes}
+              snapSnapShotLineIndexes={snapSnapShotLineIndexes}
               translatedStoryLines={translatedStoryLines}
-              setTranslatedStoryLines={setTranslatedStoryLines}
-              setNumTranslatedLines={setNumTranslatedLines}
+              onChangeTranslationContent={onChangeTranslationContent}
               MAX_STACK_SIZE={MAX_STACK_SIZE}
             />
           </Flex>
