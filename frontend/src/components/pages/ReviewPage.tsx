@@ -140,6 +140,8 @@ const ReviewPage = () => {
               setCommentStoryTranslationContentId={
                 setCommentStoryTranslationContentId
               }
+              numApprovedLines={numApprovedLines}
+              setNumApprovedLines={setNumApprovedLines}
             />
           </Flex>
           <Flex margin="20px 30px" justify="flex-start" alignItems="center">

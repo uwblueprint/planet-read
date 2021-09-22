@@ -30,10 +30,12 @@ export type TranslationTableProps = {
   fontSize: string;
   translatedLanguage: string;
   originalLanguage?: string;
-  setTranslatedStoryLines?: Function;
+  setTranslatedStoryLines?: (storyLines: StoryLine[]) => void;
   commentLine: number;
   setCommentLine: (line: number) => void;
   setCommentStoryTranslationContentId: (id: number) => void;
+  numApprovedLines?: number;
+  setNumApprovedLines?: (numLines: number) => void;
 };
 
 const TranslationTable = ({
@@ -47,6 +49,8 @@ const TranslationTable = ({
   commentLine,
   setCommentLine,
   setCommentStoryTranslationContentId,
+  numApprovedLines,
+  setNumApprovedLines,
 }: TranslationTableProps) => {
   const handleCommentButton = (
     displayLineNumber: number,
@@ -109,17 +113,18 @@ const TranslationTable = ({
                       },
                     });
                     if (result) {
+                      const prevState =
+                        translatedStoryLines[storyLine.lineIndex].status;
+
                       const updatedStatusArray = [...translatedStoryLines!];
                       updatedStatusArray[storyLine.lineIndex].status =
                         "Approved";
-                      // if (setTranslatedStoryLines) {
-                      await setTranslatedStoryLines!!(translatedStoryLines);
-                      console.log("aero");
-                      console.log(
-                        translatedStoryLines[storyLine.lineIndex].status,
-                      );
-                      console.log("aero");
-                      // }
+
+                      await setTranslatedStoryLines!!(updatedStatusArray);
+
+                      if (prevState !== "Approved") {
+                        setNumApprovedLines!!(numApprovedLines!! + 1);
+                      }
                     }
                   }}
                 >
@@ -134,16 +139,17 @@ const TranslationTable = ({
                       },
                     });
                     if (result) {
+                      const prevState =
+                        translatedStoryLines[storyLine.lineIndex].status;
+
                       const updatedStatusArray = [...translatedStoryLines];
                       updatedStatusArray[storyLine.lineIndex].status = "Action";
-                      // if (setTranslatedStoryLines) {
-                      await setTranslatedStoryLines!!(translatedStoryLines);
-                      console.log("aero");
-                      console.log(
-                        translatedStoryLines[storyLine.lineIndex].status,
-                      );
-                      console.log("aero");
-                      // }
+
+                      await setTranslatedStoryLines!!(updatedStatusArray);
+
+                      if (prevState === "Approved") {
+                        setNumApprovedLines!!(numApprovedLines!! - 1);
+                      }
                     }
                   }}
                 >
