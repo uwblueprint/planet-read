@@ -127,6 +127,7 @@ const ReviewPage = () => {
               fontSize={fontSize}
               originalLanguage="English"
               translatedLanguage={convertLanguageTitleCase(language)}
+              setTranslatedStoryLines={setTranslatedStoryLines}
             />
           </Flex>
           <Flex margin="20px 30px" justify="flex-start" alignItems="center">

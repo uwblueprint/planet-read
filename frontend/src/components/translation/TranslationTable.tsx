@@ -30,6 +30,7 @@ export type TranslationTableProps = {
   fontSize: string;
   translatedLanguage: string;
   originalLanguage?: string;
+  setTranslatedStoryLines?: Function;
 };
 
 const TranslationTable = ({
@@ -39,6 +40,7 @@ const TranslationTable = ({
   fontSize,
   translatedLanguage,
   originalLanguage,
+  setTranslatedStoryLines,
 }: TranslationTableProps) => {
   const storyCells = translatedStoryLines.map((storyLine: StoryLine) => {
     const displayLineNumber = storyLine.lineIndex + 1;
@@ -74,33 +76,68 @@ const TranslationTable = ({
         )}
         <Flex direction="column" width="130px" margin="10px">
           {!editable ? (
-            <Badge
-              textTransform="capitalize"
-              variant={getStatusVariant(storyLine.status)}
-              marginBottom="10px"
-            >
-              <Menu>
-                <MenuButton as={Button}>
-                  {storyLine.status}
-                  <ChevronDownIcon />
-                </MenuButton>
-                <MenuList>
-                  <MenuItem
-                    onClick={() =>
-                      updateStatus({
-                        variables: {
-                          storyTranslationId: storyLine.storyTranslationContentId!!,
-                          status: "APPROVED",
-                        },
-                      })
+            <Menu>
+              <MenuButton
+                as={Badge}
+                textTransform="capitalize"
+                variant={getStatusVariant(storyLine.status)}
+                marginBottom="10px"
+              >
+                {storyLine.status}
+                <ChevronDownIcon />
+              </MenuButton>
+              <MenuList>
+                <MenuItem
+                  onClick={async () => {
+                    const result = updateStatus({
+                      variables: {
+                        storyTranslationId: storyLine.storyTranslationContentId!!,
+                        status: "APPROVED",
+                      },
+                    });
+                    if (result) {
+                      const updatedStatusArray = [...translatedStoryLines!];
+                      updatedStatusArray[storyLine.lineIndex].status =
+                        "Approved";
+                      // if (setTranslatedStoryLines) {
+                      await setTranslatedStoryLines!!(translatedStoryLines);
+                      console.log("aero");
+                      console.log(
+                        translatedStoryLines[storyLine.lineIndex].status,
+                      );
+                      console.log("aero");
+                      // }
                     }
-                  >
-                    Approve
-                  </MenuItem>
-                  <MenuItem>Action Required</MenuItem>
-                </MenuList>
-              </Menu>
-            </Badge>
+                  }}
+                >
+                  Approve
+                </MenuItem>
+                <MenuItem
+                  onClick={async () => {
+                    const result = updateStatus({
+                      variables: {
+                        storyTranslationId: storyLine.storyTranslationContentId!!,
+                        status: "ACTION_REQUIRED",
+                      },
+                    });
+                    if (result) {
+                      const updatedStatusArray = [...translatedStoryLines];
+                      updatedStatusArray[storyLine.lineIndex].status = "Action";
+                      // if (setTranslatedStoryLines) {
+                      await setTranslatedStoryLines!!(translatedStoryLines);
+                      console.log("aero");
+                      console.log(
+                        translatedStoryLines[storyLine.lineIndex].status,
+                      );
+                      console.log("aero");
+                      // }
+                    }
+                  }}
+                >
+                  Action Required
+                </MenuItem>
+              </MenuList>
+            </Menu>
           ) : (
             <Badge
               textTransform="capitalize"
