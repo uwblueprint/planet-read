@@ -31,6 +31,9 @@ export type TranslationTableProps = {
   translatedLanguage: string;
   originalLanguage?: string;
   setTranslatedStoryLines?: Function;
+  commentLine: number;
+  setCommentLine: (line: number) => void;
+  setCommentStoryTranslationContentId: (id: number) => void;
 };
 
 const TranslationTable = ({
@@ -41,7 +44,17 @@ const TranslationTable = ({
   translatedLanguage,
   originalLanguage,
   setTranslatedStoryLines,
+  commentLine,
+  setCommentLine,
+  setCommentStoryTranslationContentId,
 }: TranslationTableProps) => {
+  const handleCommentButton = (
+    displayLineNumber: number,
+    storyTranslationContentId: number,
+  ) => {
+    setCommentLine(displayLineNumber);
+    setCommentStoryTranslationContentId(storyTranslationContentId);
+  };
   const storyCells = translatedStoryLines.map((storyLine: StoryLine) => {
     const displayLineNumber = storyLine.lineIndex + 1;
     const [updateStatus] = useMutation<{
@@ -148,6 +161,19 @@ const TranslationTable = ({
             </Badge>
           )}
           <Button variant="addComment">Comment</Button>
+          {commentLine > -1 && (
+            <Button
+              variant="addComment"
+              onClick={() =>
+                handleCommentButton(
+                  displayLineNumber,
+                  storyLine.storyTranslationContentId!!,
+                )
+              }
+            >
+              Comment
+            </Button>
+          )}
         </Flex>
       </Flex>
     );

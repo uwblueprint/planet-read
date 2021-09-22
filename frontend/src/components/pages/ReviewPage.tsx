@@ -52,6 +52,13 @@ const ReviewPage = () => {
   const [title, setTitle] = useState<string>("");
   const [language, setLanguage] = useState<string>("");
 
+  const [commentLine, setCommentLine] = useState(-1);
+
+  const [
+    commentStoryTranslationContentId,
+    setCommentStoryTranslationContentId,
+  ] = useState<number>(-1);
+
   const handleFontSizeChange = (val: string) => {
     setFontSize(val);
   };
@@ -128,6 +135,11 @@ const ReviewPage = () => {
               originalLanguage="English"
               translatedLanguage={convertLanguageTitleCase(language)}
               setTranslatedStoryLines={setTranslatedStoryLines}
+              commentLine={commentLine}
+              setCommentLine={setCommentLine}
+              setCommentStoryTranslationContentId={
+                setCommentStoryTranslationContentId
+              }
             />
           </Flex>
           <Flex margin="20px 30px" justify="flex-start" alignItems="center">
@@ -149,7 +161,12 @@ const ReviewPage = () => {
             </Box>
           </Flex>
         </Flex>
-        <CommentsPanel storyTranslationId={storyTranslationId} />
+        <CommentsPanel
+          commentStoryTranslationContentId={commentStoryTranslationContentId}
+          commentLine={commentLine}
+          storyTranslationId={storyTranslationId}
+          setCommentLine={setCommentLine}
+        />
       </Flex>
     </Flex>
   );

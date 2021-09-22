@@ -7,10 +7,12 @@ import { ApolloProvider } from "@apollo/client";
 import Login from "./components/auth/Login";
 import Signup from "./components/auth/Signup";
 import PrivateRoute from "./components/auth/PrivateRoute";
+import AdminPage from "./components/pages/AdminPage";
 import HomePage from "./components/pages/HomePage";
 import NotFound from "./components/pages/NotFound";
 import TranslationPage from "./components/pages/TranslationPage";
 import ReviewPage from "./components/pages/ReviewPage";
+import UserProfilePage from "./components/pages/UserProfilePage";
 import customTheme from "./theme/index";
 
 import AUTHENTICATED_USER_KEY from "./constants/AuthConstants";
@@ -39,6 +41,12 @@ const App = () => {
               <Route exact path="/login" component={Login} />
               <Route exact path="/signup" component={Signup} />
               <PrivateRoute exact path="/" component={HomePage} />
+              <PrivateRoute
+                exact
+                path="/user/:userId"
+                component={UserProfilePage}
+              />
+              <PrivateRoute exact path="/admin" component={AdminPage} />
               <PrivateRoute
                 exact
                 path="/translation/:storyIdParam/:storyTranslationIdParam"

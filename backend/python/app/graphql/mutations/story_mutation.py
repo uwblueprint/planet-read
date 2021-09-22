@@ -11,6 +11,7 @@ from ..types.story_type import (
     StoryTranslationContentRequestDTO,
     StoryTranslationContentResponseDTO,
     StoryTranslationUpdateStatusResponseDTO, 
+    UpdateStoryTranslationStageRequestDTO,
 )
 
 
@@ -84,6 +85,7 @@ class UpdateStoryTranslationContents(graphene.Mutation):
             raise Exception(error_message if error_message else str(e))
 
 
+<<<<<<< HEAD
 class UpdateStoryTranslationContentStatus(graphene.Mutation): 
     class Arguments: 
         story_translation_id = graphene.Int(required=True)
@@ -120,3 +122,18 @@ class UpdateAllStoryTranslationContentStatus(graphene.Mutation):
             error_message = getattr(e, "message", None)
             raise Exception(error_message if error_message else str(e))
     
+=======
+class UpdateStoryTranslationStage(graphene.Mutation):
+    class Arguments:
+        story_translation_data = UpdateStoryTranslationStageRequestDTO(required=True)
+
+    ok = graphene.Boolean()
+
+    def mutate(root, info, story_translation_data):
+        try:
+            services["story"].update_story_translation_stage(story_translation_data)
+            return UpdateStoryTranslationStage(ok=True)
+        except Exception as e:
+            error_message = getattr(e, "message", None)
+            raise Exception(error_message if error_message else str(e))
+>>>>>>> 853b317d684752496292969baa77679aa9b1b8b0
