@@ -13,7 +13,10 @@ import { useMutation } from "@apollo/client";
 import { ChevronDownIcon } from "@chakra-ui/icons";
 import EditableCell from "./EditableCell";
 import { StoryLine } from "./Autosave";
-import { getStatusVariant } from "../../utils/StatusUtils";
+import {
+  getStatusVariant,
+  convertStatusTitleCase,
+} from "../../utils/StatusUtils";
 import {
   UPDATE_STORY_TRANSLATION_CONTENT_STATUS,
   UpdateStoryTranslationContentStatusResponse,
@@ -59,11 +62,43 @@ const TranslationTable = ({
     setCommentLine(displayLineNumber);
     setCommentStoryTranslationContentId(storyTranslationContentId);
   };
+  const [updateStatus] = useMutation<{
+    response: UpdateStoryTranslationContentStatusResponse;
+  }>(UPDATE_STORY_TRANSLATION_CONTENT_STATUS);
+
+  const handleStatusChange = async (storyLine: StoryLine, newState: string) => {
+    const result = updateStatus({
+      variables: {
+        storyTranslationId: storyLine.storyTranslationContentId!!,
+        status: newState,
+      },
+    });
+    if (result) {
+      const prevState = translatedStoryLines[storyLine.lineIndex].status;
+
+      const updatedStatusArray = [...translatedStoryLines!];
+      updatedStatusArray[storyLine.lineIndex].status = convertStatusTitleCase(
+        newState,
+      );
+
+      await setTranslatedStoryLines!!(updatedStatusArray);
+
+      if (
+        prevState !== convertStatusTitleCase("APPROVED") &&
+        newState === "APPROVED"
+      ) {
+        setNumApprovedLines!!(numApprovedLines!! + 1);
+      } else if (
+        prevState === convertStatusTitleCase("APPROVED") &&
+        newState !== "APPROVED"
+      ) {
+        setNumApprovedLines!!(numApprovedLines!! - 1);
+      }
+    }
+  };
+
   const storyCells = translatedStoryLines.map((storyLine: StoryLine) => {
     const displayLineNumber = storyLine.lineIndex + 1;
-    const [updateStatus] = useMutation<{
-      response: UpdateStoryTranslationContentStatusResponse;
-    }>(UPDATE_STORY_TRANSLATION_CONTENT_STATUS);
 
     console.log(storyLine);
     return (
@@ -106,51 +141,14 @@ const TranslationTable = ({
               <MenuList>
                 <MenuItem
                   onClick={async () => {
-                    const result = updateStatus({
-                      variables: {
-                        storyTranslationId: storyLine.storyTranslationContentId!!,
-                        status: "APPROVED",
-                      },
-                    });
-                    if (result) {
-                      const prevState =
-                        translatedStoryLines[storyLine.lineIndex].status;
-
-                      const updatedStatusArray = [...translatedStoryLines!];
-                      updatedStatusArray[storyLine.lineIndex].status =
-                        "Approved";
-
-                      await setTranslatedStoryLines!!(updatedStatusArray);
-
-                      if (prevState !== "Approved") {
-                        setNumApprovedLines!!(numApprovedLines!! + 1);
-                      }
-                    }
+                    handleStatusChange(storyLine, "APPROVED");
                   }}
                 >
                   Approve
                 </MenuItem>
                 <MenuItem
                   onClick={async () => {
-                    const result = updateStatus({
-                      variables: {
-                        storyTranslationId: storyLine.storyTranslationContentId!!,
-                        status: "ACTION_REQUIRED",
-                      },
-                    });
-                    if (result) {
-                      const prevState =
-                        translatedStoryLines[storyLine.lineIndex].status;
-
-                      const updatedStatusArray = [...translatedStoryLines];
-                      updatedStatusArray[storyLine.lineIndex].status = "Action";
-
-                      await setTranslatedStoryLines!!(updatedStatusArray);
-
-                      if (prevState === "Approved") {
-                        setNumApprovedLines!!(numApprovedLines!! - 1);
-                      }
-                    }
+                    handleStatusChange(storyLine, "ACTION_REQUIRED");
                   }}
                 >
                   Action Required
