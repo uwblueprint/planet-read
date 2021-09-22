@@ -222,16 +222,16 @@ class StoryService(IStoryService):
     # Deprecated: function is not currently in use (story translation stage logic has not been tested)
     def update_story_translation_content(self, story_translation_content):
         story_translation = StoryTranslationContent.query.filter_by(
-            id = story_translation_content.id
+            id=story_translation_content.id
         ).first()
         story_translation_id = story_translation.story_translation_id
 
         story_translation = StoryTranslation.query.filter_by(
-            id = story_translation_id
+            id=story_translation_id
         ).first()
         story_translation_stage = story_translation.stage
 
-        if (story_translation_stage == "TRANSLATE"):
+        if story_translation_stage == "TRANSLATE":
             try:
                 if not story_translation:
                     raise Exception(
@@ -258,25 +258,32 @@ class StoryService(IStoryService):
                 story_translation.line_index,
                 story_translation_content.translation_content,
             )
-        elif (story_translation_stage == "REVIEW"):
-            raise Exception("Story translation contents cannot be changed while the story is being reviewed.")
-        elif (story_translation_stage == "PUBLISH"):
-            raise Exception("Story translation contents cannot be changed after the story has been published.")
+        elif story_translation_stage == "REVIEW":
+            raise Exception(
+                "Story translation contents cannot be changed while the story is being reviewed."
+            )
+        elif story_translation_stage == "PUBLISH":
+            raise Exception(
+                "Story translation contents cannot be changed after the story has been published."
+            )
         else:
             raise Exception("Story translation contents cannot be changed right now.")
 
     def update_story_translation_contents(self, story_translation_contents):
-        story_translation_content = StoryTranslationContent.query.filter_by(
-            id = story_translation_contents[0].id
-        ).first()
-        story_translation_id = story_translation_content.story_translation_id
+        try:
+            story_translation = (
+                db.session.query(StoryTranslation)
+                .join(StoryTranslationContent)
+                .filter(StoryTranslationContent.id == story_translation_contents[0].id)
+                .first()
+            )
 
-        story_translation = StoryTranslation.query.filter_by(
-            id = story_translation_id
-        ).first()
-        story_translation_stage = story_translation.stage
+            story_translation_stage = story_translation.stage
+        except Exception as error:
+            self.logger.error(str(error))
+            raise error
 
-        if (story_translation_stage == "TRANSLATE"):
+        if story_translation_stage == "TRANSLATE":
             try:
                 # TODO: return lineIndex too
                 db.session.bulk_update_mappings(
@@ -292,10 +299,14 @@ class StoryService(IStoryService):
                     )
                 )
                 raise error
-        elif (story_translation_stage == "REVIEW"):
-            raise Exception("Story translation contents cannot be changed while the story is being reviewed.")
-        elif (story_translation_stage == "PUBLISH"):
-            raise Exception("Story translation contents cannot be changed after the story has been published.")
+        elif story_translation_stage == "REVIEW":
+            raise Exception(
+                "Story translation contents cannot be changed while the story is being reviewed."
+            )
+        elif story_translation_stage == "PUBLISH":
+            raise Exception(
+                "Story translation contents cannot be changed after the story has been published."
+            )
         else:
             raise Exception("Story translation contents cannot be changed right now.")
 

@@ -3,12 +3,12 @@ from datetime import datetime
 from flask import current_app
 from sqlalchemy import func
 
+from ...middlewares.auth import get_user_id_from_request
 from ...models import db
 from ...models.comment import Comment
 from ...models.story_translation import StoryTranslation
 from ...models.story_translation_content import StoryTranslationContent
 from ...models.story_translation_content_status import StoryTranslationContentStatus
-from ...middlewares.auth import get_user_id_from_request
 from ..interfaces.comment_service import ICommentService
 
 
@@ -17,26 +17,35 @@ class CommentService(ICommentService):
         self.logger = logger
 
     def create_comment(self, comment):
-        user_id = get_user_id_from_request()
-        new_comment = Comment(**comment)
-        new_comment.user_id = user_id
+        try:
+            # TODO: remove cast to int once get_user_id_from_request is updated
+            user_id = int(get_user_id_from_request())
+            new_comment = Comment(**comment)
+            new_comment.user_id = user_id
 
-        story_translation_content = StoryTranslationContent.query.filter_by(
-            id = new_comment.story_translation_content_id
-        ).first()
-        story_translation_id = story_translation_content.story_translation_id
+            story_translation = (
+                db.session.query(StoryTranslation)
+                .join(StoryTranslationContent)
+                .filter(
+                    StoryTranslationContent.id
+                    == new_comment.story_translation_content_id
+                )
+                .first()
+            )
 
-        story_translation = StoryTranslation.query.filter_by(
-            id = story_translation_id
-        ).first()
-        story_translation_stage = story_translation.stage
-        story_translation_translator_id = story_translation.translator_id
-        story_translation_reviewer_id = story_translation.reviewer_id
+            story_translation_stage = story_translation.stage
+            story_translation_translator_id = story_translation.translator_id
+            story_translation_reviewer_id = story_translation.reviewer_id
 
-        is_translator = user_id == str(story_translation_translator_id)
-        is_reviewer = user_id == str(story_translation_reviewer_id)
+            is_translator = user_id == story_translation_translator_id
+            is_reviewer = user_id == story_translation_reviewer_id
+        except Exception as error:
+            self.logger.error(str(error))
+            raise error
 
-        if ((story_translation_stage == "TRANSLATE" and is_translator) or (story_translation_stage == "REVIEW" and is_reviewer)):
+        if (story_translation_stage == "TRANSLATE" and is_translator) or (
+            story_translation_stage == "REVIEW" and is_reviewer
+        ):
             try:
                 new_comment.time = datetime.utcnow()
                 new_comment.resolved = False
@@ -64,16 +73,24 @@ class CommentService(ICommentService):
             db.session.commit()
 
             story_translation_content = new_comment.story_translation_content
-            story_translation_content.status = StoryTranslationContentStatus.ACTION_REQUIRED
+            story_translation_content.status = (
+                StoryTranslationContentStatus.ACTION_REQUIRED
+            )
             db.session.commit()
 
             return new_comment
-        elif (story_translation_stage == "TRANSLATE" and is_reviewer):
-            raise Exception("Comments cannot be left by reviewers while the story is being translated.")
-        elif (story_translation_stage == "REVIEW" and is_translator):
-            raise Exception("Comments cannot be left by translators while the story is being reviewed.")
-        elif (story_translation_stage == "PUBLISH" and (is_translator or is_reviewer)):
-            raise Exception("Comments cannot be left after the story has been published.")
+        elif story_translation_stage == "TRANSLATE" and is_reviewer:
+            raise Exception(
+                "Comments cannot be left by reviewers while the story is being translated."
+            )
+        elif story_translation_stage == "REVIEW" and is_translator:
+            raise Exception(
+                "Comments cannot be left by translators while the story is being reviewed."
+            )
+        elif story_translation_stage == "PUBLISH" and (is_translator or is_reviewer):
+            raise Exception(
+                "Comments cannot be left after the story has been published."
+            )
         else:
             raise Exception("You are not authorized to leave comments on this story.")
 
