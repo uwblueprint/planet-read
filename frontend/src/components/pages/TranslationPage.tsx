@@ -69,7 +69,7 @@ const TranslationPage = () => {
     setFontSize(val);
   };
 
-  const onChangeTranslationContent = async (
+  const onChangeTranslationContent = (
     newContent: string,
     lineIndex: number,
   ) => {
