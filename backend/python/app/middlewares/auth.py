@@ -38,7 +38,7 @@ References for creating middleware using Python decorators:
 * Outermost function (i.e. require_authorization_by_role below) is the name of the decorator,
   it can be used to supply arguments to the middleware function (e.g. the roles to check for)
   Note: this layer is NOT needed if the middleware does not require parameters.
-* Middle function (i.e. require_authorization below) wraps around the decorated function 
+* Middle function (i.e. require_authorization below) wraps around the decorated function
   (an API endpoint) using the functools wraps decorator.
 * Innermost function (i.e. wrapper below) defines the actual middleware logic, like checking authorization.
 """

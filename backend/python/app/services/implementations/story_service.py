@@ -219,54 +219,95 @@ class StoryService(IStoryService):
             self.logger.error("User can't be assigned as a reviewer")
             raise Exception("User can't be assigned as a reviewer")
 
+    # Deprecated: function is not currently in use (story translation stage logic has not been tested)
     def update_story_translation_content(self, story_translation_content):
-        try:
-            story_translation = StoryTranslationContent.query.filter_by(
-                id=story_translation_content.id
-            ).first()
+        story_translation = StoryTranslationContent.query.filter_by(
+            id=story_translation_content.id
+        ).first()
+        story_translation_id = story_translation.story_translation_id
 
-            if not story_translation:
-                raise Exception(
-                    "story_translation_content_id {id} not found".format(
-                        id=story_translation_content.id
+        story_translation = StoryTranslation.query.filter_by(
+            id=story_translation_id
+        ).first()
+        story_translation_stage = story_translation.stage
+
+        if story_translation_stage == "TRANSLATE":
+            try:
+                if not story_translation:
+                    raise Exception(
+                        "story_translation_content_id {id} not found".format(
+                            id=story_translation_content.id
+                        )
+                    )
+
+                story_translation.translation_content = (
+                    story_translation_content.translation_content
+                )
+                db.session.commit()
+            except Exception as error:
+                reason = getattr(error, "message", None)
+                self.logger.error(
+                    "Failed to update story translation content. Reason = {reason}".format(
+                        reason=(reason if reason else str(error))
                     )
                 )
+                raise error
 
-            story_translation.translation_content = (
-                story_translation_content.translation_content
+            return StoryTranslationContentResponseDTO(
+                story_translation_content.id,
+                story_translation.line_index,
+                story_translation_content.translation_content,
             )
-            db.session.commit()
-        except Exception as error:
-            reason = getattr(error, "message", None)
-            self.logger.error(
-                "Failed to update story translation content. Reason = {reason}".format(
-                    reason=(reason if reason else str(error))
-                )
+        elif story_translation_stage == "REVIEW":
+            raise Exception(
+                "Story translation contents cannot be changed while the story is being reviewed."
             )
-            raise error
-
-        return StoryTranslationContentResponseDTO(
-            story_translation_content.id,
-            story_translation.line_index,
-            story_translation_content.translation_content,
-        )
+        elif story_translation_stage == "PUBLISH":
+            raise Exception(
+                "Story translation contents cannot be changed after the story has been published."
+            )
+        else:
+            raise Exception("Story translation contents cannot be changed right now.")
 
     def update_story_translation_contents(self, story_translation_contents):
         try:
-            # TODO: return lineIndex too
-            db.session.bulk_update_mappings(
-                StoryTranslationContent, story_translation_contents
+            story_translation = (
+                StoryTranslation.query.join(StoryTranslationContent)
+                .filter(StoryTranslationContent.id == story_translation_contents[0].id)
+                .first()
             )
-            db.session.commit()
-            return story_translation_contents
+
+            story_translation_stage = story_translation.stage
         except Exception as error:
-            reason = getattr(error, "message", None)
-            self.logger.error(
-                "Failed to update story translation content. Reason = {reason}".format(
-                    reason=(reason if reason else str(error))
-                )
-            )
+            self.logger.error(str(error))
             raise error
+
+        if story_translation_stage == "TRANSLATE":
+            try:
+                # TODO: return lineIndex too
+                db.session.bulk_update_mappings(
+                    StoryTranslationContent, story_translation_contents
+                )
+                db.session.commit()
+                return story_translation_contents
+            except Exception as error:
+                reason = getattr(error, "message", None)
+                self.logger.error(
+                    "Failed to update story translation content. Reason = {reason}".format(
+                        reason=(reason if reason else str(error))
+                    )
+                )
+                raise error
+        elif story_translation_stage == "REVIEW":
+            raise Exception(
+                "Story translation contents cannot be changed while the story is being reviewed."
+            )
+        elif story_translation_stage == "PUBLISH":
+            raise Exception(
+                "Story translation contents cannot be changed after the story has been published."
+            )
+        else:
+            raise Exception("Story translation contents cannot be changed right now.")
 
     def update_story_translation_stage(self, story_translation_data):
         try:
