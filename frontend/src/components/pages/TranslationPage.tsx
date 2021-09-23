@@ -244,7 +244,7 @@ const TranslationPage = () => {
               margin="0 10px 0"
               disabled={!editable}
             >
-              SEND FOR REVIEW
+              {editable ? "SEND FOR REVIEW" : "IN REVIEW"}
             </Button>
           </Flex>
         </Flex>
