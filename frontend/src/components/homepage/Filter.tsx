@@ -19,6 +19,7 @@ export type FilterProps = {
   setLanguage: (newState: string) => void;
   role: boolean;
   setIsTranslator: (newState: boolean) => void;
+  isDisabled?: boolean;
 };
 
 const Filter = ({
@@ -29,6 +30,7 @@ const Filter = ({
   setLanguage,
   role,
   setIsTranslator,
+  isDisabled = false,
 }: FilterProps) => {
   const handleSelectChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     setLanguage(event.target.value);
@@ -39,12 +41,16 @@ const Filter = ({
   const handleLevelChangeStr = (nextLevel: string) => {
     setLevel(parseInt(nextLevel.replace("Level ", ""), 10));
   };
-  const languageOptions = Object.keys(approvedLanguagesTranslation).map(
-    (lang) => (
+  const languageOptions = isDisabled ? (
+    <option key="undefined" value="undefined">
+      {" "}
+    </option>
+  ) : (
+    Object.keys(approvedLanguagesTranslation).map((lang) => (
       <option key={lang} value={lang}>
         {convertLanguageTitleCase(lang)}
       </option>
-    ),
+    ))
   );
   const maxLvl = approvedLanguagesTranslation[language];
   const lvlOptions = [];
@@ -54,40 +60,43 @@ const Filter = ({
     );
   }
   const filterStyle = useStyleConfig("Filter");
+  const disabledStyle = useStyleConfig("Disabled");
   return (
     <Flex sx={filterStyle}>
       <Heading size="lg">Filters</Heading>
       <Divider />
-      <Box>
+      <Box sx={isDisabled ? disabledStyle : undefined}>
         <Heading size="sm">Translation Language</Heading>
         <Select
           size="sm"
           variant="filled"
           id="language"
-          value={language}
+          value={isDisabled ? "undefined" : language}
           onChange={handleSelectChange}
         >
           {languageOptions}
         </Select>
       </Box>
       <Divider />
-      <Box>
+      <Box sx={isDisabled ? disabledStyle : undefined}>
         <Heading size="sm">Role Required</Heading>
         <ButtonRadioGroup
           name="Role"
           options={["Translator", "Reviewer"]}
           onChange={handleRoleChange}
           defaultValue={role ? "Translator" : "Reviewer"}
+          isDisabled={isDisabled}
         />
       </Box>
       <Divider />
-      <Box>
+      <Box sx={isDisabled ? disabledStyle : undefined}>
         <Heading size="sm">Access Level</Heading>
         <ButtonRadioGroup
           name="Level"
           options={["Level 1", "Level 2", "Level 3", "Level 4"]}
           onChange={handleLevelChangeStr}
           defaultValue={`Level ${level}`}
+          isDisabled={isDisabled}
         />
       </Box>
     </Flex>

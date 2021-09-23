@@ -22,13 +22,13 @@ def insert_test_data():
         f"INSERT IGNORE INTO users \
             (first_name, last_name, auth_id, role, approved_languages_translation, approved_languages_review) \
         VALUES \
-            ('Carl', 'Sagan', '{os.getenv('AUTH_ID_1', '')}', 'User', '{{\"ENGLISH_US\":4}}', NULL), \
+            ('Carl', 'Sagan', '{os.getenv('AUTH_ID_1', '')}', 'User', '{{\"ENGLISH_US\":4, \"ENGLISH_UK\":3}}', NULL), \
             ('Miroslav', 'Klose', '{os.getenv('AUTH_ID_2', '')}', 'User', '{{\"POLISH\":4, \"GERMAN\":4}}', '{{\"POLISH\":3}}'), \
             ('Kevin', 'De Bryune', '{os.getenv('AUTH_ID_3', '')}', 'User', '{{\"DUTCH\":4, \"FRENCH\":4}}', '{{\"DUTCH\":2, \"FRENCH\":4}}'), \
-            ('Dwight', 'D. Eisenhower', '{os.getenv('AUTH_ID_4', '')}', 'User', '{{\"ENGLISH_UK\":4, \"ENGLISH_US\":4}}', '{{\"ENGLISH_UK\":2, \"ENGLISH_US\":4}}'), \
-            ('Alexander', 'Hamilton', '{os.getenv('AUTH_ID_5', '')}', 'User', '{{\"MANDARIN\":4}}', '{{\"MANDARIN\":2}}'), \
+            ('Dwight', 'D. Eisenhower', '{os.getenv('AUTH_ID_4', '')}', 'User', '{{\"ENGLISH_UK\":4, \"ENGLISH_US\":4, \"GERMAN\":3}}', '{{\"ENGLISH_UK\":3, \"ENGLISH_US\":4}}'), \
+            ('Alexander', 'Hamilton', '{os.getenv('AUTH_ID_5', '')}', 'User', '{{\"MANDARIN\":4, \"ENGLISH_UK\":3}}', '{{\"MANDARIN\":2}}'), \
             ('Angela', 'Merkel', '{os.getenv('AUTH_ID_6', '')}', 'Admin', '{{\"GERMAN\":4}}', '{{\"GERMAN\":4}}'), \
-            ('Richard', 'Feynman', '{os.getenv('AUTH_ID_7', '')}', 'User', '{{\"PORTUGESE\":4}}', '{{\"PORTUGESE\":1}}'); \
+            ('Richard', 'Feynman', '{os.getenv('AUTH_ID_7', '')}', 'User', '{{\"PORTUGESE\":4, \"ENGLISH_UK\":4, \"GERMAN\":1}}', '{{\"PORTUGESE\":1}}'); \
     "
     )
 
@@ -80,14 +80,14 @@ def insert_test_data():
             (id, story_id, language, stage, translator_id) \
         VALUES \
             (1, 1, 'GERMAN', 'TRANSLATE', 6), \
-            (2, 1, 'ENGLISH_UK', 'TRANSLATE', 4), \
-            (3, 2, 'GERMAN', 'TRANSLATE', 2), \
+            (2, 1, 'ENGLISH_UK', 'TRANSLATE', 7), \
+            (3, 2, 'GERMAN', 'TRANSLATE', 7), \
             (4, 2, 'POLISH', 'TRANSLATE', 2), \
             (5, 3, 'MANDARIN', 'TRANSLATE', 5), \
-            (6, 3, 'ENGLISH_UK', 'TRANSLATE', 4), \
-            (7, 4, 'GERMAN', 'TRANSLATE', 6), \
+            (6, 3, 'ENGLISH_UK', 'TRANSLATE', 5), \
+            (7, 4, 'GERMAN', 'TRANSLATE', 2), \
             (8, 4, 'ENGLISH_UK', 'TRANSLATE', 4), \
-            (9, 5, 'GERMAN', 'TRANSLATE', 2), \
+            (9, 5, 'GERMAN', 'TRANSLATE', 4), \
             (10, 5, 'ENGLISH_UK', 'TRANSLATE', 1), \
             (11, 5, 'PORTUGUESE', 'TRANSLATE', 7), \
             (12, 5, 'DUTCH', 'TRANSLATE', 3), \

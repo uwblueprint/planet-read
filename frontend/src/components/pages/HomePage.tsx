@@ -50,6 +50,7 @@ const HomePage = () => {
   };
 
   const handleDisplayMyStoriesChange = (nextOption: string) => {
+    setStories(null);
     setDisplayMyStories(nextOption === "My Work");
   };
 
@@ -64,7 +65,17 @@ const HomePage = () => {
   useQuery(query.string, {
     fetchPolicy: "cache-and-network",
     // Assumes independent queries (query will never include two sub-queries)
-    onCompleted: (data) => setStories(data[query.fieldName]),
+    onCompleted: (data) => {
+      // Only the storyTranslationsByUser query returns the language in the gql
+      // response; otherwise it must be added based on the user's language filter
+      const storyData = displayMyStories
+        ? data[query.fieldName]
+        : data[query.fieldName].map((storyObj: any) => ({
+            ...storyObj,
+            language,
+          }));
+      setStories(storyData);
+    },
   });
   return (
     <Box>
@@ -79,6 +90,7 @@ const HomePage = () => {
           setLanguage={setLanguage}
           role={isTranslator}
           setIsTranslator={setIsTranslator}
+          isDisabled={displayMyStories}
         />
         <Flex
           direction="column"
@@ -95,11 +107,7 @@ const HomePage = () => {
             defaultValue="My Work"
             onChange={handleDisplayMyStoriesChange}
           />
-          <StoryList
-            stories={stories}
-            language={language}
-            displayMyStories={displayMyStories}
-          />
+          <StoryList stories={stories} displayMyStories={displayMyStories} />
         </Flex>
       </Flex>
       {showScrollToTop && (

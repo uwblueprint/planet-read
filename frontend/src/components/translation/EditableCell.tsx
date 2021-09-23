@@ -21,7 +21,7 @@ const EditableCell = ({
   return (
     <Textarea
       variant={
-        text.length === maxChars ? "maxCharsReached" : "translationEditable"
+        text?.length === maxChars ? "maxCharsReached" : "translationEditable"
       }
       value={text}
       style={{ fontSize }}

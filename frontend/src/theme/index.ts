@@ -3,6 +3,7 @@ import { extendTheme } from "@chakra-ui/react";
 import colors from "./colors";
 import Badge from "./components/Badge";
 import Button from "./components/Button";
+import Disabled from "./components/Disabled";
 import Filter from "./components/Filter";
 import Heading from "./components/Heading";
 import Text from "./components/Text";
@@ -22,6 +23,7 @@ const customTheme = extendTheme({
   components: {
     Badge,
     Button,
+    Disabled,
     Filter,
     Heading,
     Text,

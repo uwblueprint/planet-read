@@ -58,8 +58,8 @@ const CommentsPanel = ({
     }
     return (
       <Text variant="comment">
-        Looks like there aren`&apos;`t any comments yet! Select the Comment
-        button above to begin leaving comments.
+        Looks like there aren&apos;t any comments yet! Select the Comment button
+        above to begin leaving comments.
       </Text>
     );
   };

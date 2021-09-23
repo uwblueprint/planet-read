@@ -40,12 +40,15 @@ class IStoryService(ABC):
         pass
 
     @abstractmethod
-    def get_story_translations(self, user_id, translate, language, level):
+    def get_story_translations(self, user_id, is_translator, language, level):
         """Return a list of stories currently being translated/reviewed
 
         :param user_id: id of the user
-        :param translator: boolean; if True will return a list of stories
-        being translated by the user, else a list of stories being reviewed
+        :param is_translator: if True will return a list of stories being
+        translated by the user, if False a list of stories being reviewed; if
+        null returns story translations being either translated/reviewed by user
+        :param language: language of story translations to filter by and return
+        :param level: level of story translations to filter by and return
         :return: list of StoryTranslationResponseDTO's
         :rtype: list of StoryTranslationResponseDTO's
         """

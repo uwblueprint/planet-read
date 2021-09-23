@@ -101,12 +101,12 @@ export const buildHomePageStoriesQuery = (
             query StoriesAvailableForTranslation {
               storyTranslationsByUser(
                 userId: ${userId},
-                translator: ${isTranslator},
-                language: "${language}",
-                level: ${level}
               ) {
                 storyId
                 storyTranslationId: id
+                translatorId
+                reviewerId
+                language
                 ${STORY_FIELDS}
               }
             }
