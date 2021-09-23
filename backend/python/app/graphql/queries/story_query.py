@@ -14,10 +14,10 @@ def resolve_stories_available_for_translation(root, info, language, level):
 
 
 def resolve_story_translations_by_user(
-    root, info, user_id, is_translator, language, level, stage
+    root, info, user_id, is_translator, language, level
 ):
     return services["story"].get_story_translations(
-        user_id, is_translator, language, level, stage
+        user_id, is_translator, language, level
     )
 
 

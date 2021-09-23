@@ -109,7 +109,7 @@ class StoryService(IStoryService):
             raise error
         return new_story_translation
 
-    def get_story_translations(self, user_id, is_translator, language, level, stage):
+    def get_story_translations(self, user_id, is_translator, language, level):
         try:
             if is_translator is None:
                 role_filter = (StoryTranslation.translator_id == user_id) | (
@@ -122,11 +122,11 @@ class StoryService(IStoryService):
 
             stories = (
                 Story.query.join(
-                    StoryTranslation, Story.id == StoryTranslation.story_id
+                    StoryTranslation,
+                    Story.id == StoryTranslation.story_id,
                 )
                 .filter(role_filter)
                 .filter(StoryTranslation.language == language if language else True)
-                .filter(StoryTranslation.stage == stage if stage else True)
                 .filter(Story.level == level if level else True)
                 .order_by(Story.id)
                 .all()
@@ -138,19 +138,20 @@ class StoryService(IStoryService):
                 )
                 .filter(role_filter)
                 .filter(StoryTranslation.language == language if language else True)
-                .filter(StoryTranslation.stage == stage if stage else True)
                 .filter(Story.level == level if level else True)
                 .order_by(Story.id)
                 .all()
             )
 
-            for i in range(len(stories)):
-                stories[i] = {
-                    **stories[i].to_dict(),
+            for i in range(len(story_translations)):
+                story = next(
+                    filter(lambda x: x.id == story_translations[i].story_id, stories)
+                )
+                story_translations[i] = {
+                    **story.to_dict(),
                     **story_translations[i].to_dict(include_relationships=True),
                 }
-
-            return stories
+            return story_translations
 
         except Exception as error:
             self.logger.error(str(error))
@@ -381,8 +382,6 @@ class StoryService(IStoryService):
         )
 
     def _get_story_translation_languages(self, story_translations):
-        languages = set(
+        return set(
             [story_translation.language for story_translation in story_translations]
         )
-        print(languages)
-        return languages

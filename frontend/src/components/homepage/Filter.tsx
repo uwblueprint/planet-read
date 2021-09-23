@@ -41,12 +41,16 @@ const Filter = ({
   const handleLevelChangeStr = (nextLevel: string) => {
     setLevel(parseInt(nextLevel.replace("Level ", ""), 10));
   };
-  const languageOptions = Object.keys(approvedLanguagesTranslation).map(
-    (lang) => (
+  const languageOptions = isDisabled ? (
+    <option key="undefined" value="undefined">
+      {" "}
+    </option>
+  ) : (
+    Object.keys(approvedLanguagesTranslation).map((lang) => (
       <option key={lang} value={lang}>
         {convertLanguageTitleCase(lang)}
       </option>
-    ),
+    ))
   );
   const maxLvl = approvedLanguagesTranslation[language];
   const lvlOptions = [];
@@ -67,7 +71,7 @@ const Filter = ({
           size="sm"
           variant="filled"
           id="language"
-          value={language}
+          value={isDisabled ? "undefined" : language}
           onChange={handleSelectChange}
         >
           {languageOptions}
@@ -81,6 +85,7 @@ const Filter = ({
           options={["Translator", "Reviewer"]}
           onChange={handleRoleChange}
           defaultValue={role ? "Translator" : "Reviewer"}
+          isDisabled={isDisabled}
         />
       </Box>
       <Divider />
@@ -91,6 +96,7 @@ const Filter = ({
           options={["Level 1", "Level 2", "Level 3", "Level 4"]}
           onChange={handleLevelChangeStr}
           defaultValue={`Level ${level}`}
+          isDisabled={isDisabled}
         />
       </Box>
     </Flex>
