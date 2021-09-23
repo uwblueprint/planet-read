@@ -1,16 +1,16 @@
 import React, { useState } from "react";
 import { useQuery } from "@apollo/client";
-import { Icon } from "@chakra-ui/icon";
-import { Box, Button, Divider, Flex, IconButton, Text } from "@chakra-ui/react";
-import { MdRedo, MdUndo } from "react-icons/md";
+import { Box, Button, Divider, Flex, Text } from "@chakra-ui/react";
 import { useParams } from "react-router-dom";
 import ProgressBar from "../utils/ProgressBar";
 import TranslationTable from "../translation/TranslationTable";
+import UndoRedo from "../translation/UndoRedo";
 import Autosave, { StoryLine } from "../translation/Autosave";
 import { convertStatusTitleCase } from "../../utils/StatusUtils";
 import { GET_STORY_AND_TRANSLATION_CONTENTS } from "../../APIClients/queries/StoryQueries";
 import FontSizeSlider from "../translation/FontSizeSlider";
 import convertLanguageTitleCase from "../../utils/LanguageUtils";
+import deepCopy from "../../utils/DeepCopyUtils";
 import Header from "../navigation/Header";
 import CommentsPanel from "../review/CommentsPanel";
 
@@ -26,36 +26,38 @@ type Content = {
   status: string;
 };
 
-type HistoryStack = {
-  Undo: Array<{ lineIndex: number; content: string }>;
-  Redo: Array<{ lineIndex: number; content: string }>;
-};
-
 const TranslationPage = () => {
   const MAX_STACK_SIZE = 100;
   const {
     storyIdParam,
     storyTranslationIdParam,
   } = useParams<TranslationPageProps>();
-
+  // Story Data
   const storyId = +storyIdParam!!;
   const storyTranslationId = +storyTranslationIdParam!!;
   const [translatedStoryLines, setTranslatedStoryLines] = useState<StoryLine[]>(
     [],
   );
+  const [title, setTitle] = useState<string>("");
+  const [language, setLanguage] = useState<string>("");
+  // AutoSave
   const [changedStoryLines, setChangedStoryLines] = useState<
     Map<number, StoryLine>
   >(new Map());
   const [numTranslatedLines, setNumTranslatedLines] = useState(0);
-
-  const [versionHistoryStack, setVersionHistoryStack] = useState<HistoryStack>({
-    Undo: [],
-    Redo: [],
-  });
-
+  // UndoRedo
+  const [versionHistoryStack, setVersionHistoryStack] = useState<
+    Array<StoryLine[]>
+  >([]);
+  const [snapShotLineIndexes, snapSnapShotLineIndexes] = useState<Set<number>>(
+    new Set(),
+  );
+  const [versionSnapShotStack, setVersionSnapShotStack] = useState<
+    Array<number[]>
+  >([]);
+  const [currentVersion, setCurrentVersion] = useState<number>(0);
+  // Font Size Slider
   const [fontSize, setFontSize] = useState<string>("12px");
-  const [title, setTitle] = useState<string>("");
-  const [language, setLanguage] = useState<string>("");
 
   const [commentLine, setCommentLine] = useState(-1);
   const [
@@ -67,18 +69,12 @@ const TranslationPage = () => {
     setFontSize(val);
   };
 
-  const deepCopy = (lines: Object) => {
-    // This is a funky method to make deep copies on objects with primative values
-    // https://javascript.plainenglish.io/how-to-deep-copy-objects-and-arrays-in-javascript-7c911359b089
-    // Should probably go under some util
-    return JSON.parse(JSON.stringify(lines));
-  };
-
-  const onChangeTranslationContent = async (
+  const onChangeTranslationContent = (
     newContent: string,
     lineIndex: number,
   ) => {
     const updatedContentArray = [...translatedStoryLines];
+    snapSnapShotLineIndexes((val: Set<number>) => new Set(val.add(lineIndex)));
     if (
       // user deleted translation line
       !newContent.trim() &&
@@ -104,72 +100,19 @@ const TranslationPage = () => {
     lineIndex: number,
     maxChars: number,
   ) => {
-    const oldContent = translatedStoryLines[lineIndex].translatedContent!;
-    const newUndo =
-      versionHistoryStack.Undo.length === MAX_STACK_SIZE
-        ? versionHistoryStack.Undo.slice(1)
-        : versionHistoryStack.Undo;
-    setVersionHistoryStack({
-      Undo: [...deepCopy(newUndo), { lineIndex, content: oldContent }],
-      Redo: [],
-    });
-
     if (maxChars >= newContent.length) {
       onChangeTranslationContent(newContent, lineIndex);
-    }
-  };
-
-  const undoChange = () => {
-    if (versionHistoryStack.Undo.length > 0) {
-      const { lineIndex, content: newContent } = versionHistoryStack.Undo[
-        versionHistoryStack.Undo.length - 1
-      ];
-      const oldContent = translatedStoryLines[lineIndex].translatedContent;
-      if (oldContent !== newContent) {
-        const newRedo =
-          versionHistoryStack.Redo.length === MAX_STACK_SIZE
-            ? versionHistoryStack.Redo.slice(1)
-            : versionHistoryStack.Redo;
-        const newHistory = {
-          Undo: deepCopy(versionHistoryStack.Undo.slice(0, -1)),
-          Redo: [
-            ...deepCopy(newRedo),
-            {
-              lineIndex,
-              content: oldContent,
-            },
-          ],
-        };
-        setVersionHistoryStack(newHistory);
-        onChangeTranslationContent(newContent, lineIndex);
-      }
-    }
-  };
-
-  const redoChange = () => {
-    if (versionHistoryStack.Redo.length > 0) {
-      const { lineIndex, content: newContent } = versionHistoryStack.Redo[
-        versionHistoryStack.Redo.length - 1
-      ];
-      const oldContent = translatedStoryLines[lineIndex].translatedContent;
-      if (oldContent !== newContent) {
-        const newUndo =
-          versionHistoryStack.Undo.length === MAX_STACK_SIZE
-            ? versionHistoryStack.Undo.slice(1)
-            : versionHistoryStack.Undo;
-        const newHistory = {
-          Undo: [
-            ...deepCopy(newUndo),
-            {
-              lineIndex,
-              content: oldContent,
-            },
-          ],
-          Redo: deepCopy(versionHistoryStack.Redo.slice(0, -1)),
-        };
-        setVersionHistoryStack(newHistory);
-        onChangeTranslationContent(newContent, lineIndex);
-      }
+      setVersionHistoryStack([
+        ...deepCopy(versionHistoryStack.slice(0, currentVersion + 1)),
+      ]);
+      setVersionSnapShotStack([
+        ...deepCopy(versionSnapShotStack.slice(0, currentVersion + 1)),
+      ]);
+      setCurrentVersion(
+        versionHistoryStack.length === MAX_STACK_SIZE
+          ? MAX_STACK_SIZE - 1
+          : versionHistoryStack.length,
+      );
     }
   };
 
@@ -204,6 +147,9 @@ const TranslationPage = () => {
         },
       );
       setTranslatedStoryLines(contentArray);
+      setVersionHistoryStack([deepCopy(contentArray)]);
+      setVersionSnapShotStack([]);
+      setCurrentVersion(0);
     },
   });
 
@@ -245,22 +191,19 @@ const TranslationPage = () => {
         <Flex width="100%" direction="column">
           <Flex justify="space-between" alignItems="center" margin="10px 30px">
             <FontSizeSlider setFontSize={handleFontSizeChange} />
-            <Flex direction="row">
-              <IconButton
-                size="undoRedo"
-                variant="ghost"
-                aria-label="Undo Change"
-                onClick={undoChange}
-                icon={<Icon as={MdUndo} />}
-              />
-              <IconButton
-                variant="ghost"
-                size="undoRedo"
-                aria-label="Redo Change"
-                onClick={redoChange}
-                icon={<Icon as={MdRedo} />}
-              />
-            </Flex>
+            <UndoRedo
+              currentVersion={currentVersion}
+              setCurrentVersion={setCurrentVersion}
+              versionHistoryStack={versionHistoryStack}
+              setVersionHistoryStack={setVersionHistoryStack}
+              versionSnapShotStack={versionSnapShotStack}
+              setVersionSnapShotStack={setVersionSnapShotStack}
+              snapShotLineIndexes={snapShotLineIndexes}
+              snapSnapShotLineIndexes={snapSnapShotLineIndexes}
+              translatedStoryLines={translatedStoryLines}
+              onChangeTranslationContent={onChangeTranslationContent}
+              MAX_STACK_SIZE={MAX_STACK_SIZE}
+            />
           </Flex>
           <Divider />
           <Flex
