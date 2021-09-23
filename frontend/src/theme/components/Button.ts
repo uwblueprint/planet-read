@@ -78,6 +78,11 @@ const Button = {
       padding: "30px 30px 27px 30px",
       textTransform: "capitalize",
       width: "fit-content",
+    text: {
+      background: "transparent",
+      fontSize: "14px",
+      width: "50px",
+      textTransform: "capitalize",
     },
   },
 };

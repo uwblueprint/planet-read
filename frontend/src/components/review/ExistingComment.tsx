@@ -1,6 +1,6 @@
 import React, { useState, useContext } from "react";
 import { useMutation } from "@apollo/client";
-import { Flex, Box, Button } from "@chakra-ui/react";
+import { Flex, Button } from "@chakra-ui/react";
 import AuthContext from "../../contexts/AuthContext";
 import WIPComment from "./WIPComment";
 import {
@@ -12,7 +12,9 @@ export type ExistingCommentProps = {
   id: number;
   resolved: boolean;
   content: string;
-  storyTranslationContentId: number;
+  time: string;
+  commentStoryTranslationContentId: number;
+  setCommentLine: (line: number) => void;
   lineIndex: number;
 };
 
@@ -20,7 +22,9 @@ const ExistingComment = ({
   id,
   resolved,
   content,
-  storyTranslationContentId,
+  time,
+  commentStoryTranslationContentId,
+  setCommentLine,
   lineIndex,
 }: ExistingCommentProps) => {
   const handleError = (errorMessage: string) => {
@@ -58,17 +62,36 @@ const ExistingComment = ({
     ${authenticatedUser!!.lastName}`;
 
   return (
-    <Flex>
-      <Box backgroundColor="gray.300" float="right" width="250px">
+    <Flex
+      border="1px solid"
+      borderColor="blue.50"
+      padding="14px 15px"
+      direction="column"
+      style={{
+        borderRadius: 8,
+        width: "320px",
+      }}
+      backgroundColor="white"
+    >
+      <b>Line {lineIndex}</b>
+      <Flex justify="space-between">
         <p>{name}</p>
-        {content}
-        <Button onClick={() => setReply(true)}>Reply</Button>
-        <Button onClick={resolveExistingComment}>Resolve</Button>
-      </Box>
-      {reply === true && (
+        <p>{time}</p>
+      </Flex>
+      {content}
+      <Flex>
+        <Button onClick={() => setReply(true)} variant="text">
+          Reply
+        </Button>
+        <Button onClick={resolveExistingComment} variant="text">
+          Resolve
+        </Button>
+      </Flex>
+      {reply && lineIndex > 0 && (
         <WIPComment
-          storyTranslationContentId={storyTranslationContentId}
+          commentStoryTranslationContentId={commentStoryTranslationContentId}
           lineIndex={lineIndex}
+          setCommentLine={setCommentLine}
         />
       )}
     </Flex>
