@@ -24,8 +24,7 @@ class CommentService(ICommentService):
             new_comment.user_id = user_id
 
             story_translation = (
-                db.session.query(StoryTranslation)
-                .join(StoryTranslationContent)
+                StoryTranslation.query.join(StoryTranslationContent)
                 .filter(
                     StoryTranslationContent.id
                     == new_comment.story_translation_content_id

@@ -272,8 +272,7 @@ class StoryService(IStoryService):
     def update_story_translation_contents(self, story_translation_contents):
         try:
             story_translation = (
-                db.session.query(StoryTranslation)
-                .join(StoryTranslationContent)
+                StoryTranslation.query.join(StoryTranslationContent)
                 .filter(StoryTranslationContent.id == story_translation_contents[0].id)
                 .first()
             )
