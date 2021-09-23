@@ -139,6 +139,7 @@ const ReviewPage = () => {
           </Flex>
         </Flex>
         <CommentsPanel
+          disabled={false}
           commentStoryTranslationContentId={commentStoryTranslationContentId}
           commentLine={commentLine}
           storyTranslationId={storyTranslationId}

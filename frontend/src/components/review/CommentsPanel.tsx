@@ -12,6 +12,7 @@ export type CommentPanelProps = {
   commentLine: number;
   setCommentLine: (line: number) => void;
   commentStoryTranslationContentId: number;
+  disabled: boolean;
 };
 
 const CommentsPanel = ({
@@ -19,6 +20,7 @@ const CommentsPanel = ({
   commentLine,
   commentStoryTranslationContentId,
   setCommentLine,
+  disabled,
 }: CommentPanelProps) => {
   const [comments, setComments] = useState<CommentResponse[]>([]);
   const [filterIndex, setFilterIndex] = useState(0);
@@ -83,6 +85,7 @@ const CommentsPanel = ({
           size="secondary"
           marginRight="10px"
           onClick={handleCommentButton}
+          disabled={disabled}
         >
           Comment
         </Button>
@@ -93,6 +96,7 @@ const CommentsPanel = ({
           variant="commentsFilter"
           onChange={handleCommentFilterSelectChange}
           width="160px"
+          disabled={disabled}
         >
           {filterOptionsComponent}
         </Select>

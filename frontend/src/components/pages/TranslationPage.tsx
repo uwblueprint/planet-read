@@ -59,6 +59,8 @@ const TranslationPage = () => {
   // Font Size Slider
   const [fontSize, setFontSize] = useState<string>("12px");
 
+  const [stage, setStage] = useState<string>("");
+  const editable = stage === "TRANSLATE";
   const [commentLine, setCommentLine] = useState(-1);
   const [
     commentStoryTranslationContentId,
@@ -125,6 +127,7 @@ const TranslationPage = () => {
     onCompleted: (data) => {
       const storyContent = data.storyById.contents;
       const translatedContent = data.storyTranslationById.translationContents;
+      setStage(data.storyTranslationById.stage);
       setLanguage(data.storyTranslationById.language);
       setTitle(data.storyById.title);
       setNumTranslatedLines(data.storyTranslationById.numTranslatedLines);
@@ -217,7 +220,7 @@ const TranslationPage = () => {
             <TranslationTable
               translatedStoryLines={translatedStoryLines}
               onUserInput={onUserInput}
-              editable
+              editable={editable}
               fontSize={fontSize}
               originalLanguage="English"
               translatedLanguage={convertLanguageTitleCase(language)}
@@ -235,12 +238,18 @@ const TranslationPage = () => {
               }
               type="Translation"
             />
-            <Button colorScheme="blue" size="secondary" margin="0 10px 0">
+            <Button
+              colorScheme="blue"
+              size="secondary"
+              margin="0 10px 0"
+              disabled={!editable}
+            >
               SEND FOR REVIEW
             </Button>
           </Flex>
         </Flex>
         <CommentsPanel
+          disabled={!editable}
           commentStoryTranslationContentId={commentStoryTranslationContentId}
           commentLine={commentLine}
           storyTranslationId={storyTranslationId}
