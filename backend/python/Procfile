@@ -1,1 +1,4 @@
-web: flask db upgrade & wait -n; python -m tools.insert_test_data & wait -n; python server.py
+web: flask db upgrade && \
+     python -m tools.insert_test_data && \
+     python -m tools.insert_test_data erase && \
+     python server.py
