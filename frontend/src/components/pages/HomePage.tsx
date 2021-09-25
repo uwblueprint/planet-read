@@ -19,6 +19,10 @@ const HomePage = () => {
     authenticatedUser!!.approvedLanguagesTranslation.replace(/'/g, '"'),
   );
 
+  const approvedLanguagesReview = authenticatedUser!!.approvedLanguagesReview
+    ? JSON.parse(authenticatedUser!!.approvedLanguagesReview.replace(/'/g, '"'))
+    : {};
+
   const [displayMyStories, setDisplayMyStories] = useState<boolean>(true);
   const [language, setLanguage] = useState<string>(
     Object.keys(approvedLanguagesTranslation)[0],
@@ -73,6 +77,7 @@ const HomePage = () => {
       <Flex direction="row">
         <Filter
           approvedLanguagesTranslation={approvedLanguagesTranslation}
+          approvedLanguagesReview={approvedLanguagesReview}
           level={level}
           setLevel={setLevel}
           language={language}
