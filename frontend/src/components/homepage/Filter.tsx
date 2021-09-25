@@ -34,27 +34,37 @@ const Filter = ({
   setIsTranslator,
   isDisabled = false,
 }: FilterProps) => {
+  const approvedLanguages = role
+    ? approvedLanguagesTranslation
+    : approvedLanguagesReview;
+
+  // handles edge case of switching from higher approved level to lower level
+  const handleLevelDecrease = (newLevel: number) => {
+    if (level > newLevel) {
+      setLevel(newLevel);
+    }
+  };
+
   const handleSelectChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     setLanguage(event.target.value);
+    handleLevelDecrease(approvedLanguages[event.target.value]);
   };
+
   const handleRoleChange = (nextRole: string) => {
-    const approvedLanguages =
+    const newApprovedLanguages =
       nextRole === "Translator"
         ? approvedLanguagesTranslation
         : approvedLanguagesReview;
-    const newLanguage = Object.keys(approvedLanguages)[0];
+    const newLanguage = Object.keys(newApprovedLanguages)[0];
     setIsTranslator(nextRole === "Translator");
     setLanguage(newLanguage);
-    setLevel(approvedLanguages[newLanguage]);
+
+    handleLevelDecrease(newApprovedLanguages[newLanguage]);
   };
 
   const handleLevelChangeStr = (nextLevel: string) => {
     setLevel(parseInt(nextLevel.replace("Level ", ""), 10));
   };
-
-  const approvedLanguages = role
-    ? approvedLanguagesTranslation
-    : approvedLanguagesReview;
 
   const languageOptions = isDisabled ? (
     <option key="undefined" value="undefined">
