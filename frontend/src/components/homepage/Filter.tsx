@@ -13,6 +13,7 @@ import convertLanguageTitleCase from "../../utils/LanguageUtils";
 
 export type FilterProps = {
   approvedLanguagesTranslation: { [name: string]: number };
+  approvedLanguagesReview: { [name: string]: number };
   level: number;
   setLevel: (newState: number) => void;
   language: string;
@@ -24,6 +25,7 @@ export type FilterProps = {
 
 const Filter = ({
   approvedLanguagesTranslation,
+  approvedLanguagesReview,
   level,
   setLevel,
   language,
@@ -36,35 +38,61 @@ const Filter = ({
     setLanguage(event.target.value);
   };
   const handleRoleChange = (nextRole: string) => {
+    const approvedLanguages =
+      nextRole === "Translator"
+        ? approvedLanguagesTranslation
+        : approvedLanguagesReview;
+    const newLanguage = Object.keys(approvedLanguages)[0];
     setIsTranslator(nextRole === "Translator");
+    setLanguage(newLanguage);
+    setLevel(approvedLanguages[newLanguage]);
   };
+
   const handleLevelChangeStr = (nextLevel: string) => {
     setLevel(parseInt(nextLevel.replace("Level ", ""), 10));
   };
+
+  const approvedLanguages = role
+    ? approvedLanguagesTranslation
+    : approvedLanguagesReview;
+
   const languageOptions = isDisabled ? (
     <option key="undefined" value="undefined">
       {" "}
     </option>
   ) : (
-    Object.keys(approvedLanguagesTranslation).map((lang) => (
+    Object.keys(approvedLanguages).map((lang) => (
       <option key={lang} value={lang}>
         {convertLanguageTitleCase(lang)}
       </option>
     ))
   );
-  const maxLvl = approvedLanguagesTranslation[language];
-  const lvlOptions = [];
-  for (let i = 1; i <= maxLvl; i += 1) {
-    lvlOptions.push(
-      <option key={i.toString()} value={i.toString()} label={i.toString()} />,
-    );
-  }
+
+  const maxApprovedLevel = approvedLanguages[language];
+  const levelOptions = Array.from(Array(maxApprovedLevel).keys()).map(
+    (val) => `Level ${val + 1}`,
+  );
+
   const filterStyle = useStyleConfig("Filter");
   const disabledStyle = useStyleConfig("Disabled");
   return (
     <Flex sx={filterStyle}>
       <Heading size="lg">Filters</Heading>
-      <Divider />
+      {Object.keys(approvedLanguagesReview).length > 0 && (
+        <>
+          <Divider marginTop="24px" marginBottom="18px" />
+          <Box sx={isDisabled ? disabledStyle : undefined}>
+            <Heading size="sm">Role Required</Heading>
+            <ButtonRadioGroup
+              name="Role"
+              options={["Translator", "Reviewer"]}
+              onChange={handleRoleChange}
+              defaultValue={role ? "Translator" : "Reviewer"}
+            />
+          </Box>
+        </>
+      )}
+      <Divider marginTop="24px" marginBottom="18px" />
       <Box sx={isDisabled ? disabledStyle : undefined}>
         <Heading size="sm">Translation Language</Heading>
         <Select
@@ -77,23 +105,12 @@ const Filter = ({
           {languageOptions}
         </Select>
       </Box>
-      <Divider />
-      <Box sx={isDisabled ? disabledStyle : undefined}>
-        <Heading size="sm">Role Required</Heading>
-        <ButtonRadioGroup
-          name="Role"
-          options={["Translator", "Reviewer"]}
-          onChange={handleRoleChange}
-          defaultValue={role ? "Translator" : "Reviewer"}
-          isDisabled={isDisabled}
-        />
-      </Box>
-      <Divider />
+      <Divider marginTop="24px" marginBottom="18px" />
       <Box sx={isDisabled ? disabledStyle : undefined}>
         <Heading size="sm">Access Level</Heading>
         <ButtonRadioGroup
           name="Level"
-          options={["Level 1", "Level 2", "Level 3", "Level 4"]}
+          options={levelOptions}
           onChange={handleLevelChangeStr}
           defaultValue={`Level ${level}`}
           isDisabled={isDisabled}
