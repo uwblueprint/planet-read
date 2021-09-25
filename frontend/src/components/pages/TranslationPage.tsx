@@ -1,7 +1,8 @@
 import React, { useState } from "react";
 import { useQuery } from "@apollo/client";
-import { Box, Button, Divider, Flex, Text } from "@chakra-ui/react";
+import { Box, Button, Divider, Flex, Text, Tooltip } from "@chakra-ui/react";
 import { useParams } from "react-router-dom";
+
 import ProgressBar from "../utils/ProgressBar";
 import TranslationTable from "../translation/TranslationTable";
 import UndoRedo from "../translation/UndoRedo";
@@ -121,6 +122,8 @@ const TranslationPage = () => {
   const clearUnsavedChangesMap = () => {
     setChangedStoryLines(new Map());
   };
+  const tooltipCopy =
+    "Your story translation is pending review. You can edit your translation and leave comments once a reviewer has given feedback.";
 
   useQuery(GET_STORY_AND_TRANSLATION_CONTENTS(storyId, storyTranslationId), {
     fetchPolicy: "cache-and-network",
@@ -238,14 +241,18 @@ const TranslationPage = () => {
               }
               type="Translation"
             />
-            <Button
-              colorScheme="blue"
-              size="secondary"
-              margin="0 10px 0"
-              disabled={!editable}
-            >
-              {editable ? "SEND FOR REVIEW" : "IN REVIEW"}
-            </Button>
+            <Tooltip hasArrow label={tooltipCopy} isDisabled={editable}>
+              <Box>
+                <Button
+                  colorScheme="blue"
+                  size="secondary"
+                  margin="0 10px 0"
+                  disabled={!editable}
+                >
+                  {editable ? "SEND FOR REVIEW" : "IN REVIEW"}
+                </Button>
+              </Box>
+            </Tooltip>
           </Flex>
         </Flex>
         <CommentsPanel

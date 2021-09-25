@@ -1,5 +1,5 @@
 import React from "react";
-import { Badge, Button, Flex, Text } from "@chakra-ui/react";
+import { Badge, Button, Flex, Text, Tooltip } from "@chakra-ui/react";
 import EditableCell from "./EditableCell";
 import { StoryLine } from "./Autosave";
 import { getStatusVariant } from "../../utils/StatusUtils";
@@ -38,6 +38,8 @@ const TranslationTable = ({
     setCommentLine(displayLineNumber);
     setCommentStoryTranslationContentId(storyTranslationContentId);
   };
+  const tooltipCopy =
+    "Your story translation is pending review. You can edit your translation and leave comments once a reviewer has given feedback.";
   const storyCells = translatedStoryLines.map((storyLine: StoryLine) => {
     const displayLineNumber = storyLine.lineIndex + 1;
     return (
@@ -60,10 +62,12 @@ const TranslationTable = ({
             fontSize={fontSize}
           />
         ) : (
-          <Text variant="cell" fontSize={fontSize}>
-            {" "}
-            {storyLine.translatedContent!!}{" "}
-          </Text>
+          <Tooltip hasArrow label={tooltipCopy}>
+            <Text variant="cell" fontSize={fontSize}>
+              {" "}
+              {storyLine.translatedContent!!}{" "}
+            </Text>
+          </Tooltip>
         )}
         <Flex direction="column" width="130px" margin="10px">
           <Badge

@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useQuery } from "@apollo/client";
-import { Box, Button, Flex, Text, Select } from "@chakra-ui/react";
+import { Box, Button, Flex, Select, Text, Tooltip } from "@chakra-ui/react";
 import {
   CommentResponse,
   buildCommentsQuery,
@@ -77,18 +77,25 @@ const CommentsPanel = ({
     else setCommentLine(-1);
   };
 
+  const tooltipCopy =
+    "Your story translation is pending review. You can edit your translation and leave comments once a reviewer has given feedback.";
+
   return (
     <Box backgroundColor="gray.100" float="right" width="350px" padding="20px">
       <Flex marginBottom="50px">
-        <Button
-          colorScheme="blue"
-          size="secondary"
-          marginRight="10px"
-          onClick={handleCommentButton}
-          disabled={disabled}
-        >
-          Comment
-        </Button>
+        <Tooltip hasArrow label={tooltipCopy} isDisabled={!disabled}>
+          <Box>
+            <Button
+              colorScheme="blue"
+              size="secondary"
+              marginRight="10px"
+              onClick={handleCommentButton}
+              disabled={disabled}
+            >
+              Comment
+            </Button>
+          </Box>
+        </Tooltip>
         <Select
           name="comment filter"
           id="comment filter"
