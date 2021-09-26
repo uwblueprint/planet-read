@@ -1,6 +1,6 @@
 /*  eslint react/jsx-props-no-spreading: 0 */
 /*  eslint react/destructuring-assignment: 0 */
-import React from "react";
+import React, { useImperativeHandle, forwardRef, ForwardedRef } from "react";
 import {
   Box,
   Flex,
@@ -36,6 +36,10 @@ function RadioCard(props: any) {
   );
 }
 
+export type ButtonRadioGroupHandle = {
+  setValue: React.Dispatch<React.SetStateAction<string | number>>;
+};
+
 export type ButtonRadioGroupProps = {
   size?: string;
   stacked?: boolean;
@@ -46,22 +50,29 @@ export type ButtonRadioGroupProps = {
   onChange: (newState: string) => void;
 };
 
-function ButtonRadioGroup({
-  size = "secondary",
-  stacked = true,
-  unselectedVariant = "outline",
-  name,
-  defaultValue,
-  options,
-  onChange,
-}: ButtonRadioGroupProps) {
-  const { getRootProps, getRadioProps } = useRadioGroup({
+function ButtonRadioGroup(
+  {
+    size = "secondary",
+    stacked = true,
+    unselectedVariant = "outline",
+    name,
+    defaultValue,
+    options,
+    onChange,
+  }: ButtonRadioGroupProps,
+  ref: ForwardedRef<ButtonRadioGroupHandle>,
+) {
+  const { getRootProps, getRadioProps, setValue } = useRadioGroup({
     name,
     defaultValue,
     onChange,
   });
 
   const group = getRootProps();
+
+  useImperativeHandle(ref, () => ({
+    setValue,
+  }));
 
   return (
     <Flex direction={stacked ? "column" : "row"} {...group}>
@@ -82,4 +93,6 @@ function ButtonRadioGroup({
   );
 }
 
-export default ButtonRadioGroup;
+export default forwardRef<ButtonRadioGroupHandle, ButtonRadioGroupProps>(
+  ButtonRadioGroup,
+);

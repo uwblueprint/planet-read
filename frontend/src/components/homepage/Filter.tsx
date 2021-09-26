@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useRef } from "react";
 import {
   Box,
   Flex,
@@ -8,7 +8,9 @@ import {
   useStyleConfig,
 } from "@chakra-ui/react";
 
-import ButtonRadioGroup from "../utils/ButtonRadioGroup";
+import ButtonRadioGroup, {
+  ButtonRadioGroupHandle,
+} from "../utils/ButtonRadioGroup";
 import convertLanguageTitleCase from "../../utils/LanguageUtils";
 
 export type FilterProps = {
@@ -32,6 +34,8 @@ const Filter = ({
   role,
   setIsTranslator,
 }: FilterProps) => {
+  const levelRadioGroupRef = useRef<ButtonRadioGroupHandle>(null);
+
   const approvedLanguages = role
     ? approvedLanguagesTranslation
     : approvedLanguagesReview;
@@ -40,6 +44,9 @@ const Filter = ({
   const handleLevelDecrease = (newLevel: number) => {
     if (level > newLevel) {
       setLevel(newLevel);
+    }
+    if (levelRadioGroupRef.current) {
+      levelRadioGroupRef.current.setValue(`Level ${newLevel}`);
     }
   };
 
@@ -76,6 +83,7 @@ const Filter = ({
   );
 
   const filterStyle = useStyleConfig("Filter");
+
   return (
     <Flex sx={filterStyle}>
       <Heading size="lg">Filters</Heading>
@@ -114,6 +122,7 @@ const Filter = ({
           options={levelOptions}
           onChange={handleLevelChangeStr}
           defaultValue={`Level ${level}`}
+          ref={levelRadioGroupRef}
         />
       </Box>
     </Flex>
