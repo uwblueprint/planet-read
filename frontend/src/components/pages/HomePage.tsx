@@ -28,9 +28,7 @@ const HomePage = () => {
     Object.keys(approvedLanguagesTranslation)[0],
   );
   const [isTranslator, setIsTranslator] = useState<boolean>(true);
-  const [level, setLevel] = useState<number>(
-    approvedLanguagesTranslation[language],
-  );
+  const [level, setLevel] = useState<number>(1);
   const [stories, setStories] = useState<StoryCardProps[] | null>(null);
 
   const [showScrollToTop, setShowScrollToTop] = useState(false);

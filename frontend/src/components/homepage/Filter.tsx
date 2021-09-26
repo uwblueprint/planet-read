@@ -38,16 +38,8 @@ const Filter = ({
     ? approvedLanguagesTranslation
     : approvedLanguagesReview;
 
-  // handles edge case of switching from higher approved level to lower level
-  const handleLevelDecrease = (newLevel: number) => {
-    if (level > newLevel) {
-      setLevel(newLevel);
-    }
-  };
-
   const handleSelectChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     setLanguage(event.target.value);
-    handleLevelDecrease(approvedLanguages[event.target.value]);
   };
 
   const handleRoleChange = (nextRole: string) => {
@@ -55,11 +47,16 @@ const Filter = ({
       nextRole === "Translator"
         ? approvedLanguagesTranslation
         : approvedLanguagesReview;
-    const newLanguage = Object.keys(newApprovedLanguages)[0];
+
+    let newLanguage = language;
+
+    // if user isn't permitted to translate/review in the same language, default
+    // to the first language
+    if (!Object.keys(newApprovedLanguages).find((x) => x === language)) {
+      newLanguage = Object.keys(newApprovedLanguages)[0];
+    }
     setIsTranslator(nextRole === "Translator");
     setLanguage(newLanguage);
-
-    handleLevelDecrease(newApprovedLanguages[newLanguage]);
   };
 
   const handleLevelChangeStr = (nextLevel: string) => {
@@ -79,9 +76,13 @@ const Filter = ({
   );
 
   const maxApprovedLevel = approvedLanguages[language];
-  const levelOptions = Array.from(Array(maxApprovedLevel).keys()).map(
-    (val) => `Level ${val + 1}`,
-  );
+
+  // if not disabled, display levels only up to the maxApprovedLevel
+  const levelOptions = isDisabled
+    ? ["Level 1", "Level 2", "Level 3", "Level 4"]
+    : [...Array(maxApprovedLevel + 1).keys()]
+        .slice(1)
+        .map((val) => `Level ${val}`);
 
   const filterStyle = useStyleConfig("Filter");
   const disabledStyle = useStyleConfig("Disabled");
