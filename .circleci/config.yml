@@ -12,13 +12,31 @@ jobs:
           name: Create env file
           command: |
             touch .env
-      - run: 
+      - run:
           name: Start container via docker-compose
           command: |
             set -x
             docker-compose up -d
+  lint:
+    docker:
+      - image: cimg/python:3.9.7
+    steps:
+      - checkout
+      - run:
+          name: Run linter checks
+          command: |
+            pip install black isort
+            echo "Running black checks..."
+            black backend/python/app/ --check
+            echo "Checking import order..."
+            isort --profile black backend/python/app/ -c
+            echo "Code properly linted!"
+
 workflows:
   version: 2
-  build:
+  lint and build:
     jobs:
-      - build
+      - lint
+      - build:
+          requires:
+            - lint
