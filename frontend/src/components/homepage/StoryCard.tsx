@@ -62,6 +62,7 @@ const StoryCard = ({
     // eslint-disable-next-line no-alert
     alert(errorMessage);
   };
+  const isTranslator = +authenticatedUser!!.id === translatorId;
 
   const [assignUserAsReviewer] = useMutation<{
     assignUserAsReviewer: AssignReviewerResponse;
@@ -111,9 +112,12 @@ const StoryCard = ({
     setPreview(!preview);
   };
 
-  const openTranslation = () =>
-    history.push(`/translation/${storyId}/${storyTranslationId}`);
-
+  const openTranslation = () => {
+    const storyTranslationUrl = isTranslator
+      ? `/translation/${storyId}/${storyTranslationId}`
+      : `/review/${storyId}/${storyTranslationId}`;
+    history.push(storyTranslationUrl);
+  };
   const primaryBtnText = () => {
     if (isMyStory) {
       return storyTranslationId ? "view translation" : "edit translation";
@@ -162,9 +166,7 @@ const StoryCard = ({
             )}`}</Badge>
             {isMyStory && (
               <Badge background="green.50">
-                {+authenticatedUser!!.id === translatorId
-                  ? "Translator"
-                  : "Reviewer"}
+                {isTranslator ? "Translator" : "Reviewer"}
               </Badge>
             )}
           </Flex>
