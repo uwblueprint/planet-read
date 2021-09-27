@@ -3,10 +3,12 @@ import { Badge, Button, Flex, Text, Tooltip } from "@chakra-ui/react";
 import EditableCell from "./EditableCell";
 import { StoryLine } from "./Autosave";
 import { getStatusVariant } from "../../utils/StatusUtils";
+import TRANSLATION_PAGE_TOOL_TIP_COPY from "../../utils/Copy";
 
 export type TranslationTableProps = {
   translatedStoryLines: StoryLine[];
   editable?: boolean;
+  translator: boolean;
   onUserInput?: (
     newContent: string,
     lineIndex: number,
@@ -30,6 +32,7 @@ const TranslationTable = ({
   commentLine,
   setCommentLine,
   setCommentStoryTranslationContentId,
+  translator,
 }: TranslationTableProps) => {
   const handleCommentButton = (
     displayLineNumber: number,
@@ -38,8 +41,7 @@ const TranslationTable = ({
     setCommentLine(displayLineNumber);
     setCommentStoryTranslationContentId(storyTranslationContentId);
   };
-  const tooltipCopy =
-    "Your story translation is pending review. You can edit your translation and leave comments once a reviewer has given feedback.";
+
   const storyCells = translatedStoryLines.map((storyLine: StoryLine) => {
     const displayLineNumber = storyLine.lineIndex + 1;
     return (
@@ -62,7 +64,11 @@ const TranslationTable = ({
             fontSize={fontSize}
           />
         ) : (
-          <Tooltip hasArrow label={tooltipCopy}>
+          <Tooltip
+            hasArrow
+            label={TRANSLATION_PAGE_TOOL_TIP_COPY}
+            isDisabled={!translator}
+          >
             <Text variant="cell" fontSize={fontSize}>
               {" "}
               {storyLine.translatedContent!!}{" "}

@@ -117,6 +117,7 @@ const ReviewPage = () => {
               setCommentStoryTranslationContentId={
                 setCommentStoryTranslationContentId
               }
+              translator={false}
             />
           </Flex>
           <Flex margin="20px 30px" justify="flex-start" alignItems="center">

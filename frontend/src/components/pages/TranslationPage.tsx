@@ -14,6 +14,7 @@ import convertLanguageTitleCase from "../../utils/LanguageUtils";
 import deepCopy from "../../utils/DeepCopyUtils";
 import Header from "../navigation/Header";
 import CommentsPanel from "../review/CommentsPanel";
+import TRANSLATION_PAGE_TOOL_TIP_COPY from "../../utils/Copy";
 
 type TranslationPageProps = {
   storyIdParam: string | undefined;
@@ -41,6 +42,8 @@ const TranslationPage = () => {
   );
   const [title, setTitle] = useState<string>("");
   const [language, setLanguage] = useState<string>("");
+  const [stage, setStage] = useState<string>("");
+
   // AutoSave
   const [changedStoryLines, setChangedStoryLines] = useState<
     Map<number, StoryLine>
@@ -60,7 +63,6 @@ const TranslationPage = () => {
   // Font Size Slider
   const [fontSize, setFontSize] = useState<string>("12px");
 
-  const [stage, setStage] = useState<string>("");
   const editable = stage === "TRANSLATE";
   const [commentLine, setCommentLine] = useState(-1);
   const [
@@ -122,8 +124,6 @@ const TranslationPage = () => {
   const clearUnsavedChangesMap = () => {
     setChangedStoryLines(new Map());
   };
-  const tooltipCopy =
-    "Your story translation is pending review. You can edit your translation and leave comments once a reviewer has given feedback.";
 
   useQuery(GET_STORY_AND_TRANSLATION_CONTENTS(storyId, storyTranslationId), {
     fetchPolicy: "cache-and-network",
@@ -232,6 +232,7 @@ const TranslationPage = () => {
               setCommentStoryTranslationContentId={
                 setCommentStoryTranslationContentId
               }
+              translator
             />
           </Flex>
           <Flex margin="20px 30px" justify="space-between" alignItems="center">
@@ -241,7 +242,11 @@ const TranslationPage = () => {
               }
               type="Translation"
             />
-            <Tooltip hasArrow label={tooltipCopy} isDisabled={editable}>
+            <Tooltip
+              hasArrow
+              label={TRANSLATION_PAGE_TOOL_TIP_COPY}
+              isDisabled={editable}
+            >
               <Box>
                 <Button
                   colorScheme="blue"
