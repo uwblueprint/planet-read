@@ -1,17 +1,19 @@
 import React, { useState } from "react";
 import { useQuery } from "@apollo/client";
-import { Box, Button, Flex, Text, Select } from "@chakra-ui/react";
+import { Box, Button, Flex, Select, Text, Tooltip } from "@chakra-ui/react";
 import {
   CommentResponse,
   buildCommentsQuery,
 } from "../../APIClients/queries/CommentQueries";
 import WIPComment from "./WIPComment";
+import { TRANSLATION_PAGE_TOOL_TIP_COPY } from "../../utils/Copy";
 
 export type CommentPanelProps = {
   storyTranslationId: number;
   commentLine: number;
   setCommentLine: (line: number) => void;
   commentStoryTranslationContentId: number;
+  disabled: boolean;
 };
 
 const CommentsPanel = ({
@@ -19,6 +21,7 @@ const CommentsPanel = ({
   commentLine,
   commentStoryTranslationContentId,
   setCommentLine,
+  disabled,
 }: CommentPanelProps) => {
   const [comments, setComments] = useState<CommentResponse[]>([]);
   const [filterIndex, setFilterIndex] = useState(0);
@@ -78,14 +81,23 @@ const CommentsPanel = ({
   return (
     <Box backgroundColor="gray.100" float="right" width="350px" padding="20px">
       <Flex marginBottom="50px">
-        <Button
-          colorScheme="blue"
-          size="secondary"
-          marginRight="10px"
-          onClick={handleCommentButton}
+        <Tooltip
+          hasArrow
+          label={TRANSLATION_PAGE_TOOL_TIP_COPY}
+          isDisabled={!disabled}
         >
-          Comment
-        </Button>
+          <Box>
+            <Button
+              colorScheme="blue"
+              size="secondary"
+              marginRight="10px"
+              onClick={handleCommentButton}
+              disabled={disabled}
+            >
+              Comment
+            </Button>
+          </Box>
+        </Tooltip>
         <Select
           name="comment filter"
           id="comment filter"
@@ -93,6 +105,7 @@ const CommentsPanel = ({
           variant="commentsFilter"
           onChange={handleCommentFilterSelectChange}
           width="160px"
+          disabled={disabled}
         >
           {filterOptionsComponent}
         </Select>

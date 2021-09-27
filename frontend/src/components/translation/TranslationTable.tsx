@@ -1,12 +1,14 @@
 import React from "react";
-import { Badge, Button, Flex, Text } from "@chakra-ui/react";
+import { Badge, Button, Flex, Text, Tooltip } from "@chakra-ui/react";
 import EditableCell from "./EditableCell";
 import { StoryLine } from "./Autosave";
 import { getStatusVariant } from "../../utils/StatusUtils";
+import { TRANSLATION_PAGE_TOOL_TIP_COPY } from "../../utils/Copy";
 
 export type TranslationTableProps = {
   translatedStoryLines: StoryLine[];
   editable?: boolean;
+  translator: boolean;
   onUserInput?: (
     newContent: string,
     lineIndex: number,
@@ -30,6 +32,7 @@ const TranslationTable = ({
   commentLine,
   setCommentLine,
   setCommentStoryTranslationContentId,
+  translator,
 }: TranslationTableProps) => {
   const handleCommentButton = (
     displayLineNumber: number,
@@ -38,6 +41,7 @@ const TranslationTable = ({
     setCommentLine(displayLineNumber);
     setCommentStoryTranslationContentId(storyTranslationContentId);
   };
+
   const storyCells = translatedStoryLines.map((storyLine: StoryLine) => {
     const displayLineNumber = storyLine.lineIndex + 1;
     return (
@@ -60,10 +64,16 @@ const TranslationTable = ({
             fontSize={fontSize}
           />
         ) : (
-          <Text variant="cell" fontSize={fontSize}>
-            {" "}
-            {storyLine.translatedContent!!}{" "}
-          </Text>
+          <Tooltip
+            hasArrow
+            label={TRANSLATION_PAGE_TOOL_TIP_COPY}
+            isDisabled={!translator}
+          >
+            <Text variant="cell" fontSize={fontSize}>
+              {" "}
+              {storyLine.translatedContent!!}{" "}
+            </Text>
+          </Tooltip>
         )}
         <Flex direction="column" width="130px" margin="10px">
           <Badge

@@ -1,7 +1,8 @@
 import React, { useState } from "react";
 import { useQuery } from "@apollo/client";
-import { Box, Button, Divider, Flex, Text } from "@chakra-ui/react";
+import { Box, Button, Divider, Flex, Text, Tooltip } from "@chakra-ui/react";
 import { useParams } from "react-router-dom";
+
 import ProgressBar from "../utils/ProgressBar";
 import TranslationTable from "../translation/TranslationTable";
 import UndoRedo from "../translation/UndoRedo";
@@ -13,6 +14,7 @@ import convertLanguageTitleCase from "../../utils/LanguageUtils";
 import deepCopy from "../../utils/DeepCopyUtils";
 import Header from "../navigation/Header";
 import CommentsPanel from "../review/CommentsPanel";
+import { TRANSLATION_PAGE_TOOL_TIP_COPY } from "../../utils/Copy";
 
 type TranslationPageProps = {
   storyIdParam: string | undefined;
@@ -40,6 +42,8 @@ const TranslationPage = () => {
   );
   const [title, setTitle] = useState<string>("");
   const [language, setLanguage] = useState<string>("");
+  const [stage, setStage] = useState<string>("");
+
   // AutoSave
   const [changedStoryLines, setChangedStoryLines] = useState<
     Map<number, StoryLine>
@@ -59,6 +63,7 @@ const TranslationPage = () => {
   // Font Size Slider
   const [fontSize, setFontSize] = useState<string>("12px");
 
+  const editable = stage === "TRANSLATE";
   const [commentLine, setCommentLine] = useState(-1);
   const [
     commentStoryTranslationContentId,
@@ -125,6 +130,7 @@ const TranslationPage = () => {
     onCompleted: (data) => {
       const storyContent = data.storyById.contents;
       const translatedContent = data.storyTranslationById.translationContents;
+      setStage(data.storyTranslationById.stage);
       setLanguage(data.storyTranslationById.language);
       setTitle(data.storyById.title);
       setNumTranslatedLines(data.storyTranslationById.numTranslatedLines);
@@ -217,7 +223,7 @@ const TranslationPage = () => {
             <TranslationTable
               translatedStoryLines={translatedStoryLines}
               onUserInput={onUserInput}
-              editable
+              editable={editable}
               fontSize={fontSize}
               originalLanguage="English"
               translatedLanguage={convertLanguageTitleCase(language)}
@@ -226,6 +232,7 @@ const TranslationPage = () => {
               setCommentStoryTranslationContentId={
                 setCommentStoryTranslationContentId
               }
+              translator
             />
           </Flex>
           <Flex margin="20px 30px" justify="space-between" alignItems="center">
@@ -235,12 +242,26 @@ const TranslationPage = () => {
               }
               type="Translation"
             />
-            <Button colorScheme="blue" size="secondary" margin="0 10px 0">
-              SEND FOR REVIEW
-            </Button>
+            <Tooltip
+              hasArrow
+              label={TRANSLATION_PAGE_TOOL_TIP_COPY}
+              isDisabled={editable}
+            >
+              <Box>
+                <Button
+                  colorScheme="blue"
+                  size="secondary"
+                  margin="0 10px 0"
+                  disabled={!editable}
+                >
+                  {editable ? "SEND FOR REVIEW" : "IN REVIEW"}
+                </Button>
+              </Box>
+            </Tooltip>
           </Flex>
         </Flex>
         <CommentsPanel
+          disabled={!editable}
           commentStoryTranslationContentId={commentStoryTranslationContentId}
           commentLine={commentLine}
           storyTranslationId={storyTranslationId}
