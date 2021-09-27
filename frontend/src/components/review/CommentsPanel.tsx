@@ -6,7 +6,7 @@ import {
   buildCommentsQuery,
 } from "../../APIClients/queries/CommentQueries";
 import WIPComment from "./WIPComment";
-import TRANSLATION_PAGE_TOOL_TIP_COPY from "../../utils/Copy";
+import { TRANSLATION_PAGE_TOOL_TIP_COPY } from "../../utils/Copy";
 
 export type CommentPanelProps = {
   storyTranslationId: number;

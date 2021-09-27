@@ -14,7 +14,7 @@ import convertLanguageTitleCase from "../../utils/LanguageUtils";
 import deepCopy from "../../utils/DeepCopyUtils";
 import Header from "../navigation/Header";
 import CommentsPanel from "../review/CommentsPanel";
-import TRANSLATION_PAGE_TOOL_TIP_COPY from "../../utils/Copy";
+import { TRANSLATION_PAGE_TOOL_TIP_COPY } from "../../utils/Copy";
 
 type TranslationPageProps = {
   storyIdParam: string | undefined;

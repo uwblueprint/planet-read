@@ -3,7 +3,7 @@ import { Badge, Button, Flex, Text, Tooltip } from "@chakra-ui/react";
 import EditableCell from "./EditableCell";
 import { StoryLine } from "./Autosave";
 import { getStatusVariant } from "../../utils/StatusUtils";
-import TRANSLATION_PAGE_TOOL_TIP_COPY from "../../utils/Copy";
+import { TRANSLATION_PAGE_TOOL_TIP_COPY } from "../../utils/Copy";
 
 export type TranslationTableProps = {
   translatedStoryLines: StoryLine[];
