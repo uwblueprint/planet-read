@@ -6,6 +6,7 @@ import {
   buildCommentsQuery,
 } from "../../APIClients/queries/CommentQueries";
 import WIPComment from "./WIPComment";
+import TRANSLATION_PAGE_TOOL_TIP_COPY from "../../utils/Copy";
 
 export type CommentPanelProps = {
   storyTranslationId: number;
@@ -77,13 +78,14 @@ const CommentsPanel = ({
     else setCommentLine(-1);
   };
 
-  const tooltipCopy =
-    "Your story translation is pending review. You can edit your translation and leave comments once a reviewer has given feedback.";
-
   return (
     <Box backgroundColor="gray.100" float="right" width="350px" padding="20px">
       <Flex marginBottom="50px">
-        <Tooltip hasArrow label={tooltipCopy} isDisabled={!disabled}>
+        <Tooltip
+          hasArrow
+          label={TRANSLATION_PAGE_TOOL_TIP_COPY}
+          isDisabled={!disabled}
+        >
           <Box>
             <Button
               colorScheme="blue"
