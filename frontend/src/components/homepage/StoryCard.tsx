@@ -113,10 +113,10 @@ const StoryCard = ({
   };
 
   const openTranslation = () => {
-    const storyTranslationUrl = isTranslator
-      ? `/translation/${storyId}/${storyTranslationId}`
-      : `/review/${storyId}/${storyTranslationId}`;
-    history.push(storyTranslationUrl);
+    const storyTranslationUrlBase = isTranslator ? "translation" : "review";
+    history.push(
+      `/${storyTranslationUrlBase}/${storyId}/${storyTranslationId}`,
+    );
   };
   const primaryBtnText = () => {
     if (isMyStory) {
