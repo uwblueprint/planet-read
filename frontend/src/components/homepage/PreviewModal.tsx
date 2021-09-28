@@ -111,7 +111,9 @@ const PreviewModal = ({
         </ModalHeader>
         <Box display="block" paddingLeft="30px">
           <Text fontSize="16px" color="grey">
-            <Link href={youtubeLink}>→ Watch the English AniBook</Link>
+            <Link href={youtubeLink} isExternal>
+              → Watch the English AniBook
+            </Link>
           </Text>
         </Box>
         <ModalBody>{storyContents}</ModalBody>
