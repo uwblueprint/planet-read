@@ -1,6 +1,11 @@
 import React, { useState } from "react";
+<<<<<<< HEAD
 import { useQuery } from "@apollo/client";
 import { Box, Button, Divider, Flex, Text, Tooltip } from "@chakra-ui/react";
+=======
+import { useQuery, useMutation } from "@apollo/client";
+import { Box, Button, Divider, Flex, Text } from "@chakra-ui/react";
+>>>>>>> 22dea0f... Implement Send To Translator flow
 import { useParams } from "react-router-dom";
 
 import ProgressBar from "../utils/ProgressBar";
@@ -9,12 +14,20 @@ import UndoRedo from "../translation/UndoRedo";
 import Autosave, { StoryLine } from "../translation/Autosave";
 import { convertStatusTitleCase } from "../../utils/StatusUtils";
 import { GET_STORY_AND_TRANSLATION_CONTENTS } from "../../APIClients/queries/StoryQueries";
+import {
+  UPDATE_STORY_TRANSLATION_STAGE,
+  UpdateStoryTranslationStageResponse,
+} from "../../APIClients/mutations/StoryMutations";
 import FontSizeSlider from "../translation/FontSizeSlider";
 import convertLanguageTitleCase from "../../utils/LanguageUtils";
 import deepCopy from "../../utils/DeepCopyUtils";
 import Header from "../navigation/Header";
 import CommentsPanel from "../review/CommentsPanel";
+<<<<<<< HEAD
 import { TRANSLATION_PAGE_TOOL_TIP_COPY } from "../../utils/Copy";
+=======
+import SendForReviewModal2 from "../translation/SendForReviewModal";
+>>>>>>> 22dea0f... Implement Send To Translator flow
 
 type TranslationPageProps = {
   storyIdParam: string | undefined;
@@ -123,6 +136,33 @@ const TranslationPage = () => {
 
   const clearUnsavedChangesMap = () => {
     setChangedStoryLines(new Map());
+  };
+
+  const [sendForReview, setSendForReview] = useState(false);
+  const onSendForReviewClick = async () => {
+    setSendForReview(!sendForReview);
+  };
+
+  const [updateStoryTranslationStage] = useMutation<{
+    updateStoryTranslationStage: UpdateStoryTranslationStageResponse;
+  }>(UPDATE_STORY_TRANSLATION_STAGE);
+  const onSendForReviewConfirmationClick = async () => {
+    try {
+      const storyTranslationData = {
+        id: storyTranslationId,
+        stage: "REVIEW",
+      };
+      const result = await updateStoryTranslationStage({
+        variables: { storyTranslationData },
+      });
+      if (result.data?.updateStoryTranslationStage.ok) {
+        window.location.reload(false);
+      } else {
+        window.alert("Unable to send for review.");
+      }
+    } catch (error) {
+      window.alert(error ?? "Error occurred, please try again.");
+    }
   };
 
   useQuery(GET_STORY_AND_TRANSLATION_CONTENTS(storyId, storyTranslationId), {
@@ -273,6 +313,13 @@ const TranslationPage = () => {
         storylines={Array.from(changedStoryLines.values())}
         onSuccess={clearUnsavedChangesMap}
       />
+      {sendForReview && (
+        <SendForReviewModal2
+          sendForReview={sendForReview}
+          onSendForReviewClick={onSendForReviewClick}
+          onSendForReviewConfirmationClick={onSendForReviewConfirmationClick}
+        />
+      )}
     </Flex>
   );
 };
