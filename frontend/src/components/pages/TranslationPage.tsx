@@ -214,15 +214,7 @@ const TranslationPage = () => {
     ) : null;
   };
   return (
-    <Flex
-      height="100vh"
-      direction="column"
-      position="absolute"
-      top="0"
-      bottom="0"
-      left="0"
-      right="0"
-    >
+    <Flex height="100vh" direction="column" position="absolute">
       <Header title={title} />
       <Divider />
       <Flex justify="space-between" flex={1} minHeight={0}>

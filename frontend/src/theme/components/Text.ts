@@ -4,7 +4,6 @@ const Text = {
       backgroundColor: "gray.100",
       borderRadius: "3px",
       fontSize: "12px",
-      width: "50%",
       padding: "10px",
       margin: "12px",
     },
@@ -21,7 +20,7 @@ const Text = {
     statusHeader: {
       fontSize: "16px",
       padding: "12px",
-      width: "130px",
+      width: "150px",
     },
     comment: {
       fontSize: "14px",

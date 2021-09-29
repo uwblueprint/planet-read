@@ -94,6 +94,7 @@ const ReviewPage = () => {
       bottom="0"
       left="0"
       right="0"
+      overflow="hidden"
     >
       <Header title={title} />
       <Divider />

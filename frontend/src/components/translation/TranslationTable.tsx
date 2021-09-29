@@ -60,28 +60,33 @@ const TranslationTable = ({
         key={`row-${storyLine.lineIndex}`}
       >
         <Text variant="lineIndex">{displayLineNumber}</Text>
-        <Text variant="cell" fontSize={fontSize}>
-          {storyLine.originalContent}
-        </Text>
+        <Flex flex={1} height="100%">
+          <Text variant="cell" fontSize={fontSize}>
+            {storyLine.originalContent}
+          </Text>
+        </Flex>
         {editable ? (
-          <EditableCell
-            text={storyLine.translatedContent!!}
-            storyTranslationContentId={storyLine.storyTranslationContentId!!}
-            lineIndex={storyLine.lineIndex}
-            maxChars={storyLine.originalContent.length * 2}
-            onChange={onUserInput!!}
-            fontSize={fontSize}
-          />
+          <Flex flex={1} height="100%">
+            <EditableCell
+              text={storyLine.translatedContent!!}
+              storyTranslationContentId={storyLine.storyTranslationContentId!!}
+              lineIndex={storyLine.lineIndex}
+              maxChars={storyLine.originalContent.length * 2}
+              onChange={onUserInput!!}
+              fontSize={fontSize}
+            />
+          </Flex>
         ) : (
           <Tooltip
             hasArrow
             label={TRANSLATION_PAGE_TOOL_TIP_COPY}
             isDisabled={!translator}
           >
-            <Text variant="cell" fontSize={fontSize}>
-              {" "}
-              {storyLine.translatedContent!!}{" "}
-            </Text>
+            <Flex flex={1} height="100%">
+              <Text variant="cell" flexGrow={1} fontSize={fontSize}>
+                {storyLine.translatedContent!!}
+              </Text>
+            </Flex>
           </Tooltip>
         )}
         <Flex direction="column" width="140px" margin="5px">
@@ -120,7 +125,7 @@ const TranslationTable = ({
     );
   });
   return (
-    <Flex direction="column" paddingRight="30px">
+    <Flex direction="column">
       <Flex alignItems="flex-start" direction="row">
         <Text variant="lineIndex">Line</Text>
         <Flex direction="row" width="100%">
@@ -138,7 +143,9 @@ const TranslationTable = ({
             )}
           </Text>
         </Flex>
-        <Text variant="statusHeader">Status</Text>
+        <Flex>
+          <Text variant="statusHeader">Status</Text>
+        </Flex>
       </Flex>
       {storyCells}
     </Flex>
