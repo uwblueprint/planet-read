@@ -60,8 +60,10 @@ const SendForReviewModal = ({
             }}
           />
           <Text fontSize="16px" paddingLeft="10px" paddingRight="10px">
-            Once you send your translation for review, the action cannot be
-            undone. Please make sure that there are no mistakes.
+            Once you send your translation for review, you wont be able to edit
+            the translation or leave comments until a reviewer reviews your
+            translation. This action cannot be undone. Please make sure that
+            there are no mistakes.
           </Text>
           <Flex paddingTop="20px" paddingBottom="25px" paddingLeft="10px">
             <Button
