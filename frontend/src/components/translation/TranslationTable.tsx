@@ -24,6 +24,7 @@ export type TranslationTableProps = {
   setCommentStoryTranslationContentId: (id: number) => void;
   numApprovedLines?: number;
   setNumApprovedLines?: (numLines: number) => void;
+  changedStoryLines?: number;
 };
 
 const TranslationTable = ({
@@ -40,6 +41,7 @@ const TranslationTable = ({
   translator,
   numApprovedLines,
   setNumApprovedLines,
+  changedStoryLines,
 }: TranslationTableProps) => {
   const handleCommentButton = (
     displayLineNumber: number,
@@ -127,6 +129,11 @@ const TranslationTable = ({
           </Text>
           <Text variant="cellHeader">
             Translate to <strong>{translatedLanguage}</strong>
+            <Text as="span" variant="saveStatus">
+              {changedStoryLines === 0
+                ? "(Progress Saved)"
+                : "(Progress Saving...)"}
+            </Text>
           </Text>
         </Flex>
         <Text variant="statusHeader">Status</Text>

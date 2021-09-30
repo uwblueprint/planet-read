@@ -26,6 +26,11 @@ const Text = {
     comment: {
       fontSize: "14px",
     },
+    saveStatus: {
+      color: "gray.400",
+      fontSize: "16px",
+      marginLeft: "10px",
+    },
   },
 };
 export default Text;
