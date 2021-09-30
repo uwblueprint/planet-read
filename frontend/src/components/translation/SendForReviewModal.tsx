@@ -15,19 +15,19 @@ import {
 
 type SendForReviewModalProps = {
   sendForReview: boolean;
-  onSendForReviewClick: () => void;
+  onClose: () => void;
   onSendForReviewConfirmationClick: () => void;
 };
 
-export const SendForReviewModal = ({
+const SendForReviewModal = ({
   sendForReview,
-  onSendForReviewClick,
+  onClose,
   onSendForReviewConfirmationClick,
 }: SendForReviewModalProps) => {
   return (
     <Modal
       isOpen={sendForReview}
-      onClose={onSendForReviewClick}
+      onClose={onClose}
       motionPreset="slideInBottom"
       size="xl"
     >
@@ -47,7 +47,7 @@ export const SendForReviewModal = ({
               position="static"
               marginLeft="auto"
               borderRadius="15px"
-              backgroundColor="#F3F3F3"
+              backgroundColor="gray.100"
             />
           </Flex>
         </ModalHeader>
@@ -73,7 +73,7 @@ export const SendForReviewModal = ({
             </Button>
           </Flex>
         </ModalBody>
-        <Box bg="#1D6CA5" w="100%" p="5px" borderRadius="0 0 5px 5px" />
+        <Box bg="blue.500" w="100%" p="5px" borderRadius="0 0 5px 5px" />
       </ModalContent>
     </Modal>
   );

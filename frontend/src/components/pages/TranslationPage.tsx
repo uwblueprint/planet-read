@@ -1,11 +1,6 @@
 import React, { useState } from "react";
-<<<<<<< HEAD
-import { useQuery } from "@apollo/client";
-import { Box, Button, Divider, Flex, Text, Tooltip } from "@chakra-ui/react";
-=======
 import { useQuery, useMutation } from "@apollo/client";
-import { Box, Button, Divider, Flex, Text } from "@chakra-ui/react";
->>>>>>> 22dea0f... Implement Send To Translator flow
+import { Box, Button, Divider, Flex, Text, Tooltip } from "@chakra-ui/react";
 import { useParams } from "react-router-dom";
 
 import ProgressBar from "../utils/ProgressBar";
@@ -23,11 +18,8 @@ import convertLanguageTitleCase from "../../utils/LanguageUtils";
 import deepCopy from "../../utils/DeepCopyUtils";
 import Header from "../navigation/Header";
 import CommentsPanel from "../review/CommentsPanel";
-<<<<<<< HEAD
 import { TRANSLATION_PAGE_TOOL_TIP_COPY } from "../../utils/Copy";
-=======
-import SendForReviewModal2 from "../translation/SendForReviewModal";
->>>>>>> 22dea0f... Implement Send To Translator flow
+import SendForReviewModal from "../translation/SendForReviewModal";
 
 type TranslationPageProps = {
   storyIdParam: string | undefined;
@@ -294,6 +286,7 @@ const TranslationPage = () => {
                   size="secondary"
                   margin="0 10px 0"
                   disabled={!editable}
+                  onClick={onSendForReviewClick}
                 >
                   {editable ? "SEND FOR REVIEW" : "IN REVIEW"}
                 </Button>
@@ -314,9 +307,9 @@ const TranslationPage = () => {
         onSuccess={clearUnsavedChangesMap}
       />
       {sendForReview && (
-        <SendForReviewModal2
+        <SendForReviewModal
           sendForReview={sendForReview}
-          onSendForReviewClick={onSendForReviewClick}
+          onClose={onSendForReviewClick}
           onSendForReviewConfirmationClick={onSendForReviewConfirmationClick}
         />
       )}
