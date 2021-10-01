@@ -266,6 +266,7 @@ const TranslationPage = () => {
               }
               translator
               setTranslatedStoryLines={setTranslatedStoryLines}
+              changedStoryLines={changedStoryLines.size}
             />
           </Flex>
           <Flex margin="20px 30px" justify="space-between" alignItems="center">
