@@ -64,3 +64,14 @@ export const ASSIGN_REVIEWER = gql`
   }
 `;
 export type AssignReviewerResponse = { ok: boolean };
+
+export const UPDATE_STORY_TRANSLATION_STAGE = gql`
+  mutation UpdateStoryTranslationStage(
+    $storyTranslationData: UpdateStoryTranslationStageRequestDTO!
+  ) {
+    updateStoryTranslationStage(storyTranslationData: $storyTranslationData) {
+      ok
+    }
+  }
+`;
+export type UpdateStoryTranslationStageResponse = { ok: boolean };
