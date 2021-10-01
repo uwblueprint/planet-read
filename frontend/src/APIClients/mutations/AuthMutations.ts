@@ -9,6 +9,7 @@ export const LOGIN = gql`
       email
       role
       approvedLanguagesTranslation
+      approvedLanguagesReview
       accessToken
       refreshToken
     }
@@ -24,6 +25,7 @@ export const LOGIN_WITH_GOOGLE = gql`
       email
       role
       approvedLanguagesTranslation
+      approvedLanguagesReview
       accessToken
       refreshToken
     }

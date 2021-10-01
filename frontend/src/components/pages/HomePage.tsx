@@ -19,14 +19,16 @@ const HomePage = () => {
     authenticatedUser!!.approvedLanguagesTranslation.replace(/'/g, '"'),
   );
 
+  const approvedLanguagesReview = authenticatedUser!!.approvedLanguagesReview
+    ? JSON.parse(authenticatedUser!!.approvedLanguagesReview.replace(/'/g, '"'))
+    : {};
+
   const [displayMyStories, setDisplayMyStories] = useState<boolean>(true);
   const [language, setLanguage] = useState<string>(
     Object.keys(approvedLanguagesTranslation)[0],
   );
   const [isTranslator, setIsTranslator] = useState<boolean>(true);
-  const [level, setLevel] = useState<number>(
-    approvedLanguagesTranslation[language],
-  );
+  const [level, setLevel] = useState<number>(1);
   const [stories, setStories] = useState<StoryCardProps[] | null>(null);
 
   const [showScrollToTop, setShowScrollToTop] = useState(false);
@@ -84,6 +86,7 @@ const HomePage = () => {
       <Flex direction="row">
         <Filter
           approvedLanguagesTranslation={approvedLanguagesTranslation}
+          approvedLanguagesReview={approvedLanguagesReview}
           level={level}
           setLevel={setLevel}
           language={language}

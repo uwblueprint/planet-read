@@ -8,6 +8,7 @@ export type AuthenticatedUser = {
   role: "Admin" | "User";
   accessToken: string;
   approvedLanguagesTranslation: string;
+  approvedLanguagesReview: string;
 } | null;
 
 type AuthContextType = {
