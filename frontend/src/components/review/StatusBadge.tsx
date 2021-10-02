@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { Badge, Menu, MenuButton, MenuList, MenuItem } from "@chakra-ui/react";
 import { useMutation } from "@apollo/client";
 import { Icon } from "@chakra-ui/icon";
@@ -12,6 +12,11 @@ import {
   UpdateStoryTranslationContentStatusResponse,
 } from "../../APIClients/mutations/StoryMutations";
 import { StoryLine } from "../translation/Autosave";
+import ConfirmationModal from "../translation/ConfirmationModal";
+import {
+  REVIEW_PAGE_APPROVE_LAST_LINE_CONFIRMATION,
+  REVIEW_PAGE_BUTTON_MESSAGE,
+} from "../../utils/Copy";
 
 export type StatusBadgeProps = {
   translatedStoryLines: StoryLine[];
@@ -31,7 +36,14 @@ const StatusBadge = ({
   const [updateStatus] = useMutation<{
     response: UpdateStoryTranslationContentStatusResponse;
   }>(UPDATE_STORY_TRANSLATION_CONTENT_STATUS);
-  const handleStatusChange = async (newStatus: string) => {
+
+  const [sendAsApprovedLastLine, setSendAsApprovedLastLine] = useState(false);
+
+  const closeModal = async () => {
+    setSendAsApprovedLastLine(false);
+  };
+
+  const changeStatus = async (newStatus: string) => {
     const result = await updateStatus({
       variables: {
         storyTranslationContentId: storyLine.storyTranslationContentId!!,
@@ -51,14 +63,33 @@ const StatusBadge = ({
         prevState !== convertStatusTitleCase("APPROVED") &&
         newStatus === "APPROVED"
       ) {
-        setNumApprovedLines!!(numApprovedLines!! + 1);
+        setNumApprovedLines(numApprovedLines + 1);
       } else if (
         prevState === convertStatusTitleCase("APPROVED") &&
         newStatus !== "APPROVED"
       ) {
-        setNumApprovedLines!!(numApprovedLines!! - 1);
+        setNumApprovedLines(numApprovedLines - 1);
       }
     }
+  };
+
+  const handleStatusChange = (newStatus: string) => {
+    if (
+      newStatus !== "APPROVED" ||
+      numApprovedLines + 1 < translatedStoryLines.length
+    ) {
+      changeStatus(newStatus);
+    } else if (
+      newStatus === "APPROVED" &&
+      numApprovedLines + 1 === translatedStoryLines.length
+    ) {
+      setSendAsApprovedLastLine(true);
+    }
+  };
+
+  const handleLastLine = () => {
+    changeStatus("APPROVED");
+    closeModal();
   };
 
   return (
@@ -91,6 +122,15 @@ const StatusBadge = ({
           Pending
         </MenuItem>
       </MenuList>
+      {sendAsApprovedLastLine && (
+        <ConfirmationModal
+          confirmation={sendAsApprovedLastLine}
+          onConfirmationClick={handleLastLine}
+          onClose={closeModal}
+          confirmationMessage={REVIEW_PAGE_APPROVE_LAST_LINE_CONFIRMATION}
+          buttonMessage={REVIEW_PAGE_BUTTON_MESSAGE}
+        />
+      )}
     </Menu>
   );
 };

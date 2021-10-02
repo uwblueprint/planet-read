@@ -112,6 +112,7 @@ const ReviewPage = () => {
             overflowY="auto"
           >
             <TranslationTable
+              storyTranslationId={storyTranslationId}
               translatedStoryLines={translatedStoryLines}
               fontSize={fontSize}
               originalLanguage="English"
@@ -125,6 +126,7 @@ const ReviewPage = () => {
               setTranslatedStoryLines={setTranslatedStoryLines}
               numApprovedLines={numApprovedLines}
               setNumApprovedLines={setNumApprovedLines}
+              reviewPage
             />
           </Flex>
           <Flex margin="20px 30px" justify="flex-start" alignItems="center">

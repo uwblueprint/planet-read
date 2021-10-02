@@ -11,6 +11,7 @@ from .mutations.auth_mutation import (
 from .mutations.comment_mutation import CreateComment, UpdateCommentById, UpdateComments
 from .mutations.file_mutation import CreateFile
 from .mutations.story_mutation import (
+    ApproveAllStoryTranslationContent,
     AssignUserAsReviewer,
     CreateStory,
     CreateStoryTranslation,
@@ -56,6 +57,7 @@ class Mutation(graphene.ObjectType):
     update_story_translation_content_status = (
         UpdateStoryTranslationContentStatus.Field()
     )
+    approve_all_story_translation_content = ApproveAllStoryTranslationContent.Field()
     update_story_translation_stage = UpdateStoryTranslationStage.Field()
 
 
