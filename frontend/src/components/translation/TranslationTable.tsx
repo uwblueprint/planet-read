@@ -129,11 +129,13 @@ const TranslationTable = ({
           </Text>
           <Text variant="cellHeader">
             Translate to <strong>{translatedLanguage}</strong>
-            <Text as="span" variant="saveStatus">
-              {changedStoryLines === 0
-                ? "(Progress Saved)"
-                : "(Progress Saving...)"}
-            </Text>
+            {editable && (
+              <Text as="span" variant="saveStatus">
+                {changedStoryLines === 0
+                  ? "(Progress Saved)"
+                  : "(Progress Saving...)"}
+              </Text>
+            )}
           </Text>
         </Flex>
         <Text variant="statusHeader">Status</Text>
