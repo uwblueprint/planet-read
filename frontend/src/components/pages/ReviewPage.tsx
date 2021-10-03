@@ -149,6 +149,7 @@ const ReviewPage = () => {
           disabled={false}
           commentStoryTranslationContentId={commentStoryTranslationContentId}
           commentLine={commentLine}
+          storyId={storyId}
           storyTranslationId={storyTranslationId}
           setCommentLine={setCommentLine}
         />

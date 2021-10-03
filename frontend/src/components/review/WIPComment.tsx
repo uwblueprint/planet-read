@@ -6,17 +6,24 @@ import {
   CreateCommentResponse,
   CREATE_COMMMENT,
 } from "../../APIClients/mutations/CommentMutations";
+import { GET_STORY_AND_TRANSLATION_CONTENTS } from "../../APIClients/queries/StoryQueries";
 
 export type WIPCommentProps = {
   commentStoryTranslationContentId: number;
   lineIndex: number;
   setCommentLine: (line: number) => void;
+  commentsQuery: any;
+  storyId: number;
+  storyTranslationId: number;
 };
 
 const WIPComment = ({
   commentStoryTranslationContentId,
   lineIndex,
   setCommentLine,
+  commentsQuery,
+  storyId,
+  storyTranslationId,
 }: WIPCommentProps) => {
   const handleError = (errorMessage: string) => {
     // eslint-disable-next-line no-alert
@@ -28,13 +35,19 @@ const WIPComment = ({
 
   const [createComment] = useMutation<{
     createComment: CreateCommentResponse;
-  }>(CREATE_COMMMENT);
+  }>(CREATE_COMMMENT, {
+    refetchQueries: [
+      { query: commentsQuery.string },
+      {
+        query: GET_STORY_AND_TRANSLATION_CONTENTS(storyId, storyTranslationId),
+      },
+    ],
+  });
 
   const createNewComment = async () => {
     try {
       const commentData = {
         storyTranslationContentId: commentStoryTranslationContentId,
-        userId: authenticatedUser!!.id,
         content: text,
       };
       const result = await createComment({

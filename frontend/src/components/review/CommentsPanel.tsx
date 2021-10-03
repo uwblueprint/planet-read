@@ -9,6 +9,7 @@ import WIPComment from "./WIPComment";
 import { TRANSLATION_PAGE_TOOL_TIP_COPY } from "../../utils/Copy";
 
 export type CommentPanelProps = {
+  storyId: number;
   storyTranslationId: number;
   commentLine: number;
   setCommentLine: (line: number) => void;
@@ -17,6 +18,7 @@ export type CommentPanelProps = {
 };
 
 const CommentsPanel = ({
+  storyId,
   storyTranslationId,
   commentLine,
   commentStoryTranslationContentId,
@@ -115,6 +117,9 @@ const CommentsPanel = ({
           lineIndex={commentLine}
           commentStoryTranslationContentId={commentStoryTranslationContentId}
           setCommentLine={setCommentLine}
+          commentsQuery={commentsQuery}
+          storyId={storyId}
+          storyTranslationId={storyTranslationId}
         />
       )}
       <CommentsList />
