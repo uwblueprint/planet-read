@@ -112,7 +112,7 @@ def insert_test_data():
 
     empty_translation = [1, 4, 6, 8, 9, 10, 12]
     for story_translation_id in empty_translation:
-        for line_index in range(9):
+        for line_index in range(10):
             id = story_count * 10 + line_index + 1
             db.engine.execute(
                 f'INSERT IGNORE INTO story_translation_contents \
