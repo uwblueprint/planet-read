@@ -10,7 +10,7 @@ const Text = {
     },
     cellHeader: {
       borderRadius: "3px",
-      width: "50%",
+      width: "100%",
       margin: "12px",
     },
     lineIndex: {

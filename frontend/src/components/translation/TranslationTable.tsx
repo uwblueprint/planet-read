@@ -128,10 +128,12 @@ const TranslationTable = ({
     <Flex direction="column">
       <Flex alignItems="flex-start" direction="row">
         <Text variant="lineIndex">Line</Text>
-        <Flex direction="row" width="100%">
+        <Flex flex={1}>
           <Text variant="cellHeader">
             Translate from <strong>{originalLanguage}</strong>
           </Text>
+        </Flex>
+        <Flex flex={1}>
           <Text variant="cellHeader">
             Translate to <strong>{translatedLanguage}</strong>
             {editable && (
@@ -143,9 +145,7 @@ const TranslationTable = ({
             )}
           </Text>
         </Flex>
-        <Flex>
-          <Text variant="statusHeader">Status</Text>
-        </Flex>
+        <Text variant="statusHeader">Status</Text>
       </Flex>
       {storyCells}
     </Flex>
