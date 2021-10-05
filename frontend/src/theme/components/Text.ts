@@ -6,6 +6,7 @@ const Text = {
       fontSize: "12px",
       padding: "10px",
       margin: "12px",
+      width: "100%",
     },
     cellHeader: {
       borderRadius: "3px",
