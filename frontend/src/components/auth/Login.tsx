@@ -48,6 +48,20 @@ const Login = () => {
     setSignup(true);
   };
 
+  type GoogleErrorResponse = {
+    error: string;
+    details: string;
+  };
+
+  const onFailure = (response: GoogleErrorResponse) => {
+    // https://stackoverflow.com/questions/63631849/google-sign-in-not-working-in-incognito-mode
+    if (response.error === "idpiframe_initialization_failed") {
+      console.warn("Google SignIn does not work on incognito mode.");
+    } else {
+      alert(JSON.stringify(response));
+    }
+  };
+
   if (authenticatedUser) {
     return <Redirect to="/" />;
   }
@@ -93,10 +107,10 @@ const Login = () => {
               if ("tokenId" in response) {
                 onGoogleLoginSuccess(response.tokenId);
               } else {
-                console.log(response);
+                alert(JSON.stringify(response));
               }
             }}
-            onFailure={(response) => alert(response)}
+            onFailure={onFailure}
           />
         </div>
         <div>
