@@ -1,6 +1,6 @@
 import graphene
 
-from ...middlewares.auth import require_authorization_as_story_translator
+from ...middlewares.auth import require_authorization_as_story_user_by_role
 from ...models.story_translation_content_status import StoryTranslationContentStatus
 from ..service import services
 from ..types.story_type import (
@@ -73,7 +73,7 @@ class UpdateStoryTranslationContents(graphene.Mutation):
 
     story = graphene.Field(lambda: graphene.List(StoryTranslationContentResponseDTO))
 
-    @require_authorization_as_story_translator()
+    @require_authorization_as_story_user_by_role(as_translator=True)
     def mutate(root, info, story_translation_contents):
         try:
             new_story_translation_contents = services[
@@ -91,7 +91,8 @@ class UpdateStoryTranslationContentStatus(graphene.Mutation):
         status = graphene.String(required=True)
 
     story = graphene.Field(lambda: StoryTranslationUpdateStatusResponseDTO)
-    # TODO: require authorization as reviewer
+
+    @require_authorization_as_story_user_by_role(as_translator=False)
     def mutate(root, info, story_translation_content_id, status):
         try:
             new_story = services["story"].update_story_translation_content_status(

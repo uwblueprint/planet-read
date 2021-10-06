@@ -149,16 +149,31 @@ def require_authorization_by_role_gql(roles):
     return require_authorization
 
 
-def require_authorization_as_story_translator():
+def require_authorization_as_story_user_by_role(as_translator):
     def require_authorization(api_func):
         @wraps(api_func)
         def wrapper(root, info, *args, **kwargs):
             access_token = get_access_token(info.context)
-            authorized = auth_service.is_translator(
-                access_token, kwargs["story_translation_contents"][0]["id"]
+            # TODO: find generalized way of getting story_translation_content_id.
+            # Currently custom to UpdateStoryTranslationContentStatus and UpdateStoryTranslationContents
+            story_translation_content_id = (
+                kwargs["story_translation_content_id"]
+                if ("story_translation_content_id" in kwargs)
+                else kwargs["story_translation_contents"][0]["id"]
+            )
+
+            authorized = (
+                auth_service.is_translator(access_token, story_translation_content_id)
+                if as_translator
+                else auth_service.is_reviewer(
+                    access_token, story_translation_content_id
+                )
             )
             if not authorized:
-                raise Exception("You are not a translator.")
+                if as_translator:
+                    raise Exception("You are not a translator.")
+                else:
+                    raise Exception("You are not a reviewer.")
             return api_func(root, info, *args, **kwargs)
 
         return wrapper
