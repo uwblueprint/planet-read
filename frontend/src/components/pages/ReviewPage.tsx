@@ -1,6 +1,6 @@
 import React, { useState } from "react";
-import { useQuery } from "@apollo/client";
-import { Box, Divider, Flex } from "@chakra-ui/react";
+import { useQuery, useMutation } from "@apollo/client";
+import { Box, Divider, Flex, Button, Tooltip } from "@chakra-ui/react";
 import { useParams } from "react-router-dom";
 
 import ProgressBar from "../utils/ProgressBar";
@@ -12,6 +12,16 @@ import CommentsPanel from "../review/CommentsPanel";
 import FontSizeSlider from "../translation/FontSizeSlider";
 import convertLanguageTitleCase from "../../utils/LanguageUtils";
 import Header from "../navigation/Header";
+import ConfirmationModal from "../translation/ConfirmationModal";
+import {
+  REVIEW_PAGE_RETURN_TO_TRANSLATOR_CONFIRMAITON,
+  REVIEW_PAGE_RETURN_TO_TRANSLATOR_BUTTON_MESSAGE,
+  REVIEW_PAGE_TOOL_TIP_COPY,
+} from "../../utils/Copy";
+import {
+  UPDATE_STORY_TRANSLATION_STAGE,
+  UpdateStoryTranslationStageResponse,
+} from "../../APIClients/mutations/StoryMutations";
 
 type ReviewPageProps = {
   storyIdParam: string | undefined;
@@ -42,8 +52,18 @@ const ReviewPage = () => {
   const [fontSize, setFontSize] = useState<string>("12px");
   const [title, setTitle] = useState<string>("");
   const [language, setLanguage] = useState<string>("");
+  const [stage, setStage] = useState<string>("");
 
   const [commentLine, setCommentLine] = useState(-1);
+
+  const [returnToTranslator, setReturnToTranslator] = useState(false);
+
+  const closeModal = async () => {
+    setReturnToTranslator(false);
+  };
+  const openModal = async () => {
+    setReturnToTranslator(true);
+  };
 
   const [
     commentStoryTranslationContentId,
@@ -54,12 +74,35 @@ const ReviewPage = () => {
     setFontSize(val);
   };
 
+  const [updateStoryTranslationStage] = useMutation<{
+    updateStoryTranslationStage: UpdateStoryTranslationStageResponse;
+  }>(UPDATE_STORY_TRANSLATION_STAGE);
+  const returnToTranslatorMutation = async () => {
+    try {
+      const storyTranslationData = {
+        id: storyTranslationId,
+        stage: "TRANSLATE",
+      };
+      const result = await updateStoryTranslationStage({
+        variables: { storyTranslationData },
+      });
+      if (result.data?.updateStoryTranslationStage.ok) {
+        window.location.reload();
+      } else {
+        window.alert("Unable to return to translator.");
+      }
+    } catch (error) {
+      window.alert(error ?? "Error occurred, please try again.");
+    }
+  };
+
   useQuery(GET_STORY_AND_TRANSLATION_CONTENTS(storyId, storyTranslationId), {
     fetchPolicy: "cache-and-network",
     onCompleted: (data) => {
       const storyContent = data.storyById.contents;
       const translatedContent = data.storyTranslationById.translationContents;
       setLanguage(data.storyTranslationById.language);
+      setStage(data.storyTranslationById.stage);
       setTitle(data.storyById.title);
       setNumTranslatedLines(data.storyTranslationById.numTranslatedLines);
       setNumApprovedLines(data.storyTranslationById.numApprovedLines);
@@ -126,37 +169,64 @@ const ReviewPage = () => {
               setTranslatedStoryLines={setTranslatedStoryLines}
               numApprovedLines={numApprovedLines}
               setNumApprovedLines={setNumApprovedLines}
+              isReviewable={stage === "REVIEW"}
               reviewPage
             />
           </Flex>
-          <Flex margin="20px 30px" justify="flex-start" alignItems="center">
-            <Box marginRight="10px">
+          <Flex margin="20px 30px" justify="space-between" alignItems="center">
+            <Flex justify="flex-start" alignItems="right">
               <ProgressBar
                 percentageComplete={
                   (numTranslatedLines / translatedStoryLines.length) * 100
                 }
                 type="Translation"
               />
-            </Box>
-            <Box>
               <ProgressBar
                 percentageComplete={
                   (numApprovedLines / translatedStoryLines.length) * 100
                 }
                 type="Review"
               />
-            </Box>
+            </Flex>
+            <Tooltip
+              hasArrow
+              label={REVIEW_PAGE_TOOL_TIP_COPY}
+              isDisabled={stage === "REVIEW"}
+            >
+              <Box>
+                <Button
+                  colorScheme="blue"
+                  size="secondary"
+                  margin="0 10px 0"
+                  width="250px"
+                  disabled={stage === "TRANSLATE"}
+                  onClick={openModal}
+                >
+                  RETURN TO TRANSLATOR
+                </Button>
+              </Box>
+            </Tooltip>
           </Flex>
         </Flex>
         <CommentsPanel
-          disabled={false}
+          disabled={stage === "TRANSLATE"}
           commentStoryTranslationContentId={commentStoryTranslationContentId}
           commentLine={commentLine}
           storyTranslationId={storyTranslationId}
           setCommentLine={setCommentLine}
           setTranslatedStoryLines={setTranslatedStoryLines}
           translatedStoryLines={translatedStoryLines}
+          reviewPage
         />
+        {returnToTranslator && (
+          <ConfirmationModal
+            confirmation={returnToTranslator}
+            onConfirmationClick={returnToTranslatorMutation}
+            onClose={closeModal}
+            confirmationMessage={REVIEW_PAGE_RETURN_TO_TRANSLATOR_CONFIRMAITON}
+            buttonMessage={REVIEW_PAGE_RETURN_TO_TRANSLATOR_BUTTON_MESSAGE}
+          />
+        )}
       </Flex>
     </Flex>
   );

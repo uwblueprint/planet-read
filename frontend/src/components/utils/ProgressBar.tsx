@@ -14,7 +14,12 @@ const ProgressBar = ({ percentageComplete, type }: ProgressBarProps) => {
         {type} Progress: {percentageComplete}%
       </p>
       <div>
-        <Progress value={percentageComplete} size="xs" />
+        <Progress
+          value={percentageComplete}
+          size="xs"
+          width="130px"
+          marginRight="10px"
+        />
       </div>
     </div>
   );
