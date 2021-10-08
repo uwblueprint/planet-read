@@ -1,5 +1,25 @@
 version: 2.1
 jobs:
+  test:
+    docker:
+      - image: cimg/base:2021.05
+    steps:
+      - checkout
+      - setup_remote_docker:
+          version: 19.03.13
+      - run:
+          name: Create env file
+          command: |
+            touch .env
+            echo "Writing env variables to .env"
+            env > .env
+      - run:
+          name: Running tests
+          command: |
+            set -x
+            echo "Running backend tests"
+            docker-compose -f docker-compose.testing.yml up --abort-on-container-exit
+
   build:
     docker:
       - image: cimg/base:2021.05
@@ -7,16 +27,17 @@ jobs:
       - checkout
       - setup_remote_docker:
           version: 19.03.13
-          docker_layer_caching: false
       - run:
           name: Create env file
-          command: |
-            touch .env
+          command: touch .env
       - run:
-          name: Start container via docker-compose
+          name: Build backend and frontend images 
           command: |
             set -x
-            docker-compose up -d
+            echo "Build images"
+            docker-compose build frontend 
+            docker-compose build py-backend
+
   lint:
     docker:
       - image: cimg/python:3.9.7
@@ -32,11 +53,15 @@ jobs:
             isort --profile black backend/python/app/ -c
             echo "Code properly linted!"
 
+
 workflows:
   version: 2
-  lint and build:
+  lint-build-test:
     jobs:
       - lint
       - build:
           requires:
             - lint
+      - test:
+          requires:
+            - build
