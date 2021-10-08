@@ -299,9 +299,10 @@ const TranslationPage = () => {
           disabled={!editable}
           commentStoryTranslationContentId={commentStoryTranslationContentId}
           commentLine={commentLine}
-          storyId={storyId}
           storyTranslationId={storyTranslationId}
           setCommentLine={setCommentLine}
+          setTranslatedStoryLines={setTranslatedStoryLines}
+          translatedStoryLines={translatedStoryLines}
         />
       </Flex>
       <Autosave

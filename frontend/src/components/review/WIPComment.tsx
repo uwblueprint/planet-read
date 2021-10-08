@@ -6,24 +6,28 @@ import {
   CreateCommentResponse,
   CREATE_COMMMENT,
 } from "../../APIClients/mutations/CommentMutations";
-import { GET_STORY_AND_TRANSLATION_CONTENTS } from "../../APIClients/queries/StoryQueries";
+import { CommentResponse } from "../../APIClients/queries/CommentQueries";
+import { StoryLine } from "../translation/Autosave";
+import { convertStatusTitleCase } from "../../utils/StatusUtils";
 
 export type WIPCommentProps = {
   commentStoryTranslationContentId: number;
   lineIndex: number;
   setCommentLine: (line: number) => void;
-  commentsQuery: any;
-  storyId: number;
-  storyTranslationId: number;
+  setComments: (comments: CommentResponse[]) => void;
+  setTranslatedStoryLines: (storyLines: StoryLine[]) => void;
+  comments: CommentResponse[];
+  translatedStoryLines: StoryLine[];
 };
 
 const WIPComment = ({
   commentStoryTranslationContentId,
   lineIndex,
   setCommentLine,
-  commentsQuery,
-  storyId,
-  storyTranslationId,
+  setComments,
+  setTranslatedStoryLines,
+  comments,
+  translatedStoryLines,
 }: WIPCommentProps) => {
   const handleError = (errorMessage: string) => {
     // eslint-disable-next-line no-alert
@@ -35,14 +39,7 @@ const WIPComment = ({
 
   const [createComment] = useMutation<{
     createComment: CreateCommentResponse;
-  }>(CREATE_COMMMENT, {
-    refetchQueries: [
-      { query: commentsQuery.string },
-      {
-        query: GET_STORY_AND_TRANSLATION_CONTENTS(storyId, storyTranslationId),
-      },
-    ],
-  });
+  }>(CREATE_COMMMENT);
 
   const createNewComment = async () => {
     try {
@@ -56,6 +53,13 @@ const WIPComment = ({
       if (result.data?.createComment.ok) {
         setText("");
         setCommentLine(0);
+
+        setComments([...comments, result.data.createComment.comment]);
+        const updatedStoryLines = [...translatedStoryLines];
+        updatedStoryLines[lineIndex - 1].status = convertStatusTitleCase(
+          "ACTION_REQUIRED",
+        );
+        setTranslatedStoryLines(updatedStoryLines);
       }
     } catch (err) {
       handleError(err ?? "Error occurred, please try again.");
