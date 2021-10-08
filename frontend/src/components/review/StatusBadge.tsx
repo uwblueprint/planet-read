@@ -74,12 +74,16 @@ const StatusBadge = ({
   };
 
   const handleStatusChange = (newStatus: string) => {
+    const prevStatus = translatedStoryLines[storyLine.lineIndex].status;
+
     if (
-      newStatus !== "APPROVED" ||
-      numApprovedLines + 1 < translatedStoryLines.length
+      prevStatus !== convertStatusTitleCase(newStatus) &&
+      (newStatus !== "APPROVED" ||
+        numApprovedLines + 1 < translatedStoryLines.length)
     ) {
       changeStatus(newStatus);
     } else if (
+      prevStatus !== convertStatusTitleCase(newStatus) &&
       newStatus === "APPROVED" &&
       numApprovedLines + 1 === translatedStoryLines.length
     ) {
