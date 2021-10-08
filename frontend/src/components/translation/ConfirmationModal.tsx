@@ -13,20 +13,24 @@ import {
   Text,
 } from "@chakra-ui/react";
 
-type SendForReviewModalProps = {
-  sendForReview: boolean;
+type ConfirmationModalProps = {
+  confirmation: boolean;
   onClose: () => void;
-  onSendForReviewConfirmationClick: () => void;
+  onConfirmationClick: () => void;
+  confirmationMessage: string;
+  buttonMessage: string;
 };
 
-const SendForReviewModal = ({
-  sendForReview,
+const ConfirmationModal = ({
+  confirmation,
   onClose,
-  onSendForReviewConfirmationClick,
-}: SendForReviewModalProps) => {
+  onConfirmationClick,
+  confirmationMessage,
+  buttonMessage,
+}: ConfirmationModalProps) => {
   return (
     <Modal
-      isOpen={sendForReview}
+      isOpen={confirmation}
       onClose={onClose}
       motionPreset="slideInBottom"
       size="xl"
@@ -60,18 +64,15 @@ const SendForReviewModal = ({
             }}
           />
           <Text fontSize="16px" paddingLeft="10px" paddingRight="10px">
-            Once you send your translation for review, you wont be able to edit
-            the translation or leave comments until a reviewer reviews your
-            translation. This action cannot be undone. Please make sure that
-            there are no mistakes.
+            {confirmationMessage}
           </Text>
           <Flex paddingTop="20px" paddingBottom="25px" paddingLeft="10px">
             <Button
               width="55%"
               colorScheme="blue"
-              onClick={onSendForReviewConfirmationClick}
+              onClick={onConfirmationClick}
             >
-              I&apos;m sure, send for review
+              {buttonMessage}
             </Button>
           </Flex>
         </ModalBody>
@@ -81,4 +82,4 @@ const SendForReviewModal = ({
   );
 };
 
-export default SendForReviewModal;
+export default ConfirmationModal;

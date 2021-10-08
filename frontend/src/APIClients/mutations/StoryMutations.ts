@@ -36,6 +36,16 @@ export type UpdateStoryTranslationContentStatusResponse = {
   };
 };
 
+export const APPROVE_ALL_STORY_TRANSLATION_CONTENT = gql`
+  mutation ApproveAllStoryTranslationContent($storyTranslationId: Int!) {
+    approveAllStoryTranslationContent(storyTranslationId: $storyTranslationId) {
+      ok
+    }
+  }
+`;
+
+export type ApproveAllStoryTranslationContentResponse = { ok: boolean };
+
 export const CREATE_TRANSLATION = gql`
   mutation CreateStoryTranslation(
     $storyTranslationData: CreateStoryTranslationRequestDTO!

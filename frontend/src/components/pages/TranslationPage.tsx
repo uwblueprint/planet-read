@@ -18,8 +18,12 @@ import convertLanguageTitleCase from "../../utils/LanguageUtils";
 import deepCopy from "../../utils/DeepCopyUtils";
 import Header from "../navigation/Header";
 import CommentsPanel from "../review/CommentsPanel";
-import { TRANSLATION_PAGE_TOOL_TIP_COPY } from "../../utils/Copy";
-import SendForReviewModal from "../translation/SendForReviewModal";
+import {
+  TRANSLATION_PAGE_TOOL_TIP_COPY,
+  TRANSLATION_PAGE_BUTTON_MESSAGE,
+  TRANSLATION_PAGE_SEND_FOR_REVIEW_CONFIRMATION,
+} from "../../utils/Copy";
+import ConfirmationModal from "../translation/ConfirmationModal";
 
 type TranslationPageProps = {
   storyIdParam: string | undefined;
@@ -245,6 +249,7 @@ const TranslationPage = () => {
           >
             {maxCharsExceededWarning()}
             <TranslationTable
+              storyTranslationId={storyTranslationId}
               translatedStoryLines={translatedStoryLines}
               onUserInput={onUserInput}
               editable={editable}
@@ -300,10 +305,12 @@ const TranslationPage = () => {
         onSuccess={clearUnsavedChangesMap}
       />
       {sendForReview && (
-        <SendForReviewModal
-          sendForReview={sendForReview}
+        <ConfirmationModal
+          confirmation={sendForReview}
           onClose={onSendForReviewClick}
-          onSendForReviewConfirmationClick={onSendForReviewConfirmationClick}
+          onConfirmationClick={onSendForReviewConfirmationClick}
+          confirmationMessage={TRANSLATION_PAGE_SEND_FOR_REVIEW_CONFIRMATION}
+          buttonMessage={TRANSLATION_PAGE_BUTTON_MESSAGE}
         />
       )}
     </Flex>

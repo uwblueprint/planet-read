@@ -407,8 +407,17 @@ class StoryService(IStoryService):
                 id=story_translation_content_id
             ).first()
 
-            story_translation_content.status = status
-            db.session.commit()
+            story_translation = StoryTranslation.query.filter_by(
+                id=story_translation_content.story_translation_id
+            ).first()
+
+            if story_translation.stage == "REVIEW":
+                story_translation_content.status = status
+                db.session.commit()
+            else:
+                raise Exception(
+                    "Error. Story Translation is not in REVIEW stage and its statuses cannot be updated."
+                )
         except Exception as error:
             reason = getattr(error, "message", None)
             self.logger.error(
@@ -423,6 +432,30 @@ class StoryService(IStoryService):
             story_translation_content.line_index,
             status,
         )
+
+    def approve_all_story_translation_content(self, story_translation_id):
+        try:
+            story_translation = StoryTranslation.query.filter_by(
+                id=story_translation_id
+            ).first()
+
+            if story_translation.stage == "REVIEW":
+                for translation_content in story_translation.translation_contents:
+                    translation_content.status = "APPROVED"
+
+                db.session.commit()
+            else:
+                raise Exception(
+                    "Error. Story Translation is not in REVIEW stage and its statuses cannot be updated."
+                )
+        except Exception as error:
+            reason = getattr(error, "message", None)
+            self.logger.error(
+                "Failed to update all story translation status. Reason = {reason}".format(
+                    reason=(reason if reason else str(error))
+                )
+            )
+            raise error
 
     def _get_num_translated_lines(self, translation_contents):
         return len(translation_contents) - [

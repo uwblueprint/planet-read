@@ -3,10 +3,12 @@ import { Badge, Button, Flex, Text, Tooltip } from "@chakra-ui/react";
 import EditableCell from "./EditableCell";
 import { StoryLine } from "./Autosave";
 import StatusBadge from "../review/StatusBadge";
+import ApproveAll from "../review/ApproveAll";
 import { getStatusVariant } from "../../utils/StatusUtils";
 import { TRANSLATION_PAGE_TOOL_TIP_COPY } from "../../utils/Copy";
 
 export type TranslationTableProps = {
+  storyTranslationId: number;
   translatedStoryLines: StoryLine[];
   editable?: boolean;
   translator: boolean;
@@ -25,9 +27,11 @@ export type TranslationTableProps = {
   numApprovedLines?: number;
   setNumApprovedLines?: (numLines: number) => void;
   changedStoryLines?: number;
+  reviewPage?: boolean;
 };
 
 const TranslationTable = ({
+  storyTranslationId,
   translatedStoryLines,
   editable = false,
   onUserInput,
@@ -42,6 +46,7 @@ const TranslationTable = ({
   numApprovedLines,
   setNumApprovedLines,
   changedStoryLines,
+  reviewPage = false,
 }: TranslationTableProps) => {
   const handleCommentButton = (
     displayLineNumber: number,
@@ -90,7 +95,7 @@ const TranslationTable = ({
           </Tooltip>
         )}
         <Flex direction="column" width="140px" margin="5px">
-          {!editable ? (
+          {reviewPage ? (
             <StatusBadge
               translatedStoryLines={translatedStoryLines}
               setTranslatedStoryLines={setTranslatedStoryLines}
@@ -145,7 +150,16 @@ const TranslationTable = ({
             )}
           </Text>
         </Flex>
-        <Text variant="statusHeader">Status</Text>
+        {reviewPage ? (
+          <ApproveAll
+            numApprovedLines={numApprovedLines!}
+            setNumApprovedLines={setNumApprovedLines!!}
+            totalLines={translatedStoryLines.length}
+            storyTranslationId={storyTranslationId}
+          />
+        ) : (
+          <Text variant="statusHeader">Status</Text>
+        )}
       </Flex>
       {storyCells}
     </Flex>

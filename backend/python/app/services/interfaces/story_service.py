@@ -107,10 +107,19 @@ class IStoryService(ABC):
     def update_story_translation_content_status(
         self, story_translation_content_id, status
     ):
-        """Update a single story translation content status
+        """
+        Update a single story translation content status
         :param story_translation_content: StoryTranslationContentRequestDTO id and updated
         status for story translation
         :return: StoryTranslationContentResponseDTO
         :rtype: StoryTranslationContentResponseDTO
+        """
+        pass
+
+    @abstractmethod
+    def approve_all_story_translation_content(self, story_translation_id):
+        """
+        Set all story translation content statuses to approved
+        :param story_translation_id: id of story translation
         """
         pass

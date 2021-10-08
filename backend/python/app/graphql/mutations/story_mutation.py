@@ -104,6 +104,26 @@ class UpdateStoryTranslationContentStatus(graphene.Mutation):
             raise Exception(error_message if error_message else str(e))
 
 
+class ApproveAllStoryTranslationContent(graphene.Mutation):
+    class Arguments:
+        story_translation_id = graphene.Int(required=True)
+
+    ok = graphene.Boolean()
+
+    # TODO: Need to create new auth for reviewer that takes in story_translation_id
+    # @require_authorization_as_story_user_by_role(as_translator=False)
+    def mutate(root, info, story_translation_id):
+        try:
+            services["story"].approve_all_story_translation_content(
+                story_translation_id
+            )
+
+            return ApproveAllStoryTranslationContent(ok=True)
+        except Exception as e:
+            error_message = getattr(e, "message", None)
+            raise Exception(error_message if error_message else str(e))
+
+
 class UpdateStoryTranslationStage(graphene.Mutation):
     class Arguments:
         story_translation_data = UpdateStoryTranslationStageRequestDTO(required=True)
