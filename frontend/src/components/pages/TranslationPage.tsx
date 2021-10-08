@@ -1,8 +1,9 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import { useQuery, useMutation } from "@apollo/client";
 import { Box, Button, Divider, Flex, Text, Tooltip } from "@chakra-ui/react";
 import { useParams } from "react-router-dom";
 
+import AuthContext from "../../contexts/AuthContext";
 import ProgressBar from "../utils/ProgressBar";
 import TranslationTable from "../translation/TranslationTable";
 import UndoRedo from "../translation/UndoRedo";
@@ -24,6 +25,8 @@ import {
   TRANSLATION_PAGE_SEND_FOR_REVIEW_CONFIRMATION,
 } from "../../utils/Copy";
 import ConfirmationModal from "../translation/ConfirmationModal";
+import SendForReviewModal from "../translation/SendForReviewModal";
+import NotFound from "./NotFound";
 
 type TranslationPageProps = {
   storyIdParam: string | undefined;
@@ -38,6 +41,7 @@ type Content = {
 };
 
 const TranslationPage = () => {
+  const { authenticatedUser } = useContext(AuthContext);
   const MAX_STACK_SIZE = 100;
   const {
     storyIdParam,
@@ -49,6 +53,7 @@ const TranslationPage = () => {
   const [translatedStoryLines, setTranslatedStoryLines] = useState<StoryLine[]>(
     [],
   );
+  const [translatorId, setTranslatorId] = useState(-1);
   const [title, setTitle] = useState<string>("");
   const [language, setLanguage] = useState<string>("");
   const [stage, setStage] = useState<string>("");
@@ -164,6 +169,8 @@ const TranslationPage = () => {
   useQuery(GET_STORY_AND_TRANSLATION_CONTENTS(storyId, storyTranslationId), {
     fetchPolicy: "cache-and-network",
     onCompleted: (data) => {
+      setTranslatorId(data.storyTranslationById.translatorId);
+      console.log(data.storyTranslationById.translatorId);
       const storyContent = data.storyById.contents;
       const translatedContent = data.storyTranslationById.translationContents;
       setStage(data.storyTranslationById.stage);
@@ -218,104 +225,125 @@ const TranslationPage = () => {
     ) : null;
   };
   return (
-    <Flex height="100vh" direction="column" position="absolute">
-      <Header title={title} />
-      <Divider />
-      <Flex justify="space-between" flex={1} minHeight={0}>
-        <Flex width="100%" direction="column">
-          <Flex justify="space-between" alignItems="center" margin="10px 30px">
-            <FontSizeSlider setFontSize={handleFontSizeChange} />
-            <UndoRedo
-              currentVersion={currentVersion}
-              setCurrentVersion={setCurrentVersion}
-              versionHistoryStack={versionHistoryStack}
-              setVersionHistoryStack={setVersionHistoryStack}
-              versionSnapShotStack={versionSnapShotStack}
-              setVersionSnapShotStack={setVersionSnapShotStack}
-              snapShotLineIndexes={snapShotLineIndexes}
-              snapSnapShotLineIndexes={snapSnapShotLineIndexes}
-              translatedStoryLines={translatedStoryLines}
-              onChangeTranslationContent={onChangeTranslationContent}
-              MAX_STACK_SIZE={MAX_STACK_SIZE}
-            />
-          </Flex>
+    <div>
+      {+authenticatedUser!!.id !== translatorId ? (
+        <NotFound />
+      ) : (
+        <Flex
+          height="100vh"
+          direction="column"
+          position="absolute"
+          top="0"
+          bottom="0"
+          left="0"
+          right="0"
+        >
+          <Header title={title} />
           <Divider />
-          <Flex
-            marginLeft="20px"
-            direction="column"
-            flex={1}
-            minHeight={0}
-            overflowY="auto"
-          >
-            {maxCharsExceededWarning()}
-            <TranslationTable
-              storyTranslationId={storyTranslationId}
-              translatedStoryLines={translatedStoryLines}
-              onUserInput={onUserInput}
-              editable={editable}
-              fontSize={fontSize}
-              originalLanguage="English"
-              translatedLanguage={convertLanguageTitleCase(language)}
-              commentLine={commentLine}
-              setCommentLine={setCommentLine}
-              setCommentStoryTranslationContentId={
-                setCommentStoryTranslationContentId
-              }
-              translator
-              setTranslatedStoryLines={setTranslatedStoryLines}
-              changedStoryLines={changedStoryLines.size}
-            />
-          </Flex>
-          <Flex margin="20px 30px" justify="space-between" alignItems="center">
-            <ProgressBar
-              percentageComplete={
-                (numTranslatedLines / translatedStoryLines.length) * 100
-              }
-              type="Translation"
-            />
-            <Tooltip
-              hasArrow
-              label={TRANSLATION_PAGE_TOOL_TIP_COPY}
-              isDisabled={editable}
-            >
-              <Box>
-                <Button
-                  colorScheme="blue"
-                  size="secondary"
-                  margin="0 10px 0"
-                  disabled={!editable}
-                  onClick={onSendForReviewClick}
+          <Flex justify="space-between" flex={1} minHeight={0}>
+            <Flex width="100%" direction="column">
+              <Flex
+                justify="space-between"
+                alignItems="center"
+                margin="10px 30px"
+              >
+                <FontSizeSlider setFontSize={handleFontSizeChange} />
+                <UndoRedo
+                  currentVersion={currentVersion}
+                  setCurrentVersion={setCurrentVersion}
+                  versionHistoryStack={versionHistoryStack}
+                  setVersionHistoryStack={setVersionHistoryStack}
+                  versionSnapShotStack={versionSnapShotStack}
+                  setVersionSnapShotStack={setVersionSnapShotStack}
+                  snapShotLineIndexes={snapShotLineIndexes}
+                  snapSnapShotLineIndexes={snapSnapShotLineIndexes}
+                  translatedStoryLines={translatedStoryLines}
+                  onChangeTranslationContent={onChangeTranslationContent}
+                  MAX_STACK_SIZE={MAX_STACK_SIZE}
+                />
+              </Flex>
+              <Divider />
+              <Flex
+                marginLeft="20px"
+                direction="column"
+                flex={1}
+                minHeight={0}
+                overflowY="auto"
+              >
+                {maxCharsExceededWarning()}
+                <TranslationTable
+                  translatedStoryLines={translatedStoryLines}
+                  onUserInput={onUserInput}
+                  editable={editable}
+                  fontSize={fontSize}
+                  originalLanguage="English"
+                  translatedLanguage={convertLanguageTitleCase(language)}
+                  commentLine={commentLine}
+                  setCommentLine={setCommentLine}
+                  setCommentStoryTranslationContentId={
+                    setCommentStoryTranslationContentId
+                  }
+                  translator
+                  setTranslatedStoryLines={setTranslatedStoryLines}
+                  changedStoryLines={changedStoryLines.size}
+                />
+              </Flex>
+              <Flex
+                margin="20px 30px"
+                justify="space-between"
+                alignItems="center"
+              >
+                <ProgressBar
+                  percentageComplete={
+                    (numTranslatedLines / translatedStoryLines.length) * 100
+                  }
+                  type="Translation"
+                />
+                <Tooltip
+                  hasArrow
+                  label={TRANSLATION_PAGE_TOOL_TIP_COPY}
+                  isDisabled={editable}
                 >
-                  {editable ? "SEND FOR REVIEW" : "IN REVIEW"}
-                </Button>
-              </Box>
-            </Tooltip>
+                  <Box>
+                    <Button
+                      colorScheme="blue"
+                      size="secondary"
+                      margin="0 10px 0"
+                      disabled={!editable}
+                      onClick={onSendForReviewClick}
+                    >
+                      {editable ? "SEND FOR REVIEW" : "IN REVIEW"}
+                    </Button>
+                  </Box>
+                </Tooltip>
+              </Flex>
+            </Flex>
+            <CommentsPanel
+              disabled={!editable}
+              commentStoryTranslationContentId={
+                commentStoryTranslationContentId
+              }
+              commentLine={commentLine}
+              storyTranslationId={storyTranslationId}
+              setCommentLine={setCommentLine}
+            />
           </Flex>
+          <Autosave
+            storylines={Array.from(changedStoryLines.values())}
+            onSuccess={clearUnsavedChangesMap}
+          />
+          {sendForReview && (
+            <SendForReviewModal
+              sendForReview={sendForReview}
+              onClose={onSendForReviewClick}
+              onSendForReviewConfirmationClick={
+                onSendForReviewConfirmationClick
+              }
+            />
+          )}
         </Flex>
-        <CommentsPanel
-          disabled={!editable}
-          commentStoryTranslationContentId={commentStoryTranslationContentId}
-          commentLine={commentLine}
-          storyTranslationId={storyTranslationId}
-          setCommentLine={setCommentLine}
-          setTranslatedStoryLines={setTranslatedStoryLines}
-          translatedStoryLines={translatedStoryLines}
-        />
-      </Flex>
-      <Autosave
-        storylines={Array.from(changedStoryLines.values())}
-        onSuccess={clearUnsavedChangesMap}
-      />
-      {sendForReview && (
-        <ConfirmationModal
-          confirmation={sendForReview}
-          onClose={onSendForReviewClick}
-          onConfirmationClick={onSendForReviewConfirmationClick}
-          confirmationMessage={TRANSLATION_PAGE_SEND_FOR_REVIEW_CONFIRMATION}
-          buttonMessage={TRANSLATION_PAGE_BUTTON_MESSAGE}
-        />
-      )}
-    </Flex>
+      )}{" "}
+    </div>
   );
 };
 

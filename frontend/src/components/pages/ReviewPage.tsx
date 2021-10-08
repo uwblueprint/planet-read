@@ -1,8 +1,9 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import { useQuery } from "@apollo/client";
 import { Box, Divider, Flex } from "@chakra-ui/react";
 import { useParams } from "react-router-dom";
 
+import AuthContext from "../../contexts/AuthContext";
 import ProgressBar from "../utils/ProgressBar";
 import TranslationTable from "../translation/TranslationTable";
 import { StoryLine } from "../translation/Autosave";
@@ -12,6 +13,7 @@ import CommentsPanel from "../review/CommentsPanel";
 import FontSizeSlider from "../translation/FontSizeSlider";
 import convertLanguageTitleCase from "../../utils/LanguageUtils";
 import Header from "../navigation/Header";
+import NotFound from "./NotFound";
 
 type ReviewPageProps = {
   storyIdParam: string | undefined;
@@ -26,6 +28,7 @@ type Content = {
 };
 
 const ReviewPage = () => {
+  const { authenticatedUser } = useContext(AuthContext);
   const {
     storyIdParam,
     storyTranslationIdParam,
@@ -36,6 +39,7 @@ const ReviewPage = () => {
   const [translatedStoryLines, setTranslatedStoryLines] = useState<StoryLine[]>(
     [],
   );
+  const [reviewerId, setReviewerId] = useState(-1);
   const [numTranslatedLines, setNumTranslatedLines] = useState(0);
   const [numApprovedLines, setNumApprovedLines] = useState(0);
 
@@ -57,6 +61,7 @@ const ReviewPage = () => {
   useQuery(GET_STORY_AND_TRANSLATION_CONTENTS(storyId, storyTranslationId), {
     fetchPolicy: "cache-and-network",
     onCompleted: (data) => {
+      setReviewerId(data.storyTranslationById.reviewerId);
       const storyContent = data.storyById.contents;
       const translatedContent = data.storyTranslationById.translationContents;
       setLanguage(data.storyTranslationById.language);
@@ -86,79 +91,86 @@ const ReviewPage = () => {
   });
 
   return (
-    <Flex
-      height="100vh"
-      direction="column"
-      position="absolute"
-      top="0"
-      bottom="0"
-      left="0"
-      right="0"
-      overflow="hidden"
-    >
-      <Header title={title} />
-      <Divider />
-      <Flex justify="space-between" flex={1} minHeight={0}>
-        <Flex width="100%" direction="column">
-          <Flex justify="space-between" alignItems="center" margin="10px 30px">
-            <FontSizeSlider setFontSize={handleFontSizeChange} />
-          </Flex>
+    <div>
+      {+authenticatedUser!!.id !== reviewerId ? (
+        <NotFound />
+      ) : (
+        <Flex
+          height="100vh"
+          direction="column"
+          position="absolute"
+          top="0"
+          bottom="0"
+          left="0"
+          right="0"
+        >
+          <Header title={title} />
           <Divider />
-          <Flex
-            marginLeft="20px"
-            direction="column"
-            flex={1}
-            minHeight={0}
-            overflowY="auto"
-          >
-            <TranslationTable
-              storyTranslationId={storyTranslationId}
-              translatedStoryLines={translatedStoryLines}
-              fontSize={fontSize}
-              originalLanguage="English"
-              translatedLanguage={convertLanguageTitleCase(language)}
-              commentLine={commentLine}
-              setCommentLine={setCommentLine}
-              setCommentStoryTranslationContentId={
-                setCommentStoryTranslationContentId
+          <Flex justify="space-between" flex={1} minHeight={0}>
+            <Flex width="100%" direction="column">
+              <Flex
+                justify="space-between"
+                alignItems="center"
+                margin="10px 30px"
+              >
+                <FontSizeSlider setFontSize={handleFontSizeChange} />
+              </Flex>
+              <Divider />
+              <Flex
+                marginLeft="20px"
+                direction="column"
+                flex={1}
+                minHeight={0}
+                overflowY="auto"
+              >
+                <TranslationTable
+                  translatedStoryLines={translatedStoryLines}
+                  fontSize={fontSize}
+                  originalLanguage="English"
+                  translatedLanguage={convertLanguageTitleCase(language)}
+                  commentLine={commentLine}
+                  setCommentLine={setCommentLine}
+                  setCommentStoryTranslationContentId={
+                    setCommentStoryTranslationContentId
+                  }
+                  translator={false}
+                  setTranslatedStoryLines={setTranslatedStoryLines}
+                  numApprovedLines={numApprovedLines}
+                  setNumApprovedLines={setNumApprovedLines}
+                />
+              </Flex>
+              <Flex margin="20px 30px" justify="flex-start" alignItems="center">
+                <Box marginRight="10px">
+                  <ProgressBar
+                    percentageComplete={
+                      (numTranslatedLines / translatedStoryLines.length) * 100
+                    }
+                    type="Translation"
+                  />
+                </Box>
+                <Box>
+                  <ProgressBar
+                    percentageComplete={
+                      (numApprovedLines / translatedStoryLines.length) * 100
+                    }
+                    type="Review"
+                  />
+                </Box>
+              </Flex>
+            </Flex>
+            <CommentsPanel
+              disabled={false}
+              commentStoryTranslationContentId={
+                commentStoryTranslationContentId
               }
-              translator={false}
-              setTranslatedStoryLines={setTranslatedStoryLines}
-              numApprovedLines={numApprovedLines}
-              setNumApprovedLines={setNumApprovedLines}
-              reviewPage
+              commentLine={commentLine}
+              storyTranslationId={storyTranslationId}
+              setCommentLine={setCommentLine}
             />
           </Flex>
-          <Flex margin="20px 30px" justify="flex-start" alignItems="center">
-            <Box marginRight="10px">
-              <ProgressBar
-                percentageComplete={
-                  (numTranslatedLines / translatedStoryLines.length) * 100
-                }
-                type="Translation"
-              />
-            </Box>
-            <Box>
-              <ProgressBar
-                percentageComplete={
-                  (numApprovedLines / translatedStoryLines.length) * 100
-                }
-                type="Review"
-              />
-            </Box>
-          </Flex>
         </Flex>
-        <CommentsPanel
-          disabled={false}
-          commentStoryTranslationContentId={commentStoryTranslationContentId}
-          commentLine={commentLine}
-          storyTranslationId={storyTranslationId}
-          setCommentLine={setCommentLine}
-          setTranslatedStoryLines={setTranslatedStoryLines}
-          translatedStoryLines={translatedStoryLines}
-        />
-      </Flex>
-    </Flex>
+      )}
+    </div>
   );
 };
 
