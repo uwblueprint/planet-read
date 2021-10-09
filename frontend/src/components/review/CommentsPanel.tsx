@@ -7,6 +7,7 @@ import {
 } from "../../APIClients/queries/CommentQueries";
 import WIPComment from "./WIPComment";
 import { TRANSLATION_PAGE_TOOL_TIP_COPY } from "../../utils/Copy";
+import { StoryLine } from "../translation/Autosave";
 
 export type CommentPanelProps = {
   storyTranslationId: number;
@@ -14,6 +15,8 @@ export type CommentPanelProps = {
   setCommentLine: (line: number) => void;
   commentStoryTranslationContentId: number;
   disabled: boolean;
+  setTranslatedStoryLines: (storyLines: StoryLine[]) => void;
+  translatedStoryLines: StoryLine[];
 };
 
 const CommentsPanel = ({
@@ -22,6 +25,8 @@ const CommentsPanel = ({
   commentStoryTranslationContentId,
   setCommentLine,
   disabled,
+  setTranslatedStoryLines,
+  translatedStoryLines,
 }: CommentPanelProps) => {
   const [comments, setComments] = useState<CommentResponse[]>([]);
   const [filterIndex, setFilterIndex] = useState(0);
@@ -115,6 +120,10 @@ const CommentsPanel = ({
           lineIndex={commentLine}
           commentStoryTranslationContentId={commentStoryTranslationContentId}
           setCommentLine={setCommentLine}
+          comments={comments}
+          setComments={setComments}
+          setTranslatedStoryLines={setTranslatedStoryLines}
+          translatedStoryLines={translatedStoryLines}
         />
       )}
       <CommentsList />

@@ -6,17 +6,28 @@ import {
   CreateCommentResponse,
   CREATE_COMMMENT,
 } from "../../APIClients/mutations/CommentMutations";
+import { CommentResponse } from "../../APIClients/queries/CommentQueries";
+import { StoryLine } from "../translation/Autosave";
+import { convertStatusTitleCase } from "../../utils/StatusUtils";
 
 export type WIPCommentProps = {
   commentStoryTranslationContentId: number;
   lineIndex: number;
   setCommentLine: (line: number) => void;
+  comments: CommentResponse[];
+  setComments: (comments: CommentResponse[]) => void;
+  translatedStoryLines: StoryLine[];
+  setTranslatedStoryLines: (storyLines: StoryLine[]) => void;
 };
 
 const WIPComment = ({
   commentStoryTranslationContentId,
   lineIndex,
   setCommentLine,
+  setComments,
+  setTranslatedStoryLines,
+  comments,
+  translatedStoryLines,
 }: WIPCommentProps) => {
   const handleError = (errorMessage: string) => {
     // eslint-disable-next-line no-alert
@@ -34,7 +45,6 @@ const WIPComment = ({
     try {
       const commentData = {
         storyTranslationContentId: commentStoryTranslationContentId,
-        userId: authenticatedUser!!.id,
         content: text,
       };
       const result = await createComment({
@@ -43,6 +53,13 @@ const WIPComment = ({
       if (result.data?.createComment.ok) {
         setText("");
         setCommentLine(0);
+
+        setComments([...comments, result.data.createComment.comment]);
+        const updatedStoryLines = [...translatedStoryLines];
+        updatedStoryLines[lineIndex - 1].status = convertStatusTitleCase(
+          "ACTION_REQUIRED",
+        );
+        setTranslatedStoryLines(updatedStoryLines);
       }
     } catch (err) {
       handleError(err ?? "Error occurred, please try again.");

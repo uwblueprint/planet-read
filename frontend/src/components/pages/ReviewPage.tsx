@@ -154,6 +154,8 @@ const ReviewPage = () => {
           commentLine={commentLine}
           storyTranslationId={storyTranslationId}
           setCommentLine={setCommentLine}
+          setTranslatedStoryLines={setTranslatedStoryLines}
+          translatedStoryLines={translatedStoryLines}
         />
       </Flex>
     </Flex>

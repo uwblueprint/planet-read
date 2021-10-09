@@ -298,6 +298,8 @@ const TranslationPage = () => {
           commentLine={commentLine}
           storyTranslationId={storyTranslationId}
           setCommentLine={setCommentLine}
+          setTranslatedStoryLines={setTranslatedStoryLines}
+          translatedStoryLines={translatedStoryLines}
         />
       </Flex>
       <Autosave
