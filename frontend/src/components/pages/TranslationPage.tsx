@@ -25,7 +25,6 @@ import {
   TRANSLATION_PAGE_SEND_FOR_REVIEW_CONFIRMATION,
 } from "../../utils/Copy";
 import ConfirmationModal from "../translation/ConfirmationModal";
-import SendForReviewModal from "../translation/SendForReviewModal";
 import NotFound from "./NotFound";
 
 type TranslationPageProps = {
@@ -57,6 +56,8 @@ const TranslationPage = () => {
   const [title, setTitle] = useState<string>("");
   const [language, setLanguage] = useState<string>("");
   const [stage, setStage] = useState<string>("");
+
+  const [isLoading, setIsLoading] = useState(true);
 
   // AutoSave
   const [changedStoryLines, setChangedStoryLines] = useState<
@@ -170,7 +171,7 @@ const TranslationPage = () => {
     fetchPolicy: "cache-and-network",
     onCompleted: (data) => {
       setTranslatorId(data.storyTranslationById.translatorId);
-      console.log(data.storyTranslationById.translatorId);
+      setIsLoading(false);
       const storyContent = data.storyById.contents;
       const translatedContent = data.storyTranslationById.translationContents;
       setStage(data.storyTranslationById.stage);
@@ -224,127 +225,129 @@ const TranslationPage = () => {
       </Box>
     ) : null;
   };
-  return (
-    <div>
-      {+authenticatedUser!!.id !== translatorId ? (
-        <NotFound />
-      ) : (
-        <Flex
-          height="100vh"
-          direction="column"
-          position="absolute"
-          top="0"
-          bottom="0"
-          left="0"
-          right="0"
-        >
-          <Header title={title} />
-          <Divider />
-          <Flex justify="space-between" flex={1} minHeight={0}>
-            <Flex width="100%" direction="column">
-              <Flex
-                justify="space-between"
-                alignItems="center"
-                margin="10px 30px"
-              >
-                <FontSizeSlider setFontSize={handleFontSizeChange} />
-                <UndoRedo
-                  currentVersion={currentVersion}
-                  setCurrentVersion={setCurrentVersion}
-                  versionHistoryStack={versionHistoryStack}
-                  setVersionHistoryStack={setVersionHistoryStack}
-                  versionSnapShotStack={versionSnapShotStack}
-                  setVersionSnapShotStack={setVersionSnapShotStack}
-                  snapShotLineIndexes={snapShotLineIndexes}
-                  snapSnapShotLineIndexes={snapSnapShotLineIndexes}
-                  translatedStoryLines={translatedStoryLines}
-                  onChangeTranslationContent={onChangeTranslationContent}
-                  MAX_STACK_SIZE={MAX_STACK_SIZE}
-                />
-              </Flex>
-              <Divider />
-              <Flex
-                marginLeft="20px"
-                direction="column"
-                flex={1}
-                minHeight={0}
-                overflowY="auto"
-              >
-                {maxCharsExceededWarning()}
-                <TranslationTable
-                  translatedStoryLines={translatedStoryLines}
-                  onUserInput={onUserInput}
-                  editable={editable}
-                  fontSize={fontSize}
-                  originalLanguage="English"
-                  translatedLanguage={convertLanguageTitleCase(language)}
-                  commentLine={commentLine}
-                  setCommentLine={setCommentLine}
-                  setCommentStoryTranslationContentId={
-                    setCommentStoryTranslationContentId
-                  }
-                  translator
-                  setTranslatedStoryLines={setTranslatedStoryLines}
-                  changedStoryLines={changedStoryLines.size}
-                />
-              </Flex>
-              <Flex
-                margin="20px 30px"
-                justify="space-between"
-                alignItems="center"
-              >
-                <ProgressBar
-                  percentageComplete={
-                    (numTranslatedLines / translatedStoryLines.length) * 100
-                  }
-                  type="Translation"
-                />
-                <Tooltip
-                  hasArrow
-                  label={TRANSLATION_PAGE_TOOL_TIP_COPY}
-                  isDisabled={editable}
+
+  const TranslationPageContent = () => {
+    return (
+      <div>
+        {+authenticatedUser!!.id !== translatorId ? (
+          <NotFound />
+        ) : (
+          <Flex height="100vh" direction="column" position="absolute">
+            <Header title={title} />
+            <Divider />
+            <Flex justify="space-between" flex={1} minHeight={0}>
+              <Flex width="100%" direction="column">
+                <Flex
+                  justify="space-between"
+                  alignItems="center"
+                  margin="10px 30px"
                 >
-                  <Box>
-                    <Button
-                      colorScheme="blue"
-                      size="secondary"
-                      margin="0 10px 0"
-                      disabled={!editable}
-                      onClick={onSendForReviewClick}
-                    >
-                      {editable ? "SEND FOR REVIEW" : "IN REVIEW"}
-                    </Button>
-                  </Box>
-                </Tooltip>
+                  <FontSizeSlider setFontSize={handleFontSizeChange} />
+                  <UndoRedo
+                    currentVersion={currentVersion}
+                    setCurrentVersion={setCurrentVersion}
+                    versionHistoryStack={versionHistoryStack}
+                    setVersionHistoryStack={setVersionHistoryStack}
+                    versionSnapShotStack={versionSnapShotStack}
+                    setVersionSnapShotStack={setVersionSnapShotStack}
+                    snapShotLineIndexes={snapShotLineIndexes}
+                    snapSnapShotLineIndexes={snapSnapShotLineIndexes}
+                    translatedStoryLines={translatedStoryLines}
+                    onChangeTranslationContent={onChangeTranslationContent}
+                    MAX_STACK_SIZE={MAX_STACK_SIZE}
+                  />
+                </Flex>
+                <Divider />
+                <Flex
+                  marginLeft="20px"
+                  direction="column"
+                  flex={1}
+                  minHeight={0}
+                  overflowY="auto"
+                >
+                  {maxCharsExceededWarning()}
+                  <TranslationTable
+                    storyTranslationId={storyTranslationId}
+                    translatedStoryLines={translatedStoryLines}
+                    onUserInput={onUserInput}
+                    editable={editable}
+                    fontSize={fontSize}
+                    originalLanguage="English"
+                    translatedLanguage={convertLanguageTitleCase(language)}
+                    commentLine={commentLine}
+                    setCommentLine={setCommentLine}
+                    setCommentStoryTranslationContentId={
+                      setCommentStoryTranslationContentId
+                    }
+                    translator
+                    setTranslatedStoryLines={setTranslatedStoryLines}
+                    changedStoryLines={changedStoryLines.size}
+                  />
+                </Flex>
+                <Flex
+                  margin="20px 30px"
+                  justify="space-between"
+                  alignItems="center"
+                >
+                  <ProgressBar
+                    percentageComplete={
+                      (numTranslatedLines / translatedStoryLines.length) * 100
+                    }
+                    type="Translation"
+                  />
+                  <Tooltip
+                    hasArrow
+                    label={TRANSLATION_PAGE_TOOL_TIP_COPY}
+                    isDisabled={editable}
+                  >
+                    <Box>
+                      <Button
+                        colorScheme="blue"
+                        size="secondary"
+                        margin="0 10px 0"
+                        disabled={!editable}
+                        onClick={onSendForReviewClick}
+                      >
+                        {editable ? "SEND FOR REVIEW" : "IN REVIEW"}
+                      </Button>
+                    </Box>
+                  </Tooltip>
+                </Flex>
               </Flex>
+              <CommentsPanel
+                disabled={!editable}
+                commentStoryTranslationContentId={
+                  commentStoryTranslationContentId
+                }
+                commentLine={commentLine}
+                storyTranslationId={storyTranslationId}
+                setCommentLine={setCommentLine}
+                setTranslatedStoryLines={setTranslatedStoryLines}
+                translatedStoryLines={translatedStoryLines}
+              />
             </Flex>
-            <CommentsPanel
-              disabled={!editable}
-              commentStoryTranslationContentId={
-                commentStoryTranslationContentId
-              }
-              commentLine={commentLine}
-              storyTranslationId={storyTranslationId}
-              setCommentLine={setCommentLine}
+            <Autosave
+              storylines={Array.from(changedStoryLines.values())}
+              onSuccess={clearUnsavedChangesMap}
             />
+            {sendForReview && (
+              <ConfirmationModal
+                confirmation={sendForReview}
+                onClose={onSendForReviewClick}
+                onConfirmationClick={onSendForReviewConfirmationClick}
+                confirmationMessage={
+                  TRANSLATION_PAGE_SEND_FOR_REVIEW_CONFIRMATION
+                }
+                buttonMessage={TRANSLATION_PAGE_BUTTON_MESSAGE}
+              />
+            )}
           </Flex>
-          <Autosave
-            storylines={Array.from(changedStoryLines.values())}
-            onSuccess={clearUnsavedChangesMap}
-          />
-          {sendForReview && (
-            <SendForReviewModal
-              sendForReview={sendForReview}
-              onClose={onSendForReviewClick}
-              onSendForReviewConfirmationClick={
-                onSendForReviewConfirmationClick
-              }
-            />
-          )}
-        </Flex>
-      )}{" "}
-    </div>
-  );
+        )}
+      </div>
+    );
+  };
+
+  return <div>{isLoading ? <div /> : <TranslationPageContent />}</div>;
 };
 
 export default TranslationPage;

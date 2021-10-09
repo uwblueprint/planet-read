@@ -49,6 +49,8 @@ const ReviewPage = () => {
 
   const [commentLine, setCommentLine] = useState(-1);
 
+  const [isLoading, setIsLoading] = useState(true);
+
   const [
     commentStoryTranslationContentId,
     setCommentStoryTranslationContentId,
@@ -62,6 +64,7 @@ const ReviewPage = () => {
     fetchPolicy: "cache-and-network",
     onCompleted: (data) => {
       setReviewerId(data.storyTranslationById.reviewerId);
+      setIsLoading(false);
       const storyContent = data.storyById.contents;
       const translatedContent = data.storyTranslationById.translationContents;
       setLanguage(data.storyTranslationById.language);
@@ -90,88 +93,101 @@ const ReviewPage = () => {
     },
   });
 
-  return (
-    <div>
-      {+authenticatedUser!!.id !== reviewerId ? (
-        <NotFound />
-      ) : (
-        <Flex
-          height="100vh"
-          direction="column"
-          position="absolute"
-          top="0"
-          bottom="0"
-          left="0"
-          right="0"
-        >
-          <Header title={title} />
-          <Divider />
-          <Flex justify="space-between" flex={1} minHeight={0}>
-            <Flex width="100%" direction="column">
-              <Flex
-                justify="space-between"
-                alignItems="center"
-                margin="10px 30px"
-              >
-                <FontSizeSlider setFontSize={handleFontSizeChange} />
-              </Flex>
-              <Divider />
-              <Flex
-                marginLeft="20px"
-                direction="column"
-                flex={1}
-                minHeight={0}
-                overflowY="auto"
-              >
-                <TranslationTable
-                  translatedStoryLines={translatedStoryLines}
-                  fontSize={fontSize}
-                  originalLanguage="English"
-                  translatedLanguage={convertLanguageTitleCase(language)}
-                  commentLine={commentLine}
-                  setCommentLine={setCommentLine}
-                  setCommentStoryTranslationContentId={
-                    setCommentStoryTranslationContentId
-                  }
-                  translator={false}
-                  setTranslatedStoryLines={setTranslatedStoryLines}
-                  numApprovedLines={numApprovedLines}
-                  setNumApprovedLines={setNumApprovedLines}
-                />
-              </Flex>
-              <Flex margin="20px 30px" justify="flex-start" alignItems="center">
-                <Box marginRight="10px">
-                  <ProgressBar
-                    percentageComplete={
-                      (numTranslatedLines / translatedStoryLines.length) * 100
+  const ReviewPageContent = () => {
+    return (
+      <div>
+        {+authenticatedUser!!.id !== reviewerId ? (
+          <NotFound />
+        ) : (
+          <Flex
+            height="100vh"
+            direction="column"
+            position="absolute"
+            top="0"
+            bottom="0"
+            left="0"
+            right="0"
+            overflow="hidden"
+          >
+            <Header title={title} />
+            <Divider />
+            <Flex justify="space-between" flex={1} minHeight={0}>
+              <Flex width="100%" direction="column">
+                <Flex
+                  justify="space-between"
+                  alignItems="center"
+                  margin="10px 30px"
+                >
+                  <FontSizeSlider setFontSize={handleFontSizeChange} />
+                </Flex>
+                <Divider />
+                <Flex
+                  marginLeft="20px"
+                  direction="column"
+                  flex={1}
+                  minHeight={0}
+                  overflowY="auto"
+                >
+                  <TranslationTable
+                    storyTranslationId={storyTranslationId}
+                    translatedStoryLines={translatedStoryLines}
+                    fontSize={fontSize}
+                    originalLanguage="English"
+                    translatedLanguage={convertLanguageTitleCase(language)}
+                    commentLine={commentLine}
+                    setCommentLine={setCommentLine}
+                    setCommentStoryTranslationContentId={
+                      setCommentStoryTranslationContentId
                     }
-                    type="Translation"
+                    translator={false}
+                    setTranslatedStoryLines={setTranslatedStoryLines}
+                    numApprovedLines={numApprovedLines}
+                    setNumApprovedLines={setNumApprovedLines}
+                    reviewPage
                   />
-                </Box>
-                <Box>
-                  <ProgressBar
-                    percentageComplete={
-                      (numApprovedLines / translatedStoryLines.length) * 100
-                    }
-                    type="Review"
-                  />
-                </Box>
+                </Flex>
+                <Flex
+                  margin="20px 30px"
+                  justify="flex-start"
+                  alignItems="center"
+                >
+                  <Box marginRight="10px">
+                    <ProgressBar
+                      percentageComplete={
+                        (numTranslatedLines / translatedStoryLines.length) * 100
+                      }
+                      type="Translation"
+                    />
+                  </Box>
+                  <Box>
+                    <ProgressBar
+                      percentageComplete={
+                        (numApprovedLines / translatedStoryLines.length) * 100
+                      }
+                      type="Review"
+                    />
+                  </Box>
+                </Flex>
               </Flex>
+              <CommentsPanel
+                disabled={false}
+                commentStoryTranslationContentId={
+                  commentStoryTranslationContentId
+                }
+                commentLine={commentLine}
+                storyTranslationId={storyTranslationId}
+                setCommentLine={setCommentLine}
+                setTranslatedStoryLines={setTranslatedStoryLines}
+                translatedStoryLines={translatedStoryLines}
+              />
             </Flex>
-            <CommentsPanel
-              disabled={false}
-              commentStoryTranslationContentId={
-                commentStoryTranslationContentId
-              }
-              commentLine={commentLine}
-              storyTranslationId={storyTranslationId}
-              setCommentLine={setCommentLine}
-            />
           </Flex>
-        </Flex>
-      )}
-    </div>
-  );
+        )}
+      </div>
+    );
+  };
+
+  return <div>{isLoading ? <div /> : <ReviewPageContent />}</div>;
 };
 
 export default ReviewPage;
