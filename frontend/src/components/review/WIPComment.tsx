@@ -14,10 +14,10 @@ export type WIPCommentProps = {
   commentStoryTranslationContentId: number;
   lineIndex: number;
   setCommentLine: (line: number) => void;
-  setComments: (comments: CommentResponse[]) => void;
-  setTranslatedStoryLines: (storyLines: StoryLine[]) => void;
   comments: CommentResponse[];
+  setComments: (comments: CommentResponse[]) => void;
   translatedStoryLines: StoryLine[];
+  setTranslatedStoryLines: (storyLines: StoryLine[]) => void;
 };
 
 const WIPComment = ({
