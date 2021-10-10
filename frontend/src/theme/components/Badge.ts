@@ -20,6 +20,19 @@ const Badge = {
       backgroundColor: "green.50",
       color: "green.100",
     },
+    stage: {
+      backgroundColor: "blue.50",
+    },
+    language: {
+      backgroundColor: "gray.200",
+    },
+  },
+  sizes: {
+    s: {
+      fontSize: "xs",
+      marginLeft: "0px",
+      marginRight: "15px",
+    },
   },
 };
 export default Badge;

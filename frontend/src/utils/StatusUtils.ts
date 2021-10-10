@@ -26,4 +26,19 @@ function getStatusVariant(status: string | undefined) {
   }
 }
 
-export { convertStatusTitleCase, getStatusVariant };
+const getLevelVariant = (level: number) => {
+  switch (level) {
+    case 1:
+      return "green.50";
+    case 2:
+      return "red.50";
+    case 3:
+      return "purple.50";
+    case 4:
+      return "orange.50";
+    default:
+      return "green.50";
+  }
+};
+
+export { convertStatusTitleCase, getStatusVariant, getLevelVariant };

@@ -2,7 +2,6 @@ import React, { useState } from "react";
 import { useQuery } from "@apollo/client";
 import {
   Badge,
-  Box,
   Button,
   Flex,
   Heading,
@@ -15,11 +14,19 @@ import {
   ModalCloseButton,
   Text,
 } from "@chakra-ui/react";
+import { Icon } from "@chakra-ui/icon";
+import { MdTrendingFlat } from "react-icons/md";
+
 import convertLanguageTitleCase from "../../utils/LanguageUtils";
-import { GET_STORY_CONTENTS } from "../../APIClients/queries/StoryQueries";
+import { getLevelVariant } from "../../utils/StatusUtils";
+import {
+  GET_STORY_CONTENTS,
+  GET_STORY_AND_TRANSLATION_CONTENTS,
+} from "../../APIClients/queries/StoryQueries";
 
 export type PreviewModalProps = {
   storyId: number;
+  storyTranslationId?: number;
   title: string;
   youtubeLink: string;
   level: number;
@@ -32,6 +39,7 @@ export type PreviewModalProps = {
 
 const PreviewModal = ({
   storyId,
+  storyTranslationId,
   title,
   youtubeLink,
   level,
@@ -42,42 +50,51 @@ const PreviewModal = ({
   primaryBtnOnClick,
 }: PreviewModalProps) => {
   const [content, setContent] = useState<string[]>([]);
+  const [translationContent, setTranslationContent] = useState<string[]>([]);
+  const [stage, setStage] = useState<String>("");
 
-  useQuery(GET_STORY_CONTENTS(storyId), {
-    fetchPolicy: "cache-and-network",
-    onCompleted: (data) => {
-      const storyContentsArray = data.storyById.contents.map((story: any) => {
-        return story.content;
-      });
-      setContent(storyContentsArray);
-    },
-  });
+  if (storyTranslationId) {
+    useQuery(GET_STORY_AND_TRANSLATION_CONTENTS(storyId, storyTranslationId), {
+      fetchPolicy: "cache-and-network",
+      onCompleted: (data: any) => {
+        const storyContentsArray = data.storyById.contents.map((story: any) => {
+          return story.content;
+        });
+        setContent(storyContentsArray);
+
+        const storyTranslationContentsArray = data.storyTranslationById.translationContents.map(
+          (story: any) => {
+            return story.content;
+          },
+        );
+        setTranslationContent(storyTranslationContentsArray);
+
+        setStage(data.storyTranslationById.stage);
+      },
+    });
+  } else {
+    useQuery(GET_STORY_CONTENTS(storyId), {
+      fetchPolicy: "cache-and-network",
+      onCompleted: (data: any) => {
+        const storyContentsArray = data.storyById.contents.map((story: any) => {
+          return story.content;
+        });
+        setContent(storyContentsArray);
+      },
+    });
+  }
 
   const storyContents = content.map((c: string, index: number) => (
-    <Flex padding={3}>
-      <Box
-        width="30px"
-        text-align="center"
-        float="left"
-        margin="0px 10px 0px 0px"
-        color="black"
-      >
-        <Text fontSize="16px" as="b" align="center">
-          {index + 1}
-        </Text>
-      </Box>
-      <Box
-        backgroundColor="blue.50"
-        width="100%"
-        borderRadius="10px"
-        float="right"
-        padding={3}
-        color="black"
-        fontSize="16px"
-        as="b"
-      >
+    <Flex>
+      <Text variant="previewModalLineIndex">{index + 1}</Text>
+      <Text variant="cell" fontSize="16px">
         {c}
-      </Box>
+      </Text>
+      {storyTranslationId && (
+        <Text variant="previewModalTranslationContent">
+          {translationContent[index]}
+        </Text>
+      )}
     </Flex>
   ));
 
@@ -86,36 +103,44 @@ const PreviewModal = ({
       isOpen={preview}
       onClose={previewBook}
       motionPreset="slideInBottom"
-      size="4xl"
+      size="6xl"
     >
       <ModalOverlay />
-      <ModalContent>
+      <ModalContent paddingLeft="20px">
         <ModalCloseButton position="static" marginLeft="auto" />
         <ModalHeader paddingTop="-10px">
-          <Heading as="h3" size="md">
+          <Heading as="h3" size="lg" marginBottom="10px" width="75%">
             {title}
           </Heading>
-          <Box padding="10px 0px 10px 0px" float="left">
-            <Badge>{`Level ${level}`}</Badge>
-            <Badge>{`${convertLanguageTitleCase(language)}`}</Badge>
-          </Box>
+          <Badge variant="language" size="s">{`${convertLanguageTitleCase(
+            language,
+          )}`}</Badge>
+          <Badge
+            backgroundColor={getLevelVariant(level)}
+            size="s"
+          >{`Level ${level}`}</Badge>
+          {storyTranslationId && (
+            <Badge variant="stage" size="s">
+              {stage[0] + stage.substr(1).toLowerCase()}
+            </Badge>
+          )}
           <Button
             float="right"
-            width="21%"
+            width="20%"
             colorScheme="blue"
-            mr={3}
+            size="secondary"
+            marginRight="15px"
             onClick={primaryBtnOnClick()}
           >
             {primaryBtnText}
           </Button>
         </ModalHeader>
-        <Box display="block" paddingLeft="30px">
-          <Text fontSize="16px" color="grey">
-            <Link href={youtubeLink} isExternal>
-              → Watch the English AniBook
-            </Link>
-          </Text>
-        </Box>
+        <ModalBody marginBottom="30px" marginTop="-10px" as="u">
+          <Link href={youtubeLink} isExternal color="gray">
+            <Icon as={MdTrendingFlat} height={6} width={6} marginRight="10px" />
+            Watch the English AniBook
+          </Link>
+        </ModalBody>
         <ModalBody>{storyContents}</ModalBody>
       </ModalContent>
     </Modal>
