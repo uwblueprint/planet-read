@@ -346,7 +346,7 @@ class StoryService(IStoryService):
             user_id = int(get_user_id_from_request())
 
             if (
-                new_stage == StageEnum.TRANSLATE
+                (new_stage == StageEnum.TRANSLATE or new_stage == StageEnum.PUBLISH)
                 and user_id == story_translation.reviewer_id
             ) or (
                 new_stage == StageEnum.REVIEW
