@@ -110,8 +110,8 @@ class LoginWithGoogle(graphene.Mutation):
             last_name = auth_dto.last_name
             role = auth_dto.role
             email = auth_dto.email
-            approved_languages_translation = (auth_dto.approved_languages_translation,)
-            approved_languages_review = (auth_dto.approved_languages_review,)
+            approved_languages_translation = auth_dto.approved_languages_translation
+            approved_languages_review = auth_dto.approved_languages_review
 
             return LoginWithGoogle(
                 access_token,

@@ -15,9 +15,12 @@ import { buildHomePageStoriesQuery } from "../../APIClients/queries/StoryQueries
 const HomePage = () => {
   const { authenticatedUser } = useContext(AuthContext);
 
-  const approvedLanguagesTranslation = JSON.parse(
-    authenticatedUser!!.approvedLanguagesTranslation.replace(/'/g, '"'),
-  );
+  const approvedLanguagesTranslation = authenticatedUser!!
+    .approvedLanguagesTranslation
+    ? JSON.parse(
+        authenticatedUser!!.approvedLanguagesTranslation.replace(/'/g, '"'),
+      )
+    : {};
 
   const approvedLanguagesReview = authenticatedUser!!.approvedLanguagesReview
     ? JSON.parse(authenticatedUser!!.approvedLanguagesReview.replace(/'/g, '"'))
