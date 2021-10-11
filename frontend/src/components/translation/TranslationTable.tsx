@@ -5,7 +5,10 @@ import { StoryLine } from "./Autosave";
 import StatusBadge from "../review/StatusBadge";
 import ApproveAll from "../review/ApproveAll";
 import { getStatusVariant } from "../../utils/StatusUtils";
-import { TRANSLATION_PAGE_TOOL_TIP_COPY } from "../../utils/Copy";
+import {
+  TRANSLATION_PAGE_TOOL_TIP_COPY,
+  REVIEW_PAGE_TOOL_TIP_COPY,
+} from "../../utils/Copy";
 
 export type TranslationTableProps = {
   storyTranslationId: number;
@@ -27,6 +30,7 @@ export type TranslationTableProps = {
   numApprovedLines?: number;
   setNumApprovedLines?: (numLines: number) => void;
   changedStoryLines?: number;
+  isReviewable?: boolean;
   reviewPage?: boolean;
 };
 
@@ -46,6 +50,7 @@ const TranslationTable = ({
   numApprovedLines,
   setNumApprovedLines,
   changedStoryLines,
+  isReviewable = false,
   reviewPage = false,
 }: TranslationTableProps) => {
   const handleCommentButton = (
@@ -95,7 +100,7 @@ const TranslationTable = ({
           </Tooltip>
         )}
         <Flex direction="column" width="140px" margin="5px">
-          {reviewPage ? (
+          {isReviewable ? (
             <StatusBadge
               translatedStoryLines={translatedStoryLines}
               setTranslatedStoryLines={setTranslatedStoryLines}
@@ -104,13 +109,19 @@ const TranslationTable = ({
               setNumApprovedLines={setNumApprovedLines!!}
             />
           ) : (
-            <Badge
-              textTransform="capitalize"
-              variant={getStatusVariant(storyLine.status)}
-              marginBottom="10px"
+            <Tooltip
+              hasArrow
+              label={REVIEW_PAGE_TOOL_TIP_COPY}
+              isDisabled={editable || !reviewPage}
             >
-              {storyLine.status}
-            </Badge>
+              <Badge
+                textTransform="capitalize"
+                variant={getStatusVariant(storyLine.status)}
+                marginBottom="10px"
+              >
+                {storyLine.status}
+              </Badge>
+            </Tooltip>
           )}
           {commentLine > -1 && (
             <Button
@@ -150,7 +161,7 @@ const TranslationTable = ({
             )}
           </Text>
         </Flex>
-        {reviewPage ? (
+        {isReviewable ? (
           <ApproveAll
             numApprovedLines={numApprovedLines!}
             setNumApprovedLines={setNumApprovedLines!!}

@@ -6,8 +6,11 @@ import {
   buildCommentsQuery,
 } from "../../APIClients/queries/CommentQueries";
 import WIPComment from "./WIPComment";
-import { TRANSLATION_PAGE_TOOL_TIP_COPY } from "../../utils/Copy";
 import { StoryLine } from "../translation/Autosave";
+import {
+  TRANSLATION_PAGE_TOOL_TIP_COPY,
+  REVIEW_PAGE_TOOL_TIP_COPY,
+} from "../../utils/Copy";
 
 export type CommentPanelProps = {
   storyTranslationId: number;
@@ -17,6 +20,7 @@ export type CommentPanelProps = {
   disabled: boolean;
   setTranslatedStoryLines: (storyLines: StoryLine[]) => void;
   translatedStoryLines: StoryLine[];
+  reviewPage?: boolean;
 };
 
 const CommentsPanel = ({
@@ -27,6 +31,7 @@ const CommentsPanel = ({
   disabled,
   setTranslatedStoryLines,
   translatedStoryLines,
+  reviewPage = false,
 }: CommentPanelProps) => {
   const [comments, setComments] = useState<CommentResponse[]>([]);
   const [filterIndex, setFilterIndex] = useState(0);
@@ -83,14 +88,14 @@ const CommentsPanel = ({
     else setCommentLine(-1);
   };
 
+  const tooltipLabel = reviewPage
+    ? REVIEW_PAGE_TOOL_TIP_COPY
+    : TRANSLATION_PAGE_TOOL_TIP_COPY;
+
   return (
     <Box backgroundColor="gray.100" float="right" width="350px" padding="20px">
       <Flex marginBottom="50px">
-        <Tooltip
-          hasArrow
-          label={TRANSLATION_PAGE_TOOL_TIP_COPY}
-          isDisabled={!disabled}
-        >
+        <Tooltip hasArrow label={tooltipLabel} isDisabled={!disabled}>
           <Box>
             <Button
               colorScheme="blue"
