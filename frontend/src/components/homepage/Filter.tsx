@@ -61,7 +61,6 @@ const Filter = ({
 
   const handleLevelChangeStr = (nextLevel: string) => {
     setLevel(parseInt(nextLevel.replace("Level ", ""), 10));
-    // handle level change
   };
 
   const languageOptions = isDisabled ? (
