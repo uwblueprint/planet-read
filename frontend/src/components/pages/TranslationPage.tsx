@@ -1,7 +1,7 @@
 import React, { useContext, useState } from "react";
 import { useQuery, useMutation } from "@apollo/client";
 import { Box, Button, Divider, Flex, Text, Tooltip } from "@chakra-ui/react";
-import { useParams } from "react-router-dom";
+import { useParams, Redirect } from "react-router-dom";
 
 import AuthContext from "../../contexts/AuthContext";
 import ProgressBar from "../utils/ProgressBar";
@@ -25,7 +25,6 @@ import {
   TRANSLATION_PAGE_SEND_FOR_REVIEW_CONFIRMATION,
 } from "../../utils/Copy";
 import ConfirmationModal from "../translation/ConfirmationModal";
-import NotFound from "./NotFound";
 
 type TranslationPageProps = {
   storyIdParam: string | undefined;
@@ -229,7 +228,7 @@ const TranslationPage = () => {
   const TranslationPageContent = () => (
     <>
       {+authenticatedUser!!.id !== translatorId ? (
-        <NotFound />
+        <Redirect to="/404" />
       ) : (
         <Flex height="100vh" direction="column" position="absolute">
           <Header title={title} />

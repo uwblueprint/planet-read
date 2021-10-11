@@ -1,7 +1,7 @@
 import React, { useContext, useState } from "react";
 import { useQuery, useMutation } from "@apollo/client";
 import { Box, Divider, Flex, Button, Tooltip } from "@chakra-ui/react";
-import { useParams } from "react-router-dom";
+import { useParams, Redirect } from "react-router-dom";
 
 import AuthContext from "../../contexts/AuthContext";
 import ProgressBar from "../utils/ProgressBar";
@@ -13,7 +13,6 @@ import CommentsPanel from "../review/CommentsPanel";
 import FontSizeSlider from "../translation/FontSizeSlider";
 import convertLanguageTitleCase from "../../utils/LanguageUtils";
 import Header from "../navigation/Header";
-import NotFound from "./NotFound";
 import ConfirmationModal from "../translation/ConfirmationModal";
 import {
   REVIEW_PAGE_RETURN_TO_TRANSLATOR_CONFIRMAITON,
@@ -138,7 +137,7 @@ const ReviewPage = () => {
   const ReviewPageContent = () => (
     <>
       {+authenticatedUser!!.id !== reviewerId ? (
-        <NotFound />
+        <Redirect to="/404" />
       ) : (
         <Flex
           height="100vh"
