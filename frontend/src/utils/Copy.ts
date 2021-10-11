@@ -2,6 +2,9 @@
 export const TRANSLATION_PAGE_TOOL_TIP_COPY =
   "Your story translation is pending review. You can edit your translation and leave comments once a reviewer has given feedback.";
 
+export const REVIEW_PAGE_TOOL_TIP_COPY =
+  "The story is in translation. You can leave comments and change translation statuses once the translator makes the story translation ready for review.";
+
 export const REVIEW_PAGE_APPROVE_ALL_CONFIRMATION =
   "Every line (including lines with the “Action” status) will be marked as “Approved”. To officially finish the translation, click “Submit Translation” afterwards.";
 
@@ -13,4 +16,10 @@ export const TRANSLATION_PAGE_SEND_FOR_REVIEW_CONFIRMATION =
 
 export const REVIEW_PAGE_BUTTON_MESSAGE = "I'm sure, mark all as approved";
 
+export const REVIEW_PAGE_RETURN_TO_TRANSLATOR_BUTTON_MESSAGE =
+  "I'm sure, return to translator";
+
 export const TRANSLATION_PAGE_BUTTON_MESSAGE = "I'm sure, send for review";
+
+export const REVIEW_PAGE_RETURN_TO_TRANSLATOR_CONFIRMAITON =
+  "By clicking this button, your review session will end and the story translation will be returned to the translator.";
