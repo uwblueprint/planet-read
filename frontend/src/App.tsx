@@ -57,6 +57,7 @@ const App = () => {
                 path="/review/:storyIdParam/:storyTranslationIdParam"
                 component={ReviewPage}
               />
+              <Route exact path="/404" component={NotFound} />
               <Route exact path="*" component={NotFound} />
             </Switch>
           </Router>
