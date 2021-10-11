@@ -51,6 +51,23 @@ const Button = {
       right: "10px",
       width: "50px",
     },
+    header: {
+      background: "transparent",
+      fontWeight: "lighter",
+      padding: "30px",
+      textTransform: "capitalize",
+      width: "fit-content",
+    },
+    headerSelect: {
+      background: "transparent",
+      borderRadius: "0px",
+      borderBottom: "3px solid",
+      borderBottomColor: "blue.100",
+      color: "blue.100",
+      padding: "30px",
+      textTransform: "capitalize",
+      width: "fit-content",
+    },
   },
 };
 export default Button;
