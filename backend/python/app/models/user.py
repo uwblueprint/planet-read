@@ -13,6 +13,7 @@ class User(db.Model):
     id = db.Column(db.Integer, primary_key=True, nullable=False)
     first_name = db.Column(TEXT, nullable=False)
     last_name = db.Column(TEXT, nullable=False)
+    email = db.Column(TEXT, unique=True)
     auth_id = db.Column(db.String(100), nullable=False, unique=True)
     role = db.Column(roles_enum)
     resume = db.Column(db.Integer, db.ForeignKey("files.id"))

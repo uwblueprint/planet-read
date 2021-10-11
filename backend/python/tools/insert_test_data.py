@@ -20,15 +20,15 @@ def insert_test_data():
     db.engine.execute("ALTER TABLE users AUTO_INCREMENT = 1;")
     db.engine.execute(
         f"INSERT IGNORE INTO users \
-            (first_name, last_name, auth_id, role, approved_languages_translation, approved_languages_review) \
+            (first_name, last_name, email, auth_id, role, approved_languages_translation, approved_languages_review) \
         VALUES \
-            ('Carl', 'Sagan', '{os.getenv('AUTH_ID_1', '')}', 'User', '{{\"ENGLISH_US\":4, \"ENGLISH_UK\":3}}', NULL), \
-            ('Miroslav', 'Klose', '{os.getenv('AUTH_ID_2', '')}', 'User', '{{\"POLISH\":4, \"GERMAN\":4}}', '{{\"POLISH\":3}}'), \
-            ('Kevin', 'De Bryune', '{os.getenv('AUTH_ID_3', '')}', 'User', '{{\"DUTCH\":4, \"FRENCH\":4}}', '{{\"DUTCH\":2, \"FRENCH\":4}}'), \
-            ('Dwight', 'D. Eisenhower', '{os.getenv('AUTH_ID_4', '')}', 'User', '{{\"ENGLISH_UK\":4, \"ENGLISH_US\":4, \"GERMAN\":3}}', '{{\"ENGLISH_UK\":3, \"ENGLISH_US\":4}}'), \
-            ('Alexander', 'Hamilton', '{os.getenv('AUTH_ID_5', '')}', 'User', '{{\"MANDARIN\":4, \"ENGLISH_UK\":3}}', '{{\"MANDARIN\":2}}'), \
-            ('Angela', 'Merkel', '{os.getenv('AUTH_ID_6', '')}', 'Admin', '{{\"GERMAN\":4}}', '{{\"GERMAN\":4}}'), \
-            ('Richard', 'Feynman', '{os.getenv('AUTH_ID_7', '')}', 'User', '{{\"PORTUGESE\":4, \"ENGLISH_UK\":4, \"GERMAN\":1}}', '{{\"PORTUGESE\":1}}'); \
+            ('Carl', 'Sagan', 'planetread+carlsagan@uwblueprint.org', '{os.getenv('AUTH_ID_1', '')}', 'User', '{{\"ENGLISH_US\":4, \"ENGLISH_UK\":3}}', NULL), \
+            ('Miroslav', 'Klose', 'planetread+miroslavklose@uwblueprint.org', '{os.getenv('AUTH_ID_2', '')}', 'User', '{{\"POLISH\":4, \"GERMAN\":4}}', '{{\"POLISH\":3}}'), \
+            ('Kevin', 'De Bryune', 'planetread+kevindebruyne@uwblueprint.org', '{os.getenv('AUTH_ID_3', '')}', 'User', '{{\"DUTCH\":4, \"FRENCH\":4}}', '{{\"DUTCH\":2, \"FRENCH\":4}}'), \
+            ('Dwight', 'D. Eisenhower', 'planetread+dwightdeisenhower@uwblueprint.org', '{os.getenv('AUTH_ID_4', '')}', 'User', '{{\"ENGLISH_UK\":4, \"ENGLISH_US\":4, \"GERMAN\":3}}', '{{\"ENGLISH_UK\":3, \"ENGLISH_US\":4}}'), \
+            ('Alexander', 'Hamilton', 'planetread+alexanderhamilton@uwblueprint.org', '{os.getenv('AUTH_ID_5', '')}', 'User', '{{\"MANDARIN\":4, \"ENGLISH_UK\":3}}', '{{\"MANDARIN\":2}}'), \
+            ('Angela', 'Merkel', 'planetread+angelamerkel@uwblueprint.org', '{os.getenv('AUTH_ID_6', '')}', 'Admin', '{{\"GERMAN\":4}}', '{{\"GERMAN\":4}}'), \
+            ('Richard', 'Feynman', 'planetread+richardfeynman@uwblueprint.org', '{os.getenv('AUTH_ID_7', '')}', 'User', '{{\"PORTUGESE\":4, \"ENGLISH_UK\":4, \"GERMAN\":1}}', '{{\"PORTUGESE\":1}}'); \
     "
     )
 
