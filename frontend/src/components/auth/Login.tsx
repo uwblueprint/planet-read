@@ -94,22 +94,22 @@ const Login = () => {
       <form>
         {isSignup && (
           <div>
-            <input
-              type="text"
-              value={firstName}
-              onChange={(event) => setFirstName(event.target.value)}
-              placeholder="First Name"
-            />
-          </div>
-        )}
-        {isSignup && (
-          <div>
-            <input
-              type="text"
-              value={lastName}
-              onChange={(event) => setLastName(event.target.value)}
-              placeholder="Last Name"
-            />
+            <div>
+              <input
+                type="text"
+                value={firstName}
+                onChange={(event) => setFirstName(event.target.value)}
+                placeholder="First Name"
+              />
+            </div>
+            <div>
+              <input
+                type="text"
+                value={lastName}
+                onChange={(event) => setLastName(event.target.value)}
+                placeholder="Last Name"
+              />
+            </div>
           </div>
         )}
         <div>
@@ -145,20 +145,18 @@ const Login = () => {
           </button>
           {!isSignup && <ResetPassword email={email} />}
 
-          {!isSignup && (
-            <GoogleLogin
-              clientId="175399577852-6hll8ih9q1ljij8f50f9pf9t2va6u3a7.apps.googleusercontent.com"
-              buttonText="Google"
-              onSuccess={(response: GoogleResponse): void => {
-                if ("tokenId" in response) {
-                  onGoogleLoginSuccess(response.tokenId);
-                } else {
-                  alert(JSON.stringify(response));
-                }
-              }}
-              onFailure={onFailure}
-            />
-          )}
+          <GoogleLogin
+            clientId="175399577852-6hll8ih9q1ljij8f50f9pf9t2va6u3a7.apps.googleusercontent.com"
+            buttonText="Google"
+            onSuccess={(response: GoogleResponse): void => {
+              if ("tokenId" in response) {
+                onGoogleLoginSuccess(response.tokenId);
+              } else {
+                alert(JSON.stringify(response));
+              }
+            }}
+            onFailure={onFailure}
+          />
         </div>
       </form>
     </div>
