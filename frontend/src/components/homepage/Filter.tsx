@@ -53,7 +53,7 @@ const Filter = ({
     // if user isn't permitted to translate/review in the same language, default
     // to the first language
     if (!Object.keys(newApprovedLanguages).find((x) => x === language)) {
-      newLanguage = Object.keys(newApprovedLanguages)[0];
+      [newLanguage] = Object.keys(newApprovedLanguages);
     }
     setIsTranslator(nextRole === "Translator");
     setLanguage(newLanguage);
@@ -125,6 +125,7 @@ const Filter = ({
           onChange={handleLevelChangeStr}
           defaultValue={`Level ${level}`}
           isDisabled={isDisabled}
+          dependentValue={language + role}
         />
       </Box>
     </Flex>

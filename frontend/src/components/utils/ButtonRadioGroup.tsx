@@ -1,6 +1,6 @@
 /*  eslint react/jsx-props-no-spreading: 0 */
 /*  eslint react/destructuring-assignment: 0 */
-import React from "react";
+import React, { useEffect } from "react";
 import {
   Box,
   Flex,
@@ -47,6 +47,7 @@ export type ButtonRadioGroupProps = {
   isDisabled?: boolean;
   options: string[];
   onChange: (newState: string) => void;
+  dependentValue?: string;
 };
 
 function ButtonRadioGroup({
@@ -57,15 +58,23 @@ function ButtonRadioGroup({
   defaultValue,
   isDisabled = false,
   options,
+  dependentValue,
   onChange,
 }: ButtonRadioGroupProps) {
-  const { getRootProps, getRadioProps } = useRadioGroup({
+  const { getRootProps, getRadioProps, setValue } = useRadioGroup({
     name,
     defaultValue,
     onChange,
   });
 
   const group = getRootProps();
+
+  useEffect(() => {
+    if (!options.includes(defaultValue)) {
+      onChange(options[options.length - 1]);
+      setValue(options[options.length - 1]);
+    }
+  }, [dependentValue]);
 
   return (
     <Flex direction={stacked ? "column" : "row"} {...group}>
