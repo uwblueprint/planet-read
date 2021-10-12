@@ -47,7 +47,7 @@ export type ButtonRadioGroupProps = {
   isDisabled?: boolean;
   options: string[];
   onChange: (newState: string) => void;
-  language?: string;
+  dependentValue?: string;
 };
 
 function ButtonRadioGroup({
@@ -58,7 +58,7 @@ function ButtonRadioGroup({
   defaultValue,
   isDisabled = false,
   options,
-  language,
+  dependentValue,
   onChange,
 }: ButtonRadioGroupProps) {
   const { getRootProps, getRadioProps, setValue } = useRadioGroup({
@@ -74,7 +74,7 @@ function ButtonRadioGroup({
       onChange(options[options.length - 1]);
       setValue(options[options.length - 1]);
     }
-  }, [language]);
+  }, [dependentValue]);
 
   return (
     <Flex direction={stacked ? "column" : "row"} {...group}>

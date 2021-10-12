@@ -125,7 +125,7 @@ const Filter = ({
           onChange={handleLevelChangeStr}
           defaultValue={`Level ${level}`}
           isDisabled={isDisabled}
-          language={language}
+          dependentValue={language + role}
         />
       </Box>
     </Flex>
