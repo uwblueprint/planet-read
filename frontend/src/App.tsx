@@ -5,7 +5,6 @@ import { ChakraProvider } from "@chakra-ui/react";
 import { ApolloProvider } from "@apollo/client";
 
 import Login from "./components/auth/Login";
-import Signup from "./components/auth/Signup";
 import PrivateRoute from "./components/auth/PrivateRoute";
 import AdminPage from "./components/pages/AdminPage";
 import HomePage from "./components/pages/HomePage";
@@ -39,7 +38,6 @@ const App = () => {
           <Router>
             <Switch>
               <Route exact path="/login" component={Login} />
-              <Route exact path="/signup" component={Signup} />
               <PrivateRoute exact path="/" component={HomePage} />
               <PrivateRoute
                 exact
