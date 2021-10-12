@@ -15,9 +15,9 @@ import convertLanguageTitleCase from "../../utils/LanguageUtils";
 import Header from "../navigation/Header";
 import ConfirmationModal from "../translation/ConfirmationModal";
 import {
-  REVIEW_PAGE_RETURN_TO_TRANSLATOR_CONFIRMAITON,
+  REVIEW_PAGE_RETURN_TO_TRANSLATOR_CONFIRMATION,
   REVIEW_PAGE_RETURN_TO_TRANSLATOR_BUTTON_MESSAGE,
-  REVIEW_PAGE_SUBMIT_TRANSLATION_CONFIRMAITON,
+  REVIEW_PAGE_SUBMIT_TRANSLATION_CONFIRMATION,
   REVIEW_PAGE_SUBMIT_TRANSLATION_BUTTON_MESSAGE,
   REVIEW_PAGE_TOOL_TIP_COPY,
 } from "../../utils/Copy";
@@ -65,16 +65,16 @@ const ReviewPage = () => {
   const [returnToTranslator, setReturnToTranslator] = useState(false);
   const [submitTranslation, setSubmitTranslation] = useState(false);
 
-  const closeReturnToTranslatorModal = async () => {
+  const closeReturnToTranslatorModal = () => {
     setReturnToTranslator(false);
   };
-  const openReturnToTranslatorModal = async () => {
+  const openReturnToTranslatorModal = () => {
     setReturnToTranslator(true);
   };
-  const closeSubmitTranslationModal = async () => {
+  const closeSubmitTranslationModal = () => {
     setSubmitTranslation(false);
   };
-  const openSubmitTranslationModal = async () => {
+  const openSubmitTranslationModal = () => {
     setSubmitTranslation(true);
   };
 
@@ -265,7 +265,7 @@ const ReviewPage = () => {
                 )}
                 onClose={closeReturnToTranslatorModal}
                 confirmationMessage={
-                  REVIEW_PAGE_RETURN_TO_TRANSLATOR_CONFIRMAITON
+                  REVIEW_PAGE_RETURN_TO_TRANSLATOR_CONFIRMATION
                 }
                 buttonMessage={REVIEW_PAGE_RETURN_TO_TRANSLATOR_BUTTON_MESSAGE}
               />
@@ -278,7 +278,7 @@ const ReviewPage = () => {
                 )}
                 onClose={closeSubmitTranslationModal}
                 confirmationMessage={
-                  REVIEW_PAGE_SUBMIT_TRANSLATION_CONFIRMAITON
+                  REVIEW_PAGE_SUBMIT_TRANSLATION_CONFIRMATION
                 }
                 buttonMessage={REVIEW_PAGE_SUBMIT_TRANSLATION_BUTTON_MESSAGE}
               />
