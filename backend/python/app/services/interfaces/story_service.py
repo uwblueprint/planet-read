@@ -40,7 +40,7 @@ class IStoryService(ABC):
         pass
 
     @abstractmethod
-    def get_story_translations(self, user_id, is_translator, language, level):
+    def get_story_translations_by_user(self, user_id, is_translator, language, level):
         """Return a list of stories currently being translated/reviewed
 
         :param user_id: id of the user
@@ -49,6 +49,21 @@ class IStoryService(ABC):
         null returns story translations being either translated/reviewed by user
         :param language: language of story translations to filter by and return
         :param level: level of story translations to filter by and return
+        :return: list of StoryTranslationResponseDTO's
+        :rtype: list of StoryTranslationResponseDTO's
+        """
+        pass
+
+    @abstractmethod
+    def get_story_translations(self, language, level, stage, story_title, role_filter):
+        """Return a list of story translations based on filters
+
+        :param language: language of story translations to filter by and return
+        :param level: level of story translations to filter by and return
+        :param stage: stage of story translations to filter by and return
+        :param story_title: story_title of story translations to filter by
+        likeness and return
+        :param role_filter: filter to get story_translations by user_id/role
         :return: list of StoryTranslationResponseDTO's
         :rtype: list of StoryTranslationResponseDTO's
         """
