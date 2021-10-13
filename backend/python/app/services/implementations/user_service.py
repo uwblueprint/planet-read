@@ -133,7 +133,7 @@ class UserService(IUserService):
     def create_user(self, user):
         new_user = None
         firebase_user = None
-        postgres_user = None
+        mysql_user = None
         auth_id = None
         try:
             if user.signUpMethod == "PASSWORD":
@@ -146,9 +146,10 @@ class UserService(IUserService):
                     firebase_user = firebase_admin.auth.create_user(uid=user.auth_id)
                 auth_id = user.auth_id
 
-            postgres_user = {
+            mysql_user = {
                 "first_name": user.first_name,
                 "last_name": user.last_name,
+                "email": user.email,
                 "auth_id": auth_id,
                 "role": user.role,
                 "resume": user.resume,
@@ -158,7 +159,7 @@ class UserService(IUserService):
             }
 
             try:
-                new_user = User(**postgres_user)
+                new_user = User(**mysql_user)
                 db.session.add(new_user)
                 db.session.commit()
             except Exception as postgres_error:
