@@ -21,5 +21,11 @@ export const REVIEW_PAGE_RETURN_TO_TRANSLATOR_BUTTON_MESSAGE =
 
 export const TRANSLATION_PAGE_BUTTON_MESSAGE = "I'm sure, send for review";
 
-export const REVIEW_PAGE_RETURN_TO_TRANSLATOR_CONFIRMAITON =
+export const REVIEW_PAGE_SUBMIT_TRANSLATION_BUTTON_MESSAGE =
+  "I'm sure, submit translation";
+
+export const REVIEW_PAGE_RETURN_TO_TRANSLATOR_CONFIRMATION =
   "By clicking this button, your review session will end and the story translation will be returned to the translator.";
+
+export const REVIEW_PAGE_SUBMIT_TRANSLATION_CONFIRMATION =
+  "By clicking this button, your review session will end and the story translation will be officially submitted to PlanetRead.";

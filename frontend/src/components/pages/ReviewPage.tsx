@@ -15,8 +15,10 @@ import convertLanguageTitleCase from "../../utils/LanguageUtils";
 import Header from "../navigation/Header";
 import ConfirmationModal from "../translation/ConfirmationModal";
 import {
-  REVIEW_PAGE_RETURN_TO_TRANSLATOR_CONFIRMAITON,
+  REVIEW_PAGE_RETURN_TO_TRANSLATOR_CONFIRMATION,
   REVIEW_PAGE_RETURN_TO_TRANSLATOR_BUTTON_MESSAGE,
+  REVIEW_PAGE_SUBMIT_TRANSLATION_CONFIRMATION,
+  REVIEW_PAGE_SUBMIT_TRANSLATION_BUTTON_MESSAGE,
   REVIEW_PAGE_TOOL_TIP_COPY,
 } from "../../utils/Copy";
 import {
@@ -61,12 +63,19 @@ const ReviewPage = () => {
 
   const [isLoading, setIsLoading] = useState(true);
   const [returnToTranslator, setReturnToTranslator] = useState(false);
+  const [submitTranslation, setSubmitTranslation] = useState(false);
 
-  const closeModal = async () => {
+  const closeReturnToTranslatorModal = () => {
     setReturnToTranslator(false);
   };
-  const openModal = async () => {
+  const openReturnToTranslatorModal = () => {
     setReturnToTranslator(true);
+  };
+  const closeSubmitTranslationModal = () => {
+    setSubmitTranslation(false);
+  };
+  const openSubmitTranslationModal = () => {
+    setSubmitTranslation(true);
   };
 
   const [
@@ -81,23 +90,27 @@ const ReviewPage = () => {
   const [updateStoryTranslationStage] = useMutation<{
     updateStoryTranslationStage: UpdateStoryTranslationStageResponse;
   }>(UPDATE_STORY_TRANSLATION_STAGE);
-  const returnToTranslatorMutation = async () => {
-    try {
-      const storyTranslationData = {
-        id: storyTranslationId,
-        stage: "TRANSLATE",
-      };
-      const result = await updateStoryTranslationStage({
-        variables: { storyTranslationData },
-      });
-      if (result.data?.updateStoryTranslationStage.ok) {
-        window.location.reload();
-      } else {
-        window.alert("Unable to return to translator.");
+
+  const createUpdateStoryTranslationStageMutation = (newStage: string) => {
+    const updateStoryTranslationStageMutation = async () => {
+      try {
+        const storyTranslationData = {
+          id: storyTranslationId,
+          stage: newStage,
+        };
+        const result = await updateStoryTranslationStage({
+          variables: { storyTranslationData },
+        });
+        if (result.data?.updateStoryTranslationStage.ok) {
+          window.location.reload();
+        } else {
+          window.alert(`Unable to update story stage to ${stage}.`);
+        }
+      } catch (error) {
+        window.alert(error ?? "Error occurred, please try again.");
       }
-    } catch (error) {
-      window.alert(error ?? "Error occurred, please try again.");
-    }
+    };
+    return updateStoryTranslationStageMutation;
   };
 
   useQuery(GET_STORY_AND_TRANSLATION_CONTENTS(storyId, storyTranslationId), {
@@ -136,7 +149,7 @@ const ReviewPage = () => {
 
   const ReviewPageContent = () => (
     <>
-      {+authenticatedUser!!.id !== reviewerId ? (
+      {+authenticatedUser!!.id !== reviewerId || stage === "PUBLISH" ? (
         <Redirect to="/404" />
       ) : (
         <Flex
@@ -218,9 +231,15 @@ const ReviewPage = () => {
                       margin="0 10px 0"
                       width="250px"
                       disabled={stage === "TRANSLATE"}
-                      onClick={openModal}
+                      onClick={
+                        numApprovedLines === translatedStoryLines.length
+                          ? openSubmitTranslationModal
+                          : openReturnToTranslatorModal
+                      }
                     >
-                      RETURN TO TRANSLATOR
+                      {numApprovedLines === translatedStoryLines.length
+                        ? "SUBMIT TRANSLATION"
+                        : "RETURN TO TRANSLATOR"}
                     </Button>
                   </Box>
                 </Tooltip>
@@ -241,12 +260,27 @@ const ReviewPage = () => {
             {returnToTranslator && (
               <ConfirmationModal
                 confirmation={returnToTranslator}
-                onConfirmationClick={returnToTranslatorMutation}
-                onClose={closeModal}
+                onConfirmationClick={createUpdateStoryTranslationStageMutation(
+                  "TRANSLATE",
+                )}
+                onClose={closeReturnToTranslatorModal}
                 confirmationMessage={
-                  REVIEW_PAGE_RETURN_TO_TRANSLATOR_CONFIRMAITON
+                  REVIEW_PAGE_RETURN_TO_TRANSLATOR_CONFIRMATION
                 }
                 buttonMessage={REVIEW_PAGE_RETURN_TO_TRANSLATOR_BUTTON_MESSAGE}
+              />
+            )}
+            {submitTranslation && (
+              <ConfirmationModal
+                confirmation={submitTranslation}
+                onConfirmationClick={createUpdateStoryTranslationStageMutation(
+                  "PUBLISH",
+                )}
+                onClose={closeSubmitTranslationModal}
+                confirmationMessage={
+                  REVIEW_PAGE_SUBMIT_TRANSLATION_CONFIRMATION
+                }
+                buttonMessage={REVIEW_PAGE_SUBMIT_TRANSLATION_BUTTON_MESSAGE}
               />
             )}
           </Flex>
@@ -254,7 +288,6 @@ const ReviewPage = () => {
       )}
     </>
   );
-
   return <>{isLoading ? <div /> : <ReviewPageContent />}</>;
 };
 
