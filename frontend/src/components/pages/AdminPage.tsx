@@ -12,16 +12,12 @@ const AdminPage = () => {
     switch (adminPgOption) {
       case AdminPageOption.StoryTranslations:
         return <ManageStoryTranslations />;
-        break;
       case AdminPageOption.Translators:
         return <ManageTranslators />;
-        break;
       case AdminPageOption.Reviewers:
         return <ManageReviewers />;
-        break;
       default:
         return <ManageStoryTranslations />;
-        break;
     }
   };
   return (

@@ -64,7 +64,7 @@ const Button = {
       borderBottom: "3px solid",
       borderBottomColor: "blue.100",
       color: "blue.100",
-      padding: "30px",
+      padding: "30px 30px 27px 30px",
       textTransform: "capitalize",
       width: "fit-content",
     },
