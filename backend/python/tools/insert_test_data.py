@@ -28,7 +28,7 @@ def insert_test_data():
             ('Dwight', 'D. Eisenhower', 'planetread+dwightdeisenhower@uwblueprint.org', '{os.getenv('AUTH_ID_4', '')}', 'User', '{{\"ENGLISH_UK\":4, \"ENGLISH_US\":4, \"GERMAN\":3}}', '{{\"ENGLISH_UK\":3, \"ENGLISH_US\":4}}'), \
             ('Alexander', 'Hamilton', 'planetread+alexanderhamilton@uwblueprint.org', '{os.getenv('AUTH_ID_5', '')}', 'User', '{{\"MANDARIN\":4, \"ENGLISH_UK\":3}}', '{{\"MANDARIN\":2}}'), \
             ('Angela', 'Merkel', 'planetread+angelamerkel@uwblueprint.org', '{os.getenv('AUTH_ID_6', '')}', 'Admin', '{{\"GERMAN\":4}}', '{{\"GERMAN\":4}}'), \
-            ('Richard', 'Feynman', 'planetread+richardfeynman@uwblueprint.org', '{os.getenv('AUTH_ID_7', '')}', 'User', '{{\"PORTUGESE\":4, \"ENGLISH_UK\":4, \"GERMAN\":1}}', '{{\"PORTUGESE\":1}}'); \
+            ('Richard', 'Feynman', 'planetread+richardfeynman@uwblueprint.org', '{os.getenv('AUTH_ID_7', '')}', 'User', '{{\"PORTUGUESE\":4, \"ENGLISH_UK\":4, \"GERMAN\":1}}', '{{\"PORTUGUESE\":1}}'); \
     "
     )
 

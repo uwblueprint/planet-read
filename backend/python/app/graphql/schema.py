@@ -27,6 +27,7 @@ from .queries.story_query import (
     resolve_stories_available_for_translation,
     resolve_story_by_id,
     resolve_story_translation_by_id,
+    resolve_story_translations,
     resolve_story_translations_available_for_review,
     resolve_story_translations_by_user,
 )
@@ -70,6 +71,13 @@ class Query(graphene.ObjectType):
     file_by_id = graphene.Field(FileDTO, id=graphene.Int(required=True))
     stories = graphene.Field(graphene.List(StoryResponseDTO))
     story_by_id = graphene.Field(StoryResponseDTO, id=graphene.Int(required=True))
+    story_translations = graphene.Field(
+        graphene.List(StoryTranslationResponseDTO),
+        language=graphene.String(),
+        level=graphene.Int(),
+        stage=graphene.String(),
+        story_title=graphene.String(),
+    )
     story_translations_by_user = graphene.Field(
         graphene.List(StoryTranslationResponseDTO),
         user_id=graphene.Int(required=True),
@@ -128,6 +136,13 @@ class Query(graphene.ObjectType):
     ):
         return resolve_story_translations_by_user(
             root, info, user_id, is_translator, language, level
+        )
+
+    def resolve_story_translations(
+        root, info, language=None, level=None, stage=None, story_title=None
+    ):
+        return resolve_story_translations(
+            root, info, language, level, stage, story_title
         )
 
     def resolve_story_translation_by_id(root, info, id):

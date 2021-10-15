@@ -113,25 +113,41 @@ class StoryService(IStoryService):
             raise error
         return new_story_translation
 
-    def get_story_translations(self, user_id, is_translator, language, level):
+    def get_story_translations_by_user(self, user_id, is_translator, language, level):
+        if is_translator is None:
+            role_filter = (StoryTranslation.translator_id == user_id) | (
+                StoryTranslation.reviewer_id == user_id
+            )
+        elif is_translator:
+            role_filter = StoryTranslation.translator_id == user_id
+        else:
+            role_filter = StoryTranslation.reviewer_id == user_id
+        return self.get_story_translations(
+            language=language, level=level, role_filter=role_filter
+        )
+
+    def get_story_translations(
+        self, language=None, level=None, stage=None, story_title=None, role_filter=None
+    ):
         try:
-            if is_translator is None:
-                role_filter = (StoryTranslation.translator_id == user_id) | (
-                    StoryTranslation.reviewer_id == user_id
-                )
-            elif is_translator:
-                role_filter = StoryTranslation.translator_id == user_id
-            else:
-                role_filter = StoryTranslation.reviewer_id == user_id
+            filters = []
+            if role_filter is not None:
+                filters.append(role_filter)
+            if language is not None:
+                filters.append(StoryTranslation.language == language)
+            if stage is not None:
+                filters.append(StoryTranslation.stage == stage)
+            if level is not None:
+                filters.append(Story.level == level)
+            if story_title is not None:
+                filters.append(Story.title.like(f"%{story_title}%"))
 
             stories = (
                 Story.query.join(
                     StoryTranslation,
                     Story.id == StoryTranslation.story_id,
                 )
-                .filter(role_filter)
-                .filter(StoryTranslation.language == language if language else True)
-                .filter(Story.level == level if level else True)
+                .filter(*filters)
                 .order_by(Story.id)
                 .all()
             )
@@ -140,9 +156,7 @@ class StoryService(IStoryService):
                 StoryTranslation.query.join(
                     Story, Story.id == StoryTranslation.story_id
                 )
-                .filter(role_filter)
-                .filter(StoryTranslation.language == language if language else True)
-                .filter(Story.level == level if level else True)
+                .filter(*filters)
                 .order_by(Story.id)
                 .all()
             )
