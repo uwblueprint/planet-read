@@ -61,7 +61,6 @@ const ReviewPage = () => {
 
   const [commentLine, setCommentLine] = useState(-1);
 
-  const [isLoading, setIsLoading] = useState(true);
   const [returnToTranslator, setReturnToTranslator] = useState(false);
   const [submitTranslation, setSubmitTranslation] = useState(false);
 
@@ -113,182 +112,165 @@ const ReviewPage = () => {
     return updateStoryTranslationStageMutation;
   };
 
-  useQuery(GET_STORY_AND_TRANSLATION_CONTENTS(storyId, storyTranslationId), {
-    fetchPolicy: "cache-and-network",
-    onCompleted: (data) => {
-      setReviewerId(data.storyTranslationById.reviewerId);
-      setIsLoading(false);
-      const storyContent = data.storyById.contents;
-      const translatedContent = data.storyTranslationById.translationContents;
-      setLanguage(data.storyTranslationById.language);
-      setStage(data.storyTranslationById.stage);
-      setTitle(data.storyById.title);
-      setNumTranslatedLines(data.storyTranslationById.numTranslatedLines);
-      setNumApprovedLines(data.storyTranslationById.numApprovedLines);
+  const { loading } = useQuery(
+    GET_STORY_AND_TRANSLATION_CONTENTS(storyId, storyTranslationId),
+    {
+      fetchPolicy: "cache-and-network",
+      onCompleted: (data) => {
+        setReviewerId(data.storyTranslationById.reviewerId);
+        const storyContent = data.storyById.contents;
+        const translatedContent = data.storyTranslationById.translationContents;
+        setLanguage(data.storyTranslationById.language);
+        setStage(data.storyTranslationById.stage);
+        setTitle(data.storyById.title);
+        setNumTranslatedLines(data.storyTranslationById.numTranslatedLines);
+        setNumApprovedLines(data.storyTranslationById.numApprovedLines);
 
-      const contentArray: StoryLine[] = [];
-      storyContent.forEach(({ content, lineIndex }: Content) => {
-        contentArray.push({
-          lineIndex,
-          originalContent: content,
+        const contentArray: StoryLine[] = [];
+        storyContent.forEach(({ content, lineIndex }: Content) => {
+          contentArray.push({
+            lineIndex,
+            originalContent: content,
+          });
         });
-      });
 
-      contentArray.sort((a, b) => a.lineIndex - b.lineIndex);
+        contentArray.sort((a, b) => a.lineIndex - b.lineIndex);
 
-      translatedContent.forEach(
-        ({ id, content, lineIndex, status }: Content) => {
-          contentArray[lineIndex].translatedContent = content;
-          contentArray[lineIndex].storyTranslationContentId = id;
-          contentArray[lineIndex].status = convertStatusTitleCase(status);
-        },
-      );
-      setTranslatedStoryLines(contentArray);
+        translatedContent.forEach(
+          ({ id, content, lineIndex, status }: Content) => {
+            contentArray[lineIndex].translatedContent = content;
+            contentArray[lineIndex].storyTranslationContentId = id;
+            contentArray[lineIndex].status = convertStatusTitleCase(status);
+          },
+        );
+        setTranslatedStoryLines(contentArray);
+      },
     },
-  });
+  );
 
-  const ReviewPageContent = () => (
-    <>
-      {+authenticatedUser!!.id !== reviewerId || stage === "PUBLISH" ? (
-        <Redirect to="/404" />
-      ) : (
-        <Flex
-          height="100vh"
-          direction="column"
-          position="absolute"
-          top="0"
-          bottom="0"
-          left="0"
-          right="0"
-          overflow="hidden"
-        >
-          <Header title={title} />
+  if (loading || reviewerId === -1) return <div />;
+  if (+authenticatedUser!!.id !== reviewerId) return <Redirect to="/404" />;
+  return (
+    <Flex
+      height="100vh"
+      direction="column"
+      position="absolute"
+      top="0"
+      bottom="0"
+      left="0"
+      right="0"
+      overflow="hidden"
+    >
+      <Header title={title} />
+      <Divider />
+      <Flex justify="space-between" flex={1} minHeight={0}>
+        <Flex width="100%" direction="column">
+          <Flex justify="space-between" alignItems="center" margin="10px 30px">
+            <FontSizeSlider setFontSize={handleFontSizeChange} />
+          </Flex>
           <Divider />
-          <Flex justify="space-between" flex={1} minHeight={0}>
-            <Flex width="100%" direction="column">
-              <Flex
-                justify="space-between"
-                alignItems="center"
-                margin="10px 30px"
-              >
-                <FontSizeSlider setFontSize={handleFontSizeChange} />
-              </Flex>
-              <Divider />
-              <Flex
-                marginLeft="20px"
-                direction="column"
-                flex={1}
-                minHeight={0}
-                overflowY="auto"
-              >
-                <TranslationTable
-                  storyTranslationId={storyTranslationId}
-                  translatedStoryLines={translatedStoryLines}
-                  fontSize={fontSize}
-                  originalLanguage="English"
-                  translatedLanguage={convertLanguageTitleCase(language)}
-                  commentLine={commentLine}
-                  setCommentLine={setCommentLine}
-                  setCommentStoryTranslationContentId={
-                    setCommentStoryTranslationContentId
-                  }
-                  translator={false}
-                  setTranslatedStoryLines={setTranslatedStoryLines}
-                  numApprovedLines={numApprovedLines}
-                  setNumApprovedLines={setNumApprovedLines}
-                  isReviewable={stage === "REVIEW"}
-                  reviewPage
-                />
-              </Flex>
-              <Flex
-                margin="20px 30px"
-                justify="space-between"
-                alignItems="center"
-              >
-                <Flex justify="flex-start" alignItems="right">
-                  <ProgressBar
-                    percentageComplete={
-                      (numTranslatedLines / translatedStoryLines.length) * 100
-                    }
-                    type="Translation"
-                  />
-                  <ProgressBar
-                    percentageComplete={
-                      (numApprovedLines / translatedStoryLines.length) * 100
-                    }
-                    type="Review"
-                  />
-                </Flex>
-                <Tooltip
-                  hasArrow
-                  label={REVIEW_PAGE_TOOL_TIP_COPY}
-                  isDisabled={stage === "REVIEW"}
-                >
-                  <Box>
-                    <Button
-                      colorScheme="blue"
-                      size="secondary"
-                      margin="0 10px 0"
-                      width="250px"
-                      disabled={stage === "TRANSLATE"}
-                      onClick={
-                        numApprovedLines === translatedStoryLines.length
-                          ? openSubmitTranslationModal
-                          : openReturnToTranslatorModal
-                      }
-                    >
-                      {numApprovedLines === translatedStoryLines.length
-                        ? "SUBMIT TRANSLATION"
-                        : "RETURN TO TRANSLATOR"}
-                    </Button>
-                  </Box>
-                </Tooltip>
-              </Flex>
-            </Flex>
-            <CommentsPanel
-              disabled={stage === "TRANSLATE"}
-              commentStoryTranslationContentId={
-                commentStoryTranslationContentId
-              }
-              commentLine={commentLine}
+          <Flex
+            marginLeft="20px"
+            direction="column"
+            flex={1}
+            minHeight={0}
+            overflowY="auto"
+          >
+            <TranslationTable
               storyTranslationId={storyTranslationId}
-              setCommentLine={setCommentLine}
-              setTranslatedStoryLines={setTranslatedStoryLines}
               translatedStoryLines={translatedStoryLines}
+              fontSize={fontSize}
+              originalLanguage="English"
+              translatedLanguage={convertLanguageTitleCase(language)}
+              commentLine={commentLine}
+              setCommentLine={setCommentLine}
+              setCommentStoryTranslationContentId={
+                setCommentStoryTranslationContentId
+              }
+              translator={false}
+              setTranslatedStoryLines={setTranslatedStoryLines}
+              numApprovedLines={numApprovedLines}
+              setNumApprovedLines={setNumApprovedLines}
+              isReviewable={stage === "REVIEW"}
               reviewPage
             />
-            {returnToTranslator && (
-              <ConfirmationModal
-                confirmation={returnToTranslator}
-                onConfirmationClick={createUpdateStoryTranslationStageMutation(
-                  "TRANSLATE",
-                )}
-                onClose={closeReturnToTranslatorModal}
-                confirmationMessage={
-                  REVIEW_PAGE_RETURN_TO_TRANSLATOR_CONFIRMATION
+          </Flex>
+          <Flex margin="20px 30px" justify="space-between" alignItems="center">
+            <Flex justify="flex-start" alignItems="right">
+              <ProgressBar
+                percentageComplete={
+                  (numTranslatedLines / translatedStoryLines.length) * 100
                 }
-                buttonMessage={REVIEW_PAGE_RETURN_TO_TRANSLATOR_BUTTON_MESSAGE}
+                type="Translation"
               />
-            )}
-            {submitTranslation && (
-              <ConfirmationModal
-                confirmation={submitTranslation}
-                onConfirmationClick={createUpdateStoryTranslationStageMutation(
-                  "PUBLISH",
-                )}
-                onClose={closeSubmitTranslationModal}
-                confirmationMessage={
-                  REVIEW_PAGE_SUBMIT_TRANSLATION_CONFIRMATION
+              <ProgressBar
+                percentageComplete={
+                  (numApprovedLines / translatedStoryLines.length) * 100
                 }
-                buttonMessage={REVIEW_PAGE_SUBMIT_TRANSLATION_BUTTON_MESSAGE}
+                type="Review"
               />
-            )}
+            </Flex>
+            <Tooltip
+              hasArrow
+              label={REVIEW_PAGE_TOOL_TIP_COPY}
+              isDisabled={stage === "REVIEW"}
+            >
+              <Box>
+                <Button
+                  colorScheme="blue"
+                  size="secondary"
+                  margin="0 10px 0"
+                  width="250px"
+                  disabled={stage === "TRANSLATE"}
+                  onClick={
+                    numApprovedLines === translatedStoryLines.length
+                      ? openSubmitTranslationModal
+                      : openReturnToTranslatorModal
+                  }
+                >
+                  {numApprovedLines === translatedStoryLines.length
+                    ? "SUBMIT TRANSLATION"
+                    : "RETURN TO TRANSLATOR"}
+                </Button>
+              </Box>
+            </Tooltip>
           </Flex>
         </Flex>
-      )}
-    </>
+        <CommentsPanel
+          disabled={stage === "TRANSLATE"}
+          commentStoryTranslationContentId={commentStoryTranslationContentId}
+          commentLine={commentLine}
+          storyTranslationId={storyTranslationId}
+          setCommentLine={setCommentLine}
+          setTranslatedStoryLines={setTranslatedStoryLines}
+          translatedStoryLines={translatedStoryLines}
+          reviewPage
+        />
+        {returnToTranslator && (
+          <ConfirmationModal
+            confirmation={returnToTranslator}
+            onConfirmationClick={createUpdateStoryTranslationStageMutation(
+              "TRANSLATE",
+            )}
+            onClose={closeReturnToTranslatorModal}
+            confirmationMessage={REVIEW_PAGE_RETURN_TO_TRANSLATOR_CONFIRMATION}
+            buttonMessage={REVIEW_PAGE_RETURN_TO_TRANSLATOR_BUTTON_MESSAGE}
+          />
+        )}
+        {submitTranslation && (
+          <ConfirmationModal
+            confirmation={submitTranslation}
+            onConfirmationClick={createUpdateStoryTranslationStageMutation(
+              "PUBLISH",
+            )}
+            onClose={closeSubmitTranslationModal}
+            confirmationMessage={REVIEW_PAGE_SUBMIT_TRANSLATION_CONFIRMATION}
+            buttonMessage={REVIEW_PAGE_SUBMIT_TRANSLATION_BUTTON_MESSAGE}
+          />
+        )}
+      </Flex>
+    </Flex>
   );
-  return <>{isLoading ? <div /> : <ReviewPageContent />}</>;
 };
 
 export default ReviewPage;
