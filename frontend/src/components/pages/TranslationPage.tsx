@@ -56,8 +56,6 @@ const TranslationPage = () => {
   const [language, setLanguage] = useState<string>("");
   const [stage, setStage] = useState<string>("");
 
-  const [isLoading, setIsLoading] = useState(true);
-
   // AutoSave
   const [changedStoryLines, setChangedStoryLines] = useState<
     Map<number, StoryLine>
@@ -166,41 +164,43 @@ const TranslationPage = () => {
     }
   };
 
-  useQuery(GET_STORY_AND_TRANSLATION_CONTENTS(storyId, storyTranslationId), {
-    fetchPolicy: "cache-and-network",
-    onCompleted: (data) => {
-      setTranslatorId(data.storyTranslationById.translatorId);
-      setIsLoading(false);
-      const storyContent = data.storyById.contents;
-      const translatedContent = data.storyTranslationById.translationContents;
-      setStage(data.storyTranslationById.stage);
-      setLanguage(data.storyTranslationById.language);
-      setTitle(data.storyById.title);
-      setNumTranslatedLines(data.storyTranslationById.numTranslatedLines);
+  const { loading } = useQuery(
+    GET_STORY_AND_TRANSLATION_CONTENTS(storyId, storyTranslationId),
+    {
+      fetchPolicy: "cache-and-network",
+      onCompleted: (data) => {
+        setTranslatorId(data.storyTranslationById.translatorId);
+        const storyContent = data.storyById.contents;
+        const translatedContent = data.storyTranslationById.translationContents;
+        setStage(data.storyTranslationById.stage);
+        setLanguage(data.storyTranslationById.language);
+        setTitle(data.storyById.title);
+        setNumTranslatedLines(data.storyTranslationById.numTranslatedLines);
 
-      const contentArray: StoryLine[] = [];
-      storyContent.forEach(({ content, lineIndex }: Content) => {
-        contentArray.push({
-          lineIndex,
-          originalContent: content,
+        const contentArray: StoryLine[] = [];
+        storyContent.forEach(({ content, lineIndex }: Content) => {
+          contentArray.push({
+            lineIndex,
+            originalContent: content,
+          });
         });
-      });
 
-      contentArray.sort((a, b) => a.lineIndex - b.lineIndex);
+        contentArray.sort((a, b) => a.lineIndex - b.lineIndex);
 
-      translatedContent.forEach(
-        ({ id, content, lineIndex, status }: Content) => {
-          contentArray[lineIndex].translatedContent = content;
-          contentArray[lineIndex].storyTranslationContentId = id;
-          contentArray[lineIndex].status = convertStatusTitleCase(status);
-        },
-      );
-      setTranslatedStoryLines(contentArray);
-      setVersionHistoryStack([deepCopy(contentArray)]);
-      setVersionSnapShotStack([]);
-      setCurrentVersion(0);
+        translatedContent.forEach(
+          ({ id, content, lineIndex, status }: Content) => {
+            contentArray[lineIndex].translatedContent = content;
+            contentArray[lineIndex].storyTranslationContentId = id;
+            contentArray[lineIndex].status = convertStatusTitleCase(status);
+          },
+        );
+        setTranslatedStoryLines(contentArray);
+        setVersionHistoryStack([deepCopy(contentArray)]);
+        setVersionSnapShotStack([]);
+        setCurrentVersion(0);
+      },
     },
-  });
+  );
 
   const maxCharsExceededWarning = () => {
     const exceededLines: number[] = [];
@@ -225,126 +225,108 @@ const TranslationPage = () => {
     ) : null;
   };
 
-  const TranslationPageContent = () => (
-    <>
-      {+authenticatedUser!!.id !== translatorId ? (
-        <Redirect to="/404" />
-      ) : (
-        <Flex height="100vh" direction="column" position="absolute">
-          <Header title={title} />
-          <Divider />
-          <Flex justify="space-between" flex={1} minHeight={0}>
-            <Flex width="100%" direction="column">
-              <Flex
-                justify="space-between"
-                alignItems="center"
-                margin="10px 30px"
-              >
-                <FontSizeSlider setFontSize={handleFontSizeChange} />
-                <UndoRedo
-                  currentVersion={currentVersion}
-                  setCurrentVersion={setCurrentVersion}
-                  versionHistoryStack={versionHistoryStack}
-                  setVersionHistoryStack={setVersionHistoryStack}
-                  versionSnapShotStack={versionSnapShotStack}
-                  setVersionSnapShotStack={setVersionSnapShotStack}
-                  snapShotLineIndexes={snapShotLineIndexes}
-                  snapSnapShotLineIndexes={snapSnapShotLineIndexes}
-                  translatedStoryLines={translatedStoryLines}
-                  onChangeTranslationContent={onChangeTranslationContent}
-                  MAX_STACK_SIZE={MAX_STACK_SIZE}
-                />
-              </Flex>
-              <Divider />
-              <Flex
-                marginLeft="20px"
-                direction="column"
-                flex={1}
-                minHeight={0}
-                overflowY="auto"
-              >
-                {maxCharsExceededWarning()}
-                <TranslationTable
-                  storyTranslationId={storyTranslationId}
-                  translatedStoryLines={translatedStoryLines}
-                  onUserInput={onUserInput}
-                  editable={editable}
-                  fontSize={fontSize}
-                  originalLanguage="English"
-                  translatedLanguage={convertLanguageTitleCase(language)}
-                  commentLine={commentLine}
-                  setCommentLine={setCommentLine}
-                  setCommentStoryTranslationContentId={
-                    setCommentStoryTranslationContentId
-                  }
-                  translator
-                  setTranslatedStoryLines={setTranslatedStoryLines}
-                  changedStoryLines={changedStoryLines.size}
-                />
-              </Flex>
-              <Flex
-                margin="20px 30px"
-                justify="space-between"
-                alignItems="center"
-              >
-                <ProgressBar
-                  percentageComplete={
-                    (numTranslatedLines / translatedStoryLines.length) * 100
-                  }
-                  type="Translation"
-                />
-                <Tooltip
-                  hasArrow
-                  label={TRANSLATION_PAGE_TOOL_TIP_COPY}
-                  isDisabled={editable}
-                >
-                  <Box>
-                    <Button
-                      colorScheme="blue"
-                      size="secondary"
-                      margin="0 10px 0"
-                      disabled={!editable}
-                      onClick={onSendForReviewClick}
-                    >
-                      {editable ? "SEND FOR REVIEW" : "IN REVIEW"}
-                    </Button>
-                  </Box>
-                </Tooltip>
-              </Flex>
-            </Flex>
-            <CommentsPanel
-              disabled={!editable}
-              commentStoryTranslationContentId={
-                commentStoryTranslationContentId
-              }
-              commentLine={commentLine}
-              storyTranslationId={storyTranslationId}
-              setCommentLine={setCommentLine}
-              setTranslatedStoryLines={setTranslatedStoryLines}
+  if (loading || translatorId === -1) return <div />;
+  if (+authenticatedUser!!.id !== translatorId) return <Redirect to="/404" />;
+
+  return (
+    <Flex height="100vh" direction="column" position="absolute">
+      <Header title={title} />
+      <Divider />
+      <Flex justify="space-between" flex={1} minHeight={0}>
+        <Flex width="100%" direction="column">
+          <Flex justify="space-between" alignItems="center" margin="10px 30px">
+            <FontSizeSlider setFontSize={handleFontSizeChange} />
+            <UndoRedo
+              currentVersion={currentVersion}
+              setCurrentVersion={setCurrentVersion}
+              versionHistoryStack={versionHistoryStack}
+              setVersionHistoryStack={setVersionHistoryStack}
+              versionSnapShotStack={versionSnapShotStack}
+              setVersionSnapShotStack={setVersionSnapShotStack}
+              snapShotLineIndexes={snapShotLineIndexes}
+              snapSnapShotLineIndexes={snapSnapShotLineIndexes}
               translatedStoryLines={translatedStoryLines}
+              onChangeTranslationContent={onChangeTranslationContent}
+              MAX_STACK_SIZE={MAX_STACK_SIZE}
             />
           </Flex>
-          <Autosave
-            storylines={Array.from(changedStoryLines.values())}
-            onSuccess={clearUnsavedChangesMap}
-          />
-          {sendForReview && (
-            <ConfirmationModal
-              confirmation={sendForReview}
-              onClose={onSendForReviewClick}
-              onConfirmationClick={onSendForReviewConfirmationClick}
-              confirmationMessage={
-                TRANSLATION_PAGE_SEND_FOR_REVIEW_CONFIRMATION
+          <Divider />
+          <Flex
+            marginLeft="20px"
+            direction="column"
+            flex={1}
+            minHeight={0}
+            overflowY="auto"
+          >
+            {maxCharsExceededWarning()}
+            <TranslationTable
+              storyTranslationId={storyTranslationId}
+              translatedStoryLines={translatedStoryLines}
+              onUserInput={onUserInput}
+              editable={editable}
+              fontSize={fontSize}
+              originalLanguage="English"
+              translatedLanguage={convertLanguageTitleCase(language)}
+              commentLine={commentLine}
+              setCommentLine={setCommentLine}
+              setCommentStoryTranslationContentId={
+                setCommentStoryTranslationContentId
               }
-              buttonMessage={TRANSLATION_PAGE_BUTTON_MESSAGE}
+              translator
+              setTranslatedStoryLines={setTranslatedStoryLines}
+              changedStoryLines={changedStoryLines.size}
             />
-          )}
+          </Flex>
+          <Flex margin="20px 30px" justify="space-between" alignItems="center">
+            <ProgressBar
+              percentageComplete={
+                (numTranslatedLines / translatedStoryLines.length) * 100
+              }
+              type="Translation"
+            />
+            <Tooltip
+              hasArrow
+              label={TRANSLATION_PAGE_TOOL_TIP_COPY}
+              isDisabled={editable}
+            >
+              <Box>
+                <Button
+                  colorScheme="blue"
+                  size="secondary"
+                  margin="0 10px 0"
+                  disabled={!editable}
+                  onClick={onSendForReviewClick}
+                >
+                  {editable ? "SEND FOR REVIEW" : "IN REVIEW"}
+                </Button>
+              </Box>
+            </Tooltip>
+          </Flex>
         </Flex>
+        <CommentsPanel
+          disabled={!editable}
+          commentStoryTranslationContentId={commentStoryTranslationContentId}
+          commentLine={commentLine}
+          storyTranslationId={storyTranslationId}
+          setCommentLine={setCommentLine}
+          setTranslatedStoryLines={setTranslatedStoryLines}
+          translatedStoryLines={translatedStoryLines}
+        />
+      </Flex>
+      <Autosave
+        storylines={Array.from(changedStoryLines.values())}
+        onSuccess={clearUnsavedChangesMap}
+      />
+      {sendForReview && (
+        <ConfirmationModal
+          confirmation={sendForReview}
+          onClose={onSendForReviewClick}
+          onConfirmationClick={onSendForReviewConfirmationClick}
+          confirmationMessage={TRANSLATION_PAGE_SEND_FOR_REVIEW_CONFIRMATION}
+          buttonMessage={TRANSLATION_PAGE_BUTTON_MESSAGE}
+        />
       )}
-    </>
+    </Flex>
   );
-
-  return <>{isLoading ? <div /> : <TranslationPageContent />}</>;
 };
-
 export default TranslationPage;
