@@ -13,6 +13,7 @@ import {
 import AuthContext from "../../contexts/AuthContext";
 import PreviewModal from "./PreviewModal";
 import convertLanguageTitleCase from "../../utils/LanguageUtils";
+import { getLevelVariant } from "../../utils/StatusUtils";
 import {
   ASSIGN_REVIEWER,
   AssignReviewerResponse,
@@ -160,12 +161,14 @@ const StoryCard = ({
         <Flex direction="column" wrap="wrap">
           <Heading size="md">{title}</Heading>
           <Flex direction="row" paddingBottom="10px">
-            <Badge background="orange.50">{`Level ${level}`}</Badge>
-            <Badge background="purple.50">{`${convertLanguageTitleCase(
+            <Badge
+              background={getLevelVariant(level)}
+            >{`Level ${level}`}</Badge>
+            <Badge variant="language">{`${convertLanguageTitleCase(
               language,
             )}`}</Badge>
             {isMyStory && (
-              <Badge background="green.50">
+              <Badge variant="role">
                 {isTranslator ? "Translator" : "Reviewer"}
               </Badge>
             )}
