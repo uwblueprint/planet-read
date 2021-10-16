@@ -122,7 +122,7 @@ const StoryCard = ({
     if (isMyStory) {
       return storyTranslationId ? "view translation" : "edit translation";
     }
-    return storyTranslationId ? "review book" : "translate book";
+    return storyTranslationId ? "review" : "translate";
   };
 
   const primaryBtnOnClick = () => {
@@ -200,6 +200,7 @@ const StoryCard = ({
       {preview && (
         <PreviewModal
           storyId={storyId}
+          storyTranslationId={storyTranslationId}
           title={title}
           youtubeLink={youtubeLink}
           level={level}
