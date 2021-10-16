@@ -1,5 +1,4 @@
-import React from "react";
-
+import React, { useState } from "react";
 import { Icon } from "@chakra-ui/icon";
 import { MdDelete } from "react-icons/md";
 import {
@@ -19,9 +18,29 @@ import convertLanguageTitleCase from "../../utils/LanguageUtils";
 export type UsersTableProps = {
   isTranslators?: boolean;
   users: User[];
+  setUsers: (newState: User[]) => void;
 };
 
-const UsersTable = ({ isTranslators = false, users }: UsersTableProps) => {
+const getFullName = (user: User) => `${user?.firstName} ${user?.lastName}`;
+export const alphabeticalCompare = (u1: User, u2: User) =>
+  getFullName(u1!).localeCompare(getFullName(u2!));
+
+const UsersTable = ({
+  isTranslators = false,
+  users,
+  setUsers,
+}: UsersTableProps) => {
+  const [isAscending, setIsAscending] = useState(true);
+
+  const sortUsers = () => {
+    setIsAscending(!isAscending);
+    const revAlphabeticalCompare = (u1: User, u2: User) =>
+      getFullName(u2!).localeCompare(getFullName(u1!));
+    const newUsers = [...users];
+    newUsers.sort(!isAscending ? alphabeticalCompare : revAlphabeticalCompare);
+    setUsers(newUsers);
+  };
+
   const approvedLanguages = users.map((userObj: User) => {
     const approvedLanguage = isTranslators
       ? userObj?.approvedLanguagesTranslation
@@ -48,10 +67,9 @@ const UsersTable = ({ isTranslators = false, users }: UsersTableProps) => {
       borderBottom={index === users.length - 1 ? "1em solid transparent" : ""}
     >
       <Td>
-        <Link
-          isExternal
-          href={`/user/${userObj?.id}`}
-        >{`${userObj?.firstName} ${userObj?.lastName}`}</Link>
+        <Link isExternal href={`/user/${userObj?.id}`}>
+          {getFullName(userObj)}
+        </Link>
       </Td>
       <Td>
         <Link href={`mailto:${userObj?.email}`}>{userObj?.email}</Link>
@@ -85,7 +103,9 @@ const UsersTable = ({ isTranslators = false, users }: UsersTableProps) => {
           borderTop="1em solid transparent"
           borderBottom="0.5em solid transparent"
         >
-          <Th>NAME</Th>
+          <Th cursor="pointer" onClick={() => sortUsers()}>{`NAME ${
+            isAscending ? "↑" : "↓"
+          }`}</Th>
           <Th>EMAIL</Th>
           <Th>APPROVED LANGUAGES</Th>
           <Th>ACTION</Th>
