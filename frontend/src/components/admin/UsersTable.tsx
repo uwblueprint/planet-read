@@ -65,6 +65,7 @@ const UsersTable = ({
   const tableBody = users.map((userObj: User, index: number) => (
     <Tr
       borderBottom={index === users.length - 1 ? "1em solid transparent" : ""}
+      key={`${userObj?.id}`}
     >
       <Td>
         <Link isExternal href={`/user/${userObj?.id}`}>
@@ -89,8 +90,6 @@ const UsersTable = ({
   return (
     <Table
       borderRadius="12px"
-      borderCollapse="collapse"
-      borderSpacing="0px"
       boxShadow="0px 0px 2px grey"
       margin="auto"
       size="sm"

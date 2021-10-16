@@ -1,3 +1,5 @@
+import convertStringTitleCase from "./Utils";
+
 // Change language string to title case
 function convertLanguageTitleCase(language: string) {
   // Handles 4 edge cases: ENGLISH_US, ENGLISH_UK, ENGLISH_INDIA, ASANTE_TWI
@@ -15,7 +17,7 @@ function convertLanguageTitleCase(language: string) {
       return "Asante Twi";
 
     default:
-      return language[0] + language.substring(1).toLowerCase();
+      return convertStringTitleCase(language);
   }
 }
 

@@ -12,6 +12,7 @@ import NotFound from "./components/pages/NotFound";
 import TranslationPage from "./components/pages/TranslationPage";
 import ReviewPage from "./components/pages/ReviewPage";
 import UserProfilePage from "./components/pages/UserProfilePage";
+import ManageStoryTranslationsPage from "./components/pages/ManageStoryTranslationsPage";
 import customTheme from "./theme/index";
 
 import AUTHENTICATED_USER_KEY from "./constants/AuthConstants";
@@ -54,6 +55,11 @@ const App = () => {
                 exact
                 path="/review/:storyIdParam/:storyTranslationIdParam"
                 component={ReviewPage}
+              />
+              <PrivateRoute
+                exact
+                path="/story/:storyIdParam/:storyTranslationIdParam"
+                component={ManageStoryTranslationsPage}
               />
               <Route exact path="/404" component={NotFound} />
               <Route exact path="*" component={NotFound} />
