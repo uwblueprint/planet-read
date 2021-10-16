@@ -15,6 +15,7 @@ import {
 } from "@chakra-ui/react";
 import { User } from "../../APIClients/queries/UserQueries";
 import convertLanguageTitleCase from "../../utils/LanguageUtils";
+import { getLevelVariant } from "../../utils/StatusUtils";
 
 export type UsersTableProps = {
   isTranslators?: boolean;
@@ -33,9 +34,8 @@ const UsersTable = ({ isTranslators = false, users }: UsersTableProps) => {
 
   const generateBadges = (appvdLanguages: any) =>
     Object.keys(appvdLanguages).map((apprLang: string) => (
-      // TODO: determine badge color by label
       <Badge
-        background="orange.50"
+        background={getLevelVariant(appvdLanguages[apprLang])}
         marginBottom="3px"
         marginTop="3px"
       >{`${convertLanguageTitleCase(apprLang)} | Level ${

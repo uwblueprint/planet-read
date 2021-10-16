@@ -23,6 +23,9 @@ const Badge = {
     stage: {
       backgroundColor: "blue.50",
     },
+    role: {
+      backgroundColor: "blue.50",
+    },
     language: {
       backgroundColor: "gray.200",
     },
