@@ -1,4 +1,5 @@
 from flask import current_app
+from sqlalchemy.orm import aliased
 
 from ...graphql.types.story_type import (
     StageEnum,
@@ -12,6 +13,7 @@ from ...models.story_content import StoryContent
 from ...models.story_translation import StoryTranslation
 from ...models.story_translation_content import StoryTranslationContent
 from ...models.story_translation_content_status import StoryTranslationContentStatus
+from ...models.user import User
 from ..interfaces.story_service import IStoryService
 
 
@@ -152,23 +154,49 @@ class StoryService(IStoryService):
                 .all()
             )
 
-            story_translations = (
-                StoryTranslation.query.join(
-                    Story, Story.id == StoryTranslation.story_id
+            translator = aliased(User)
+            reviewer = aliased(User)
+
+            story_translation_data = (
+                db.session.query(StoryTranslation, translator, reviewer)
+                .join(Story, Story.id == StoryTranslation.story_id)
+                .join(
+                    translator,
+                    StoryTranslation.translator_id == translator.id,
+                    isouter=True,
+                )
+                .join(
+                    reviewer, StoryTranslation.reviewer_id == reviewer.id, isouter=True
                 )
                 .filter(*filters)
                 .order_by(Story.id)
                 .all()
             )
 
-            for i in range(len(story_translations)):
+            story_translations = []
+
+            for i in range(len(story_translation_data)):
+                story_translation, translator, reviewer = story_translation_data[i]
                 story = next(
-                    filter(lambda x: x.id == story_translations[i].story_id, stories)
+                    filter(lambda x: x.id == story_translation.story_id, stories)
                 )
-                story_translations[i] = {
-                    **story.to_dict(),
-                    **story_translations[i].to_dict(include_relationships=True),
-                }
+
+                story_translations.append(
+                    {
+                        **story.to_dict(),
+                        **story_translation.to_dict(include_relationships=True),
+                        "translator_name": (
+                            f"{translator.first_name} {translator.last_name}"
+                            if translator
+                            else None
+                        ),
+                        "reviewer_name": (
+                            f"{reviewer.first_name} {reviewer.last_name}"
+                            if reviewer
+                            else None
+                        ),
+                    }
+                )
             return story_translations
 
         except Exception as error:
