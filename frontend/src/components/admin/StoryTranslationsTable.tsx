@@ -53,7 +53,7 @@ const StoryTranslationsTable = ({
         </Td>
         <Td>
           <IconButton
-            aria-label={`Delete story ${storyTranslationObj?.title}`}
+            aria-label={`Delete story translation ${storyTranslationObj?.id} for story ${storyTranslationObj?.title}`}
             background="transparent"
             icon={<Icon as={MdDelete} />}
             width="fit-content"
@@ -77,7 +77,7 @@ const StoryTranslationsTable = ({
           borderTop="1em solid transparent"
           borderBottom="0.5em solid transparent"
         >
-          <Th>BOOK TITLE</Th>
+          <Th>STORY TITLE</Th>
           <Th>LANGUAGE</Th>
           <Th>LEVEL</Th>
           <Th>PROGRESS</Th>

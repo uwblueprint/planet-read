@@ -1,16 +1,16 @@
 import React from "react";
 import { useParams } from "react-router-dom";
 
-type ManageStoryTranslationsPageProps = {
+type ManageStoryTranslationPageProps = {
   storyIdParam: string | undefined;
   storyTranslationIdParam: string | undefined;
 };
 
-const ManageStoryTranslationsPage = () => {
+const ManageStoryTranslationPage = () => {
   const {
     storyIdParam,
     storyTranslationIdParam,
-  } = useParams<ManageStoryTranslationsPageProps>();
+  } = useParams<ManageStoryTranslationPageProps>();
 
   return (
     <div style={{ textAlign: "center" }}>
@@ -21,4 +21,4 @@ const ManageStoryTranslationsPage = () => {
   );
 };
 
-export default ManageStoryTranslationsPage;
+export default ManageStoryTranslationPage;

@@ -15,8 +15,7 @@ const ManageStoryTranslations = () => {
   useQuery(query.string, {
     fetchPolicy: "cache-and-network",
     onCompleted: (data) => {
-      const newStoryTranslations = [...data[query.fieldName]];
-      setStoryTranslations(newStoryTranslations);
+      setStoryTranslations(data[query.fieldName]);
     },
   });
   return (
