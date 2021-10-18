@@ -124,7 +124,7 @@ class UserService(IUserService):
         if language is not None and language is not "":
             query = query.filter(appr_langs.contains(language))
             if level:
-                query = query.filter(appr_langs[language] >= level)
+                query = query.filter(appr_langs[language] == level)
 
         if name_or_email:
             name_or_email = "%" + name_or_email + "%"

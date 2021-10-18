@@ -27,11 +27,9 @@ export const buildUsersQuery = (
   level?: number,
   nameOrEmail?: string,
 ) => {
-  const queryParams = `
-    ${language ? `language: "${language}", ` : ""} ${
-    level ? `level: ${level}, ` : ""
-  } ${nameOrEmail ? `nameOrEmail: "${nameOrEmail}", ` : ""}
-  `;
+  let queryParams = language ? `language: "${language}", ` : "";
+  queryParams += level ? `level: ${level}, ` : "";
+  queryParams += nameOrEmail ? `nameOrEmail: "${nameOrEmail}", ` : "";
 
   const queryString = gql`
     query Users {
