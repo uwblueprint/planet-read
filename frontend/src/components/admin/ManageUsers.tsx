@@ -9,7 +9,7 @@ export type ManageUsersProps = {
 };
 
 const ManageUsers = ({ isTranslators }: ManageUsersProps) => {
-  const query = buildUsersQuery();
+  const query = buildUsersQuery(isTranslators);
   const [users, setUsers] = useState<User[]>([]);
   useQuery(query.string, {
     fetchPolicy: "cache-and-network",

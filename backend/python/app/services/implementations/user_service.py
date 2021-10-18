@@ -111,9 +111,30 @@ class UserService(IUserService):
             )
             raise e
 
-    def get_users(self):
+    def get_users(self, isTranslators, language=None, level=None, name_or_email=None):
         user_dtos = []
-        user_list = [result for result in User.query.all()]
+        appr_langs = None
+        if isTranslators:
+            appr_langs = User.approved_languages_translation
+        else:
+            appr_langs = User.approved_languages_review
+
+        query = User.query.filter_by(role="User").filter(appr_langs.isnot(None))
+
+        if language is not None and language is not "":
+            query = query.filter(appr_langs.contains(language))
+            if level:
+                query = query.filter(appr_langs[language] == level)
+
+        if name_or_email:
+            name_or_email = "%" + name_or_email + "%"
+            query = query.filter(
+                User.first_name.like(name_or_email)
+                | (User.last_name.like(name_or_email))
+                | (User.email.like(name_or_email))
+            )
+
+        user_list = [result for result in query]
         for user in user_list:
             user_dict = UserService.__user_to_dict_and_remove_auth_id(user)
             try:
