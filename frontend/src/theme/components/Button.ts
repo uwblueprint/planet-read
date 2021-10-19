@@ -78,11 +78,14 @@ const Button = {
       padding: "30px 30px 27px 30px",
       textTransform: "capitalize",
       width: "fit-content",
-    text: {
+    },
+    label: {
       background: "transparent",
-      fontSize: "14px",
-      width: "50px",
+      fontSize: "12px",
+      width: "40px",
       textTransform: "capitalize",
+      padding: "0px",
+      justifyContent: "flex-start",
     },
   },
 };
