@@ -11,6 +11,7 @@ import {
   TRANSLATION_PAGE_TOOL_TIP_COPY,
   REVIEW_PAGE_TOOL_TIP_COPY,
 } from "../../utils/Copy";
+import ExistingComment from "./ExistingComment";
 
 export type CommentPanelProps = {
   storyTranslationId: number;
@@ -61,10 +62,17 @@ const CommentsPanel = ({
         <Box>
           {/* TODO: show correct placement of the WIPComment component once existing comment is displayed */}
           {comments.map((comment: CommentResponse) => (
-            // TODO: replace with actual comment component
-            <Text key={comment.id} variant="comment">
-              {JSON.stringify(comment.content)}
-            </Text>
+            <ExistingComment
+              key={comment.id}
+              id={comment.id}
+              resolved={comment.resolved}
+              content={comment.content}
+              time={comment.time}
+              commentStoryTranslationContentId={
+                commentStoryTranslationContentId
+              }
+              lineIndex={commentLine}
+            />
           ))}
         </Box>
       );

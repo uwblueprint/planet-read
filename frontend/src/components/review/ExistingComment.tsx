@@ -1,6 +1,6 @@
 import React, { useState, useContext } from "react";
 import { useMutation } from "@apollo/client";
-import { Flex, Button } from "@chakra-ui/react";
+import { Text, Flex, Button } from "@chakra-ui/react";
 import AuthContext from "../../contexts/AuthContext";
 import WIPComment from "./WIPComment";
 import {
@@ -14,7 +14,6 @@ export type ExistingCommentProps = {
   content: string;
   time: string;
   commentStoryTranslationContentId: number;
-  setCommentLine: (line: number) => void;
   lineIndex: number;
 };
 
@@ -24,7 +23,6 @@ const ExistingComment = ({
   content,
   time,
   commentStoryTranslationContentId,
-  setCommentLine,
   lineIndex,
 }: ExistingCommentProps) => {
   const handleError = (errorMessage: string) => {
@@ -32,7 +30,7 @@ const ExistingComment = ({
     alert(errorMessage);
   };
 
-  const [reply, setReply] = useState(false);
+  const [reply, setReply] = useState(0);
 
   const { authenticatedUser } = useContext(AuthContext);
   const [updateComment] = useMutation<{
@@ -48,7 +46,7 @@ const ExistingComment = ({
           content,
         };
 
-        await updateComment({
+        const result = await updateComment({
           variables: { commentData },
         });
       }
@@ -71,27 +69,31 @@ const ExistingComment = ({
         borderRadius: 8,
         width: "320px",
       }}
-      backgroundColor="white"
+      backgroundColor="transparent"
     >
-      <b>Line {lineIndex}</b>
-      <Flex justify="space-between">
+      <Text fontWeight="bold" marginBottom="15px">
+        Line {lineIndex}
+      </Text>
+      <Flex justify="space-between" marginBottom="10px">
         <p>{name}</p>
         <p>{time}</p>
       </Flex>
-      {content}
+      <Text fontSize="sm" marginBottom="5px">
+        {content}
+      </Text>
       <Flex>
-        <Button onClick={() => setReply(true)} variant="text">
+        <Button onClick={() => setReply(1)} variant="label">
           Reply
         </Button>
-        <Button onClick={resolveExistingComment} variant="text">
+        <Button onClick={resolveExistingComment} variant="label">
           Resolve
         </Button>
       </Flex>
-      {reply && lineIndex > 0 && (
+      {reply > 0 && lineIndex > -1 && (
         <WIPComment
           commentStoryTranslationContentId={commentStoryTranslationContentId}
           lineIndex={lineIndex}
-          setCommentLine={setCommentLine}
+          setCommentLine={setReply}
         />
       )}
     </Flex>
