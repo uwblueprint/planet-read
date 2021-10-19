@@ -19,6 +19,7 @@ import { MdTrendingFlat } from "react-icons/md";
 
 import convertLanguageTitleCase from "../../utils/LanguageUtils";
 import { getLevelVariant } from "../../utils/StatusUtils";
+import convertStageTitleCase from "../../utils/StageUtils";
 import {
   GET_STORY_CONTENTS,
   GET_STORY_AND_TRANSLATION_CONTENTS,
@@ -51,7 +52,7 @@ const PreviewModal = ({
 }: PreviewModalProps) => {
   const [content, setContent] = useState<string[]>([]);
   const [translationContent, setTranslationContent] = useState<string[]>([]);
-  const [stage, setStage] = useState<String>("");
+  const [stage, setStage] = useState<string>("");
 
   if (storyTranslationId) {
     useQuery(GET_STORY_AND_TRANSLATION_CONTENTS(storyId, storyTranslationId), {
@@ -121,7 +122,7 @@ const PreviewModal = ({
           >{`Level ${level}`}</Badge>
           {storyTranslationId && (
             <Badge variant="stage" size="s">
-              {stage[0] + stage.substr(1).toLowerCase()}
+              {convertStageTitleCase(stage)}
             </Badge>
           )}
           <Button

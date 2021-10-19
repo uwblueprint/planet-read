@@ -13,7 +13,7 @@ import {
 } from "@chakra-ui/react";
 import { StoryTranslation } from "../../APIClients/queries/StoryQueries";
 import convertLanguageTitleCase from "../../utils/LanguageUtils";
-import convertStringTitleCase from "../../utils/Utils";
+import convertStageTitleCase from "../../utils/StageUtils";
 
 export type StoryTranslationsTableProps = {
   storyTranslations: StoryTranslation[];
@@ -40,7 +40,7 @@ const StoryTranslationsTable = ({
         </Td>
         <Td>{convertLanguageTitleCase(storyTranslationObj?.language)}</Td>
         <Td>{`Level ${storyTranslationObj?.level}`}</Td>
-        <Td>{convertStringTitleCase(storyTranslationObj?.stage)}</Td>
+        <Td>{convertStageTitleCase(storyTranslationObj?.stage)}</Td>
         <Td>
           <Link isExternal href={`/user/${storyTranslationObj?.translatorId}`}>
             {storyTranslationObj?.translatorName}
