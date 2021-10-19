@@ -39,7 +39,6 @@ jobs:
             echo "Build images"
             docker-compose build frontend 
             docker-compose build py-backend
-
   lint:
     docker:
       - image: cimg/python:3.9.7
