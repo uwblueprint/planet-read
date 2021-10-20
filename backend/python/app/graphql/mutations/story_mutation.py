@@ -110,8 +110,7 @@ class ApproveAllStoryTranslationContent(graphene.Mutation):
 
     ok = graphene.Boolean()
 
-    # TODO: Need to create new auth for reviewer that takes in story_translation_id
-    # @require_authorization_as_story_user_by_role(as_translator=False)
+    @require_authorization_as_story_user_by_role(as_translator=False)
     def mutate(root, info, story_translation_id):
         try:
             services["story"].approve_all_story_translation_content(

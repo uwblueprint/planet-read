@@ -154,21 +154,45 @@ def require_authorization_as_story_user_by_role(as_translator):
         @wraps(api_func)
         def wrapper(root, info, *args, **kwargs):
             access_token = get_access_token(info.context)
-            # TODO: find generalized way of getting story_translation_content_id.
-            # Currently custom to UpdateStoryTranslationContentStatus and UpdateStoryTranslationContents
-            story_translation_content_id = (
-                kwargs["story_translation_content_id"]
-                if ("story_translation_content_id" in kwargs)
-                else kwargs["story_translation_contents"][0]["id"]
-            )
 
-            authorized = (
-                auth_service.is_translator(access_token, story_translation_content_id)
-                if as_translator
-                else auth_service.is_reviewer(
-                    access_token, story_translation_content_id
+            authorized = False
+            if "story_translation_id" in kwargs:
+                authorized = (
+                    auth_service.is_translator(
+                        access_token,
+                        story_translation_id=kwargs["story_translation_id"],
+                    )
+                    if as_translator
+                    else auth_service.is_reviewer(
+                        access_token,
+                        story_translation_id=kwargs["story_translation_id"],
+                    )
                 )
-            )
+            else:
+                story_translation_content_id = None
+
+                if "story_translation_content_id" in kwargs:
+                    story_translation_content_id = kwargs[
+                        "story_translation_content_id"
+                    ]
+                elif "story_translation_contents" in kwargs:
+                    story_translation_content_id = kwargs["story_translation_contents"][
+                        0
+                    ]["id"]
+
+                if story_translation_content_id:
+                    authorized = (
+                        auth_service.is_translator(
+                            access_token,
+                            story_translation_content_id=story_translation_content_id,
+                        )
+                        if as_translator
+                        else auth_service.is_reviewer(
+                            access_token,
+                            story_translation_content_id=story_translation_content_id,
+                        )
+                    )
+
             if not authorized:
                 if as_translator:
                     raise Exception("You are not a translator.")
