@@ -29,7 +29,7 @@ jobs:
           version: 19.03.13
       - run:
           name: Create env file
-          command: touch .env
+          command: touch .env # empty .env file needed to build containers
       - run:
           name: Build backend and frontend images 
           command: |
