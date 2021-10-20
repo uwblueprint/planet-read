@@ -17,6 +17,8 @@ def init_app(app):
     from .story_translation_content import StoryTranslationContent
     from .user import User
 
+    from .story_translation_view import StoryTranslationView
+
     app.app_context().push()
     db.init_app(app)
     migrate.init_app(app, db)

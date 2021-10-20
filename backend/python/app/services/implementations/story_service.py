@@ -11,6 +11,8 @@ from ...models import db
 from ...models.story import Story
 from ...models.story_content import StoryContent
 from ...models.story_translation import StoryTranslation
+
+from ...models.story_translation_view import StoryTranslationView
 from ...models.story_translation_content import StoryTranslationContent
 from ...models.story_translation_content_status import StoryTranslationContentStatus
 from ...models.user import User
@@ -131,14 +133,22 @@ class StoryService(IStoryService):
     def get_story_translations(
         self, language=None, level=None, stage=None, story_title=None, role_filter=None
     ):
+        # StoryTranslationsActive = db.Table(
+        #     "story_translations_active",
+        #     db.metadata,
+        #     autoload=True,
+        #     autoload_with=db.engine,
+        # )
+        # print(StoryTranslationsActive.columns)
+
         try:
             filters = []
             if role_filter is not None:
                 filters.append(role_filter)
             if language is not None:
-                filters.append(StoryTranslation.language == language)
+                filters.append(StoryTranslationView.language == language)
             if stage is not None:
-                filters.append(StoryTranslation.stage == stage)
+                filters.append(StoryTranslationView.stage == stage)
             if level is not None:
                 filters.append(Story.level == level)
             if story_title is not None:
@@ -146,8 +156,8 @@ class StoryService(IStoryService):
 
             stories = (
                 Story.query.join(
-                    StoryTranslation,
-                    Story.id == StoryTranslation.story_id,
+                    StoryTranslationView,
+                    Story.id == StoryTranslationView.story_id,
                 )
                 .filter(*filters)
                 .order_by(Story.id)
@@ -158,15 +168,17 @@ class StoryService(IStoryService):
             reviewer = aliased(User)
 
             story_translation_data = (
-                db.session.query(StoryTranslation, translator, reviewer)
-                .join(Story, Story.id == StoryTranslation.story_id)
+                db.session.query(StoryTranslationView, translator, reviewer)
+                .join(Story, Story.id == StoryTranslationView.story_id)
                 .join(
                     translator,
-                    StoryTranslation.translator_id == translator.id,
+                    StoryTranslationView.translator_id == translator.id,
                     isouter=True,
                 )
                 .join(
-                    reviewer, StoryTranslation.reviewer_id == reviewer.id, isouter=True
+                    reviewer,
+                    StoryTranslationView.reviewer_id == reviewer.id,
+                    isouter=True,
                 )
                 .filter(*filters)
                 .order_by(Story.id)
@@ -176,6 +188,7 @@ class StoryService(IStoryService):
             story_translations = []
 
             for i in range(len(story_translation_data)):
+                print("AHH", story_translation_data[i])
                 story_translation, translator, reviewer = story_translation_data[i]
                 story = next(
                     filter(lambda x: x.id == story_translation.story_id, stories)
