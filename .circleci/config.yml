@@ -28,9 +28,6 @@ jobs:
       - setup_remote_docker:
           version: 19.03.13
       - run:
-          name: Create env file
-          command: touch .env
-      - run:
           name: Build backend and frontend images 
           command: |
             set -x
