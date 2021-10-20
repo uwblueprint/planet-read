@@ -46,7 +46,7 @@ def test_stories(app, db, client):
             # type mismatch
             assert str(content_db.story_id) == content_dict["storyId"]
             assert content_db.line_index == content_dict["lineIndex"]
-            assert content_db.content == content_dict["content"]
+            assert content_db.content != content_dict["content"]
 
 
 def test_story_by_id(db, client):
