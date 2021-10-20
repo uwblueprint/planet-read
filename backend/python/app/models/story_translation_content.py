@@ -10,7 +10,10 @@ class StoryTranslationContent(db.Model):
     __tablename__ = "story_translation_contents"
     id = db.Column(db.Integer, primary_key=True, nullable=False)
     story_translation_id = db.Column(
-        db.Integer, db.ForeignKey("story_translations.id"), index=True, nullable=False
+        db.Integer,
+        db.ForeignKey("story_translations_all.id"),
+        index=True,
+        nullable=False,
     )
     line_index = db.Column(db.Integer, nullable=False)
     status = db.Column(

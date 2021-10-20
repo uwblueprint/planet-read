@@ -12,7 +12,7 @@ from ...models.story import Story
 from ...models.story_content import StoryContent
 from ...models.story_translation import StoryTranslation
 
-from ...models.story_translation_view import StoryTranslationView
+from ...models.story_translation_all import StoryTranslationAll
 from ...models.story_translation_content import StoryTranslationContent
 from ...models.story_translation_content_status import StoryTranslationContentStatus
 from ...models.user import User
@@ -146,9 +146,9 @@ class StoryService(IStoryService):
             if role_filter is not None:
                 filters.append(role_filter)
             if language is not None:
-                filters.append(StoryTranslationView.language == language)
+                filters.append(StoryTranslation.language == language)
             if stage is not None:
-                filters.append(StoryTranslationView.stage == stage)
+                filters.append(StoryTranslation.stage == stage)
             if level is not None:
                 filters.append(Story.level == level)
             if story_title is not None:
@@ -156,8 +156,8 @@ class StoryService(IStoryService):
 
             stories = (
                 Story.query.join(
-                    StoryTranslationView,
-                    Story.id == StoryTranslationView.story_id,
+                    StoryTranslation,
+                    Story.id == StoryTranslation.story_id,
                 )
                 .filter(*filters)
                 .order_by(Story.id)
@@ -168,16 +168,16 @@ class StoryService(IStoryService):
             reviewer = aliased(User)
 
             story_translation_data = (
-                db.session.query(StoryTranslationView, translator, reviewer)
-                .join(Story, Story.id == StoryTranslationView.story_id)
+                db.session.query(StoryTranslation, translator, reviewer)
+                .join(Story, Story.id == StoryTranslation.story_id)
                 .join(
                     translator,
-                    StoryTranslationView.translator_id == translator.id,
+                    StoryTranslation.translator_id == translator.id,
                     isouter=True,
                 )
                 .join(
                     reviewer,
-                    StoryTranslationView.reviewer_id == reviewer.id,
+                    StoryTranslation.reviewer_id == reviewer.id,
                     isouter=True,
                 )
                 .filter(*filters)
@@ -188,7 +188,6 @@ class StoryService(IStoryService):
             story_translations = []
 
             for i in range(len(story_translation_data)):
-                print("AHH", story_translation_data[i])
                 story_translation, translator, reviewer = story_translation_data[i]
                 story = next(
                     filter(lambda x: x.id == story_translation.story_id, stories)
@@ -354,7 +353,10 @@ class StoryService(IStoryService):
     def update_story_translation_contents(self, story_translation_contents):
         try:
             story_translation = (
-                StoryTranslation.query.join(StoryTranslationContent)
+                StoryTranslation.query.join(
+                    StoryTranslationContent,
+                    StoryTranslation.id == StoryTranslationContent.story_translation_id,
+                )
                 .filter(StoryTranslationContent.id == story_translation_contents[0].id)
                 .first()
             )

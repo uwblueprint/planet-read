@@ -74,7 +74,6 @@ def insert_test_data():
             )
 
     # story translations
-    db.engine.execute("ALTER TABLE story_translations AUTO_INCREMENT = 1;")
     db.engine.execute(
         "INSERT IGNORE INTO story_translations \
             (id, story_id, language, stage, translator_id) \

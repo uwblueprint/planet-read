@@ -1,24 +1,17 @@
-from sqlalchemy import inspect, Boolean
-from sqlalchemy.dialects.mysql import TEXT
-from sqlalchemy.orm.properties import ColumnProperty
-
 from . import db
-from .story_translation_content import StoryTranslationContent
 
-stages_enum = db.Enum("TRANSLATE", "REVIEW", "PUBLISH", name="stages")
+from sqlalchemy import select, inspect
+from sqlalchemy.orm.properties import ColumnProperty
+from sqlalchemy_utils import create_view
+
+from .story_translation_all import StoryTranslationAll
+
+stmt = select([StoryTranslationAll]).where(StoryTranslationAll.is_deleted == False)
+story_translations_active = create_view("story_translations", stmt, db.Model.metadata)
 
 
 class StoryTranslation(db.Model):
-
-    __tablename__ = "story_translations"
-    id = db.Column(db.Integer, primary_key=True, nullable=False)
-    story_id = db.Column(db.Integer, db.ForeignKey("stories.id"), nullable=False)
-    language = db.Column(TEXT, nullable=False)
-    stage = db.Column(stages_enum, nullable=False)
-    translator_id = db.Column(db.Integer, db.ForeignKey("users.id"), index=True)
-    reviewer_id = db.Column(db.Integer, db.ForeignKey("users.id"), index=True)
-    translation_contents = db.relationship(StoryTranslationContent)
-    is_deleted = db.Column(Boolean, default=0, nullable=False)
+    __table__ = story_translations_active
 
     def to_dict(self, include_relationships=False):
         cls = type(self)
