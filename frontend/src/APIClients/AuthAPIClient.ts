@@ -33,7 +33,7 @@ const login = async (
     }
   } catch (e: unknown) {
     // eslint-disable-next-line no-alert
-    window.alert("Failed to login");
+    return null;
   }
   return user;
 };

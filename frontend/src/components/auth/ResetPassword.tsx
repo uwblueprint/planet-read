@@ -1,5 +1,6 @@
 import React from "react";
 import { useMutation } from "@apollo/client";
+import { Text } from "@chakra-ui/react";
 import {
   RESET_PASSWORD,
   ResetPasswordResponse,
@@ -50,13 +51,9 @@ const ResetPassword = ({ email }: ResetPasswordProps) => {
   };
 
   return (
-    <button
-      type="button"
-      className="btn btn-primary"
-      onClick={onResetPasswordClick}
-    >
-      Reset Password
-    </button>
+    <Text mt="15px" as="u" variant="link" onClick={onResetPasswordClick}>
+      Forgot password?
+    </Text>
   );
 };
 
