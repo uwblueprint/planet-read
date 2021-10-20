@@ -514,6 +514,15 @@ class StoryService(IStoryService):
             )
             raise error
 
+    def soft_delete_story_translation(self, id):
+        try:
+            story_translation = StoryTranslation.query.get(id)
+            story_translation.is_deleted = True
+            db.session.commit()
+        except Exception as error:
+            self.logger.error(error)
+            raise error
+
     def _get_num_translated_lines(self, translation_contents):
         return len(translation_contents) - [
             _["translation_content"].strip() for _ in translation_contents

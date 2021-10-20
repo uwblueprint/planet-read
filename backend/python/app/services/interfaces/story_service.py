@@ -138,3 +138,10 @@ class IStoryService(ABC):
         :param story_translation_id: id of story translation
         """
         pass
+
+    @abstractmethod
+    def soft_delete_story_translation(self, id):
+        """
+        Soft delete a story translation by setting is_deleted=True
+        :param id: id of story translaiton
+        """

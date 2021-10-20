@@ -18,6 +18,7 @@ from .mutations.story_mutation import (
     UpdateStoryTranslationContents,
     UpdateStoryTranslationContentStatus,
     UpdateStoryTranslationStage,
+    SoftDeleteStoryTranslation,
 )
 from .mutations.user_mutation import CreateUser, UpdateUser
 from .queries.comment_query import resolve_comments_by_story_translation
@@ -60,6 +61,7 @@ class Mutation(graphene.ObjectType):
     )
     approve_all_story_translation_content = ApproveAllStoryTranslationContent.Field()
     update_story_translation_stage = UpdateStoryTranslationStage.Field()
+    soft_delete_story_translation = SoftDeleteStoryTranslation.Field()
 
 
 class Query(graphene.ObjectType):

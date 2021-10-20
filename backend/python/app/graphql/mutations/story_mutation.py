@@ -1,7 +1,9 @@
 import graphene
 
-from ...middlewares.auth import require_authorization_as_story_user_by_role
-from ...models.story_translation_content_status import StoryTranslationContentStatus
+from ...middlewares.auth import (
+    require_authorization_as_story_user_by_role,
+    require_authorization_by_role_gql,
+)
 from ..service import services
 from ..types.story_type import (
     CreateStoryTranslationRequestDTO,
@@ -134,6 +136,22 @@ class UpdateStoryTranslationStage(graphene.Mutation):
         try:
             services["story"].update_story_translation_stage(story_translation_data)
             return UpdateStoryTranslationStage(ok=True)
+        except Exception as e:
+            error_message = getattr(e, "message", None)
+            raise Exception(error_message if error_message else str(e))
+
+
+class SoftDeleteStoryTranslation(graphene.Mutation):
+    class Arguments:
+        id = graphene.Int(required=True)
+
+    ok = graphene.Boolean()
+
+    @require_authorization_by_role_gql({"Admin"})
+    def mutate(root, info, id):
+        try:
+            services["story"].soft_delete_story_translation(id)
+            return SoftDeleteStoryTranslation(ok=True)
         except Exception as e:
             error_message = getattr(e, "message", None)
             raise Exception(error_message if error_message else str(e))
