@@ -2,6 +2,8 @@ import React from "react";
 import { Icon } from "@chakra-ui/icon";
 import { MdDelete } from "react-icons/md";
 import {
+  Badge,
+  IconButton,
   Link,
   Table,
   Thead,
@@ -9,11 +11,11 @@ import {
   Tr,
   Th,
   Td,
-  IconButton,
 } from "@chakra-ui/react";
 import { StoryTranslation } from "../../APIClients/queries/StoryQueries";
 import convertLanguageTitleCase from "../../utils/LanguageUtils";
-import convertStringTitleCase from "../../utils/Utils";
+import convertStageTitleCase from "../../utils/StageUtils";
+import { getLevelVariant } from "../../utils/StatusUtils";
 
 export type StoryTranslationsTableProps = {
   storyTranslations: StoryTranslation[];
@@ -38,9 +40,18 @@ const StoryTranslationsTable = ({
             {storyTranslationObj?.title}
           </Link>
         </Td>
-        <Td>{convertLanguageTitleCase(storyTranslationObj?.language)}</Td>
-        <Td>{`Level ${storyTranslationObj?.level}`}</Td>
-        <Td>{convertStringTitleCase(storyTranslationObj?.stage)}</Td>
+        <Td>
+          <Badge
+            background={getLevelVariant(storyTranslationObj?.level)}
+            marginBottom="3px"
+            marginTop="3px"
+          >
+            {`${convertLanguageTitleCase(
+              storyTranslationObj?.language,
+            )} | Level ${storyTranslationObj?.level}`}
+          </Badge>
+        </Td>
+        <Td>{convertStageTitleCase(storyTranslationObj?.stage)}</Td>
         <Td>
           <Link isExternal href={`/user/${storyTranslationObj?.translatorId}`}>
             {storyTranslationObj?.translatorName}
@@ -78,8 +89,7 @@ const StoryTranslationsTable = ({
           borderBottom="0.5em solid transparent"
         >
           <Th>STORY TITLE</Th>
-          <Th>LANGUAGE</Th>
-          <Th>LEVEL</Th>
+          <Th>LANGUAGE & LEVEL</Th>
           <Th>PROGRESS</Th>
           <Th>TRANSLATOR</Th>
           <Th>REVIEWER</Th>
