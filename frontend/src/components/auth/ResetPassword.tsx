@@ -51,7 +51,7 @@ const ResetPassword = ({ email }: ResetPasswordProps) => {
   };
 
   return (
-    <Text mt="15px" as="u" variant="link" onClick={onResetPasswordClick}>
+    <Text marginTop="15px" as="u" variant="link" onClick={onResetPasswordClick}>
       Forgot password?
     </Text>
   );
