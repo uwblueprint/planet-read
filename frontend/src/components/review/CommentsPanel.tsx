@@ -56,6 +56,14 @@ const CommentsPanel = ({
     setFilterIndex(event.target.selectedIndex);
   };
 
+  const updateCommentsAsResolved = (index: number) => {
+    const newComments = [...comments];
+    const updatedComment = { ...newComments[index - 1] };
+    updatedComment.resolved = true;
+    newComments[index - 1] = updatedComment;
+    setComments(newComments);
+  };
+
   const CommentsList = () => {
     if (comments.length > 0) {
       return (
@@ -72,6 +80,7 @@ const CommentsPanel = ({
                 commentStoryTranslationContentId
               }
               lineIndex={commentLine}
+              updateCommentsAsResolved={updateCommentsAsResolved}
             />
           ))}
         </Box>

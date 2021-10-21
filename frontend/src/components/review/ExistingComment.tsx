@@ -15,6 +15,7 @@ export type ExistingCommentProps = {
   time: string;
   commentStoryTranslationContentId: number;
   lineIndex: number;
+  updateCommentsAsResolved: (index: number) => void;
 };
 
 const ExistingComment = ({
@@ -24,6 +25,7 @@ const ExistingComment = ({
   time,
   commentStoryTranslationContentId,
   lineIndex,
+  updateCommentsAsResolved,
 }: ExistingCommentProps) => {
   const handleError = (errorMessage: string) => {
     // eslint-disable-next-line no-alert
@@ -49,6 +51,9 @@ const ExistingComment = ({
         const result = await updateComment({
           variables: { commentData },
         });
+        if (result.data?.updateCommentById.ok) {
+          updateCommentsAsResolved(id);
+        }
       }
     } catch (err) {
       handleError(err ?? "Error occurred, please try again.");
