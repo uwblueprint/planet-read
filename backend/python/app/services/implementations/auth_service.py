@@ -69,7 +69,7 @@ class AuthService(IAuthService):
                 CreateUserWithGoogleDTO(
                     first_name=google_user["firstName"],
                     last_name=google_user["lastName"],
-                    role="User",
+                    role_id="User",
                     email=google_user["email"],
                     auth_id=auth_id,
                     onFirebase=onFirebase,
@@ -173,37 +173,69 @@ class AuthService(IAuthService):
         except:
             return False
 
-    def is_translator(self, access_token, story_translation_content_id):
+    def is_translator(
+        self, access_token, story_translation_id=None, story_translation_content_id=None
+    ):
         return self._is_story_role(
-            access_token, story_translation_content_id, is_role_translator=True
+            access_token,
+            is_role_translator=True,
+            story_translation_id=story_translation_id,
+            story_translation_content_id=story_translation_content_id,
         )
 
-    def is_reviewer(self, access_token, story_translation_content_id):
+    def is_reviewer(
+        self, access_token, story_translation_id=None, story_translation_content_id=None
+    ):
         return self._is_story_role(
-            access_token, story_translation_content_id, is_role_translator=False
+            access_token,
+            is_role_translator=False,
+            story_translation_id=story_translation_id,
+            story_translation_content_id=story_translation_content_id,
         )
 
     def _is_story_role(
-        self, access_token, story_translation_content_id, is_role_translator
+        self,
+        access_token,
+        is_role_translator,
+        story_translation_id,
+        story_translation_content_id,
     ):
         try:
             decoded_id_token = firebase_admin.auth.verify_id_token(
                 access_token, check_revoked=True
             )
             user_id = self.user_service.get_user_id_by_auth_id(decoded_id_token["uid"])
+
             query_base = (
                 db.session.query(StoryTranslation.translator_id)
                 if is_role_translator
                 else db.session.query(StoryTranslation.reviewer_id)
             )
-            role_id = (
-                query_base.join(
-                    StoryTranslationContent,
-                    StoryTranslationContent.story_translation_id == StoryTranslation.id,
-                )
-                .filter(StoryTranslationContent.id == story_translation_content_id)
-                .first()
-            )[0]
+
+            role_id = None
+
+            if story_translation_id:
+                role_id = (
+                    query_base.filter(
+                        StoryTranslation.id == story_translation_id
+                    ).first()
+                )[0]
+            elif story_translation_content_id:
+                role_id = (
+                    query_base.join(
+                        StoryTranslationContent,
+                        StoryTranslationContent.story_translation_id
+                        == StoryTranslation.id,
+                    )
+                    .filter(StoryTranslationContent.id == story_translation_content_id)
+                    .first()
+                )[0]
+            else:
+                error_message = """
+                Neither story_translation_id nor story_translation_content_id were passed in 
+                """
+                self.logger.error(error_message)
+                raise Exception(error_message)
 
             return int(user_id) == role_id
         except:
