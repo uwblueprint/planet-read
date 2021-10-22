@@ -49,7 +49,7 @@ const LoginForm = ({
   };
 
   // TODO: Display terms and conditions.
-  const onTermsClick = async () => {
+  const onTermsClick = () => {
     console.log("Display terms and conditions.");
   };
 
@@ -131,7 +131,12 @@ const LoginForm = ({
           >
             I agree to
           </Checkbox>
-          <Text marginLeft="5px" as="u" variant="link" onClick={onTermsClick}>
+          <Text
+            marginLeft="5px"
+            textDecoration="underline"
+            variant="link"
+            onClick={onTermsClick}
+          >
             terms and conditions
           </Text>
         </Flex>

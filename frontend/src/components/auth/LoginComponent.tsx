@@ -57,7 +57,7 @@ const LoginComponent = ({
   return (
     <Flex>
       <LoginImage />
-      <Flex margin="140px 0 0 120px" direction="column">
+      <Flex marginTop="140px" marginLeft="120px" direction="column">
         <Flex>
           <Heading as="h3" size="lg">
             {isSignup ? "Sign up to" : "Sign in to"}
@@ -125,7 +125,7 @@ const LoginComponent = ({
           </Text>
           <Text
             marginLeft="5px"
-            as="u"
+            textDecoration="underline"
             variant="link"
             onClick={isSignup ? onLogInClick : onSignUpClick}
           >
