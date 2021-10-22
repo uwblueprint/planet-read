@@ -29,6 +29,15 @@ const Badge = {
     language: {
       backgroundColor: "gray.200",
     },
+    filter: {
+      backgroundColor: "none",
+      borderRadius: "8px",
+      border: "1px solid",
+      borderColor: "gray.200",
+      color: "blue.100",
+      marginLeft: "0",
+      marginRight: "10px",
+    },
   },
   sizes: {
     s: {

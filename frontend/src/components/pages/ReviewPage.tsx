@@ -11,7 +11,7 @@ import { convertStatusTitleCase } from "../../utils/StatusUtils";
 import { GET_STORY_AND_TRANSLATION_CONTENTS } from "../../APIClients/queries/StoryQueries";
 import CommentsPanel from "../review/CommentsPanel";
 import FontSizeSlider from "../translation/FontSizeSlider";
-import convertLanguageTitleCase from "../../utils/LanguageUtils";
+import { convertLanguageTitleCase } from "../../utils/LanguageUtils";
 import Header from "../navigation/Header";
 import ConfirmationModal from "../translation/ConfirmationModal";
 import {

@@ -29,3 +29,6 @@ export const REVIEW_PAGE_RETURN_TO_TRANSLATOR_CONFIRMATION =
 
 export const REVIEW_PAGE_SUBMIT_TRANSLATION_CONFIRMATION =
   "By clicking this button, your review session will end and the story translation will be officially submitted to PlanetRead.";
+
+export const USER_TABLE_FILTER_TOOL_TIP_COPY =
+  "This category already has a filter applied.";

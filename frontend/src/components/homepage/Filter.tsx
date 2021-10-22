@@ -9,7 +9,7 @@ import {
 } from "@chakra-ui/react";
 
 import ButtonRadioGroup from "../utils/ButtonRadioGroup";
-import convertLanguageTitleCase from "../../utils/LanguageUtils";
+import { convertLanguageTitleCase } from "../../utils/LanguageUtils";
 
 export type FilterProps = {
   approvedLanguagesTranslation: { [name: string]: number };

@@ -1,16 +1,27 @@
 import React, { useState } from "react";
 import { useQuery } from "@apollo/client";
-import { Heading } from "@chakra-ui/react";
+import { Flex, Heading } from "@chakra-ui/react";
 import UsersTable, { alphabeticalCompare } from "./UsersTable";
 import { buildUsersQuery, User } from "../../APIClients/queries/UserQueries";
+import UsersTableFilter from "./UsersTableFilter";
+import { convertLanguageUpperCase } from "../../utils/LanguageUtils";
 
 export type ManageUsersProps = {
   isTranslators: boolean;
 };
 
 const ManageUsers = ({ isTranslators }: ManageUsersProps) => {
-  const query = buildUsersQuery(isTranslators);
   const [users, setUsers] = useState<User[]>([]);
+  const [language, setLanguage] = useState<string | null>(null);
+  const [level, setLevel] = useState<string | null>(null);
+  const [searchText, setSearchText] = useState<string | null>(null);
+  const query = buildUsersQuery(
+    isTranslators,
+    convertLanguageUpperCase(language || ""),
+    parseInt(level || "", 10) || 0,
+    searchText || "",
+  );
+
   useQuery(query.string, {
     fetchPolicy: "cache-and-network",
     onCompleted: (data) => {
@@ -21,10 +32,19 @@ const ManageUsers = ({ isTranslators }: ManageUsersProps) => {
   });
   return (
     <div style={{ textAlign: "center" }}>
-      <Heading float="left" margin="20px 30px" size="lg">
-        {`Manage ${isTranslators ? "Translators" : "Reviewers"}`}
-      </Heading>
-      {/* TODO: add filter component */}
+      <Flex>
+        <Heading float="left" margin="20px 30px" size="lg">
+          {`Manage ${isTranslators ? "Translators" : "Reviewers"}`}
+        </Heading>
+      </Flex>
+      <UsersTableFilter
+        language={language}
+        setLanguage={setLanguage}
+        level={level}
+        setLevel={setLevel}
+        searchText={searchText}
+        setSearchText={setSearchText}
+      />
       <UsersTable
         isTranslators={isTranslators}
         users={users}

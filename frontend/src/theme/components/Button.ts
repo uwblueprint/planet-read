@@ -22,12 +22,23 @@ const Button = {
       height: "36px",
       fontSize: "20px",
     },
+    clear: {
+      width: "16px",
+      height: "16px",
+      borderRadius: "50%",
+    },
   },
   variants: {
     outline: {
       background: "white",
       borderColor: "gray.50",
       color: "blue.100",
+    },
+    clear: {
+      marginLeft: "10px",
+      padding: "10px",
+      background: "gray.100",
+      color: "gray.700",
     },
     ghost: {
       background: "transparent",
