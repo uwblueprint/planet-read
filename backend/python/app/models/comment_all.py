@@ -1,23 +1,28 @@
 from sqlalchemy import Boolean, inspect
-from sqlalchemy.dialects.mysql import TEXT
+from sqlalchemy.dialects.mysql import DATETIME, LONGTEXT
 from sqlalchemy.orm.properties import ColumnProperty
 
 from . import db
 from .story_translation_content_all import StoryTranslationContentAll
 
-stages_enum = db.Enum("TRANSLATE", "REVIEW", "PUBLISH", name="stages")
 
+class CommentAll(db.Model):
 
-class StoryTranslationAll(db.Model):
+    __tablename__ = "comments_all"
 
-    __tablename__ = "story_translations_all"
     id = db.Column(db.Integer, primary_key=True, nullable=False)
-    story_id = db.Column(db.Integer, db.ForeignKey("stories.id"), nullable=False)
-    language = db.Column(TEXT, nullable=False)
-    stage = db.Column(stages_enum, nullable=False)
-    translator_id = db.Column(db.Integer, db.ForeignKey("users.id"), index=True)
-    reviewer_id = db.Column(db.Integer, db.ForeignKey("users.id"), index=True)
-    translation_contents = db.relationship(StoryTranslationContentAll)
+    story_translation_content_id = db.Column(
+        db.Integer,
+        db.ForeignKey("story_translation_contents_all.id"),
+        index=True,
+        nullable=False,
+    )
+    story_translation_content = db.relationship(StoryTranslationContentAll)
+    user_id = db.Column(db.Integer, db.ForeignKey("users.id"), nullable=False)
+    comment_index = db.Column(db.Integer, nullable=False)
+    time = db.Column(DATETIME, nullable=False)
+    resolved = db.Column(db.Boolean, nullable=False)
+    content = db.Column(LONGTEXT, nullable=False)
     is_deleted = db.Column(Boolean, default=0, nullable=False)
 
     def to_dict(self, include_relationships=False):

@@ -12,6 +12,7 @@ from ...models.story import Story
 from ...models.story_content import StoryContent
 from ...models.story_translation import StoryTranslation
 
+from ...models.comment import Comment
 from ...models.story_translation_all import StoryTranslationAll
 from ...models.story_translation_content import StoryTranslationContent
 from ...models.story_translation_content_status import StoryTranslationContentStatus
@@ -133,14 +134,6 @@ class StoryService(IStoryService):
     def get_story_translations(
         self, language=None, level=None, stage=None, story_title=None, role_filter=None
     ):
-        # StoryTranslationsActive = db.Table(
-        #     "story_translations_active",
-        #     db.metadata,
-        #     autoload=True,
-        #     autoload_with=db.engine,
-        # )
-        # print(StoryTranslationsActive.columns)
-
         try:
             filters = []
             if role_filter is not None:
@@ -492,8 +485,8 @@ class StoryService(IStoryService):
 
     def approve_all_story_translation_content(self, story_translation_id):
         try:
-            story_translation = StoryTranslation.query.filter_by(
-                id=story_translation_id
+            story_translation = StoryTranslationAll.query.filter_by(
+                id=story_translation_id, is_deleted=False
             ).first()
 
             if story_translation.stage == "REVIEW":
@@ -516,8 +509,16 @@ class StoryService(IStoryService):
 
     def soft_delete_story_translation(self, id):
         try:
-            story_translation = StoryTranslation.query.get(id)
+            story_translation = StoryTranslationAll.query.get(id)
+            for translation_content in story_translation.translation_contents:
+                comments = Comment.query.filter(
+                    Comment.story_translation_content_id == translation_content.id
+                )
+                for comment in comments:
+                    comment.is_deleted = True
+                translation_content.is_deleted = True
             story_translation.is_deleted = True
+
             db.session.commit()
         except Exception as error:
             self.logger.error(error)

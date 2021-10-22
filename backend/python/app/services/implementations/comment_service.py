@@ -11,6 +11,8 @@ from ...models.story_translation_content import StoryTranslationContent
 from ...models.story_translation_content_status import StoryTranslationContentStatus
 from ..interfaces.comment_service import ICommentService
 
+from ...models.comment_all import CommentAll
+
 
 class CommentService(ICommentService):
     def __init__(self, logger=current_app.logger):
@@ -18,10 +20,12 @@ class CommentService(ICommentService):
 
     def create_comment(self, comment):
         try:
+            print(vars(CommentAll))
             # TODO: remove cast to int once get_user_id_from_request is updated
             user_id = int(get_user_id_from_request())
-            new_comment = Comment(**comment)
+            new_comment = CommentAll(**comment)
             new_comment.user_id = user_id
+            new_comment.is_deleted = False
 
             story_translation = (
                 StoryTranslation.query.join(
@@ -104,7 +108,9 @@ class CommentService(ICommentService):
                 else Comment.query.filter_by(resolved=resolved)
             )
             comments = (
-                comment_query_base.join(Comment.story_translation_content, aliased=True)
+                comment_query_base.join(
+                    CommentAll.story_translation_content, aliased=True
+                )
                 .filter_by(story_translation_id=story_translation_id)
                 .all()
             )

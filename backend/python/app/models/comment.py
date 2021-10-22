@@ -1,28 +1,17 @@
-from sqlalchemy import inspect
-from sqlalchemy.dialects.mysql import DATETIME, LONGTEXT
-from sqlalchemy.orm.properties import ColumnProperty
-
 from . import db
-from .story_translation_content import StoryTranslationContent
+
+from sqlalchemy import select, inspect
+from sqlalchemy.orm.properties import ColumnProperty
+from sqlalchemy_utils import create_view
+
+from .comment_all import CommentAll
+
+stmt = select([CommentAll]).where(CommentAll.is_deleted == False)
+comments_active = create_view("comments", stmt, db.Model.metadata)
 
 
 class Comment(db.Model):
-
-    __tablename__ = "comments"
-
-    id = db.Column(db.Integer, primary_key=True, nullable=False)
-    story_translation_content_id = db.Column(
-        db.Integer,
-        db.ForeignKey("story_translation_contents.id"),
-        index=True,
-        nullable=False,
-    )
-    story_translation_content = db.relationship(StoryTranslationContent)
-    user_id = db.Column(db.Integer, db.ForeignKey("users.id"), nullable=False)
-    comment_index = db.Column(db.Integer, nullable=False)
-    time = db.Column(DATETIME, nullable=False)
-    resolved = db.Column(db.Boolean, nullable=False)
-    content = db.Column(LONGTEXT, nullable=False)
+    __table__ = comments_active
 
     def to_dict(self, include_relationships=False):
         cls = type(self)

@@ -7,12 +7,12 @@ from app import create_app
 
 db = SQLAlchemy()
 
+from app.models.user import User
 from app.models.comment import Comment
 from app.models.story import Story
 from app.models.story_content import StoryContent
 from app.models.story_translation import StoryTranslation
 from app.models.story_translation_content import StoryTranslationContent
-from app.models.user import User
 
 
 def insert_test_data():
@@ -94,7 +94,6 @@ def insert_test_data():
     )
 
     # story translation contents
-    db.engine.execute("ALTER TABLE story_translation_contents AUTO_INCREMENT = 1;")
     full_translation = [2, 3, 5, 7, 11, 13]
     story_count = 0
     for story_translation_id in full_translation:
@@ -126,7 +125,6 @@ def insert_test_data():
     # Adding comments to The Great Gatsby (id: 6)
     # Story Translation (id: 13) with
     # Carl (id: 1) and Dwight (id: 4)"
-    db.engine.execute("ALTER TABLE comments AUTO_INCREMENT = 1;")
     carl = User.query.filter_by(first_name="Carl").first()
     dwight = User.query.filter_by(first_name="Dwight").first()
     the_gg = Story.query.filter_by(title="The Great Gatsby").first()
