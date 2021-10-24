@@ -31,15 +31,15 @@ const Login = () => {
     if (isSignup) {
       setIsSignup(false);
     } else {
-      const user: AuthenticatedUser = await authAPIClient.login(
-        email,
-        password,
-        login,
-      );
-      if (user == null) {
-        setInvalidLogin(true);
-      } else {
+      try {
+        const user: AuthenticatedUser = await authAPIClient.login(
+          email,
+          password,
+          login,
+        );
         setAuthenticatedUser(user);
+      } catch (error) {
+        setInvalidLogin(true);
       }
     }
   };
@@ -52,10 +52,15 @@ const Login = () => {
     setAuthenticatedUser(user);
   };
 
+  const validateEmail = (emailToValidate: string) => {
+    const regex = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+    return regex.test(emailToValidate.toLowerCase());
+  };
+
   const onSignUpClick = async () => {
     setInvalidLogin(false);
     if (isSignup) {
-      if (agreeToTerms) {
+      if (agreeToTerms && validateEmail(email)) {
         const user: AuthenticatedUser = await authAPIClient.signup(
           firstName,
           lastName,
@@ -64,8 +69,10 @@ const Login = () => {
           signup,
         );
         setAuthenticatedUser(user);
-      } else {
+      } else if (!agreeToTerms) {
         alert("Please agree to the terms and conditions in order to sign up.");
+      } else {
+        alert("Please enter a valid email.");
       }
     } else {
       setIsSignup(true);
