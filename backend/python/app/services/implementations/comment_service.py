@@ -6,12 +6,11 @@ from sqlalchemy import func
 from ...middlewares.auth import get_user_id_from_request
 from ...models import db
 from ...models.comment import Comment
+from ...models.comment_all import CommentAll
 from ...models.story_translation import StoryTranslation
 from ...models.story_translation_content import StoryTranslationContent
 from ...models.story_translation_content_status import StoryTranslationContentStatus
 from ..interfaces.comment_service import ICommentService
-
-from ...models.comment_all import CommentAll
 
 
 class CommentService(ICommentService):
@@ -20,12 +19,10 @@ class CommentService(ICommentService):
 
     def create_comment(self, comment):
         try:
-            print(vars(CommentAll))
             # TODO: remove cast to int once get_user_id_from_request is updated
             user_id = int(get_user_id_from_request())
             new_comment = CommentAll(**comment)
             new_comment.user_id = user_id
-            new_comment.is_deleted = False
 
             story_translation = (
                 StoryTranslation.query.join(
@@ -102,16 +99,16 @@ class CommentService(ICommentService):
 
     def get_comments_by_story_translation(self, story_translation_id, resolved=None):
         try:
-            comment_query_base = (
-                Comment.query
-                if resolved is None
-                else Comment.query.filter_by(resolved=resolved)
-            )
             comments = (
-                comment_query_base.join(
-                    CommentAll.story_translation_content, aliased=True
+                Comment.query.join(
+                    StoryTranslationContent,
+                    Comment.story_translation_content_id == StoryTranslationContent.id,
                 )
-                .filter_by(story_translation_id=story_translation_id)
+                .filter(
+                    StoryTranslationContent.story_translation_id
+                    == story_translation_id,
+                    Comment.resolved == resolved if resolved is not None else True,
+                )
                 .all()
             )
         except Exception as error:

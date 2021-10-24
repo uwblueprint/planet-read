@@ -22,7 +22,7 @@ class StoryTranslationContentAll(db.Model):
         nullable=False,
     )
     translation_content = db.Column(LONGTEXT, nullable=False)
-    is_deleted = db.Column(Boolean, default=0, nullable=False)
+    is_deleted = db.Column(Boolean, default=False, nullable=False)
 
     def to_dict(self, include_relationships=False):
         cls = type(self)

@@ -18,7 +18,7 @@ class StoryTranslationAll(db.Model):
     translator_id = db.Column(db.Integer, db.ForeignKey("users.id"), index=True)
     reviewer_id = db.Column(db.Integer, db.ForeignKey("users.id"), index=True)
     translation_contents = db.relationship(StoryTranslationContentAll)
-    is_deleted = db.Column(Boolean, default=0, nullable=False)
+    is_deleted = db.Column(Boolean, default=False, nullable=False)
 
     def to_dict(self, include_relationships=False):
         cls = type(self)

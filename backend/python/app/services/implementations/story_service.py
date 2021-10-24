@@ -8,11 +8,10 @@ from ...graphql.types.story_type import (
 )
 from ...middlewares.auth import get_user_id_from_request
 from ...models import db
+from ...models.comment import Comment
 from ...models.story import Story
 from ...models.story_content import StoryContent
 from ...models.story_translation import StoryTranslation
-
-from ...models.comment import Comment
 from ...models.story_translation_all import StoryTranslationAll
 from ...models.story_translation_content import StoryTranslationContent
 from ...models.story_translation_content_status import StoryTranslationContentStatus

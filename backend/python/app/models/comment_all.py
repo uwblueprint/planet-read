@@ -23,7 +23,7 @@ class CommentAll(db.Model):
     time = db.Column(DATETIME, nullable=False)
     resolved = db.Column(db.Boolean, nullable=False)
     content = db.Column(LONGTEXT, nullable=False)
-    is_deleted = db.Column(Boolean, default=0, nullable=False)
+    is_deleted = db.Column(Boolean, default=False, nullable=False)
 
     def to_dict(self, include_relationships=False):
         cls = type(self)

@@ -15,10 +15,10 @@ from .mutations.story_mutation import (
     AssignUserAsReviewer,
     CreateStory,
     CreateStoryTranslation,
+    SoftDeleteStoryTranslation,
     UpdateStoryTranslationContents,
     UpdateStoryTranslationContentStatus,
     UpdateStoryTranslationStage,
-    SoftDeleteStoryTranslation,
 )
 from .mutations.user_mutation import CreateUser, UpdateUser
 from .queries.comment_query import resolve_comments_by_story_translation

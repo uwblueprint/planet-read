@@ -7,12 +7,14 @@ from app import create_app
 
 db = SQLAlchemy()
 
-from app.models.user import User
-from app.models.comment import Comment
+from app.models.comment_all import CommentAll
 from app.models.story import Story
 from app.models.story_content import StoryContent
 from app.models.story_translation import StoryTranslation
+from app.models.story_translation_all import StoryTranslationAll
 from app.models.story_translation_content import StoryTranslationContent
+from app.models.story_translation_content_all import StoryTranslationContentAll
+from app.models.user import User
 
 
 def insert_test_data():
@@ -74,6 +76,7 @@ def insert_test_data():
             )
 
     # story translations
+    db.engine.execute("ALTER TABLE story_translations_all AUTO_INCREMENT = 1;")
     db.engine.execute(
         "INSERT IGNORE INTO story_translations \
             (id, story_id, language, stage, translator_id) \
@@ -94,6 +97,7 @@ def insert_test_data():
     )
 
     # story translation contents
+    db.engine.execute("ALTER TABLE story_translation_contents_all AUTO_INCREMENT = 1;")
     full_translation = [2, 3, 5, 7, 11, 13]
     story_count = 0
     for story_translation_id in full_translation:
@@ -146,6 +150,7 @@ def insert_test_data():
         synchronize_session="fetch",
     )
     db.session.commit()
+    db.engine.execute("ALTER TABLE comments_all AUTO_INCREMENT = 1;")
     db.engine.execute(
         "INSERT IGNORE INTO comments \
             (id, story_translation_content_id, user_id, comment_index, time, resolved, content) \
@@ -161,13 +166,13 @@ def insert_test_data():
 
 
 def erase_db():
-    db.session.query(Comment).delete()
+    db.session.query(CommentAll).delete()
     db.session.commit()
-    db.session.query(StoryTranslationContent).delete()
+    db.session.query(StoryTranslationContentAll).delete()
     db.session.commit()
     db.session.query(StoryContent).delete()
     db.session.commit()
-    db.session.query(StoryTranslation).delete()
+    db.session.query(StoryTranslationAll).delete()
     db.session.commit()
     db.session.query(User).delete()
     db.session.commit()

@@ -1,9 +1,8 @@
-from . import db
-
-from sqlalchemy import select, inspect
+from sqlalchemy import inspect, select
 from sqlalchemy.orm.properties import ColumnProperty
 from sqlalchemy_utils import create_view
 
+from . import db
 from .story_translation_content_all import StoryTranslationContentAll
 
 stmt = select([StoryTranslationContentAll]).where(
@@ -15,6 +14,10 @@ story_translation_contents_active = create_view(
 
 
 class StoryTranslationContent(db.Model):
+    def __init__(self, **kwargs):
+        super(StoryTranslationContent, self).__init__(**kwargs)
+        self.is_deleted = False
+
     __table__ = story_translation_contents_active
 
     def to_dict(self, include_relationships=False):
