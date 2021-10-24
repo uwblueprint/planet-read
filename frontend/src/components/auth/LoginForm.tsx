@@ -82,7 +82,9 @@ const LoginForm = ({
         </Flex>
       )}
       <FormControl isRequired={isSignup} marginTop="30px">
-        <FormLabel htmlFor="email">Email Address</FormLabel>
+        <FormLabel htmlFor="email" color={invalidLogin ? "red" : "black"}>
+          Email Address
+        </FormLabel>
         <Input
           id="email"
           size="md"
@@ -94,7 +96,7 @@ const LoginForm = ({
         />
       </FormControl>
       <FormControl isRequired={isSignup} marginTop="30px">
-        <FormLabel htmlFor="password">
+        <FormLabel htmlFor="password" color={invalidLogin ? "red" : "black"}>
           {isSignup ? "Create Password" : "Password"}
         </FormLabel>
         <InputGroup size="md">
@@ -123,23 +125,26 @@ const LoginForm = ({
         )}
       </FormControl>
       {isSignup && (
-        <Flex marginTop="20px">
-          <Checkbox
-            defaultChecked={agreeToTerms}
-            spacing="20px"
-            onChange={onAgreeToTermsClick}
-          >
-            I agree to
-          </Checkbox>
-          <Text
-            marginLeft="5px"
-            textDecoration="underline"
-            variant="link"
-            onClick={onTermsClick}
-          >
-            terms and conditions
-          </Text>
-        </Flex>
+        <FormControl isRequired marginTop="20px">
+          <FormLabel>
+            <Checkbox
+              defaultChecked={agreeToTerms}
+              spacing="20px"
+              onChange={onAgreeToTermsClick}
+            >
+              I agree to
+              <Text
+                display="inline"
+                marginLeft="5px"
+                textDecoration="underline"
+                variant="link"
+                onClick={onTermsClick}
+              >
+                terms and conditions
+              </Text>
+            </Checkbox>
+          </FormLabel>
+        </FormControl>
       )}
     </Flex>
   );
