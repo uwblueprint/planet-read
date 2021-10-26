@@ -45,6 +45,10 @@ const Text = {
       margin: "12px",
       width: "100%",
     },
+    link: {
+      color: "blue.500",
+      cursor: "pointer",
+    },
   },
 };
 export default Text;
