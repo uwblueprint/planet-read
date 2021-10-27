@@ -144,11 +144,9 @@ const UsersTableFilter = ({
             </InputGroup>
           </Stack>
         </Box>
-        <Box
-          margin="0 0 0 15px"
-          disabled={language == null && level == null && searchText == null}
-        >
+        <Box margin="0 0 0 15px">
           <Button
+            disabled={language == null && level == null && searchText == null}
             colorScheme="blue"
             size="secondary"
             onClick={() => {
