@@ -3,6 +3,7 @@ from flask import current_app
 from flask.globals import current_app
 
 from ...models import db
+from ...models.language_enum import LanguageEnum
 from ...models.user import User
 from ...resources.user_dto import UserDTO
 from ..interfaces.user_service import IUserService
@@ -424,6 +425,36 @@ class UserService(IUserService):
         user_dict["email"] = firebase_user.email
 
         return UserDTO(**user_dict)
+
+    def update_approved_language(self, user_id, is_translate, language, level):
+        try:
+            if not language in LanguageEnum._member_names_:
+                raise Exception(f"Invalid language provided: {language}")
+            if level > 4 or level < 1:
+                raise Exception(f"Invalid language level provided: {level}")
+
+            user = User.query.filter_by(id=user_id).first()
+            curr_languages = (
+                user.approved_languages_translation
+                if is_translate
+                else user.approved_languages_review
+            )
+
+            if curr_languages:
+                curr_languages[language] = level
+            else:
+                curr_languages = {language: level}
+            if is_translate:
+                user.approved_languages_translation = curr_languages
+            else:
+                user.approved_languages_review = curr_languages
+
+            User.query.filter_by(id=user_id).update(user.to_dict())
+            db.session.commit()
+            return user
+        except Exception as error:
+            self.logger.error(str(error))
+            raise error
 
     @staticmethod
     def __user_to_dict_and_remove_auth_id(user):
