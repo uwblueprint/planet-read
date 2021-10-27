@@ -6,6 +6,7 @@ from sqlalchemy import func
 from ...middlewares.auth import get_user_id_from_request
 from ...models import db
 from ...models.comment import Comment
+from ...models.comment_all import CommentAll
 from ...models.story_translation import StoryTranslation
 from ...models.story_translation_content import StoryTranslationContent
 from ...models.story_translation_content_status import StoryTranslationContentStatus
@@ -20,11 +21,14 @@ class CommentService(ICommentService):
         try:
             # TODO: remove cast to int once get_user_id_from_request is updated
             user_id = int(get_user_id_from_request())
-            new_comment = Comment(**comment)
+            new_comment = CommentAll(**comment)
             new_comment.user_id = user_id
 
             story_translation = (
-                StoryTranslation.query.join(StoryTranslationContent)
+                StoryTranslation.query.join(
+                    StoryTranslationContent,
+                    StoryTranslation.id == StoryTranslationContent.story_translation_id,
+                )
                 .filter(
                     StoryTranslationContent.id
                     == new_comment.story_translation_content_id
@@ -95,14 +99,16 @@ class CommentService(ICommentService):
 
     def get_comments_by_story_translation(self, story_translation_id, resolved=None):
         try:
-            comment_query_base = (
-                Comment.query
-                if resolved is None
-                else Comment.query.filter_by(resolved=resolved)
-            )
             comments = (
-                comment_query_base.join(Comment.story_translation_content, aliased=True)
-                .filter_by(story_translation_id=story_translation_id)
+                Comment.query.join(
+                    StoryTranslationContent,
+                    Comment.story_translation_content_id == StoryTranslationContent.id,
+                )
+                .filter(
+                    StoryTranslationContent.story_translation_id
+                    == story_translation_id,
+                    Comment.resolved == resolved if resolved is not None else True,
+                )
                 .all()
             )
         except Exception as error:

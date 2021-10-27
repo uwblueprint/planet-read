@@ -1,24 +1,24 @@
-from sqlalchemy import Enum, inspect
-from sqlalchemy.dialects.mysql import LONGTEXT
+from sqlalchemy import inspect, select
 from sqlalchemy.orm.properties import ColumnProperty
+from sqlalchemy_utils import create_view
 
 from . import db
-from .story_translation_content_status import StoryTranslationContentStatus
+from .story_translation_content_all import StoryTranslationContentAll
+
+stmt = select([StoryTranslationContentAll]).where(
+    StoryTranslationContentAll.is_deleted == False
+)
+story_translation_contents_active = create_view(
+    "story_translation_contents", stmt, db.Model.metadata
+)
 
 
 class StoryTranslationContent(db.Model):
-    __tablename__ = "story_translation_contents"
-    id = db.Column(db.Integer, primary_key=True, nullable=False)
-    story_translation_id = db.Column(
-        db.Integer, db.ForeignKey("story_translations.id"), index=True, nullable=False
-    )
-    line_index = db.Column(db.Integer, nullable=False)
-    status = db.Column(
-        Enum(StoryTranslationContentStatus),
-        server_default=StoryTranslationContentStatus.DEFAULT.value,
-        nullable=False,
-    )
-    translation_content = db.Column(LONGTEXT, nullable=False)
+    def __init__(self, **kwargs):
+        super(StoryTranslationContent, self).__init__(**kwargs)
+        self.is_deleted = False
+
+    __table__ = story_translation_contents_active
 
     def to_dict(self, include_relationships=False):
         cls = type(self)

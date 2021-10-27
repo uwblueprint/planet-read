@@ -1,23 +1,21 @@
-from sqlalchemy import inspect
-from sqlalchemy.dialects.mysql import TEXT
+from sqlalchemy import inspect, select
 from sqlalchemy.orm.properties import ColumnProperty
+from sqlalchemy_utils import create_view
 
 from . import db
-from .story_translation_content import StoryTranslationContent
+from .story_translation_all import StoryTranslationAll
+from .user import User  # unused import required for foreign key
 
-stages_enum = db.Enum("TRANSLATE", "REVIEW", "PUBLISH", name="stages")
+stmt = select([StoryTranslationAll]).where(StoryTranslationAll.is_deleted == False)
+story_translations_active = create_view("story_translations", stmt, db.Model.metadata)
 
 
 class StoryTranslation(db.Model):
+    def __init__(self, **kwargs):
+        super(StoryTranslation, self).__init__(**kwargs)
+        self.is_deleted = False
 
-    __tablename__ = "story_translations"
-    id = db.Column(db.Integer, primary_key=True, nullable=False)
-    story_id = db.Column(db.Integer, db.ForeignKey("stories.id"), nullable=False)
-    language = db.Column(TEXT, nullable=False)
-    stage = db.Column(stages_enum, nullable=False)
-    translator_id = db.Column(db.Integer, db.ForeignKey("users.id"), index=True)
-    reviewer_id = db.Column(db.Integer, db.ForeignKey("users.id"), index=True)
-    translation_contents = db.relationship(StoryTranslationContent)
+    __table__ = story_translations_active
 
     def to_dict(self, include_relationships=False):
         cls = type(self)

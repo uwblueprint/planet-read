@@ -8,9 +8,11 @@ from ...graphql.types.story_type import (
 )
 from ...middlewares.auth import get_user_id_from_request
 from ...models import db
+from ...models.comment import Comment
 from ...models.story import Story
 from ...models.story_content import StoryContent
 from ...models.story_translation import StoryTranslation
+from ...models.story_translation_all import StoryTranslationAll
 from ...models.story_translation_content import StoryTranslationContent
 from ...models.story_translation_content_status import StoryTranslationContentStatus
 from ...models.user import User
@@ -166,7 +168,9 @@ class StoryService(IStoryService):
                     isouter=True,
                 )
                 .join(
-                    reviewer, StoryTranslation.reviewer_id == reviewer.id, isouter=True
+                    reviewer,
+                    StoryTranslation.reviewer_id == reviewer.id,
+                    isouter=True,
                 )
                 .filter(*filters)
                 .order_by(Story.id)
@@ -341,7 +345,10 @@ class StoryService(IStoryService):
     def update_story_translation_contents(self, story_translation_contents):
         try:
             story_translation = (
-                StoryTranslation.query.join(StoryTranslationContent)
+                StoryTranslation.query.join(
+                    StoryTranslationContent,
+                    StoryTranslation.id == StoryTranslationContent.story_translation_id,
+                )
                 .filter(StoryTranslationContent.id == story_translation_contents[0].id)
                 .first()
             )
@@ -477,13 +484,16 @@ class StoryService(IStoryService):
 
     def approve_all_story_translation_content(self, story_translation_id):
         try:
-            story_translation = StoryTranslation.query.filter_by(
-                id=story_translation_id
-            ).first()
-
-            if story_translation.stage == "REVIEW":
-                for translation_content in story_translation.translation_contents:
-                    translation_content.status = "APPROVED"
+            story_translation_contents = (
+                db.session.query(StoryTranslation, StoryTranslationContent)
+                .filter(StoryTranslation.id == story_translation_id)
+                .all()
+            )
+            # each element in story_translation_contents is a tuple of a
+            # StoryTranslation and StoryTranslationContent object
+            if story_translation_contents[0][0].stage == "REVIEW":
+                for translation_content in story_translation_contents:
+                    translation_content[1].status = "APPROVED"
 
                 db.session.commit()
             else:
@@ -497,6 +507,23 @@ class StoryService(IStoryService):
                     reason=(reason if reason else str(error))
                 )
             )
+            raise error
+
+    def soft_delete_story_translation(self, id):
+        try:
+            story_translation = StoryTranslationAll.query.get(id)
+            for translation_content in story_translation.translation_contents:
+                comments = Comment.query.filter(
+                    Comment.story_translation_content_id == translation_content.id
+                )
+                for comment in comments:
+                    comment.is_deleted = True
+                translation_content.is_deleted = True
+            story_translation.is_deleted = True
+
+            db.session.commit()
+        except Exception as error:
+            self.logger.error(error)
             raise error
 
     def _get_num_translated_lines(self, translation_contents):

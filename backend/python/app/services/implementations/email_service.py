@@ -58,4 +58,4 @@ class EmailService(IEmailService):
                     reason=(reason if reason else str(e))
                 )
             )
-            raise err
+            raise e
