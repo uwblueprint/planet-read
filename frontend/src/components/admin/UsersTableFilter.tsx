@@ -1,18 +1,18 @@
 import React from "react";
 import Select, { StylesConfig } from "react-select";
+import { MdSearch } from "react-icons/md";
+import { Icon } from "@chakra-ui/icon";
 import {
   Badge,
   Box,
   Button,
   Flex,
-  Image,
   Input,
   InputGroup,
   InputLeftElement,
   Stack,
   Tooltip,
 } from "@chakra-ui/react";
-import SearchIcon from "../../assets/search-icon.svg";
 import { languageOptions } from "../../constants/Languages";
 import { levelOptions } from "../../constants/Levels";
 import { convertLanguageTitleCase } from "../../utils/LanguageUtils";
@@ -45,13 +45,11 @@ const FilterBadges = ({ filterValue, setFilterValue }: FilterBadgesProps) => {
 
 const DropdownIndicator = () => {
   return (
-    <div
-      style={{
-        borderLeft: "5px solid transparent",
-        borderRight: "5px solid transparent",
-        borderTop: "9px solid black",
-        margin: "10px",
-      }}
+    <Box
+      borderLeft="5px solid transparent"
+      borderRight="5px solid transparent"
+      borderTop="9px solid black"
+      margin="10px"
     />
   );
 };
@@ -59,16 +57,16 @@ const DropdownIndicator = () => {
 const colourStyles: StylesConfig = {
   control: (styles) => ({
     ...styles,
-    backgroundColor: "#F1F4F7",
+    backgroundColor: "#F1F4F7", // #F1F4F7 is gray.100
     border: "none",
   }),
   option: (styles, { isSelected }) => {
     return {
       ...styles,
       color: "black",
-      backgroundColor: isSelected ? "#F1F4F7" : "white",
+      backgroundColor: isSelected ? "#F1F4F7" : "white", // #F1F4F7 is gray.100
       "&:hover": {
-        backgroundColor: "#F1F4F7",
+        backgroundColor: "#F1F4F7", // #F1F4F7 is gray.100
       },
     };
   },
@@ -87,7 +85,7 @@ const UsersTableFilter = ({
   return (
     <Flex direction="column">
       <Flex
-        style={{ textAlign: "left" }}
+        textAlign="left"
         width="95%"
         border="1px solid white"
         margin="20px auto 10px"
@@ -134,7 +132,7 @@ const UsersTableFilter = ({
           <Stack spacing={4}>
             <InputGroup>
               <InputLeftElement pointerEvents="none">
-                <Image width="20px" src={SearchIcon} alt="Planet read logo" />
+                <Icon as={MdSearch} />
               </InputLeftElement>
               <Input
                 placeholder="Search by name or email"
@@ -144,7 +142,7 @@ const UsersTableFilter = ({
             </InputGroup>
           </Stack>
         </Box>
-        <Box margin="0 0 0 15px">
+        <Box marginLeft="15px">
           <Button
             disabled={language == null && level == null && searchText == null}
             colorScheme="blue"

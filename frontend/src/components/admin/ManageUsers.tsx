@@ -4,7 +4,7 @@ import { Flex, Heading } from "@chakra-ui/react";
 import UsersTable, { alphabeticalCompare } from "./UsersTable";
 import { buildUsersQuery, User } from "../../APIClients/queries/UserQueries";
 import UsersTableFilter from "./UsersTableFilter";
-import { convertLanguageUpperCase } from "../../utils/LanguageUtils";
+import { convertTitleCaseToLanguage } from "../../utils/LanguageUtils";
 
 export type ManageUsersProps = {
   isTranslators: boolean;
@@ -17,7 +17,7 @@ const ManageUsers = ({ isTranslators }: ManageUsersProps) => {
   const [searchText, setSearchText] = useState<string | null>(null);
   const query = buildUsersQuery(
     isTranslators,
-    convertLanguageUpperCase(language || ""),
+    convertTitleCaseToLanguage(language || ""),
     parseInt(level || "", 10) || 0,
     searchText || "",
   );

@@ -21,7 +21,7 @@ function convertLanguageTitleCase(language: string) {
   }
 }
 
-function convertLanguageUpperCase(language: string) {
+function convertTitleCaseToLanguage(language: string) {
   switch (language) {
     case "English (US)":
       return "ENGLISH_US";
@@ -40,4 +40,4 @@ function convertLanguageUpperCase(language: string) {
   }
 }
 
-export { convertLanguageTitleCase, convertLanguageUpperCase };
+export { convertLanguageTitleCase, convertTitleCaseToLanguage };
