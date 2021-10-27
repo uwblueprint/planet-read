@@ -13,7 +13,7 @@ import {
   IconButton,
 } from "@chakra-ui/react";
 import { User } from "../../APIClients/queries/UserQueries";
-import convertLanguageTitleCase from "../../utils/LanguageUtils";
+import { convertLanguageTitleCase } from "../../utils/LanguageUtils";
 import { getLevelVariant } from "../../utils/StatusUtils";
 
 export type UsersTableProps = {

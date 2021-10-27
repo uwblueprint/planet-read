@@ -13,7 +13,7 @@ import {
   Td,
 } from "@chakra-ui/react";
 import { StoryTranslation } from "../../APIClients/queries/StoryQueries";
-import convertLanguageTitleCase from "../../utils/LanguageUtils";
+import { convertLanguageTitleCase } from "../../utils/LanguageUtils";
 import convertStageTitleCase from "../../utils/StageUtils";
 import { getLevelVariant } from "../../utils/StatusUtils";
 

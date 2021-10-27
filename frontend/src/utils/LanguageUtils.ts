@@ -10,8 +10,8 @@ function convertLanguageTitleCase(language: string) {
     case "ENGLISH_UK":
       return "English (UK)";
 
-    case "ENGLISH_INDIA":
-      return "English (India)";
+    case "ENGLISH_INDIAN":
+      return "English (Indian)";
 
     case "ASANTE_TWI":
       return "Asante Twi";
@@ -21,4 +21,23 @@ function convertLanguageTitleCase(language: string) {
   }
 }
 
-export { convertLanguageTitleCase as default };
+function convertTitleCaseToLanguage(language: string) {
+  switch (language) {
+    case "English (US)":
+      return "ENGLISH_US";
+
+    case "English (UK)":
+      return "ENGLISH_UK";
+
+    case "English (Indian)":
+      return "ENGLISH_INDIAN";
+
+    case "Asante Twi":
+      return "ASANTE_TWI";
+
+    default:
+      return language.toUpperCase();
+  }
+}
+
+export { convertLanguageTitleCase, convertTitleCaseToLanguage };

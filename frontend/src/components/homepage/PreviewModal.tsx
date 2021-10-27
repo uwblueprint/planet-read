@@ -17,7 +17,7 @@ import {
 import { Icon } from "@chakra-ui/icon";
 import { MdTrendingFlat } from "react-icons/md";
 
-import convertLanguageTitleCase from "../../utils/LanguageUtils";
+import { convertLanguageTitleCase } from "../../utils/LanguageUtils";
 import { getLevelVariant } from "../../utils/StatusUtils";
 import convertStageTitleCase from "../../utils/StageUtils";
 import {

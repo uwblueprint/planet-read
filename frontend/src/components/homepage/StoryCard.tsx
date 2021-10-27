@@ -12,7 +12,7 @@ import {
 } from "@chakra-ui/react";
 import AuthContext from "../../contexts/AuthContext";
 import PreviewModal from "./PreviewModal";
-import convertLanguageTitleCase from "../../utils/LanguageUtils";
+import { convertLanguageTitleCase } from "../../utils/LanguageUtils";
 import { getLevelVariant } from "../../utils/StatusUtils";
 import {
   ASSIGN_REVIEWER,
