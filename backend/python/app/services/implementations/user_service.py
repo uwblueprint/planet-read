@@ -434,16 +434,17 @@ class UserService(IUserService):
                 raise Exception(f"Invalid language level provided: {level}")
 
             user = User.query.filter_by(id=user_id).first()
+            if not user:
+                raise Exception("user_id {user_id} not found".format(user_id=user_id))
+
             curr_languages = (
                 user.approved_languages_translation
                 if is_translate
                 else user.approved_languages_review
-            )
+            ) or {}
 
-            if curr_languages:
-                curr_languages[language] = level
-            else:
-                curr_languages = {language: level}
+            curr_languages[language] = level
+
             if is_translate:
                 user.approved_languages_translation = curr_languages
             else:
