@@ -149,7 +149,7 @@ const StoryCard = ({
         }}
       >
         <iframe
-          style={{ width: "100%" }}
+          width="100%"
           src={embedLink(youtubeLink)}
           title="YouTube video player"
           frameBorder="0"

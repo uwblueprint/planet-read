@@ -69,22 +69,20 @@ const WIPComment = ({
                 ${authenticatedUser!!.lastName}`;
   return (
     <Flex
+      backgroundColor="white"
       border="1px solid"
       borderColor="blue.50"
-      padding="14px 15px"
+      borderRadius={8}
       direction="column"
-      style={{
-        borderRadius: 8,
-        width: "320px",
-      }}
-      backgroundColor="white"
+      padding="14px 15px"
+      width="320px"
     >
       <b>Line {lineIndex}</b>
       <p>{name}</p>
       <Textarea
         value={text}
         onChange={(e) => setText(e.target.value)}
-        style={{ margin: "8px 0" }}
+        margin="8px 0"
         placeholder="Comment or add others with @"
       />
       <Flex direction="row">

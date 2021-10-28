@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useQuery } from "@apollo/client";
-import { Heading } from "@chakra-ui/react";
+import { Box, Heading } from "@chakra-ui/react";
 import StoryTranslationsTable from "./StoryTranslationsTable";
 import {
   buildStoriesQuery,
@@ -19,12 +19,12 @@ const ManageStoryTranslations = () => {
     },
   });
   return (
-    <div style={{ textAlign: "center" }}>
+    <Box textAlign="center">
       <Heading float="left" margin="20px 30px" size="lg">
         Manage Story Translations
       </Heading>
       <StoryTranslationsTable storyTranslations={storyTranslations} />
-    </div>
+    </Box>
   );
 };
 

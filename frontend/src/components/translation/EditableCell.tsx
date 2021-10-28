@@ -34,12 +34,10 @@ const EditableCell = ({
         text?.length === maxChars ? "maxCharsReached" : "translationEditable"
       }
       value={text}
-      style={{
-        fontSize,
-        height,
-        flexGrow: 1,
-        overflow: "hidden",
-      }}
+      fontSize={fontSize}
+      height={height}
+      flexGrow={1}
+      overflow="hidden"
       onChange={(event) => onChange(event.target.value, lineIndex, maxChars)}
     />
   );
