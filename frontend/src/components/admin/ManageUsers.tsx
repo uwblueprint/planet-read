@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useQuery } from "@apollo/client";
-import { Flex, Heading } from "@chakra-ui/react";
+import { Box, Flex, Heading } from "@chakra-ui/react";
 import UsersTable, { alphabeticalCompare } from "./UsersTable";
 import { buildUsersQuery, User } from "../../APIClients/queries/UserQueries";
 import UsersTableFilter from "./UsersTableFilter";
@@ -31,7 +31,7 @@ const ManageUsers = ({ isTranslators }: ManageUsersProps) => {
     },
   });
   return (
-    <div style={{ textAlign: "center" }}>
+    <Box textAlign="center">
       <Flex>
         <Heading float="left" margin="20px 30px" size="lg">
           {`Manage ${isTranslators ? "Translators" : "Reviewers"}`}
@@ -50,7 +50,7 @@ const ManageUsers = ({ isTranslators }: ManageUsersProps) => {
         users={users}
         setUsers={setUsers}
       />
-    </div>
+    </Box>
   );
 };
 

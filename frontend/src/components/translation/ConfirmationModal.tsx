@@ -55,14 +55,7 @@ const ConfirmationModal = ({
             />
           </Flex>
         </ModalHeader>
-        <ModalBody>
-          <hr
-            style={{
-              marginLeft: "10px",
-              marginRight: "10px",
-              paddingBottom: "15px",
-            }}
-          />
+        <ModalBody paddingBottom="15px">
           <Text fontSize="16px" paddingLeft="10px" paddingRight="10px">
             {confirmationMessage}
           </Text>

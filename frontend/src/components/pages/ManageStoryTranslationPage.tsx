@@ -1,5 +1,6 @@
 import React from "react";
 import { useParams } from "react-router-dom";
+import { Box } from "@chakra-ui/react";
 
 type ManageStoryTranslationPageProps = {
   storyIdParam: string | undefined;
@@ -13,11 +14,11 @@ const ManageStoryTranslationPage = () => {
   } = useParams<ManageStoryTranslationPageProps>();
 
   return (
-    <div style={{ textAlign: "center" }}>
+    <Box textAlign="center">
       <h1>
         Manage story translation {storyIdParam} {storyTranslationIdParam} :)
       </h1>
-    </div>
+    </Box>
   );
 };
 
