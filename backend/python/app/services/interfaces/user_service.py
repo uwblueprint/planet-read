@@ -132,3 +132,17 @@ class IUserService(ABC):
         :raises Exception: if user deletion fails
         """
         pass
+
+    @abstractmethod
+    def update_approved_language(self, user_id, is_translate, language, level):
+        """
+        Update approved languages translation/review of user
+
+        :param int user_id: user id of the user to be updated
+        :param bool is_translate: if true, updates approved_languages_translation
+        :param string language: language to add/update level of
+        :param int level: level of language to add/update
+        :raises Exception: if admin provides invalid language/level, or if
+        update fails
+        """
+        pass

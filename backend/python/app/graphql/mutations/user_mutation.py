@@ -38,6 +38,30 @@ class UpdateUser(graphene.Mutation):
             raise Exception(error_message if error_message else str(e))
 
 
+class UpdateUserApprovedLanguages(graphene.Mutation):
+    class Arguments:
+        user_id = graphene.ID(required=True)
+        is_translate = graphene.Boolean(required=True)
+        language = graphene.String(required=True)
+        level = graphene.Int(required=True)
+
+    user = graphene.Field(lambda: UserDTO)
+
+    @require_authorization_by_role_gql({"Admin"})
+    def mutate(root, info, user_id, is_translate, language, level):
+        """
+        Update approved languages of the specified user
+        """
+        try:
+            updated_user = services["user"].update_approved_language(
+                user_id, is_translate, language, level
+            )
+            return UpdateUserApprovedLanguages(user=updated_user)
+        except Exception as e:
+            error_message = getattr(e, "message", None)
+            raise Exception(error_message if error_message else str(e))
+
+
 """
 TODO mutations:
  updateUser(id: ID!, user: UpdateUserDTO!): UserDTO!
