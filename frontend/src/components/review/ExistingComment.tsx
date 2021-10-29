@@ -66,15 +66,13 @@ const ExistingComment = ({
 
   return (
     <Flex
+      backgroundColor="transparent"
       border="1px solid"
       borderColor="blue.50"
-      padding="14px 15px"
+      borderRadius="8"
       direction="column"
-      style={{
-        borderRadius: 8,
-        width: "320px",
-      }}
-      backgroundColor="transparent"
+      padding="14px 15px"
+      width="320px"
     >
       <Text fontWeight="bold" marginBottom="15px">
         Line {lineIndex}
@@ -87,10 +85,10 @@ const ExistingComment = ({
         {content}
       </Text>
       <Flex>
-        <Button onClick={() => setReply(1)} variant="label">
+        <Button onClick={() => setReply(1)} variant="commentLabel">
           Reply
         </Button>
-        <Button onClick={resolveExistingComment} variant="label">
+        <Button onClick={resolveExistingComment} variant="commentLabel">
           Resolve
         </Button>
       </Flex>
