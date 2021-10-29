@@ -13,7 +13,7 @@ import CommentsPanel from "../review/CommentsPanel";
 import FontSizeSlider from "../translation/FontSizeSlider";
 import { convertLanguageTitleCase } from "../../utils/LanguageUtils";
 import Header from "../navigation/Header";
-import ConfirmationModal from "../translation/ConfirmationModal";
+import ConfirmationModal from "../utils/ConfirmationModal";
 import {
   REVIEW_PAGE_RETURN_TO_TRANSLATOR_CONFIRMATION,
   REVIEW_PAGE_RETURN_TO_TRANSLATOR_BUTTON_MESSAGE,
@@ -40,10 +40,8 @@ type Content = {
 
 const ReviewPage = () => {
   const { authenticatedUser } = useContext(AuthContext);
-  const {
-    storyIdParam,
-    storyTranslationIdParam,
-  } = useParams<ReviewPageProps>();
+  const { storyIdParam, storyTranslationIdParam } =
+    useParams<ReviewPageProps>();
 
   const storyId = +storyIdParam!!;
   const storyTranslationId = +storyTranslationIdParam!!;

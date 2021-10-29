@@ -1,4 +1,5 @@
-import React from "react";
+import React, { useState } from "react";
+import { useMutation } from "@apollo/client";
 import { Icon } from "@chakra-ui/icon";
 import { MdDelete } from "react-icons/md";
 import {
@@ -16,6 +17,15 @@ import { StoryTranslation } from "../../APIClients/queries/StoryQueries";
 import { convertLanguageTitleCase } from "../../utils/LanguageUtils";
 import convertStageTitleCase from "../../utils/StageUtils";
 import { getLevelVariant } from "../../utils/StatusUtils";
+import ConfirmationModal from "../utils/ConfirmationModal";
+import {
+  SOFT_DELETE_STORY_TRANSLATION,
+  SoftDeleteStoryTranslationResponse,
+} from "../../APIClients/mutations/StoryMutations";
+import {
+  MANAGE_STORY_TRANSLATIONS_TABLE_DELETE_TRANSLATION_BUTTON,
+  MANAGE_STORY_TRANSLATIONS_TABLE_DELETE_TRANSLATION_CONFIRMATION,
+} from "../../utils/Copy";
 
 export type StoryTranslationsTableProps = {
   storyTranslations: StoryTranslation[];
@@ -24,6 +34,35 @@ export type StoryTranslationsTableProps = {
 const StoryTranslationsTable = ({
   storyTranslations,
 }: StoryTranslationsTableProps) => {
+  const [confirmDeleteTranslation, setConfirmDeleteTranslation] = useState(
+    false,
+  );
+  const [idToDelete, setIdToDelete] = useState(0);
+
+  const [deleteStoryTranslation] = useMutation<{
+    response: SoftDeleteStoryTranslationResponse;
+  }>(SOFT_DELETE_STORY_TRANSLATION);
+
+  const closeModal = () => {
+    setIdToDelete(0);
+    setConfirmDeleteTranslation(false);
+  };
+
+  const openModal = (id: number) => {
+    setIdToDelete(id);
+    setConfirmDeleteTranslation(true);
+  };
+
+  const callSoftDeleteStoryTranslationMutation = async () => {
+    await deleteStoryTranslation({
+      variables: {
+        id: idToDelete,
+      },
+    });
+    closeModal();
+    window.location.reload();
+  };
+
   const tableBody = storyTranslations.map(
     (storyTranslationObj: StoryTranslation, index: number) => (
       <Tr
@@ -68,11 +107,13 @@ const StoryTranslationsTable = ({
             background="transparent"
             icon={<Icon as={MdDelete} />}
             width="fit-content"
+            onClick={() => openModal(storyTranslationObj?.id)}
           />
         </Td>
       </Tr>
     ),
   );
+
   return (
     <Table
       borderRadius="12px"
@@ -97,6 +138,19 @@ const StoryTranslationsTable = ({
         </Tr>
       </Thead>
       <Tbody>{tableBody}</Tbody>
+      {confirmDeleteTranslation && (
+        <ConfirmationModal
+          confirmation={confirmDeleteTranslation}
+          onClose={closeModal}
+          onConfirmationClick={callSoftDeleteStoryTranslationMutation}
+          confirmationMessage={
+            MANAGE_STORY_TRANSLATIONS_TABLE_DELETE_TRANSLATION_CONFIRMATION
+          }
+          buttonMessage={
+            MANAGE_STORY_TRANSLATIONS_TABLE_DELETE_TRANSLATION_BUTTON
+          }
+        />
+      )}
     </Table>
   );
 };

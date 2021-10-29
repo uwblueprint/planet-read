@@ -18,6 +18,7 @@ const ManageStoryTranslations = () => {
       setStoryTranslations(data[query.fieldName]);
     },
   });
+
   return (
     <Box textAlign="center">
       <Heading float="left" margin="20px 30px" size="lg">
