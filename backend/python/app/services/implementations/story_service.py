@@ -292,6 +292,22 @@ class StoryService(IStoryService):
             self.logger.error("User can't be assigned as a reviewer")
             raise Exception("User can't be assigned as a reviewer")
 
+    def update_story(self, story_id, title, description, youtube_link):
+        try:
+            story = Story.query.get(story_id)
+            story.title = title
+            story.description = description
+            story.youtube_link = youtube_link
+            db.session.commit()
+        except Exception as error:
+            reason = getattr(error, "message", None)
+            self.logger.error(
+                "Failed to update story. Reason = {reason}".format(
+                    reason=(reason if reason else str(error))
+                )
+            )
+            raise error
+
     # Deprecated: function is not currently in use (story translation stage logic has not been tested)
     def update_story_translation_content(self, story_translation_content):
         story_translation = StoryTranslationContent.query.filter_by(
