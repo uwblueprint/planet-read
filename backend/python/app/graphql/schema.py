@@ -16,6 +16,7 @@ from .mutations.story_mutation import (
     CreateStory,
     CreateStoryTranslation,
     SoftDeleteStoryTranslation,
+    UpdateStory,
     UpdateStoryTranslationContents,
     UpdateStoryTranslationContentStatus,
     UpdateStoryTranslationStage,
@@ -55,6 +56,7 @@ class Mutation(graphene.ObjectType):
     assign_user_as_reviewer = AssignUserAsReviewer.Field()
     update_comment_by_id = UpdateCommentById.Field()
     update_comments = UpdateComments.Field()
+    update_story = UpdateStory.Field()
     update_story_translation_contents = UpdateStoryTranslationContents.Field()
     update_story_translation_content_status = (
         UpdateStoryTranslationContentStatus.Field()

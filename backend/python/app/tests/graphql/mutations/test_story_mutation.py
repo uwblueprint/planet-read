@@ -23,7 +23,7 @@ CREATE_STORY = """
                     lineIndex
                     content
                 }
-            }      
+            }
         }
     }
 """

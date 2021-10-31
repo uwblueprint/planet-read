@@ -79,6 +79,17 @@ class IStoryService(ABC):
         """
         pass
 
+    @abstractmethod
+    def update_story(self, story_id, title, description, youtube_link):
+        """Update a single story
+        :param story_id: id of story to be updated
+        :param title: updated title
+        :param description: updated description
+        :param youtube_link: updated youtube_link
+        :raises Exception: if the user is not authorized to update stories
+        """
+        pass
+
     # Deprecated: function is not currently in use (story translation stage logic has not been tested)
     @abstractmethod
     def update_story_translation_content(self, story_translation_content):
