@@ -34,9 +34,8 @@ export type StoryTranslationsTableProps = {
 const StoryTranslationsTable = ({
   storyTranslations,
 }: StoryTranslationsTableProps) => {
-  const [confirmDeleteTranslation, setConfirmDeleteTranslation] = useState(
-    false,
-  );
+  const [confirmDeleteTranslation, setConfirmDeleteTranslation] =
+    useState(false);
   const [idToDelete, setIdToDelete] = useState(0);
 
   const [deleteStoryTranslation] = useMutation<{

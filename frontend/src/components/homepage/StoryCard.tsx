@@ -79,7 +79,12 @@ const StoryCard = ({
         handleError("Unable to assign reviewer.");
       }
     } catch (err) {
-      handleError(err ?? "Error occurred, please try again.");
+      if (typeof err === "string") {
+        handleError(err);
+      } else {
+        console.log(err);
+        handleError("Error occurred, please try again.");
+      }
     }
   };
 
@@ -104,7 +109,12 @@ const StoryCard = ({
         handleError("Unable to assign translator.");
       }
     } catch (err) {
-      handleError(err ?? "Error occurred, please try again.");
+      if (typeof err === "string") {
+        handleError(err);
+      } else {
+        console.log(err);
+        handleError("Error occurred, please try again.");
+      }
     }
   };
 

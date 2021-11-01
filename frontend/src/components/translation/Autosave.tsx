@@ -51,7 +51,12 @@ const Autosave = ({ storylines, onSuccess }: AutosaveProps) => {
           onSuccess();
         }
       } catch (err) {
-        handleError(err ?? "Error occurred, please try again.");
+        if (typeof err === "string") {
+          handleError(err);
+        } else {
+          console.log(err);
+          handleError("Error occurred, please try again.");
+        }
       }
     }, 1000),
     [],

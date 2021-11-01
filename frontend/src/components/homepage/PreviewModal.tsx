@@ -63,11 +63,10 @@ const PreviewModal = ({
         });
         setContent(storyContentsArray);
 
-        const storyTranslationContentsArray = data.storyTranslationById.translationContents.map(
-          (story: any) => {
+        const storyTranslationContentsArray =
+          data.storyTranslationById.translationContents.map((story: any) => {
             return story.content;
-          },
-        );
+          });
         setTranslationContent(storyTranslationContentsArray);
 
         setStage(data.storyTranslationById.stage);

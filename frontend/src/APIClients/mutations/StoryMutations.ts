@@ -87,8 +87,8 @@ export const UPDATE_STORY_TRANSLATION_STAGE = gql`
 export type UpdateStoryTranslationStageResponse = { ok: boolean };
 
 export const SOFT_DELETE_STORY_TRANSLATION = gql`
-  mutation SoftDeleteStoryTranslation($storyTranslationId: Int!) {
-    SoftDeleteStoryTranslation(id: $storyTranslationId) {
+  mutation SoftDeleteStoryTranslation($id: Int!) {
+    softDeleteStoryTranslation(id: $id) {
       ok
     }
   }

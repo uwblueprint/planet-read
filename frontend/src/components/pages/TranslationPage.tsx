@@ -153,7 +153,7 @@ const TranslationPage = () => {
         variables: { storyTranslationData },
       });
       if (result.data?.updateStoryTranslationStage.ok) {
-        window.location.reload(false);
+        window.location.reload();
       } else {
         window.alert("Unable to send for review.");
       }

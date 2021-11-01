@@ -8,10 +8,8 @@ type ManageStoryTranslationPageProps = {
 };
 
 const ManageStoryTranslationPage = () => {
-  const {
-    storyIdParam,
-    storyTranslationIdParam,
-  } = useParams<ManageStoryTranslationPageProps>();
+  const { storyIdParam, storyTranslationIdParam } =
+    useParams<ManageStoryTranslationPageProps>();
 
   return (
     <Box textAlign="center">

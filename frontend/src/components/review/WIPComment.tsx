@@ -56,13 +56,17 @@ const WIPComment = ({
 
         setComments([...comments, result.data.createComment.comment]);
         const updatedStoryLines = [...translatedStoryLines];
-        updatedStoryLines[lineIndex - 1].status = convertStatusTitleCase(
-          "ACTION_REQUIRED",
-        );
+        updatedStoryLines[lineIndex - 1].status =
+          convertStatusTitleCase("ACTION_REQUIRED");
         setTranslatedStoryLines(updatedStoryLines);
       }
     } catch (err) {
-      handleError(err ?? "Error occurred, please try again.");
+      if (typeof err === "string") {
+        handleError(err);
+      } else {
+        console.log(err);
+        handleError("Error occurred, please try again.");
+      }
     }
   };
   const name = `${authenticatedUser!!.firstName} 
