@@ -78,6 +78,28 @@ class StoryTranslationResponseDTO(graphene.ObjectType):
     translator_name = graphene.String()
     reviewer_name = graphene.String()
 
+class StoryTranslationNode(graphene.ObjectType):
+    story_translation_id = graphene.Int(required=True)
+    language = graphene.String(required=True)
+    stage = graphene.Field(StageEnum, required=True)
+    translation_contents = graphene.List(StoryTranslationContentResponseDTO)
+    translator_id = graphene.Int()
+    reviewer_id = graphene.Int()
+    story_id = graphene.Int(required=True)
+    title = graphene.String(required=True)
+    description = graphene.String(required=True)
+    youtube_link = graphene.String(required=True)
+    level = graphene.Int(required=True)
+    num_translated_lines = graphene.Int()
+    num_approved_lines = graphene.Int()
+    translator_name = graphene.String()
+    reviewer_name = graphene.String()
+    class Meta:
+        interfaces = (graphene.relay.Node,)
+
+class StoryTranslationConnection(graphene.relay.Connection):
+    class Meta:
+        node = StoryTranslationNode 
 
 class StoryTranslationUpdateStatusResponseDTO(graphene.ObjectType):
     id = graphene.Int(required=True)

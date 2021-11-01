@@ -189,6 +189,7 @@ class StoryService(IStoryService):
                     {
                         **story.to_dict(),
                         **story_translation.to_dict(include_relationships=True),
+                        "story_translation_id": story_translation.id,
                         "translator_name": (
                             f"{translator.first_name} {translator.last_name}"
                             if translator

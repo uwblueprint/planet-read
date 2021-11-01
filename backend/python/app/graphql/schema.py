@@ -35,7 +35,7 @@ from .queries.story_query import (
 from .queries.user_query import resolve_user_by_email, resolve_user_by_id, resolve_users
 from .types.comment_type import CommentResponseDTO
 from .types.file_type import FileDTO
-from .types.story_type import StoryResponseDTO, StoryTranslationResponseDTO
+from .types.story_type import StoryResponseDTO, StoryTranslationConnection, StoryTranslationResponseDTO
 from .types.user_type import UserDTO
 
 
@@ -74,8 +74,8 @@ class Query(graphene.ObjectType):
     file_by_id = graphene.Field(FileDTO, id=graphene.Int(required=True))
     stories = graphene.Field(graphene.List(StoryResponseDTO))
     story_by_id = graphene.Field(StoryResponseDTO, id=graphene.Int(required=True))
-    story_translations = graphene.Field(
-        graphene.List(StoryTranslationResponseDTO),
+    story_translations = graphene.relay.ConnectionField(
+        StoryTranslationConnection,
         language=graphene.String(),
         level=graphene.Int(),
         stage=graphene.String(),
@@ -150,7 +150,7 @@ class Query(graphene.ObjectType):
         )
 
     def resolve_story_translations(
-        root, info, language=None, level=None, stage=None, story_title=None
+        root, info, language=None, level=None, stage=None, story_title=None, **kwargs
     ):
         return resolve_story_translations(
             root, info, language, level, stage, story_title
