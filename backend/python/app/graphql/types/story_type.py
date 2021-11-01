@@ -78,6 +78,7 @@ class StoryTranslationResponseDTO(graphene.ObjectType):
     translator_name = graphene.String()
     reviewer_name = graphene.String()
 
+
 class StoryTranslationNode(graphene.ObjectType):
     story_translation_id = graphene.Int(required=True)
     language = graphene.String(required=True)
@@ -94,12 +95,15 @@ class StoryTranslationNode(graphene.ObjectType):
     num_approved_lines = graphene.Int()
     translator_name = graphene.String()
     reviewer_name = graphene.String()
+
     class Meta:
         interfaces = (graphene.relay.Node,)
 
+
 class StoryTranslationConnection(graphene.relay.Connection):
     class Meta:
-        node = StoryTranslationNode 
+        node = StoryTranslationNode
+
 
 class StoryTranslationUpdateStatusResponseDTO(graphene.ObjectType):
     id = graphene.Int(required=True)

@@ -35,7 +35,11 @@ from .queries.story_query import (
 from .queries.user_query import resolve_user_by_email, resolve_user_by_id, resolve_users
 from .types.comment_type import CommentResponseDTO
 from .types.file_type import FileDTO
-from .types.story_type import StoryResponseDTO, StoryTranslationConnection, StoryTranslationResponseDTO
+from .types.story_type import (
+    StoryResponseDTO,
+    StoryTranslationConnection,
+    StoryTranslationResponseDTO,
+)
 from .types.user_type import UserDTO
 
 
