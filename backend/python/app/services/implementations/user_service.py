@@ -122,7 +122,7 @@ class UserService(IUserService):
 
         query = User.query.filter_by(role="User").filter(appr_langs.isnot(None))
 
-        if language is not None and language is not "":
+        if language:
             query = query.filter(appr_langs.contains(language))
             if level:
                 query = query.filter(appr_langs[language] == level)
@@ -149,6 +149,20 @@ class UserService(IUserService):
                     )
                 )
                 raise e
+
+        if (level is not None) and (not language):
+            if isTranslators:
+                return filter(
+                    lambda user_dto: level
+                    in user_dto.approved_languages_translation.values(),
+                    user_dtos,
+                )
+            else:
+                return filter(
+                    lambda user_dto: level
+                    in user_dto.approved_languages_review.values(),
+                    user_dtos,
+                )
 
         return user_dtos
 
