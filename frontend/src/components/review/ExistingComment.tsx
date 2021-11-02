@@ -7,6 +7,8 @@ import {
   UPDATE_COMMENT_BY_ID,
   UpdateCommentResponse,
 } from "../../APIClients/mutations/CommentMutations";
+import { CommentResponse } from "../../APIClients/queries/CommentQueries";
+import { StoryLine } from "../translation/Autosave";
 
 export type ExistingCommentProps = {
   id: number;
@@ -16,6 +18,10 @@ export type ExistingCommentProps = {
   commentStoryTranslationContentId: number;
   lineIndex: number;
   updateCommentsAsResolved: (index: number) => void;
+  comments: CommentResponse[];
+  setComments: (comments: CommentResponse[]) => void;
+  translatedStoryLines: StoryLine[];
+  setTranslatedStoryLines: (storyLines: StoryLine[]) => void;
 };
 
 const ExistingComment = ({
@@ -26,6 +32,10 @@ const ExistingComment = ({
   commentStoryTranslationContentId,
   lineIndex,
   updateCommentsAsResolved,
+  setComments,
+  setTranslatedStoryLines,
+  comments,
+  translatedStoryLines,
 }: ExistingCommentProps) => {
   const handleError = (errorMessage: string) => {
     // eslint-disable-next-line no-alert
@@ -94,9 +104,13 @@ const ExistingComment = ({
       </Flex>
       {reply > 0 && lineIndex > -1 && (
         <WIPComment
-          commentStoryTranslationContentId={commentStoryTranslationContentId}
           lineIndex={lineIndex}
+          commentStoryTranslationContentId={commentStoryTranslationContentId}
           setCommentLine={setReply}
+          comments={comments}
+          setComments={setComments}
+          setTranslatedStoryLines={setTranslatedStoryLines}
+          translatedStoryLines={translatedStoryLines}
         />
       )}
     </Flex>

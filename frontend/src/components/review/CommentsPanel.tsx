@@ -81,6 +81,10 @@ const CommentsPanel = ({
               }
               lineIndex={commentLine}
               updateCommentsAsResolved={updateCommentsAsResolved}
+              comments={comments}
+              setComments={setComments}
+              setTranslatedStoryLines={setTranslatedStoryLines}
+              translatedStoryLines={translatedStoryLines}
             />
           ))}
         </Box>
