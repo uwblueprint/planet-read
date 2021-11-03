@@ -64,8 +64,8 @@ class IStoryService(ABC):
         :param story_title: story_title of story translations to filter by
         likeness and return
         :param role_filter: filter to get story_translations by user_id/role
-        :return: list of StoryTranslationResponseDTO's
-        :rtype: list of StoryTranslationResponseDTO's
+        :return: list of StoryTranslationNode's
+        :rtype: list of StoryTranslationNode's
         """
         pass
 
