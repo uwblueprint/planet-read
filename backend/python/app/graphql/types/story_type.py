@@ -101,9 +101,12 @@ class StoryTranslationNode(graphene.ObjectType):
 
 
 class StoryTranslationConnection(graphene.relay.Connection):
+    total_count = graphene.Int()
     class Meta:
         node = StoryTranslationNode
 
+    def resolve_total_count(root, info):
+        return len(root.iterable)  
 
 class StoryTranslationUpdateStatusResponseDTO(graphene.ObjectType):
     id = graphene.Int(required=True)
