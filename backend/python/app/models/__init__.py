@@ -19,6 +19,7 @@ def init_app(app):
     from .story_translation_content import StoryTranslationContent
     from .story_translation_content_all import StoryTranslationContentAll
     from .user import User
+    from .user_all import UserAll
 
     app.app_context().push()
     db.init_app(app)

@@ -14,12 +14,12 @@ from app.models.story_translation import StoryTranslation
 from app.models.story_translation_all import StoryTranslationAll
 from app.models.story_translation_content import StoryTranslationContent
 from app.models.story_translation_content_all import StoryTranslationContentAll
-from app.models.user import User
+from app.models.user_all import UserAll
 
 
 def insert_test_data():
     # users
-    db.engine.execute("ALTER TABLE users AUTO_INCREMENT = 1;")
+    db.engine.execute("ALTER TABLE users_all AUTO_INCREMENT = 1;")
     db.engine.execute(
         f"INSERT IGNORE INTO users \
             (first_name, last_name, email, auth_id, role, approved_languages_translation, approved_languages_review) \
@@ -129,8 +129,8 @@ def insert_test_data():
     # Adding comments to The Great Gatsby (id: 6)
     # Story Translation (id: 13) with
     # Carl (id: 1) and Dwight (id: 4)"
-    carl = User.query.filter_by(first_name="Carl").first()
-    dwight = User.query.filter_by(first_name="Dwight").first()
+    carl = UserAll.query.filter_by(first_name="Carl").first()
+    dwight = UserAll.query.filter_by(first_name="Dwight").first()
     the_gg = Story.query.filter_by(title="The Great Gatsby").first()
     st = (
         db.session.query(StoryTranslation)
@@ -174,7 +174,7 @@ def erase_db():
     db.session.commit()
     db.session.query(StoryTranslationAll).delete()
     db.session.commit()
-    db.session.query(User).delete()
+    db.session.query(UserAll).delete()
     db.session.commit()
     db.session.query(Story).delete()
     db.session.commit()
