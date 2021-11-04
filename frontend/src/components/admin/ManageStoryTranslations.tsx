@@ -5,6 +5,7 @@ import StoryTranslationsTable from "./StoryTranslationsTable";
 import {
   buildStoriesQuery,
   StoryTranslation,
+  StoryTranslationEdge,
 } from "../../APIClients/queries/StoryQueries";
 
 const ManageStoryTranslations = () => {
@@ -14,8 +15,11 @@ const ManageStoryTranslations = () => {
   >([]);
   useQuery(query.string, {
     fetchPolicy: "cache-and-network",
-    onCompleted: (data) => {
-      setStoryTranslations(data[query.fieldName]);
+    onCompleted: (data: {
+      storyTranslations: { edges: StoryTranslationEdge[] };
+    }) => {
+      const translations = data.storyTranslations.edges.map((e) => e.node);
+      setStoryTranslations(translations);
     },
   });
 

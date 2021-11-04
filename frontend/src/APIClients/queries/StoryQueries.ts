@@ -121,7 +121,7 @@ export const buildHomePageStoriesQuery = (
 };
 
 export type StoryTranslation = {
-  id: number;
+  storyTranslationId: number;
   language: string;
   stage: string;
   translatorId: number;
@@ -137,6 +137,11 @@ export type StoryTranslation = {
   numApprovedLines: number;
 };
 
+export type StoryTranslationEdge = {
+  cursor: string;
+  node: StoryTranslation;
+};
+
 export const buildStoriesQuery = () => {
   // TODO: build out when filters added
   return {
@@ -144,20 +149,29 @@ export const buildStoriesQuery = () => {
     string: gql`
       query StoryTranslations {
         storyTranslations {
-          id
-          language
-          stage
-          translatorId
-          reviewerId
-          storyId
-          title
-          description
-          youtubeLink
-          level
-          translatorName
-          reviewerName
-          numTranslatedLines
-          numApprovedLines
+          edges {
+            cursor
+            node {
+              storyTranslationId
+              language
+              stage
+              translatorId
+              reviewerId
+              storyId
+              title
+              description
+              youtubeLink
+              level
+              translatorName
+              reviewerName
+              numTranslatedLines
+              numApprovedLines
+            }
+          }
+          pageInfo {
+            endCursor
+            hasNextPage
+          }
         }
       }
     `,

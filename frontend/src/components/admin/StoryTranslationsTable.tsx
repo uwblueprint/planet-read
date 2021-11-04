@@ -65,7 +65,7 @@ const StoryTranslationsTable = ({
   const tableBody = storyTranslations.map(
     (storyTranslationObj: StoryTranslation, index: number) => (
       <Tr
-        key={`${storyTranslationObj?.storyId}${storyTranslationObj?.id}`}
+        key={`${storyTranslationObj?.storyId}${storyTranslationObj?.storyTranslationId}`}
         borderBottom={
           index === storyTranslations.length - 1 ? "1em solid transparent" : ""
         }
@@ -73,7 +73,7 @@ const StoryTranslationsTable = ({
         <Td>
           <Link
             isExternal
-            href={`/story/${storyTranslationObj?.storyId}/${storyTranslationObj?.id}`}
+            href={`/story/${storyTranslationObj?.storyId}/${storyTranslationObj?.storyTranslationId}`}
           >
             {storyTranslationObj?.title}
           </Link>
@@ -102,11 +102,11 @@ const StoryTranslationsTable = ({
         </Td>
         <Td>
           <IconButton
-            aria-label={`Delete story translation ${storyTranslationObj?.id} for story ${storyTranslationObj?.title}`}
+            aria-label={`Delete story translation ${storyTranslationObj?.storyTranslationId} for story ${storyTranslationObj?.title}`}
             background="transparent"
             icon={<Icon as={MdDelete} />}
             width="fit-content"
-            onClick={() => openModal(storyTranslationObj?.id)}
+            onClick={() => openModal(storyTranslationObj?.storyTranslationId)}
           />
         </Td>
       </Tr>
