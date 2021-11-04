@@ -3,8 +3,9 @@ import { useQuery } from "@apollo/client";
 import { Box, Flex, Heading } from "@chakra-ui/react";
 import UsersTable, { alphabeticalCompare } from "./UsersTable";
 import { buildUsersQuery, User } from "../../APIClients/queries/UserQueries";
-import UsersTableFilter from "./UsersTableFilter";
+import TableFilter from "./TableFilter";
 import { convertTitleCaseToLanguage } from "../../utils/LanguageUtils";
+import { USER_TABLE_FILTER_SEARCH_BAR_PLACEHOLDER } from "../../utils/Copy";
 
 export type ManageUsersProps = {
   isTranslators: boolean;
@@ -37,13 +38,16 @@ const ManageUsers = ({ isTranslators }: ManageUsersProps) => {
           {`Manage ${isTranslators ? "Translators" : "Reviewers"}`}
         </Heading>
       </Flex>
-      <UsersTableFilter
+      <TableFilter
         language={language}
         setLanguage={setLanguage}
         level={level}
         setLevel={setLevel}
         searchText={searchText}
         setSearchText={setSearchText}
+        useLevel
+        useLanguage
+        searchBarPlaceholder={USER_TABLE_FILTER_SEARCH_BAR_PLACEHOLDER}
       />
       <UsersTable
         isTranslators={isTranslators}

@@ -142,13 +142,23 @@ export type StoryTranslationEdge = {
   node: StoryTranslation;
 };
 
-export const buildStoriesQuery = () => {
-  // TODO: build out when filters added
+export const buildStoriesQuery = (
+  language?: string,
+  level?: number,
+  stage?: string,
+  storyTitle?: string,
+) => {
+  let queryParams = language ? `language: "${language}", ` : "";
+  queryParams += level ? `level: ${level}, ` : "";
+  queryParams += stage ? `stage: "${stage}", ` : "";
+  queryParams += storyTitle ? `storyTitle: "${storyTitle}", ` : "";
+  queryParams = queryParams === "" ? queryParams : `( ${queryParams} )`;
+
   return {
     fieldName: "storyTranslations",
     string: gql`
       query StoryTranslations {
-        storyTranslations {
+        storyTranslations ${queryParams} {
           edges {
             cursor
             node {
