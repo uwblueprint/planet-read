@@ -26,9 +26,8 @@ const App = () => {
     AUTHENTICATED_USER_KEY,
   );
 
-  const [authenticatedUser, setAuthenticatedUser] = useState<AuthenticatedUser>(
-    currentUser,
-  );
+  const [authenticatedUser, setAuthenticatedUser] =
+    useState<AuthenticatedUser>(currentUser);
 
   return (
     <ChakraProvider theme={customTheme}>

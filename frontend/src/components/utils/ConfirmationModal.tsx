@@ -61,7 +61,7 @@ const ConfirmationModal = ({
           </Text>
           <Flex paddingTop="20px" paddingBottom="25px" paddingLeft="10px">
             <Button
-              width="55%"
+              minWidth="65%"
               colorScheme="blue"
               onClick={onConfirmationClick}
             >

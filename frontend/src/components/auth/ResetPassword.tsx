@@ -13,13 +13,13 @@ type ResetPasswordProps = {
 
 const ResetPassword = ({ email }: ResetPasswordProps) => {
   const isRealEmailAvailable = (emailString: string): boolean => {
-    const re = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+    const re =
+      /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
     return re.test(String(emailString).toLowerCase());
   };
 
-  const [resetPassword] = useMutation<{ resetPassword: ResetPasswordResponse }>(
-    RESET_PASSWORD,
-  );
+  const [resetPassword] =
+    useMutation<{ resetPassword: ResetPasswordResponse }>(RESET_PASSWORD);
 
   const handleErrorOnReset = (errorMessage: string) => {
     // eslint-disable-next-line no-alert
@@ -46,7 +46,12 @@ const ResetPassword = ({ email }: ResetPasswordProps) => {
         handleErrorOnReset("Reset password failed.");
       }
     } catch (err) {
-      handleErrorOnReset(err ?? "Error occurred, please try again.");
+      if (typeof err === "string") {
+        handleErrorOnReset(err);
+      } else {
+        console.log(err);
+        handleErrorOnReset("Error occurred, please try again.");
+      }
     }
   };
 

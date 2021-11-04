@@ -12,7 +12,7 @@ import {
   UpdateStoryTranslationContentStatusResponse,
 } from "../../APIClients/mutations/StoryMutations";
 import { StoryLine } from "../translation/Autosave";
-import ConfirmationModal from "../translation/ConfirmationModal";
+import ConfirmationModal from "../utils/ConfirmationModal";
 import {
   REVIEW_PAGE_APPROVE_LAST_LINE_CONFIRMATION,
   REVIEW_PAGE_BUTTON_MESSAGE,
@@ -54,9 +54,8 @@ const StatusBadge = ({
       const prevState = translatedStoryLines[storyLine.lineIndex].status;
 
       const updatedStatusArray = [...translatedStoryLines!];
-      updatedStatusArray[storyLine.lineIndex].status = convertStatusTitleCase(
-        newStatus,
-      );
+      updatedStatusArray[storyLine.lineIndex].status =
+        convertStatusTitleCase(newStatus);
 
       setTranslatedStoryLines(updatedStatusArray);
       if (

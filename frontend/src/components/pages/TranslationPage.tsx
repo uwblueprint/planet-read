@@ -24,7 +24,7 @@ import {
   TRANSLATION_PAGE_BUTTON_MESSAGE,
   TRANSLATION_PAGE_SEND_FOR_REVIEW_CONFIRMATION,
 } from "../../utils/Copy";
-import ConfirmationModal from "../translation/ConfirmationModal";
+import ConfirmationModal from "../utils/ConfirmationModal";
 
 type TranslationPageProps = {
   storyIdParam: string | undefined;
@@ -41,10 +41,8 @@ type Content = {
 const TranslationPage = () => {
   const { authenticatedUser } = useContext(AuthContext);
   const MAX_STACK_SIZE = 100;
-  const {
-    storyIdParam,
-    storyTranslationIdParam,
-  } = useParams<TranslationPageProps>();
+  const { storyIdParam, storyTranslationIdParam } =
+    useParams<TranslationPageProps>();
   // Story Data
   const storyId = +storyIdParam!!;
   const storyTranslationId = +storyTranslationIdParam!!;
@@ -155,7 +153,7 @@ const TranslationPage = () => {
         variables: { storyTranslationData },
       });
       if (result.data?.updateStoryTranslationStage.ok) {
-        window.location.reload(false);
+        window.location.reload();
       } else {
         window.alert("Unable to send for review.");
       }

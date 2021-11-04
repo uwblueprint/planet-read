@@ -11,7 +11,7 @@ import {
 import { Icon } from "@chakra-ui/icon";
 import { MdArrowDropDown } from "react-icons/md";
 
-import ConfirmationModal from "../translation/ConfirmationModal";
+import ConfirmationModal from "../utils/ConfirmationModal";
 import {
   APPROVE_ALL_STORY_TRANSLATION_CONTENT,
   ApproveAllStoryTranslationContentResponse,

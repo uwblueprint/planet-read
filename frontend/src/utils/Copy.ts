@@ -32,3 +32,9 @@ export const REVIEW_PAGE_SUBMIT_TRANSLATION_CONFIRMATION =
 
 export const USER_TABLE_FILTER_TOOL_TIP_COPY =
   "This category already has a filter applied.";
+
+export const MANAGE_STORY_TRANSLATIONS_TABLE_DELETE_TRANSLATION_CONFIRMATION =
+  "By removing this story translation, all data will be removed from the database. This action cannot be undone.";
+
+export const MANAGE_STORY_TRANSLATIONS_TABLE_DELETE_TRANSLATION_BUTTON =
+  "I'm sure, delete story translation";
