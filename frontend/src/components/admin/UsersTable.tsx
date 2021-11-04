@@ -15,6 +15,16 @@ import {
 import { User } from "../../APIClients/queries/UserQueries";
 import { convertLanguageTitleCase } from "../../utils/LanguageUtils";
 import { getLevelVariant } from "../../utils/StatusUtils";
+import {
+  MANAGE_USERS_TABLE_DELETE_USER_BUTTON,
+  MANAGE_USERS_TABLE_DELETE_USER_CONFIRMATION,
+} from "../../utils/Copy";
+import ConfirmationModal from "../utils/ConfirmationModal";
+import { useMutation } from "@apollo/client";
+import {
+  SoftDeleteUserResponse,
+  SOFT_DELETE_USER,
+} from "../../APIClients/mutations/UserMutations";
 
 export type UsersTableProps = {
   isTranslators?: boolean;
@@ -32,6 +42,32 @@ const UsersTable = ({
   setUsers,
 }: UsersTableProps) => {
   const [isAscending, setIsAscending] = useState(true);
+  const [confirmDeleteUser, setConfirmDeleteUser] = useState(false);
+  const [idToDelete, setIdToDelete] = useState(0);
+
+  const [deleteUser] = useMutation<{
+    response: SoftDeleteUserResponse;
+  }>(SOFT_DELETE_USER);
+
+  const closeModal = () => {
+    setIdToDelete(0);
+    setConfirmDeleteUser(false);
+  };
+
+  const openModal = (id: number) => {
+    setIdToDelete(id);
+    setConfirmDeleteUser(true);
+  };
+
+  const callSoftDeleteUserMutation = async () => {
+    await deleteUser({
+      variables: {
+        id: idToDelete,
+      },
+    });
+    closeModal();
+    window.location.reload();
+  };
 
   const sortUsers = () => {
     setIsAscending(!isAscending);
@@ -76,13 +112,13 @@ const UsersTable = ({
         <Link href={`mailto:${userObj?.email}`}>{userObj?.email}</Link>
       </Td>
       <Td>{generateBadges(approvedLanguages[index])}</Td>
-      {/* TODO: make delete button functional */}
       <Td>
         <IconButton
           aria-label={`Delete user ${userObj?.firstName} ${userObj?.lastName}`}
           background="transparent"
           icon={<Icon as={MdDelete} />}
           width="fit-content"
+          onClick={() => openModal(parseInt(userObj?.id!))}
         />
       </Td>
     </Tr>
@@ -111,6 +147,15 @@ const UsersTable = ({
         </Tr>
       </Thead>
       <Tbody>{tableBody}</Tbody>
+      {confirmDeleteUser && (
+        <ConfirmationModal
+          confirmation={confirmDeleteUser}
+          onClose={closeModal}
+          onConfirmationClick={callSoftDeleteUserMutation}
+          confirmationMessage={MANAGE_USERS_TABLE_DELETE_USER_CONFIRMATION}
+          buttonMessage={MANAGE_USERS_TABLE_DELETE_USER_BUTTON}
+        />
+      )}
     </Table>
   );
 };

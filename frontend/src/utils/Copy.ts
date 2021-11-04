@@ -44,3 +44,8 @@ export const USER_TABLE_FILTER_SEARCH_BAR_PLACEHOLDER =
 
 export const STORY_TRANSLATION_TABLE_FILTER_SEARCH_BAR_PLACEHOLDER =
   "Search by story title";
+
+export const MANAGE_USERS_TABLE_DELETE_USER_CONFIRMATION =
+  "By deleting the user, all their data will be removed from the database. The user will not be able to access this platform, and this action cannot be undone.";
+
+export const MANAGE_USERS_TABLE_DELETE_USER_BUTTON = "I'm sure, delete user";
