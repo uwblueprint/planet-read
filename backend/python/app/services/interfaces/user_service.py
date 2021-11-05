@@ -114,7 +114,7 @@ class IUserService(ABC):
     @abstractmethod
     def soft_delete_user(self, user_id):
         """
-        Sft elete a user by user_id by setting is_deleted=True
+        Soft delete a user by user_id by setting is_deleted=True
 
         :param user_id: user_id of user to be deleted
         :type user_id: str

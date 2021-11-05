@@ -1,6 +1,9 @@
 import graphene
 
-from ...middlewares.auth import require_authorization_by_role_gql
+from ...middlewares.auth import (
+    require_authorization_by_role_gql,
+    require_authorization_by_user_id_not_equal,
+)
 from ..service import services
 from ..types.user_type import CreateUserWithEmailDTO, UpdateUserDTO, UserDTO
 
@@ -69,6 +72,7 @@ class SoftDeleteUser(graphene.Mutation):
     ok = graphene.Boolean()
 
     @require_authorization_by_role_gql({"Admin"})
+    @require_authorization_by_user_id_not_equal()
     def mutate(root, info, id):
         try:
             services["user"].soft_delete_user(id)

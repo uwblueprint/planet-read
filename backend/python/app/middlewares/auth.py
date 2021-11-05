@@ -98,6 +98,30 @@ def require_authorization_by_user_id(user_id_field):
     return require_authorization
 
 
+def require_authorization_by_user_id_not_equal():
+    """
+    Determine if request for a user-specific resource is authorized based on
+    access_token validity and if the user_id that the token was issued to does not match
+    the requested user_id
+
+    """
+
+    def require_authorization(api_func):
+        @wraps(api_func)
+        def wrapper(*args, **kwargs):
+            access_token = get_access_token(request)
+            authorized = auth_service.is_authorized_by_user_id_not_equal(
+                access_token, kwargs["id"]
+            )
+            if not authorized:
+                raise Exception("You are not authorized to make this request.")
+            return api_func(*args, **kwargs)
+
+        return wrapper
+
+    return require_authorization
+
+
 def require_authorization_by_email(email_field):
     """
     Determine if request for a user-specific resource is authorized based on
