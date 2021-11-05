@@ -3,8 +3,11 @@ from flask import current_app
 from flask.globals import current_app
 
 from ...models import db
+from ...models.comment import Comment
 from ...models.language_enum import LanguageEnum
+from ...models.story_translation import StoryTranslation
 from ...models.user import User
+from ...models.user_all import UserAll
 from ...resources.user_dto import UserDTO
 from ..interfaces.user_service import IUserService
 
@@ -181,7 +184,7 @@ class UserService(IUserService):
             }
 
             try:
-                new_user = User(**mysql_user)
+                new_user = UserAll(**mysql_user)
                 db.session.add(new_user)
                 db.session.commit()
             except Exception as postgres_error:
@@ -274,6 +277,36 @@ class UserService(IUserService):
             raise e
 
         return UserDTO(user_id, user.first_name, user.last_name, user.email, user.role)
+
+    def soft_delete_user(self, user_id):
+        try:
+            user = User.query.get(user_id)
+
+            if not user:
+                raise Exception(f"user_id {user_id} not found")
+
+            story_translations_translations = StoryTranslation.query.filter(
+                StoryTranslation.translator_id == user_id
+            )
+            for story_translation in story_translations_translations:
+                story_translation.translator_id = None
+
+            story_translations_reviewer = StoryTranslation.query.filter(
+                StoryTranslation.reviewer_id == user_id
+            )
+            for story_translation in story_translations_reviewer:
+                story_translation.reviewer_id = None
+
+            comments = Comment.query.filter(Comment.user_id == user_id)
+
+            for comment in comments:
+                comment.is_deleted = True
+
+            user.is_deleted = True
+            db.session.commit()
+        except Exception as error:
+            self.logger.error(error)
+            raise error
 
     def delete_user_by_id(self, user_id):
         try:
@@ -468,4 +501,5 @@ class UserService(IUserService):
         """
         user_dict = user.to_dict()
         user_dict.pop("auth_id", None)
+        user_dict.pop("is_deleted", None)
         return user_dict

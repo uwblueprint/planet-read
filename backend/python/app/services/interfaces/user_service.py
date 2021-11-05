@@ -112,6 +112,17 @@ class IUserService(ABC):
         pass
 
     @abstractmethod
+    def soft_delete_user(self, user_id):
+        """
+        Sft elete a user by user_id by setting is_deleted=True
+
+        :param user_id: user_id of user to be deleted
+        :type user_id: str
+        :raises Exception: if user deletion fails
+        """
+        pass
+
+    @abstractmethod
     def delete_user_by_id(self, user_id):
         """
         Delete a user by user_id

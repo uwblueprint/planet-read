@@ -62,6 +62,22 @@ class UpdateUserApprovedLanguages(graphene.Mutation):
             raise Exception(error_message if error_message else str(e))
 
 
+class SoftDeleteUser(graphene.Mutation):
+    class Arguments:
+        id = graphene.Int(required=True)
+
+    ok = graphene.Boolean()
+
+    @require_authorization_by_role_gql({"Admin"})
+    def mutate(root, info, id):
+        try:
+            services["user"].soft_delete_user(id)
+            return SoftDeleteUser(ok=True)
+        except Exception as e:
+            error_message = getattr(e, "message", None)
+            raise Exception(error_message if error_message else str(e))
+
+
 """
 TODO mutations:
  updateUser(id: ID!, user: UpdateUserDTO!): UserDTO!
