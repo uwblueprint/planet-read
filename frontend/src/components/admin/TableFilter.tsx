@@ -15,16 +15,23 @@ import {
 } from "@chakra-ui/react";
 import { languageOptions } from "../../constants/Languages";
 import { levelOptions } from "../../constants/Levels";
+import { stageOptions } from "../../constants/Stage";
 import { convertLanguageTitleCase } from "../../utils/LanguageUtils";
-import { USER_TABLE_FILTER_TOOL_TIP_COPY } from "../../utils/Copy";
+import { FILTER_TOOL_TIP_COPY } from "../../utils/Copy";
 
-export type UserTableFilterProps = {
+export type TableFilterProps = {
   language: string | null;
   setLanguage: (newLang: string | null) => void;
   level: string | null;
   setLevel: (newLevel: string | null) => void;
+  stage?: string | null;
+  setStage?: (newStage: string | null) => void;
   searchText: string | null;
   setSearchText: (newText: string | null) => void;
+  useLevel?: boolean;
+  useLanguage?: boolean;
+  useStage?: boolean;
+  searchBarPlaceholder?: string;
 };
 
 export type FilterBadgesProps = {
@@ -74,14 +81,20 @@ const colourStyles: StylesConfig = {
   placeholder: (styles) => ({ ...styles, color: "black" }),
 };
 
-const UsersTableFilter = ({
+const TableFilter = ({
   language,
   level,
+  stage,
   searchText,
   setLanguage,
   setLevel,
+  setStage,
   setSearchText,
-}: UserTableFilterProps) => {
+  useLevel = false,
+  useLanguage = false,
+  useStage = false,
+  searchBarPlaceholder = "",
+}: TableFilterProps) => {
   return (
     <Flex direction="column">
       <Flex
@@ -90,44 +103,68 @@ const UsersTableFilter = ({
         border="1px solid white"
         margin="20px auto 10px"
       >
-        <Tooltip
-          hasArrow
-          label={USER_TABLE_FILTER_TOOL_TIP_COPY}
-          isDisabled={language == null}
-        >
-          <Box flex={1}>
-            <Select
-              isDisabled={language != null}
-              placeholder="Language"
-              options={languageOptions}
-              onChange={(option: any) => setLanguage(option?.value || "")}
-              getOptionLabel={(option: any) => `
+        {useLanguage && (
+          <Tooltip
+            hasArrow
+            label={FILTER_TOOL_TIP_COPY}
+            isDisabled={language == null}
+          >
+            <Box flex={1}>
+              <Select
+                isDisabled={language != null}
+                placeholder="Language"
+                options={languageOptions}
+                onChange={(option: any) => setLanguage(option?.value || "")}
+                getOptionLabel={(option: any) => `
                 ${convertLanguageTitleCase(option.value || "")}
               `}
-              value={language ? { value: language } : null}
-              styles={colourStyles}
-              components={{ DropdownIndicator }}
-            />
-          </Box>
-        </Tooltip>
-        <Tooltip
-          hasArrow
-          label={USER_TABLE_FILTER_TOOL_TIP_COPY}
-          isDisabled={level == null}
-        >
-          <Box flex={1} margin="0 15px">
-            <Select
-              placeholder="Level"
-              options={levelOptions}
-              onChange={(option: any) => setLevel(option?.value || "")}
-              getOptionLabel={(option: any) => `Level ${option.value}`}
-              value={level ? { value: level } : null}
-              styles={colourStyles}
-              components={{ DropdownIndicator }}
-              isDisabled={level != null}
-            />
-          </Box>
-        </Tooltip>
+                value={language ? { value: language } : null}
+                styles={colourStyles}
+                components={{ DropdownIndicator }}
+              />
+            </Box>
+          </Tooltip>
+        )}
+        {useLevel && (
+          <Tooltip
+            hasArrow
+            label={FILTER_TOOL_TIP_COPY}
+            isDisabled={level == null}
+          >
+            <Box flex={1} margin="0 15px">
+              <Select
+                placeholder="Level"
+                options={levelOptions}
+                onChange={(option: any) => setLevel(option?.value || "")}
+                getOptionLabel={(option: any) => `Level ${option.value}`}
+                value={level ? { value: level } : null}
+                styles={colourStyles}
+                components={{ DropdownIndicator }}
+                isDisabled={level != null}
+              />
+            </Box>
+          </Tooltip>
+        )}
+        {useStage && setStage && (
+          <Tooltip
+            hasArrow
+            label={FILTER_TOOL_TIP_COPY}
+            isDisabled={stage == null}
+          >
+            <Box flex={1} margin="0 15px">
+              <Select
+                placeholder="Progress"
+                options={stageOptions}
+                onChange={(option: any) => setStage(option?.value || "")}
+                getOptionLabel={(option: any) => `${option.value}`}
+                value={stage ? { value: stage } : null}
+                styles={colourStyles}
+                components={{ DropdownIndicator }}
+                isDisabled={stage != null}
+              />
+            </Box>
+          </Tooltip>
+        )}
         <Box flex={2} colorScheme="blue" size="secondary">
           <Stack spacing={4}>
             <InputGroup>
@@ -135,7 +172,7 @@ const UsersTableFilter = ({
                 <Icon as={MdSearch} />
               </InputLeftElement>
               <Input
-                placeholder="Search by name or email"
+                placeholder={searchBarPlaceholder}
                 value={searchText || ""}
                 onChange={(e) => setSearchText(e.target.value)}
               />
@@ -170,6 +207,9 @@ const UsersTableFilter = ({
             setFilterValue={setLevel}
           />
         )}
+        {stage && setStage && (
+          <FilterBadges filterValue={`${stage}`} setFilterValue={setStage} />
+        )}
         {searchText && (
           <FilterBadges
             filterValue={searchText}
@@ -181,4 +221,4 @@ const UsersTableFilter = ({
   );
 };
 
-export default UsersTableFilter;
+export default TableFilter;

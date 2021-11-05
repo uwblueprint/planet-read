@@ -13,4 +13,16 @@ function convertStageTitleCase(stage: string) {
   }
 }
 
-export { convertStageTitleCase as default };
+function convertTitleCaseToStage(stage: string) {
+  switch (stage) {
+    case "In Translation":
+      return "TRANSLATE";
+    case "In Review":
+      return "REVIEW";
+    case "Completed":
+      return "PUBLISH";
+    default:
+      return stage;
+  }
+}
+export { convertStageTitleCase as default, convertTitleCaseToStage };

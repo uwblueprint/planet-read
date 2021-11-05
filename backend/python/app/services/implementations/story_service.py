@@ -131,12 +131,15 @@ class StoryService(IStoryService):
         )
 
     def get_story_translations(
-        self, language=None, level=None, stage=None, story_title=None, role_filter=None
+        self,
+        language=None,
+        level=None,
+        stage=None,
+        story_title=None,
+        role_filter=None,
     ):
         try:
             filters = []
-            if role_filter is not None:
-                filters.append(role_filter)
             if language is not None:
                 filters.append(StoryTranslation.language == language)
             if stage is not None:
@@ -145,6 +148,8 @@ class StoryService(IStoryService):
                 filters.append(Story.level == level)
             if story_title is not None:
                 filters.append(Story.title.like(f"%{story_title}%"))
+            if role_filter is not None:
+                filters.append(role_filter)
 
             stories = (
                 Story.query.join(

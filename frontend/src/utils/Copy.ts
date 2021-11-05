@@ -30,7 +30,7 @@ export const REVIEW_PAGE_RETURN_TO_TRANSLATOR_CONFIRMATION =
 export const REVIEW_PAGE_SUBMIT_TRANSLATION_CONFIRMATION =
   "By clicking this button, your review session will end and the story translation will be officially submitted to PlanetRead.";
 
-export const USER_TABLE_FILTER_TOOL_TIP_COPY =
+export const FILTER_TOOL_TIP_COPY =
   "This category already has a filter applied.";
 
 export const MANAGE_STORY_TRANSLATIONS_TABLE_DELETE_TRANSLATION_CONFIRMATION =
@@ -38,3 +38,9 @@ export const MANAGE_STORY_TRANSLATIONS_TABLE_DELETE_TRANSLATION_CONFIRMATION =
 
 export const MANAGE_STORY_TRANSLATIONS_TABLE_DELETE_TRANSLATION_BUTTON =
   "I'm sure, delete story translation";
+
+export const USER_TABLE_FILTER_SEARCH_BAR_PLACEHOLDER =
+  "Search by name or email";
+
+export const STORY_TRANSLATION_TABLE_FILTER_SEARCH_BAR_PLACEHOLDER =
+  "Search by story title";
