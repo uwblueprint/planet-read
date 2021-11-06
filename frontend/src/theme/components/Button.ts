@@ -79,6 +79,14 @@ const Button = {
       textTransform: "capitalize",
       width: "fit-content",
     },
+    commentLabel: {
+      background: "transparent",
+      fontSize: "12px",
+      justifyContent: "flex-start",
+      padding: "0px",
+      textTransform: "capitalize",
+      width: "40px",
+    },
   },
 };
 export default Button;

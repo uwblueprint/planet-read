@@ -6,6 +6,8 @@ const COMMENT_FIELDS = `
     commentIndex
     content
     storyTranslationContentId
+    resolved
+    time
     `;
 
 export type CommentResponse = {
