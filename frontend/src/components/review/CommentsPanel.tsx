@@ -114,7 +114,13 @@ const CommentsPanel = ({
     : TRANSLATION_PAGE_TOOL_TIP_COPY;
 
   return (
-    <Box backgroundColor="gray.100" float="right" width="350px" padding="20px">
+    <Box
+      backgroundColor="gray.100"
+      float="right"
+      width="450px"
+      padding="20px"
+      overflow="auto"
+    >
       <Flex marginBottom="50px">
         <Tooltip hasArrow label={tooltipLabel} isDisabled={!disabled}>
           <Box>
