@@ -1,4 +1,4 @@
-import convertStringTitleCase from "./Utils";
+import { convertStringTitleCase } from "./Utils";
 
 // Change language string to title case
 function convertLanguageTitleCase(language: string) {
