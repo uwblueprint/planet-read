@@ -1,40 +1,36 @@
 import React, { useState } from "react";
-import { useQuery } from "@apollo/client";
 import { Box, Heading, Flex } from "@chakra-ui/react";
 import StoryTranslationsTable from "./StoryTranslationsTable";
 import TableFilter from "./TableFilter";
 import {
   buildStoriesQuery,
   StoryTranslation,
-  StoryTranslationEdge,
 } from "../../APIClients/queries/StoryQueries";
 import { convertTitleCaseToLanguage } from "../../utils/LanguageUtils";
 import { convertTitleCaseToStage } from "../../utils/StageUtils";
 import { STORY_TRANSLATION_TABLE_FILTER_SEARCH_BAR_PLACEHOLDER } from "../../utils/Copy";
+import usePagination from "../../utils/hooks/usePagination";
+
+const ITEMS_PER_PAGE = 10;
 
 const ManageStoryTranslations = () => {
   const [language, setLanguage] = useState<string | null>(null);
   const [level, setLevel] = useState<string | null>(null);
   const [stage, setStage] = useState<string | null>(null);
   const [searchText, setSearchText] = useState<string | null>(null);
+
   const query = buildStoriesQuery(
     convertTitleCaseToLanguage(language || ""),
     parseInt(level || "", 10) || 0,
     convertTitleCaseToStage(stage || ""),
     searchText || "",
   );
-  const [storyTranslations, setStoryTranslations] = useState<
-    StoryTranslation[]
-  >([]);
-  useQuery(query.string, {
-    fetchPolicy: "cache-and-network",
-    onCompleted: (data: {
-      storyTranslations: { edges: StoryTranslationEdge[] };
-    }) => {
-      const translations = data.storyTranslations.edges.map((e) => e.node);
-      setStoryTranslations(translations);
-    },
-  });
+
+  const { pageResults, paginator } = usePagination<StoryTranslation>(
+    query.string,
+    query.fieldName,
+    ITEMS_PER_PAGE,
+  );
 
   return (
     <Box textAlign="center">
@@ -59,7 +55,10 @@ const ManageStoryTranslations = () => {
         useLevel
         useStage
       />
-      <StoryTranslationsTable storyTranslations={storyTranslations} />
+      <StoryTranslationsTable
+        storyTranslationSlice={pageResults}
+        paginator={paginator}
+      />
     </Box>
   );
 };
