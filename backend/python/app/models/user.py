@@ -1,44 +1,32 @@
-from sqlalchemy import inspect
+from sqlalchemy import inspect, select
 from sqlalchemy.dialects.mysql import TEXT
 from sqlalchemy.orm.properties import ColumnProperty
+from sqlalchemy_utils import create_view
 
 from . import db
+from .file import File  # unused import required for foreign key
+from .user_all import UserAll
 
-roles_enum = db.Enum("User", "Admin", name="roles")
+query = select([UserAll]).where(UserAll.is_deleted == False)
+users_active = create_view("users", query, db.Model.metadata)
 
 
 class User(db.Model):
-    __tablename__ = "users"
+    def __init__(self, **kwargs):
+        super(User, self).__init__(**kwargs)
+        self.is_deleted = False
 
-    id = db.Column(db.Integer, primary_key=True, nullable=False)
-    first_name = db.Column(TEXT, nullable=False)
-    last_name = db.Column(TEXT, nullable=False)
-    email = db.Column(db.String(100), nullable=False, unique=True)
-    auth_id = db.Column(db.String(100), nullable=False, unique=True)
-    role = db.Column(roles_enum)
-    resume = db.Column(db.Integer, db.ForeignKey("files.id"))
-    profile_pic = db.Column(db.Integer, db.ForeignKey("files.id"))
-    # format for approved_languages_translation and approved_languages_review
-    # should be language: highest approved level
-    approved_languages_translation = db.Column(db.JSON)
-    approved_languages_review = db.Column(db.JSON)
+    __table__ = users_active
 
     def to_dict(self, include_relationships=False):
-        # define the entities table
         cls = type(self)
-
         mapper = inspect(cls)
         formatted = {}
         for column in mapper.attrs:
             field = column.key
             attr = getattr(self, field)
-            # if it's a regular column, extract the value
             if isinstance(column, ColumnProperty):
                 formatted[field] = attr
-            # otherwise, it's a relationship field
-            # (currently not applicable, but may be useful for entity groups)
             elif include_relationships:
-                # recursively format the relationship
-                # don't format the relationship's relationships
                 formatted[field] = [obj.to_dict() for obj in attr]
         return formatted

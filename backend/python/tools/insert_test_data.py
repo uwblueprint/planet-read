@@ -15,11 +15,12 @@ from app.models.story_translation_all import StoryTranslationAll
 from app.models.story_translation_content import StoryTranslationContent
 from app.models.story_translation_content_all import StoryTranslationContentAll
 from app.models.user import User
+from app.models.user_all import UserAll
 
 
 def insert_test_data():
     # users
-    db.engine.execute("ALTER TABLE users AUTO_INCREMENT = 1;")
+    db.engine.execute("ALTER TABLE users_all AUTO_INCREMENT = 1;")
     db.engine.execute(
         f"INSERT IGNORE INTO users \
             (first_name, last_name, email, auth_id, role, approved_languages_translation, approved_languages_review) \
@@ -174,7 +175,7 @@ def erase_db():
     db.session.commit()
     db.session.query(StoryTranslationAll).delete()
     db.session.commit()
-    db.session.query(User).delete()
+    db.session.query(UserAll).delete()
     db.session.commit()
     db.session.query(Story).delete()
     db.session.commit()

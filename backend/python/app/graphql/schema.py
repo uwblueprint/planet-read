@@ -21,7 +21,12 @@ from .mutations.story_mutation import (
     UpdateStoryTranslationContentStatus,
     UpdateStoryTranslationStage,
 )
-from .mutations.user_mutation import CreateUser, UpdateUser, UpdateUserApprovedLanguages
+from .mutations.user_mutation import (
+    CreateUser,
+    SoftDeleteUser,
+    UpdateUser,
+    UpdateUserApprovedLanguages,
+)
 from .queries.comment_query import resolve_comments_by_story_translation
 from .queries.file_query import resolve_file_by_id
 from .queries.story_query import (
@@ -69,6 +74,7 @@ class Mutation(graphene.ObjectType):
     update_story_translation_stage = UpdateStoryTranslationStage.Field()
     soft_delete_story_translation = SoftDeleteStoryTranslation.Field()
     update_user_approved_language = UpdateUserApprovedLanguages.Field()
+    soft_delete_user = SoftDeleteUser.Field()
 
 
 class Query(graphene.ObjectType):

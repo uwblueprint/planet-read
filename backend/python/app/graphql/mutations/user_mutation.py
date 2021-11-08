@@ -1,6 +1,9 @@
 import graphene
 
-from ...middlewares.auth import require_authorization_by_role_gql
+from ...middlewares.auth import (
+    require_authorization_by_role_gql,
+    require_authorization_by_user_id_not_equal,
+)
 from ..service import services
 from ..types.user_type import CreateUserWithEmailDTO, UpdateUserDTO, UserDTO
 
@@ -57,6 +60,23 @@ class UpdateUserApprovedLanguages(graphene.Mutation):
                 user_id, is_translate, language, level
             )
             return UpdateUserApprovedLanguages(user=updated_user)
+        except Exception as e:
+            error_message = getattr(e, "message", None)
+            raise Exception(error_message if error_message else str(e))
+
+
+class SoftDeleteUser(graphene.Mutation):
+    class Arguments:
+        id = graphene.Int(required=True)
+
+    ok = graphene.Boolean()
+
+    @require_authorization_by_role_gql({"Admin"})
+    @require_authorization_by_user_id_not_equal()
+    def mutate(root, info, id):
+        try:
+            services["user"].soft_delete_user(id)
+            return SoftDeleteUser(ok=True)
         except Exception as e:
             error_message = getattr(e, "message", None)
             raise Exception(error_message if error_message else str(e))

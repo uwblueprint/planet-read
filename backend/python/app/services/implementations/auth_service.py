@@ -164,6 +164,18 @@ class AuthService(IAuthService):
         except:
             return False
 
+    def is_authorized_by_user_id_not_equal(self, access_token, requested_user_id):
+        try:
+            decoded_id_token = firebase_admin.auth.verify_id_token(
+                access_token, check_revoked=True
+            )
+            token_user_id = self.user_service.get_user_id_by_auth_id(
+                decoded_id_token["uid"]
+            )
+            return int(token_user_id) != requested_user_id
+        except:
+            return False
+
     def is_authorized_by_email(self, access_token, requested_email):
         try:
             decoded_id_token = firebase_admin.auth.verify_id_token(
