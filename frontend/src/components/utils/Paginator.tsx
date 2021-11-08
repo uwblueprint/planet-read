@@ -24,7 +24,7 @@ const Paginator = ({
 }: PaginatorProps) => {
   return (
     <Flex justify="flex-end" align="center">
-      <Text mr={2}>
+      <Text marginRight={2}>
         <b>
           {first}-{last}
         </b>{" "}

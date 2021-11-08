@@ -20,7 +20,11 @@ interface PageInfo {
 }
 
 /*
- * A hook that adapts cursor-style pagination to support a table-based use-case.
+ * A hook that adapts relay-style cursor pagination to support a table-based use-case.
+ *
+ * When using this hook to query a new field, make sure to add a new field policy to the Apollo Client cache.
+ * Read more here: https://www.apollographql.com/docs/react/pagination/cursor-based/#relay-style-cursor-pagination
+ *
  * @param query - The paginated GraphQL query
  * @param fieldName - The name of item being accessed, e.g. storyTranslations
  * @param itemPerPage - The number of items per page

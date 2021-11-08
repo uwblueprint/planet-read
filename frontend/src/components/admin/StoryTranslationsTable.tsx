@@ -155,7 +155,7 @@ const StoryTranslationsTable = ({
           }
         />
       )}
-      <TableCaption mt={1} pr={0}>
+      <TableCaption marginTop={1} paddingRight={0}>
         {paginator}
       </TableCaption>
     </Table>
