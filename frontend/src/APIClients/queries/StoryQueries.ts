@@ -137,11 +137,6 @@ export type StoryTranslation = {
   numApprovedLines: number;
 };
 
-export type StoryTranslationEdge = {
-  cursor: string;
-  node: StoryTranslation;
-};
-
 export const buildStoriesQuery = (
   language?: string,
   level?: number,
@@ -152,13 +147,20 @@ export const buildStoriesQuery = (
   queryParams += level ? `level: ${level}, ` : "";
   queryParams += stage ? `stage: "${stage}", ` : "";
   queryParams += storyTitle ? `storyTitle: "${storyTitle}", ` : "";
-  queryParams = queryParams === "" ? queryParams : `( ${queryParams} )`;
 
   return {
     fieldName: "storyTranslations",
     string: gql`
-      query StoryTranslations {
-        storyTranslations ${queryParams} {
+      query StoryTranslations(
+        $first: Int
+        $cursor: String
+      ) {
+        storyTranslations(
+          ${queryParams}
+          first: $first
+          after: $cursor
+        ) {
+          totalCount
           edges {
             cursor
             node {

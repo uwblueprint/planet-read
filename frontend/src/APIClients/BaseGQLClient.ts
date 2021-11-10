@@ -8,6 +8,7 @@ import {
 import { onError } from "@apollo/client/link/error";
 import { setContext } from "@apollo/client/link/context";
 import { RetryLink } from "@apollo/client/link/retry";
+import { relayStylePagination } from "@apollo/client/utilities";
 import jwt from "jsonwebtoken";
 import AUTHENTICATED_USER_KEY from "../constants/AuthConstants";
 import {
@@ -107,7 +108,15 @@ errorLink -> refreshDirectionalLink
 */
 const client = new ApolloClient({
   link: errorLink.concat(refreshDirectionalLink),
-  cache: new InMemoryCache(),
+  cache: new InMemoryCache({
+    typePolicies: {
+      Query: {
+        fields: {
+          storyTranslations: relayStylePagination(),
+        },
+      },
+    },
+  }),
 });
 
 export default client;

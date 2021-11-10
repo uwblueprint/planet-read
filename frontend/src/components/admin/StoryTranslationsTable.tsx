@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { ReactNode, useState } from "react";
 import { useMutation } from "@apollo/client";
 import { Icon } from "@chakra-ui/icon";
 import { MdDelete } from "react-icons/md";
@@ -12,6 +12,7 @@ import {
   Tr,
   Th,
   Td,
+  TableCaption,
 } from "@chakra-ui/react";
 import { StoryTranslation } from "../../APIClients/queries/StoryQueries";
 import { convertLanguageTitleCase } from "../../utils/LanguageUtils";
@@ -28,11 +29,13 @@ import {
 } from "../../utils/Copy";
 
 export type StoryTranslationsTableProps = {
-  storyTranslations: StoryTranslation[];
+  storyTranslationSlice: StoryTranslation[];
+  paginator: ReactNode;
 };
 
 const StoryTranslationsTable = ({
-  storyTranslations,
+  storyTranslationSlice,
+  paginator,
 }: StoryTranslationsTableProps) => {
   const [confirmDeleteTranslation, setConfirmDeleteTranslation] =
     useState(false);
@@ -62,12 +65,14 @@ const StoryTranslationsTable = ({
     window.location.reload();
   };
 
-  const tableBody = storyTranslations.map(
+  const tableBody = storyTranslationSlice.map(
     (storyTranslationObj: StoryTranslation, index: number) => (
       <Tr
         key={`${storyTranslationObj?.storyId}${storyTranslationObj?.storyTranslationId}`}
         borderBottom={
-          index === storyTranslations.length - 1 ? "1em solid transparent" : ""
+          index === storyTranslationSlice.length - 1
+            ? "1em solid transparent"
+            : ""
         }
       >
         <Td>
@@ -150,6 +155,9 @@ const StoryTranslationsTable = ({
           }
         />
       )}
+      <TableCaption marginTop={1} paddingRight={0}>
+        {paginator}
+      </TableCaption>
     </Table>
   );
 };
