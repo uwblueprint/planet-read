@@ -81,7 +81,7 @@ const ExistingComment = ({
       borderColor="blue.50"
       borderRadius="8"
       direction="column"
-      padding="14px 15px"
+      padding="14px 14px"
       width="320px"
     >
       <Text fontWeight="bold" marginBottom="15px">
