@@ -12,6 +12,7 @@ import {
   Td,
   IconButton,
 } from "@chakra-ui/react";
+import { useMutation } from "@apollo/client";
 import { User } from "../../APIClients/queries/UserQueries";
 import { convertLanguageTitleCase } from "../../utils/LanguageUtils";
 import { getLevelVariant } from "../../utils/StatusUtils";
@@ -20,7 +21,6 @@ import {
   MANAGE_USERS_TABLE_DELETE_USER_CONFIRMATION,
 } from "../../utils/Copy";
 import ConfirmationModal from "../utils/ConfirmationModal";
-import { useMutation } from "@apollo/client";
 import {
   SoftDeleteUserResponse,
   SOFT_DELETE_USER,
@@ -118,7 +118,7 @@ const UsersTable = ({
           background="transparent"
           icon={<Icon as={MdDelete} />}
           width="fit-content"
-          onClick={() => openModal(parseInt(userObj?.id!))}
+          onClick={() => openModal(parseInt(userObj?.id!, 10))}
         />
       </Td>
     </Tr>
