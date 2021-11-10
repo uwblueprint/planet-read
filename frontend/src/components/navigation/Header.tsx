@@ -1,7 +1,10 @@
-import React from "react";
-import { Button, Flex, Heading, Image } from "@chakra-ui/react";
+import React, { useContext, useState } from "react";
+import { Button, Flex, Heading, IconButton, Image } from "@chakra-ui/react";
+import { Icon } from "@chakra-ui/icon";
+import { BiUserCircle } from "react-icons/bi";
 import Logo from "../../assets/planet-read-logo.svg";
-import PlaceholderUserIcon from "../../assets/user-icon.svg";
+import UserModal from "./UserModal";
+import AuthContext from "../../contexts/AuthContext";
 
 export enum AdminPageOption {
   StoryTranslations = 1,
@@ -20,6 +23,23 @@ const Header = ({
   adminPageOption,
   setAdminPageOption,
 }: HeaderProps) => {
+  const { authenticatedUser } = useContext(AuthContext);
+
+  const { id, firstName, lastName, role, approvedLanguagesReview } =
+    authenticatedUser!!;
+
+  const isReviewer = approvedLanguagesReview !== null;
+
+  const [showUser, setShowUser] = useState(false);
+
+  const onProfileClick = () => {
+    setShowUser(true);
+  };
+
+  const onCloseUserModal = () => {
+    setShowUser(false);
+  };
+
   return (
     <Flex
       justify="space-between"
@@ -74,9 +94,31 @@ const Header = ({
           </Button>
         </Flex>
       )}
-      <Flex width="300px" justify="flex-end" margin="0px 30px">
-        <Image width="40px" src={PlaceholderUserIcon} alt="User icon" />
+      <Flex
+        width="300px"
+        marginRight="30px"
+        justify="flex-end"
+        alignItems="center"
+      >
+        <IconButton
+          width="fit-content"
+          aria-label="User icon"
+          background="transparent"
+          icon={<Icon as={BiUserCircle} width={6} height={6} />}
+          onClick={() => onProfileClick()}
+        />
       </Flex>
+      {showUser && (
+        <UserModal
+          showUser={showUser}
+          onClose={onCloseUserModal}
+          id={id}
+          firstName={firstName}
+          lastName={lastName}
+          role={role}
+          isReviewer={isReviewer}
+        />
+      )}
     </Flex>
   );
 };

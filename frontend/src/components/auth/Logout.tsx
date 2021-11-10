@@ -1,5 +1,8 @@
 import React, { useContext, useEffect } from "react";
 import { useMutation } from "@apollo/client";
+import { Text } from "@chakra-ui/react";
+import { Icon } from "@chakra-ui/icon";
+import { BiExport } from "react-icons/bi";
 import AuthContext from "../../contexts/AuthContext";
 import {
   LOGOUT,
@@ -25,9 +28,16 @@ const Logout = () => {
   }, [error]);
 
   return (
-    <button type="button" className="btn btn-primary" onClick={onLogOutClick}>
-      Log Out
-    </button>
+    <Text variant="link" color="black" onClick={onLogOutClick}>
+      <Icon
+        as={BiExport}
+        height={6}
+        width={6}
+        marginRight="10px"
+        transform="rotate(90deg)"
+      />
+      Sign out
+    </Text>
   );
 };
 
