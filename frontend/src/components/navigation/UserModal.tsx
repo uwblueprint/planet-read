@@ -79,7 +79,7 @@ const UserModal = ({
             </Heading>
             <Text fontSize="16px" color="gray.300">
               {role === "Admin" ? "Admin" : "Translator"}
-              {isReviewer ? " & Reviewer" : ""}
+              {isReviewer && role !== "Admin" ? " & Reviewer" : ""}
             </Text>
           </Flex>
         </ModalHeader>
