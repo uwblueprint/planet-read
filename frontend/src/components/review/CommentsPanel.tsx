@@ -76,6 +76,7 @@ const CommentsPanel = ({
               resolved={comment.resolved}
               content={comment.content}
               time={comment.time}
+              commentIndex={comment.commentIndex}
               commentStoryTranslationContentId={
                 commentStoryTranslationContentId
               }
