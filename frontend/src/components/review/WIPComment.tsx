@@ -78,8 +78,8 @@ const WIPComment = ({
       borderColor="blue.50"
       borderRadius={8}
       direction="column"
-      padding="14px 15px"
-      width="320px"
+      padding="14px 14px"
+      width="300px"
     >
       <b>Line {lineIndex}</b>
       <p>{name}</p>
