@@ -164,24 +164,26 @@ const ManageStoryTranslationPage = () => {
             <Input type="youtubeLink" value={youtubeLink} />
           </FormControl>
           <Heading size="sm" marginTop="24px">
-            Delete Story Translatoin
+            Delete Story Translation
           </Heading>
           <Text>
             Permanently delete this story translation and all data associated
             with it.
           </Text>
+          {/* TODO: Use outline variant after hard coded outline variant is removed */}
           <Button
             colorScheme="red"
             margin="10px 0px"
             width="250px"
             onClick={() => openModal()}
           >
-            Delete Story translation
+            Delete Story Translation
           </Button>
         </Flex>
         <Box
           css={{
             borderRadius: "8px",
+            height: "200px",
             margin: "40px",
             MozBorderRadius: "8px",
             overflow: "hidden",
@@ -189,6 +191,7 @@ const ManageStoryTranslationPage = () => {
           }}
         >
           <iframe
+            height="200px"
             width="100%"
             src={embedLink(youtubeLink)}
             title="YouTube video player"
