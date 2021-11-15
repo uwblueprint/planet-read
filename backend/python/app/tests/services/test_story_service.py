@@ -10,6 +10,9 @@ def test_get_story(app, db, services):
     resp = services["story"].get_story(obj.id)
     assert_story_equals_model(resp, obj, graphql_response=False)
 
+    db.session.query(Story).delete()
+    assert db.session.commit() == None
+
 
 def test_get_story_invalid_id():
     pass

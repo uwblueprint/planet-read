@@ -48,6 +48,10 @@ def test_stories(app, db, client):
             assert content_db.line_index == content_dict["lineIndex"]
             assert content_db.content == content_dict["content"]
 
+    db.session.query(StoryContent).delete()
+    db.session.query(Story).delete()
+    assert db.session.commit() == None
+
 
 def test_story_by_id(db, client):
     pass
