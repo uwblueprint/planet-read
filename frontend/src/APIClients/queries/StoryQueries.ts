@@ -1,5 +1,27 @@
 import { DocumentNode, gql } from "@apollo/client";
 
+export const GET_STORY_TRANSLATION = (id: number) =>
+  gql`
+      query GetStoryTranslation {
+        storyTranslationById(
+          id: ${id}
+        ) {
+          title
+          description
+          youtubeLink
+          level
+          language
+          stage
+          translatorId
+          translatorName
+          reviewerId
+          reviewerName
+          numTranslatedLines
+          numApprovedLines
+        }
+      }
+    `;
+
 export const GET_STORY_CONTENTS = (id: number) =>
   gql`
       query GetStoryContents {
