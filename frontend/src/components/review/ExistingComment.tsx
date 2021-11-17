@@ -15,6 +15,7 @@ export type ExistingCommentProps = {
   resolved: boolean;
   content: string;
   time: string;
+  commentIndex: number;
   commentStoryTranslationContentId: number;
   lineIndex: number;
   updateCommentsAsResolved: (index: number) => void;
@@ -36,6 +37,7 @@ const ExistingComment = ({
   setTranslatedStoryLines,
   comments,
   translatedStoryLines,
+  commentIndex,
 }: ExistingCommentProps) => {
   const handleError = (errorMessage: string) => {
     // eslint-disable-next-line no-alert
@@ -77,16 +79,17 @@ const ExistingComment = ({
   return (
     <Flex
       backgroundColor="transparent"
-      border="1px solid"
-      borderColor="blue.50"
       borderRadius="8"
       direction="column"
       padding="14px 14px"
-      width="320px"
+      width={`${commentIndex ? 300 : 320}px`}
+      margin={`${commentIndex ? 20 : 0}px`}
     >
-      <Text fontWeight="bold" marginBottom="15px">
-        Line {lineIndex}
-      </Text>
+      {commentIndex < 2 && (
+        <Text fontWeight="bold" marginBottom="15px">
+          {commentIndex === 1 && "Replies to "}Line {lineIndex}
+        </Text>
+      )}
       <Flex justify="space-between" marginBottom="10px">
         <p>{name}</p>
         <p>{time}</p>
