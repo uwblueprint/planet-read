@@ -28,13 +28,13 @@ const Logout = () => {
   }, [error]);
 
   return (
-    <Text variant="link" color="black" onClick={onLogOutClick}>
+    <Text color="black" onClick={onLogOutClick} variant="link">
       <Icon
         as={MdIosShare}
         height={6}
-        width={6}
         marginRight="10px"
         transform="rotate(90deg)"
+        width={6}
       />
       Sign out
     </Text>

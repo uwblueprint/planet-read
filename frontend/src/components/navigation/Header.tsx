@@ -42,81 +42,81 @@ const Header = ({
 
   return (
     <Flex
-      justify="space-between"
       alignItems="stretch"
       boxShadow="0px -9px 10px black"
+      justify="space-between"
     >
       <Flex margin="0px 30px">
-        <Heading size="md" margin="10px">
+        <Heading margin="10px" size="md">
           Add my Language
         </Heading>
-        <Image width="40px" src={Logo} alt="Planet read logo" />
+        <Image alt="Planet read logo" src={Logo} width="40px" />
       </Flex>
 
       {title && (
-        <Heading size="lg" margin="10px">
+        <Heading margin="10px" size="lg">
           {title}
         </Heading>
       )}
       {adminPageOption && setAdminPageOption && (
         <Flex alignItems="flex-end">
           <Button
+            onClick={() => {
+              setAdminPageOption(AdminPageOption.StoryTranslations);
+            }}
             variant={
               adminPageOption === AdminPageOption.StoryTranslations
                 ? "headerSelect"
                 : "header"
             }
-            onClick={() => {
-              setAdminPageOption(AdminPageOption.StoryTranslations);
-            }}
           >
             Manage Story Translations
           </Button>
           <Button
+            onClick={() => setAdminPageOption(AdminPageOption.Translators)}
             variant={
               adminPageOption === AdminPageOption.Translators
                 ? "headerSelect"
                 : "header"
             }
-            onClick={() => setAdminPageOption(AdminPageOption.Translators)}
           >
             Manage Translators
           </Button>
           <Button
+            onClick={() => setAdminPageOption(AdminPageOption.Reviewers)}
             variant={
               adminPageOption === AdminPageOption.Reviewers
                 ? "headerSelect"
                 : "header"
             }
-            onClick={() => setAdminPageOption(AdminPageOption.Reviewers)}
           >
             Manage Reviewers
           </Button>
         </Flex>
       )}
       <Flex
-        width="300px"
-        marginRight="30px"
-        justify="flex-end"
         alignItems="center"
+        justify="flex-end"
+        marginRight="30px"
+        width="300px"
       >
         <IconButton
-          width="fit-content"
           aria-label="User icon"
           background="transparent"
           icon={<Icon as={MdOutlineAccountCircle} width={6} height={6} />}
           onClick={() => onProfileClick()}
+          width="fit-content"
         />
       </Flex>
       {showUser && (
         <UserModal
-          showUser={showUser}
-          onClose={onCloseUserModal}
-          id={id}
           firstName={firstName}
-          lastName={lastName}
-          role={role}
+          id={id}
           isReviewer={isReviewer}
+          lastName={lastName}
+          onClose={onCloseUserModal}
+          role={role}
+          showUser={showUser}
         />
       )}
     </Flex>
