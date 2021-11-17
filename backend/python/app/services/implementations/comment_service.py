@@ -80,7 +80,13 @@ class CommentService(ICommentService):
                 StoryTranslationContentStatus.ACTION_REQUIRED
             )
             db.session.commit()
+            
+            stc = StoryTranslationContent.query.filter_by(
+                id=new_comment.story_translation_content_id
+            ).first()
 
+            new_comment.line_index = stc.line_index
+            
             return new_comment
         elif story_translation_stage == "TRANSLATE" and is_reviewer:
             raise Exception(
@@ -99,8 +105,9 @@ class CommentService(ICommentService):
 
     def get_comments_by_story_translation(self, story_translation_id, resolved=None):
         try:
-            comments = (
-                Comment.query.join(
+            comments_data = (
+                db.session.query(Comment, StoryTranslationContent.line_index)
+                .join(
                     StoryTranslationContent,
                     Comment.story_translation_content_id == StoryTranslationContent.id,
                 )
@@ -111,6 +118,19 @@ class CommentService(ICommentService):
                 )
                 .all()
             )
+
+            comments = []
+
+            for comment_data in comments_data:
+                comment, line_index = comment_data
+
+                comments.append(
+                    {
+                        **comment.to_dict(include_relationships=True),
+                        "line_index": line_index,
+                    }
+                )
+
         except Exception as error:
             self.logger.error(str(error))
             raise error

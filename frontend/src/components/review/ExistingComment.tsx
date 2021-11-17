@@ -11,34 +11,25 @@ import { CommentResponse } from "../../APIClients/queries/CommentQueries";
 import { StoryLine } from "../translation/Autosave";
 
 export type ExistingCommentProps = {
-  id: number;
-  resolved: boolean;
-  content: string;
-  time: string;
-  commentIndex: number;
-  commentStoryTranslationContentId: number;
-  lineIndex: number;
+  comment: CommentResponse;
   updateCommentsAsResolved: (index: number) => void;
   comments: CommentResponse[];
   setComments: (comments: CommentResponse[]) => void;
   translatedStoryLines: StoryLine[];
   setTranslatedStoryLines: (storyLines: StoryLine[]) => void;
+  WIPLineIndex: number;
 };
 
 const ExistingComment = ({
-  id,
-  resolved,
-  content,
-  time,
-  commentStoryTranslationContentId,
-  lineIndex,
+  comment,
   updateCommentsAsResolved,
   setComments,
   setTranslatedStoryLines,
   comments,
   translatedStoryLines,
-  commentIndex,
+  WIPLineIndex,
 }: ExistingCommentProps) => {
+  const { id, resolved, content, time, lineIndex, commentIndex } = comment;
   const handleError = (errorMessage: string) => {
     // eslint-disable-next-line no-alert
     alert(errorMessage);
@@ -87,7 +78,8 @@ const ExistingComment = ({
     >
       {commentIndex < 2 && (
         <Text fontWeight="bold" marginBottom="15px">
-          {commentIndex === 1 && "Replies to "}Line {lineIndex}
+          {commentIndex === 1 && "Replies to "}
+          Line {lineIndex + 1}
         </Text>
       )}
       <Flex justify="space-between" marginBottom="10px">
@@ -105,10 +97,10 @@ const ExistingComment = ({
           Resolve
         </Button>
       </Flex>
-      {reply > 0 && lineIndex > -1 && (
+      {reply > 0 && WIPLineIndex > -1 && (
         <WIPComment
-          lineIndex={lineIndex}
-          commentStoryTranslationContentId={commentStoryTranslationContentId}
+          WIPLineIndex={WIPLineIndex}
+          commentStoryTranslationContentId={lineIndex}
           setCommentLine={setReply}
           comments={comments}
           setComments={setComments}

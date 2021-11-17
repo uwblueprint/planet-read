@@ -72,15 +72,8 @@ const CommentsPanel = ({
           {comments.map((comment: CommentResponse) => (
             <ExistingComment
               key={comment.id}
-              id={comment.id}
-              resolved={comment.resolved}
-              content={comment.content}
-              time={comment.time}
-              commentIndex={comment.commentIndex}
-              commentStoryTranslationContentId={
-                commentStoryTranslationContentId
-              }
-              lineIndex={commentLine}
+              comment={comment}
+              WIPLineIndex={commentLine}
               updateCommentsAsResolved={updateCommentsAsResolved}
               comments={comments}
               setComments={setComments}
@@ -150,7 +143,7 @@ const CommentsPanel = ({
       </Flex>
       {commentLine > 0 && (
         <WIPComment
-          lineIndex={commentLine}
+          WIPLineIndex={commentLine}
           commentStoryTranslationContentId={commentStoryTranslationContentId}
           setCommentLine={setCommentLine}
           comments={comments}
