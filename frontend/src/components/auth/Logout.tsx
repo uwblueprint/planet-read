@@ -2,7 +2,7 @@ import React, { useContext, useEffect } from "react";
 import { useMutation } from "@apollo/client";
 import { Text } from "@chakra-ui/react";
 import { Icon } from "@chakra-ui/icon";
-import { BiExport } from "react-icons/bi";
+import { MdIosShare } from "react-icons/md";
 import AuthContext from "../../contexts/AuthContext";
 import {
   LOGOUT,
@@ -30,7 +30,7 @@ const Logout = () => {
   return (
     <Text variant="link" color="black" onClick={onLogOutClick}>
       <Icon
-        as={BiExport}
+        as={MdIosShare}
         height={6}
         width={6}
         marginRight="10px"

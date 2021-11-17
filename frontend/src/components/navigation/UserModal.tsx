@@ -6,34 +6,34 @@ import {
   Flex,
   Heading,
   Modal,
-  ModalOverlay,
+  ModalBody,
   ModalContent,
   ModalHeader,
-  ModalBody,
+  ModalOverlay,
   Text,
 } from "@chakra-ui/react";
 import { Icon } from "@chakra-ui/icon";
-import { BiUserCircle } from "react-icons/bi";
+import { MdOutlineAccountCircle } from "react-icons/md";
 import Logout from "../auth/Logout";
 
 type UserModalProps = {
-  showUser: boolean;
-  onClose: () => void;
-  id: string;
   firstName: string;
-  lastName: string;
-  role: string;
+  id: string;
   isReviewer: boolean;
+  lastName: string;
+  onClose: () => void;
+  role: string;
+  showUser: boolean;
 };
 
 const UserModal = ({
-  showUser,
-  onClose,
-  id,
   firstName,
-  lastName,
-  role,
+  id,
   isReviewer,
+  lastName,
+  onClose,
+  role,
+  showUser,
 }: UserModalProps) => {
   const onShowProfileClick = () => {
     window.location.href = `/user/${id}`;
@@ -67,7 +67,12 @@ const UserModal = ({
                 marginTop="1px"
                 backgroundColor="blue.500"
               >
-                <Icon as={BiUserCircle} width={12} height={12} color="white" />
+                <Icon
+                  as={MdOutlineAccountCircle}
+                  width={12}
+                  height={12}
+                  color="white"
+                />
               </Circle>
             </Circle>
           </Flex>
@@ -95,7 +100,7 @@ const UserModal = ({
                 onClick={onShowProfileClick}
               >
                 <Icon
-                  as={BiUserCircle}
+                  as={MdOutlineAccountCircle}
                   height={6}
                   width={6}
                   marginRight="10px"

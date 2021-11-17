@@ -1,7 +1,7 @@
 import React, { useContext, useState } from "react";
 import { Button, Flex, Heading, IconButton, Image } from "@chakra-ui/react";
 import { Icon } from "@chakra-ui/icon";
-import { BiUserCircle } from "react-icons/bi";
+import { MdOutlineAccountCircle } from "react-icons/md";
 import Logo from "../../assets/planet-read-logo.svg";
 import UserModal from "./UserModal";
 import AuthContext from "../../contexts/AuthContext";
@@ -104,7 +104,7 @@ const Header = ({
           width="fit-content"
           aria-label="User icon"
           background="transparent"
-          icon={<Icon as={BiUserCircle} width={6} height={6} />}
+          icon={<Icon as={MdOutlineAccountCircle} width={6} height={6} />}
           onClick={() => onProfileClick()}
         />
       </Flex>
