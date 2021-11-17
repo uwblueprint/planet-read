@@ -48,6 +48,7 @@ type StoryTranslation = {
   reviewerName: string;
   numTranslatedLines: number;
   numApprovedLines: number;
+  numContentLines: number;
 };
 
 const ManageStoryTranslationPage = () => {
@@ -66,6 +67,7 @@ const ManageStoryTranslationPage = () => {
   const [reviewerName, setReviewerName] = useState<string>("");
   const [numTranslatedLines, setNumTranslatedLines] = useState<number>(0);
   const [numApprovedLines, setNumApprovedLines] = useState<number>(0);
+  const [numContentLines, setNumContentLines] = useState<number>(0);
 
   const [confirmDeleteTranslation, setConfirmDeleteTranslation] =
     useState(false);
@@ -90,6 +92,7 @@ const ManageStoryTranslationPage = () => {
       setReviewerName(data.storyTranslationById.reviewerName);
       setNumTranslatedLines(data.storyTranslationById.numTranslatedLines);
       setNumApprovedLines(data.storyTranslationById.numApprovedLines);
+      setNumContentLines(data.storyTranslationById.numContentLines);
     },
     onError: () => {
       history.push("/404");
@@ -212,10 +215,13 @@ const ManageStoryTranslationPage = () => {
         <Flex direction="row">
           {/* TODO: Get total number of lines to calculate progress */}
           <ProgressBar
-            percentageComplete={numTranslatedLines}
+            percentageComplete={(numTranslatedLines / numContentLines) * 100}
             type="Translation"
           />
-          <ProgressBar percentageComplete={numApprovedLines} type="Review" />
+          <ProgressBar
+            percentageComplete={(numApprovedLines / numContentLines) * 100}
+            type="Review"
+          />
         </Flex>
         <Box>
           <Button colorScheme="blue" variant="outline">
