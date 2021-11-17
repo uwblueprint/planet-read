@@ -269,9 +269,7 @@ class StoryService(IStoryService):
                 response["translation_contents"]
             )
 
-            response["num_content_lines"] = self._get_num_content_lines(
-                response["translation_contents"]
-            )
+            response["num_content_lines"] = len(response["translation_contents"])
 
             return response
 
@@ -564,9 +562,6 @@ class StoryService(IStoryService):
                 count += 1
 
         return count
-
-    def _get_num_content_lines(self, translation_contents):
-        return len(translation_contents)
 
     def _get_story_translations_user_translating(self, user_id):
         return (
