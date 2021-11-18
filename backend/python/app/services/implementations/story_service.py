@@ -269,6 +269,8 @@ class StoryService(IStoryService):
                 response["translation_contents"]
             )
 
+            response["num_content_lines"] = len(response["translation_contents"])
+
             return response
 
         except Exception as error:

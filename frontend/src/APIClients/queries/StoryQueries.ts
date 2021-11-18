@@ -18,6 +18,7 @@ export const GET_STORY_TRANSLATION = (id: number) =>
           reviewerName
           numTranslatedLines
           numApprovedLines
+          numContentLines
         }
       }
     `;
