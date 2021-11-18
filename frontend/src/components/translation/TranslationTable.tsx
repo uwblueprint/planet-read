@@ -26,7 +26,7 @@ export type TranslationTableProps = {
   setTranslatedStoryLines: (storyLines: StoryLine[]) => void;
   commentLine: number;
   setCommentLine: (line: number) => void;
-  setCommentStoryTranslationContentId: (id: number) => void;
+  setStoryTranslationContentId: (id: number) => void;
   numApprovedLines?: number;
   setNumApprovedLines?: (numLines: number) => void;
   changedStoryLines?: number;
@@ -45,7 +45,7 @@ const TranslationTable = ({
   setTranslatedStoryLines,
   commentLine,
   setCommentLine,
-  setCommentStoryTranslationContentId,
+  setStoryTranslationContentId,
   translator,
   numApprovedLines,
   setNumApprovedLines,
@@ -58,7 +58,7 @@ const TranslationTable = ({
     storyTranslationContentId: number,
   ) => {
     setCommentLine(displayLineNumber);
-    setCommentStoryTranslationContentId(storyTranslationContentId);
+    setStoryTranslationContentId(storyTranslationContentId);
   };
 
   const storyCells = translatedStoryLines.map((storyLine: StoryLine) => {

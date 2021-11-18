@@ -75,10 +75,8 @@ const ReviewPage = () => {
     setSubmitTranslation(true);
   };
 
-  const [
-    commentStoryTranslationContentId,
-    setCommentStoryTranslationContentId,
-  ] = useState<number>(-1);
+  const [storyTranslationContentId, setStoryTranslationContentId] =
+    useState<number>(-1);
 
   const handleFontSizeChange = (val: string) => {
     setFontSize(val);
@@ -182,9 +180,7 @@ const ReviewPage = () => {
               translatedLanguage={convertLanguageTitleCase(language)}
               commentLine={commentLine}
               setCommentLine={setCommentLine}
-              setCommentStoryTranslationContentId={
-                setCommentStoryTranslationContentId
-              }
+              setStoryTranslationContentId={setStoryTranslationContentId}
               translator={false}
               setTranslatedStoryLines={setTranslatedStoryLines}
               numApprovedLines={numApprovedLines}
@@ -236,7 +232,7 @@ const ReviewPage = () => {
         </Flex>
         <CommentsPanel
           disabled={stage === "TRANSLATE"}
-          commentStoryTranslationContentId={commentStoryTranslationContentId}
+          storyTranslationContentId={storyTranslationContentId}
           commentLine={commentLine}
           storyTranslationId={storyTranslationId}
           setCommentLine={setCommentLine}

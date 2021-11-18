@@ -11,7 +11,7 @@ import { StoryLine } from "../translation/Autosave";
 import { convertStatusTitleCase } from "../../utils/StatusUtils";
 
 export type WIPCommentProps = {
-  commentStoryTranslationContentId: number;
+  storyTranslationContentId: number;
   WIPLineIndex: number;
   setCommentLine: (line: number) => void;
   comments: CommentResponse[];
@@ -21,7 +21,7 @@ export type WIPCommentProps = {
 };
 
 const WIPComment = ({
-  commentStoryTranslationContentId,
+  storyTranslationContentId,
   WIPLineIndex,
   setCommentLine,
   setComments,
@@ -44,7 +44,7 @@ const WIPComment = ({
   const createNewComment = async () => {
     try {
       const commentData = {
-        storyTranslationContentId: commentStoryTranslationContentId,
+        storyTranslationContentId,
         content: text,
       };
       const result = await createComment({

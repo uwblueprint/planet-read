@@ -17,7 +17,7 @@ export type CommentPanelProps = {
   storyTranslationId: number;
   commentLine: number;
   setCommentLine: (line: number) => void;
-  commentStoryTranslationContentId: number;
+  storyTranslationContentId: number;
   disabled: boolean;
   setTranslatedStoryLines: (storyLines: StoryLine[]) => void;
   translatedStoryLines: StoryLine[];
@@ -27,7 +27,7 @@ export type CommentPanelProps = {
 const CommentsPanel = ({
   storyTranslationId,
   commentLine,
-  commentStoryTranslationContentId,
+  storyTranslationContentId,
   setCommentLine,
   disabled,
   setTranslatedStoryLines,
@@ -144,7 +144,7 @@ const CommentsPanel = ({
       {commentLine > 0 && (
         <WIPComment
           WIPLineIndex={commentLine}
-          commentStoryTranslationContentId={commentStoryTranslationContentId}
+          storyTranslationContentId={storyTranslationContentId}
           setCommentLine={setCommentLine}
           comments={comments}
           setComments={setComments}

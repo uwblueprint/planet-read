@@ -29,7 +29,14 @@ const ExistingComment = ({
   translatedStoryLines,
   WIPLineIndex,
 }: ExistingCommentProps) => {
-  const { id, resolved, content, time, lineIndex, commentIndex } = comment;
+  const {
+    id,
+    resolved,
+    content,
+    time,
+    lineIndex: storyContentId,
+    commentIndex,
+  } = comment;
   const handleError = (errorMessage: string) => {
     // eslint-disable-next-line no-alert
     alert(errorMessage);
@@ -79,7 +86,7 @@ const ExistingComment = ({
       {commentIndex < 2 && (
         <Text fontWeight="bold" marginBottom="15px">
           {commentIndex === 1 && "Replies to "}
-          Line {lineIndex + 1}
+          Line {storyContentId + 1}
         </Text>
       )}
       <Flex justify="space-between" marginBottom="10px">
@@ -100,7 +107,7 @@ const ExistingComment = ({
       {reply > 0 && WIPLineIndex > -1 && (
         <WIPComment
           WIPLineIndex={WIPLineIndex}
-          commentStoryTranslationContentId={lineIndex}
+          storyTranslationContentId={storyContentId}
           setCommentLine={setReply}
           comments={comments}
           setComments={setComments}
