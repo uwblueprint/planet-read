@@ -11,8 +11,8 @@ import { StoryLine } from "../translation/Autosave";
 import { convertStatusTitleCase } from "../../utils/StatusUtils";
 
 export type WIPCommentProps = {
-  commentStoryTranslationContentId: number;
-  lineIndex: number;
+  storyTranslationContentId: number;
+  WIPLineIndex: number;
   setCommentLine: (line: number) => void;
   comments: CommentResponse[];
   setComments: (comments: CommentResponse[]) => void;
@@ -21,8 +21,8 @@ export type WIPCommentProps = {
 };
 
 const WIPComment = ({
-  commentStoryTranslationContentId,
-  lineIndex,
+  storyTranslationContentId,
+  WIPLineIndex,
   setCommentLine,
   setComments,
   setTranslatedStoryLines,
@@ -44,7 +44,7 @@ const WIPComment = ({
   const createNewComment = async () => {
     try {
       const commentData = {
-        storyTranslationContentId: commentStoryTranslationContentId,
+        storyTranslationContentId,
         content: text,
       };
       const result = await createComment({
@@ -53,10 +53,9 @@ const WIPComment = ({
       if (result.data?.createComment.ok) {
         setText("");
         setCommentLine(0);
-
         setComments([...comments, result.data.createComment.comment]);
         const updatedStoryLines = [...translatedStoryLines];
-        updatedStoryLines[lineIndex - 1].status =
+        updatedStoryLines[WIPLineIndex - 1].status =
           convertStatusTitleCase("ACTION_REQUIRED");
         setTranslatedStoryLines(updatedStoryLines);
       }
@@ -81,7 +80,7 @@ const WIPComment = ({
       padding="14px 14px"
       width="300px"
     >
-      <b>Line {lineIndex}</b>
+      <b>Line {WIPLineIndex}</b>
       <p>{name}</p>
       <Textarea
         value={text}

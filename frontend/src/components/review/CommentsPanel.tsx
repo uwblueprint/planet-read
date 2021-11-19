@@ -17,7 +17,7 @@ export type CommentPanelProps = {
   storyTranslationId: number;
   commentLine: number;
   setCommentLine: (line: number) => void;
-  commentStoryTranslationContentId: number;
+  storyTranslationContentId: number;
   disabled: boolean;
   setTranslatedStoryLines: (storyLines: StoryLine[]) => void;
   translatedStoryLines: StoryLine[];
@@ -27,7 +27,7 @@ export type CommentPanelProps = {
 const CommentsPanel = ({
   storyTranslationId,
   commentLine,
-  commentStoryTranslationContentId,
+  storyTranslationContentId,
   setCommentLine,
   disabled,
   setTranslatedStoryLines,
@@ -72,15 +72,8 @@ const CommentsPanel = ({
           {comments.map((comment: CommentResponse) => (
             <ExistingComment
               key={comment.id}
-              id={comment.id}
-              resolved={comment.resolved}
-              content={comment.content}
-              time={comment.time}
-              commentIndex={comment.commentIndex}
-              commentStoryTranslationContentId={
-                commentStoryTranslationContentId
-              }
-              lineIndex={commentLine}
+              comment={comment}
+              WIPLineIndex={commentLine}
               updateCommentsAsResolved={updateCommentsAsResolved}
               comments={comments}
               setComments={setComments}
@@ -150,8 +143,8 @@ const CommentsPanel = ({
       </Flex>
       {commentLine > 0 && (
         <WIPComment
-          lineIndex={commentLine}
-          commentStoryTranslationContentId={commentStoryTranslationContentId}
+          WIPLineIndex={commentLine}
+          storyTranslationContentId={storyTranslationContentId}
           setCommentLine={setCommentLine}
           comments={comments}
           setComments={setComments}

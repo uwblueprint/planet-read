@@ -75,10 +75,8 @@ const TranslationPage = () => {
 
   const editable = stage === "TRANSLATE";
   const [commentLine, setCommentLine] = useState(-1);
-  const [
-    commentStoryTranslationContentId,
-    setCommentStoryTranslationContentId,
-  ] = useState<number>(-1);
+  const [storyTranslationContentId, setStoryTranslationContentId] =
+    useState<number>(-1);
 
   const handleFontSizeChange = (val: string) => {
     setFontSize(val);
@@ -267,9 +265,7 @@ const TranslationPage = () => {
               translatedLanguage={convertLanguageTitleCase(language)}
               commentLine={commentLine}
               setCommentLine={setCommentLine}
-              setCommentStoryTranslationContentId={
-                setCommentStoryTranslationContentId
-              }
+              setStoryTranslationContentId={setStoryTranslationContentId}
               translator
               setTranslatedStoryLines={setTranslatedStoryLines}
               changedStoryLines={changedStoryLines.size}
@@ -303,7 +299,7 @@ const TranslationPage = () => {
         </Flex>
         <CommentsPanel
           disabled={!editable}
-          commentStoryTranslationContentId={commentStoryTranslationContentId}
+          storyTranslationContentId={storyTranslationContentId}
           commentLine={commentLine}
           storyTranslationId={storyTranslationId}
           setCommentLine={setCommentLine}
