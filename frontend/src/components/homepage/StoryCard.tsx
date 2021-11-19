@@ -193,7 +193,7 @@ const StoryCard = ({
           {primaryBtnText()}
         </Button>
         <Button
-          variant="outline"
+          variant="blueOutline"
           size="secondary"
           marginTop="5px"
           onClick={previewBook}

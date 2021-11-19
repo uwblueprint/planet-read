@@ -29,9 +29,10 @@ const Button = {
     },
   },
   variants: {
-    outline: {
+    blueOutline: {
       background: "white",
-      borderColor: "gray.50",
+      border: "1px solid",
+      borderColor: "gray.100",
       color: "blue.100",
     },
     clear: {

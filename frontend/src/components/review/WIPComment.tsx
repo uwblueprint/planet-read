@@ -99,7 +99,7 @@ const WIPComment = ({
         </Button>
         <Button
           size="secondary"
-          variant="outline"
+          variant="blueOutline"
           onClick={() => setCommentLine(0)}
         >
           Cancel
