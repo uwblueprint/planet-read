@@ -24,24 +24,33 @@ def app():
     return my_app
 
 
-@pytest.fixture(scope="session")
+@pytest.fixture(scope="function")
 def db(app):
     """
     Yields db instance
     """
     from .models import db
-    from .models.comment import Comment
-    from .models.file import File
+    from .models.comment_all import CommentAll
     from .models.story import Story
     from .models.story_content import StoryContent
-    from .models.story_translation import StoryTranslation
-    from .models.story_translation_content import StoryTranslationContent
-    from .models.user import User
+    from .models.story_translation_all import StoryTranslationAll
+    from .models.story_translation_content_all import StoryTranslationContentAll
+    from .models.user_all import UserAll
 
     yield db
 
-    # TODO: delete databases between tests
-    db.session.close()
+    db.session.query(CommentAll).delete()
+    db.session.commit()
+    db.session.query(StoryTranslationContentAll).delete()
+    db.session.commit()
+    db.session.query(StoryContent).delete()
+    db.session.commit()
+    db.session.query(StoryTranslationAll).delete()
+    db.session.commit()
+    db.session.query(Story).delete()
+    db.session.commit()
+    db.session.query(UserAll).delete()
+    db.session.commit()
 
 
 @pytest.fixture(scope="session")
