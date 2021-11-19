@@ -1,4 +1,4 @@
-import convertStringTitleCase from "./Utils";
+import { convertStringTitleCase } from "./Utils";
 
 function convertStageTitleCase(stage: string) {
   switch (stage) {

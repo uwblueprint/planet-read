@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { useParams, useHistory } from "react-router-dom";
+import { useParams, useHistory, Redirect } from "react-router-dom";
 import {
   Box,
   Button,
@@ -20,6 +20,10 @@ import {
 } from "../../utils/Copy";
 import ConfirmationModal from "../utils/ConfirmationModal";
 import { GET_USER, User } from "../../APIClients/queries/UserQueries";
+import {
+  ApprovedLanguagesMap,
+  parseApprovedLanguages,
+} from "../../utils/Utils";
 
 type UserProfilePageProps = {
   userId: string;
@@ -33,24 +37,25 @@ const UserProfilePage = () => {
   const [role, setRole] = useState<string>("");
   const [confirmDeleteUser, setConfirmDeleteUser] = useState(false);
 
+  // TODO: remove this when tables are implemented
   /* eslint-disable */
   const [approvedLanguagesTranslation, setApprovedLanguagesTranslation] =
-    useState<{ [name: string]: number }>();
+    useState<ApprovedLanguagesMap>();
   const [approvedLanguagesReview, setApprovedLanguagesReview] =
-    useState<{ [name: string]: number }>();
+    useState<ApprovedLanguagesMap>();
 
   const history = useHistory();
 
-  useQuery(GET_USER(parseInt(userId, 10)), {
+  const { loading, error } = useQuery(GET_USER(parseInt(userId, 10)), {
     fetchPolicy: "cache-and-network",
     onCompleted: (data: { userById: User }) => {
       const user = data.userById;
-      const translationLanguages = user?.approvedLanguagesTranslation
-        ? JSON.parse(user.approvedLanguagesTranslation.replace(/'/g, '"'))
-        : {};
-      const reviewLanguages = user?.approvedLanguagesReview
-        ? JSON.parse(user.approvedLanguagesReview.replace(/'/g, '"'))
-        : {};
+      const translationLanguages = parseApprovedLanguages(
+        user?.approvedLanguagesTranslation,
+      );
+      const reviewLanguages = parseApprovedLanguages(
+        user?.approvedLanguagesReview,
+      );
       setFullName(`${user?.firstName} ${user?.lastName}`);
       setEmail(user?.email!);
       setApprovedLanguagesTranslation(translationLanguages);
@@ -60,9 +65,6 @@ const UserProfilePage = () => {
           Object.keys(reviewLanguages).length > 0 ? "& Reviewer" : ""
         }`,
       );
-    },
-    onError: () => {
-      history.push("/404");
     },
   });
 
@@ -89,24 +91,38 @@ const UserProfilePage = () => {
   };
 
   const filterStyle = useStyleConfig("Filter");
+
+  if (loading) return <div />;
+  if (error) return <Redirect to="/404" />;
+
+  // TODO: make util function for parsing json
+
   return (
     <Flex direction="column" height="100vh">
       <Header />
       <Flex direction="row" flex={1}>
         <Flex sx={filterStyle} maxWidth="400px">
           <Heading size="lg">{fullName}</Heading>
-          <Heading size="sm" marginTop="36px">Role(s)</Heading>
+          <Heading size="sm" marginTop="36px">
+            Role(s)
+          </Heading>
           <Text>{role}</Text>
-          <Heading size="sm" marginTop="36px">Email</Heading>
+          <Heading size="sm" marginTop="36px">
+            Email
+          </Heading>
           <Text>{email}</Text>
-          <Heading size="sm" marginTop="36px">Date joined</Heading>
+          <Heading size="sm" marginTop="36px">
+            Date joined
+          </Heading>
           <Text>TODO</Text>
-          <Heading size="sm" marginTop="36px">Last active on</Heading>
+          <Heading size="sm" marginTop="36px">
+            Last active on
+          </Heading>
           <Text>TODO</Text>
         </Flex>
         <Flex direction="column" margin="40px">
           <Heading size="lg" marginTop="40px">
-            Approved Languages and Levels
+            Approved Languages & Levels
           </Heading>
           <Text>TODO: table here</Text>
           <Heading size="lg" marginTop="56px">
@@ -142,7 +158,7 @@ const UserProfilePage = () => {
             Cancel
           </Button>
           {/* TODO: make this functional.*/}
-          <Button colorScheme="blue" margin="0 48px 0 24px">
+          <Button colorScheme="blue" marginLeft="24px" marginRight="48px">
             Save Changes
           </Button>
         </Box>

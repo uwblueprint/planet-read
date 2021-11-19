@@ -11,20 +11,18 @@ import AuthContext from "../../contexts/AuthContext";
 import ButtonRadioGroup from "../utils/ButtonRadioGroup";
 import Header from "../navigation/Header";
 import { buildHomePageStoriesQuery } from "../../APIClients/queries/StoryQueries";
+import { parseApprovedLanguages } from "../../utils/Utils";
 
 const HomePage = () => {
   const { authenticatedUser } = useContext(AuthContext);
 
-  const approvedLanguagesTranslation = authenticatedUser!!
-    .approvedLanguagesTranslation
-    ? JSON.parse(
-        authenticatedUser!!.approvedLanguagesTranslation.replace(/'/g, '"'),
-      )
-    : {};
+  const approvedLanguagesTranslation = parseApprovedLanguages(
+    authenticatedUser!!.approvedLanguagesTranslation,
+  );
 
-  const approvedLanguagesReview = authenticatedUser!!.approvedLanguagesReview
-    ? JSON.parse(authenticatedUser!!.approvedLanguagesReview.replace(/'/g, '"'))
-    : {};
+  const approvedLanguagesReview = parseApprovedLanguages(
+    authenticatedUser!!.approvedLanguagesReview,
+  );
 
   const [displayMyStories, setDisplayMyStories] = useState<boolean>(true);
   const [language, setLanguage] = useState<string>(
