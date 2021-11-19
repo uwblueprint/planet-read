@@ -19,6 +19,7 @@ export type CommentResponse = {
   resolved: boolean;
   content: string;
   lineIndex: number;
+  storyTranslationContentId: number;
 };
 
 export const buildCommentsQuery = (

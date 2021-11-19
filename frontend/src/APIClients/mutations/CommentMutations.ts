@@ -12,6 +12,7 @@ export const CREATE_COMMMENT = gql`
         resolved
         content
         lineIndex
+        storyTranslationContentId
       }
     }
   }
@@ -27,6 +28,7 @@ export type CreateCommentResponse = {
     resolved: boolean;
     content: string;
     lineIndex: number;
+    storyTranslationContentId: number;
   };
 };
 

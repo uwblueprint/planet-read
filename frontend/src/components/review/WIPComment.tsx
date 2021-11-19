@@ -52,7 +52,7 @@ const WIPComment = ({
       });
       if (result.data?.createComment.ok) {
         setText("");
-        setCommentLine(0);
+        setCommentLine(-1);
         setComments([...comments, result.data.createComment.comment]);
         const updatedStoryLines = [...translatedStoryLines];
         updatedStoryLines[WIPLineIndex - 1].status =
@@ -100,7 +100,7 @@ const WIPComment = ({
         <Button
           size="secondary"
           variant="blueOutline"
-          onClick={() => setCommentLine(0)}
+          onClick={() => setCommentLine(-1)}
         >
           Cancel
         </Button>
