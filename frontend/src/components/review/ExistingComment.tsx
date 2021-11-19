@@ -81,6 +81,8 @@ const ExistingComment = ({
     setReply(storyContentId);
   };
 
+  const newDate = new Date(time);
+
   return (
     <Flex
       backgroundColor="transparent"
@@ -98,7 +100,15 @@ const ExistingComment = ({
       )}
       <Flex justify="space-between" marginBottom="10px">
         <p>{name}</p>
-        <p>{time}</p>
+        <p>
+          {newDate.toLocaleDateString("en-US", {
+            month: "short",
+            day: "numeric",
+            hour: "numeric",
+            minute: "numeric",
+            hour12: true,
+          })}
+        </p>
       </Flex>
       <Text fontSize="sm" marginBottom="5px">
         {content}
