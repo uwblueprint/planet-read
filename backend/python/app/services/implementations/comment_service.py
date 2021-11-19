@@ -80,13 +80,13 @@ class CommentService(ICommentService):
                 StoryTranslationContentStatus.ACTION_REQUIRED
             )
             db.session.commit()
-            
+
             stc = StoryTranslationContent.query.filter_by(
                 id=new_comment.story_translation_content_id
             ).first()
 
             new_comment.line_index = stc.line_index
-            
+
             return new_comment
         elif story_translation_stage == "TRANSLATE" and is_reviewer:
             raise Exception(
