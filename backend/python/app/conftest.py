@@ -38,11 +38,9 @@ def db(app):
     from .models.story_translation_content import StoryTranslationContent
     from .models.user import User
 
-    db.drop_all()
-    db.create_all()
-
     yield db
 
+    # TODO: delete databases between tests
     db.session.close()
 
 

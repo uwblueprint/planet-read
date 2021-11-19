@@ -76,6 +76,10 @@ def test_create_story(app, db, client):
         assert test_db_obj_line_content["line_index"] == i
         assert test_db_obj_line_content["content"] == contents[i]
 
+    db.session.query(StoryContent).delete()
+    db.session.query(Story).delete()
+    assert db.session.commit() == None
+
 
 def test_create_story_translation(db, client):
     pass

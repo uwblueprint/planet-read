@@ -2,7 +2,7 @@ version: '3.7'
 
 services:
   py-backend:
-    command: /app/tools/wait-for-it.sh test-db:3306 -- pytest
+    command: /app/tools/wait-for-it.sh test-db:3306 -- ./tools/migrate_and_pytest.sh
     build:
       context: ./backend/python
       dockerfile: Dockerfile

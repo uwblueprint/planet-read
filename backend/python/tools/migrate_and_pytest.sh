@@ -1,0 +1,2 @@
+flask db upgrade
+pytest 
