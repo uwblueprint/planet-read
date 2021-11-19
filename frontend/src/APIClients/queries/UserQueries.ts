@@ -21,6 +21,17 @@ export type User = {
   approvedLanguagesReview: string;
 } | null;
 
+export const GET_USER = (id: number) =>
+  gql`
+      query GetUser {
+        userById(
+          id: ${id}
+        ) {
+          ${USER_FIELDS}
+        }
+      }
+  `;
+
 export const buildUsersQuery = (
   isTranslators: boolean,
   language?: string,

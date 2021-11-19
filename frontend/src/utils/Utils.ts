@@ -1,6 +1,14 @@
 export const convertStringTitleCase = (s: string) =>
   s[0] + s.substring(1).toLowerCase();
 
+export type ApprovedLanguagesMap = { [language: string]: number };
+
+export const parseApprovedLanguages = (
+  input: string | undefined,
+): ApprovedLanguagesMap => {
+  return input ? JSON.parse(input.trim().replace(/'/g, '"')) : {};
+};
+
 export const embedLink = (originalYoutubeLink: string): string => {
   /*
   Transforms originalYoutubeLink into embed link appropriate for iframe.

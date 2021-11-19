@@ -25,6 +25,7 @@ import {
   SoftDeleteUserResponse,
   SOFT_DELETE_USER,
 } from "../../APIClients/mutations/UserMutations";
+import { parseApprovedLanguages } from "../../utils/Utils";
 
 export type UsersTableProps = {
   isTranslators?: boolean;
@@ -82,9 +83,8 @@ const UsersTable = ({
     const approvedLanguage = isTranslators
       ? userObj?.approvedLanguagesTranslation
       : userObj?.approvedLanguagesReview;
-    return approvedLanguage
-      ? JSON.parse(approvedLanguage!!.trim().replace(/'/g, '"'))
-      : "";
+
+    return parseApprovedLanguages(approvedLanguage);
   });
 
   const generateBadges = (appvdLanguages: any) =>
