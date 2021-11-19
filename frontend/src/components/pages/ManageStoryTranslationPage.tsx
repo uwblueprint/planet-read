@@ -177,6 +177,7 @@ const ManageStoryTranslationPage = () => {
           <Button
             colorScheme="red"
             margin="10px 0px"
+            variant="outline"
             width="250px"
             onClick={() => openModal()}
           >
@@ -224,7 +225,7 @@ const ManageStoryTranslationPage = () => {
           />
         </Flex>
         <Box>
-          <Button colorScheme="blue" variant="outline">
+          <Button colorScheme="blue" variant="blueOutline">
             Cancel
           </Button>
           {/* TODO: use UpdateStoryTranslation mutation. Disable button if no local changes. */}

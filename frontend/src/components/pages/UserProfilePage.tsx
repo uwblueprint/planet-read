@@ -139,6 +139,7 @@ const UserProfilePage = () => {
             colorScheme="red"
             margin="10px 0px"
             width="250px"
+            variant="outline"
             onClick={() => openModal()}
           >
             Delete User
@@ -154,7 +155,7 @@ const UserProfilePage = () => {
         padding="20px 30px"
       >
         <Box>
-          <Button colorScheme="blue" variant="outline">
+          <Button colorScheme="blue" variant="blueOutline">
             Cancel
           </Button>
           {/* TODO: make this functional.*/}
