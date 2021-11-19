@@ -20,6 +20,7 @@ class CommentResponseDTO(graphene.ObjectType):
     time = graphene.DateTime(required=True)
     resolved = graphene.Boolean(required=True)
     content = graphene.String(required=True)
+    line_index = graphene.Int()
 
 
 class UpdateCommentResponseDTO(graphene.ObjectType):

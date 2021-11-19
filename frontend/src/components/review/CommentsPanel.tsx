@@ -17,7 +17,7 @@ export type CommentPanelProps = {
   storyTranslationId: number;
   commentLine: number;
   setCommentLine: (line: number) => void;
-  commentStoryTranslationContentId: number;
+  storyTranslationContentId: number;
   disabled: boolean;
   setTranslatedStoryLines: (storyLines: StoryLine[]) => void;
   translatedStoryLines: StoryLine[];
@@ -27,7 +27,7 @@ export type CommentPanelProps = {
 const CommentsPanel = ({
   storyTranslationId,
   commentLine,
-  commentStoryTranslationContentId,
+  storyTranslationContentId,
   setCommentLine,
   disabled,
   setTranslatedStoryLines,
@@ -72,14 +72,8 @@ const CommentsPanel = ({
           {comments.map((comment: CommentResponse) => (
             <ExistingComment
               key={comment.id}
-              id={comment.id}
-              resolved={comment.resolved}
-              content={comment.content}
-              time={comment.time}
-              commentStoryTranslationContentId={
-                commentStoryTranslationContentId
-              }
-              lineIndex={commentLine}
+              comment={comment}
+              WIPLineIndex={commentLine}
               updateCommentsAsResolved={updateCommentsAsResolved}
               comments={comments}
               setComments={setComments}
@@ -114,7 +108,13 @@ const CommentsPanel = ({
     : TRANSLATION_PAGE_TOOL_TIP_COPY;
 
   return (
-    <Box backgroundColor="gray.100" float="right" width="350px" padding="20px">
+    <Box
+      backgroundColor="gray.100"
+      float="right"
+      width="450px"
+      padding="20px"
+      overflow="auto"
+    >
       <Flex marginBottom="50px">
         <Tooltip hasArrow label={tooltipLabel} isDisabled={!disabled}>
           <Box>
@@ -143,8 +143,8 @@ const CommentsPanel = ({
       </Flex>
       {commentLine > 0 && (
         <WIPComment
-          lineIndex={commentLine}
-          commentStoryTranslationContentId={commentStoryTranslationContentId}
+          WIPLineIndex={commentLine}
+          storyTranslationContentId={storyTranslationContentId}
           setCommentLine={setCommentLine}
           comments={comments}
           setComments={setComments}

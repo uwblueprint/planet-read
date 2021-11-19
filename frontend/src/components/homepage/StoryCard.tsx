@@ -14,6 +14,8 @@ import AuthContext from "../../contexts/AuthContext";
 import PreviewModal from "./PreviewModal";
 import { convertLanguageTitleCase } from "../../utils/LanguageUtils";
 import { getLevelVariant } from "../../utils/StatusUtils";
+import { embedLink } from "../../utils/Utils";
+
 import {
   ASSIGN_REVIEWER,
   AssignReviewerResponse,
@@ -47,18 +49,7 @@ const StoryCard = ({
 }: StoryCardProps) => {
   const { authenticatedUser } = useContext(AuthContext);
   const history = useHistory();
-  const embedLink = (originalYoutubeLink: string): string => {
-    /*
-    Transforms originalYoutubeLink into embed link appropriate for iframe.
-      If already given link in the embed version, does nothing.
 
-    Example:
-    - Real link: https://www.youtube.com/watch?v=_OBlgSz8sSM
-    - Embed link: https://www.youtube.com/embed/_OBlgSz8sSM
-    */
-
-    return originalYoutubeLink.replace("watch?v=", "embed/");
-  };
   const handleError = (errorMessage: string) => {
     // eslint-disable-next-line no-alert
     alert(errorMessage);

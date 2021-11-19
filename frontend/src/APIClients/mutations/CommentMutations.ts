@@ -11,6 +11,7 @@ export const CREATE_COMMMENT = gql`
         time
         resolved
         content
+        lineIndex
       }
     }
   }
@@ -25,6 +26,7 @@ export type CreateCommentResponse = {
     time: string;
     resolved: boolean;
     content: string;
+    lineIndex: number;
   };
 };
 

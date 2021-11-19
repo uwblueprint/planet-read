@@ -8,6 +8,7 @@ const COMMENT_FIELDS = `
     storyTranslationContentId
     resolved
     time
+    lineIndex
     `;
 
 export type CommentResponse = {
@@ -17,6 +18,7 @@ export type CommentResponse = {
   time: string;
   resolved: boolean;
   content: string;
+  lineIndex: number;
 };
 
 export const buildCommentsQuery = (
