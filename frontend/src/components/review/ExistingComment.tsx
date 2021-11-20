@@ -27,7 +27,6 @@ const ExistingComment = ({
   setTranslatedStoryLines,
   comments,
   translatedStoryLines,
-  WIPLineIndex,
 }: ExistingCommentProps) => {
   const {
     id,
@@ -36,13 +35,16 @@ const ExistingComment = ({
     time,
     lineIndex: storyContentId,
     commentIndex,
+    storyTranslationContentId: stcId,
   } = comment;
   const handleError = (errorMessage: string) => {
     // eslint-disable-next-line no-alert
     alert(errorMessage);
   };
 
-  const [reply, setReply] = useState(0);
+  const [reply, setReply] = useState(-1);
+  const [storyTranslationContentId, setStoryTranslationContentId] =
+    useState(stcId);
 
   const { authenticatedUser } = useContext(AuthContext);
   const [updateComment] = useMutation<{
@@ -74,6 +76,11 @@ const ExistingComment = ({
     ${authenticatedUser!!.firstName}
     ${authenticatedUser!!.lastName}`;
 
+  const handleReply = () => {
+    setStoryTranslationContentId(storyTranslationContentId);
+    setReply(storyContentId);
+  };
+
   return (
     <Flex
       backgroundColor="transparent"
@@ -97,17 +104,19 @@ const ExistingComment = ({
         {content}
       </Text>
       <Flex>
-        <Button onClick={() => setReply(1)} variant="commentLabel">
-          Reply
-        </Button>
+        {!commentIndex && (
+          <Button onClick={() => handleReply()} variant="commentLabel">
+            Reply
+          </Button>
+        )}
         <Button onClick={resolveExistingComment} variant="commentLabel">
           Resolve
         </Button>
       </Flex>
-      {reply > 0 && WIPLineIndex > -1 && (
+      {reply > -1 && (
         <WIPComment
-          WIPLineIndex={WIPLineIndex}
-          storyTranslationContentId={storyContentId}
+          WIPLineIndex={reply + 1}
+          storyTranslationContentId={storyTranslationContentId}
           setCommentLine={setReply}
           comments={comments}
           setComments={setComments}
