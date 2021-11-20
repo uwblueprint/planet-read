@@ -51,6 +51,7 @@ def db(app):
     db.session.commit()
     db.session.query(UserAll).delete()
     db.session.commit()
+    db.session.close()
 
 
 @pytest.fixture(scope="session")
