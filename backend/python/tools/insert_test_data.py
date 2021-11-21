@@ -175,9 +175,9 @@ def erase_db():
     db.session.commit()
     db.session.query(StoryTranslationAll).delete()
     db.session.commit()
-    db.session.query(UserAll).delete()
-    db.session.commit()
     db.session.query(Story).delete()
+    db.session.commit()
+    db.session.query(UserAll).delete()
     db.session.commit()
 
 
