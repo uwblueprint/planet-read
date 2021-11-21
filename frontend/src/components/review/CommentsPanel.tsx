@@ -111,9 +111,9 @@ const CommentsPanel = ({
     <Box
       backgroundColor="gray.100"
       float="right"
-      width="450px"
-      padding="20px"
       overflow="auto"
+      padding="20px"
+      width="450px"
     >
       <Flex marginBottom="50px">
         <Tooltip hasArrow label={tooltipLabel} isDisabled={!disabled}>
