@@ -9,6 +9,7 @@ import {
 import { CommentResponse } from "../../APIClients/queries/CommentQueries";
 import { StoryLine } from "../translation/Autosave";
 import { convertStatusTitleCase } from "../../utils/StatusUtils";
+import { insertSortedComments } from "../../utils/Utils";
 
 export type WIPCommentProps = {
   storyTranslationContentId: number;
@@ -53,7 +54,9 @@ const WIPComment = ({
       if (result.data?.createComment.ok) {
         setText("");
         setCommentLine(-1);
-        setComments([...comments, result.data.createComment.comment]);
+        setComments(
+          insertSortedComments(comments, result.data.createComment.comment),
+        );
         const updatedStoryLines = [...translatedStoryLines];
         updatedStoryLines[WIPLineIndex - 1].status =
           convertStatusTitleCase("ACTION_REQUIRED");

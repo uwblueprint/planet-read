@@ -116,6 +116,7 @@ class CommentService(ICommentService):
                     == story_translation_id,
                     Comment.resolved == resolved if resolved is not None else True,
                 )
+                .order_by(StoryTranslationContent.line_index)
                 .all()
             )
 
