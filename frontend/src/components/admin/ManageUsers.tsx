@@ -53,6 +53,7 @@ const ManageUsers = ({ isTranslators }: ManageUsersProps) => {
         isTranslators={isTranslators}
         users={users}
         setUsers={setUsers}
+        filters={[setLanguage, setLevel, setSearchText]}
       />
     </Box>
   );

@@ -27,15 +27,18 @@ import {
   MANAGE_STORY_TRANSLATIONS_TABLE_DELETE_TRANSLATION_BUTTON,
   MANAGE_STORY_TRANSLATIONS_TABLE_DELETE_TRANSLATION_CONFIRMATION,
 } from "../../utils/Copy";
+import EmptyTable from "./EmptyTable";
 
 export type StoryTranslationsTableProps = {
   storyTranslationSlice: StoryTranslation[];
   paginator: ReactNode;
+  filters: { (data: string | null): void }[];
 };
 
 const StoryTranslationsTable = ({
   storyTranslationSlice,
   paginator,
+  filters,
 }: StoryTranslationsTableProps) => {
   const [confirmDeleteTranslation, setConfirmDeleteTranslation] =
     useState(false);
@@ -141,7 +144,13 @@ const StoryTranslationsTable = ({
           <Th>ACTION</Th>
         </Tr>
       </Thead>
-      <Tbody>{tableBody}</Tbody>
+      <Tbody>
+        {storyTranslationSlice.length === 0 ? (
+          <EmptyTable filters={filters} />
+        ) : (
+          tableBody
+        )}
+      </Tbody>
       {confirmDeleteTranslation && (
         <ConfirmationModal
           confirmation={confirmDeleteTranslation}

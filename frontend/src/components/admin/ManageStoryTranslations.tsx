@@ -58,6 +58,7 @@ const ManageStoryTranslations = () => {
       <StoryTranslationsTable
         storyTranslationSlice={pageResults}
         paginator={paginator}
+        filters={[setLanguage, setLevel, setStage, setSearchText]}
       />
     </Box>
   );

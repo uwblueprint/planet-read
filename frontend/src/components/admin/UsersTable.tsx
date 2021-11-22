@@ -26,11 +26,13 @@ import {
   SOFT_DELETE_USER,
 } from "../../APIClients/mutations/UserMutations";
 import { parseApprovedLanguages } from "../../utils/Utils";
+import EmptyTable from "./EmptyTable";
 
 export type UsersTableProps = {
   isTranslators?: boolean;
   users: User[];
   setUsers: (newState: User[]) => void;
+  filters: { (data: string | null): void }[];
 };
 
 const getFullName = (user: User) => `${user?.firstName} ${user?.lastName}`;
@@ -40,6 +42,7 @@ export const alphabeticalCompare = (u1: User, u2: User) =>
 const UsersTable = ({
   isTranslators = false,
   users,
+  filters,
   setUsers,
 }: UsersTableProps) => {
   const [isAscending, setIsAscending] = useState(true);
@@ -123,6 +126,7 @@ const UsersTable = ({
       </Td>
     </Tr>
   ));
+
   return (
     <Table
       borderRadius="12px"
@@ -146,7 +150,9 @@ const UsersTable = ({
           <Th>ACTION</Th>
         </Tr>
       </Thead>
-      <Tbody>{tableBody}</Tbody>
+      <Tbody>
+        {users.length === 0 ? <EmptyTable filters={filters} /> : tableBody}
+      </Tbody>
       {confirmDeleteUser && (
         <ConfirmationModal
           confirmation={confirmDeleteUser}
