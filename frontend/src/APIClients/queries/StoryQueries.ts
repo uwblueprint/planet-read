@@ -212,3 +212,19 @@ export const buildStoriesQuery = (
     `,
   };
 };
+
+export const GET_STORY_TRANSLATIONS_BY_USER = (userId: number) => gql`
+  query GetStoryTranslationsByUser{
+    storyTranslationsByUser(
+      userId: ${userId},
+    ) {
+      storyId
+      storyTranslationId: id
+      translatorId
+      reviewerId
+      language
+      ${STORY_FIELDS}
+      stage
+    }
+  }
+`;
