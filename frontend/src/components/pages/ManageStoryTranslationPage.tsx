@@ -19,6 +19,8 @@ import { GET_STORY_TRANSLATION } from "../../APIClients/queries/StoryQueries";
 import {
   SOFT_DELETE_STORY_TRANSLATION,
   SoftDeleteStoryTranslationResponse,
+  UPDATE_STORY,
+  UpdateStoryResponse,
 } from "../../APIClients/mutations/StoryMutations";
 import Header from "../navigation/Header";
 import ProgressBar from "../utils/ProgressBar";
@@ -68,6 +70,9 @@ const ManageStoryTranslationPage = () => {
   const [numTranslatedLines, setNumTranslatedLines] = useState<number>(0);
   const [numApprovedLines, setNumApprovedLines] = useState<number>(0);
   const [numContentLines, setNumContentLines] = useState<number>(0);
+  const [tempTitle, setTempTitle] = useState<string>("");
+  const [tempDescription, setTempDescription] = useState<string>("");
+  const [tempYoutubeLink, setTempYoutubeLink] = useState<string>("");
 
   const [confirmDeleteTranslation, setConfirmDeleteTranslation] =
     useState(false);
@@ -93,6 +98,9 @@ const ManageStoryTranslationPage = () => {
       setNumTranslatedLines(data.storyTranslationById.numTranslatedLines);
       setNumApprovedLines(data.storyTranslationById.numApprovedLines);
       setNumContentLines(data.storyTranslationById.numContentLines);
+      setTempTitle(data.storyTranslationById.title);
+      setTempDescription(data.storyTranslationById.description);
+      setTempYoutubeLink(data.storyTranslationById.youtubeLink);
     },
     onError: () => {
       history.push("/404");
@@ -101,6 +109,10 @@ const ManageStoryTranslationPage = () => {
   const [deleteStoryTranslation] = useMutation<{
     response: SoftDeleteStoryTranslationResponse;
   }>(SOFT_DELETE_STORY_TRANSLATION);
+
+  const [updateStory] = useMutation<{
+    response: UpdateStoryResponse;
+  }>(UPDATE_STORY);
 
   const closeModal = () => {
     setConfirmDeleteTranslation(false);
@@ -118,6 +130,32 @@ const ManageStoryTranslationPage = () => {
     });
     closeModal();
     history.push("/");
+  };
+
+  const callUpdateStoryMutation = async () => {
+    if (
+      title !== tempTitle ||
+      description !== tempDescription ||
+      youtubeLink !== tempYoutubeLink
+    ) {
+      await updateStory({
+        variables: {
+          storyId: storyIdParam,
+          title: tempTitle,
+          description: tempDescription,
+          youtubeLink: tempYoutubeLink,
+        },
+      });
+      setTitle(tempTitle);
+      setDescription(tempDescription);
+      setYoutubeLink(tempYoutubeLink);
+    }
+  };
+
+  const cancelChanges = () => {
+    setTempTitle(title);
+    setTempDescription(description);
+    setTempYoutubeLink(youtubeLink);
   };
 
   const filterStyle = useStyleConfig("Filter");
@@ -156,15 +194,27 @@ const ManageStoryTranslationPage = () => {
             <Heading size="sm" marginTop="24px" marginBottom="18px">
               Title
             </Heading>
-            <Input type="title" value={title || ""} />
+            <Input
+              onChange={(event) => setTempTitle(event.target.value)}
+              type="title"
+              value={tempTitle || ""}
+            />
             <Heading size="sm" marginTop="24px" marginBottom="18px">
               Description
             </Heading>
-            <Textarea type="description" value={description || ""} />
+            <Textarea
+              onChange={(event) => setTempDescription(event.target.value)}
+              type="description"
+              value={tempDescription || ""}
+            />
             <Heading size="sm" marginTop="24px" marginBottom="18px">
               YouTube Link
             </Heading>
-            <Input type="youtubeLink" value={youtubeLink} />
+            <Input
+              onChange={(event) => setTempYoutubeLink(event.target.value)}
+              type="youtubeLink"
+              value={tempYoutubeLink}
+            />
           </FormControl>
           <Heading size="sm" marginTop="24px">
             Delete Story Translation
@@ -173,7 +223,6 @@ const ManageStoryTranslationPage = () => {
             Permanently delete this story translation and all data associated
             with it.
           </Text>
-          {/* TODO: Use outline variant after hard coded outline variant is removed */}
           <Button
             colorScheme="red"
             margin="10px 0px"
@@ -214,7 +263,6 @@ const ManageStoryTranslationPage = () => {
         padding="20px 30px"
       >
         <Flex direction="row">
-          {/* TODO: Get total number of lines to calculate progress */}
           <ProgressBar
             percentageComplete={(numTranslatedLines / numContentLines) * 100}
             type="Translation"
@@ -225,11 +273,29 @@ const ManageStoryTranslationPage = () => {
           />
         </Flex>
         <Box>
-          <Button colorScheme="blue" variant="blueOutline">
+          <Button
+            colorScheme="blue"
+            isDisabled={
+              title === tempTitle &&
+              description === tempDescription &&
+              youtubeLink === tempYoutubeLink
+            }
+            onClick={cancelChanges}
+            variant="blueOutline"
+          >
             Cancel
           </Button>
-          {/* TODO: use UpdateStoryTranslation mutation. Disable button if no local changes. */}
-          <Button colorScheme="blue">Save Changes</Button>
+          <Button
+            colorScheme="blue"
+            isDisabled={
+              title === tempTitle &&
+              description === tempDescription &&
+              youtubeLink === tempYoutubeLink
+            }
+            onClick={callUpdateStoryMutation}
+          >
+            Save Changes
+          </Button>
         </Box>
       </Flex>
       {confirmDeleteTranslation && (

@@ -94,3 +94,22 @@ export const SOFT_DELETE_STORY_TRANSLATION = gql`
   }
 `;
 export type SoftDeleteStoryTranslationResponse = { ok: boolean };
+
+export const UPDATE_STORY = gql`
+  mutation UpdateStory(
+    $storyId: Int!
+    $title: String!
+    $description: String!
+    $youtubeLink: String!
+  ) {
+    updateStory(
+      storyId: $storyId
+      title: $title
+      description: $description
+      youtubeLink: $youtubeLink
+    ) {
+      ok
+    }
+  }
+`;
+export type UpdateStoryResponse = { ok: boolean };
