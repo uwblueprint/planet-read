@@ -133,18 +133,23 @@ const ManageStoryTranslationPage = () => {
   };
 
   const callUpdateStoryMutation = async () => {
-    console.log(storyIdParam, title, description, youtubeLink);
-    setTitle(tempTitle);
-    setDescription(tempDescription);
-    setYoutubeLink(tempYoutubeLink);
-    await updateStory({
-      variables: {
-        storyId: storyIdParam,
-        title: tempTitle,
-        description: tempDescription,
-        youtubeLink: tempYoutubeLink,
-      },
-    });
+    if (
+      title !== tempTitle ||
+      description !== tempDescription ||
+      youtubeLink !== tempYoutubeLink
+    ) {
+      setTitle(tempTitle);
+      setDescription(tempDescription);
+      setYoutubeLink(tempYoutubeLink);
+      await updateStory({
+        variables: {
+          storyId: storyIdParam,
+          title: tempTitle,
+          description: tempDescription,
+          youtubeLink: tempYoutubeLink,
+        },
+      });
+    }
   };
 
   const cancelChanges = () => {
@@ -277,7 +282,6 @@ const ManageStoryTranslationPage = () => {
           >
             Cancel
           </Button>
-          {/* TODO: use UpdateStoryTranslation mutation. Disable button if no local changes. */}
           <Button colorScheme="blue" onClick={callUpdateStoryMutation}>
             Save Changes
           </Button>
