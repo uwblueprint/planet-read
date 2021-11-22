@@ -33,6 +33,7 @@ export type UsersTableProps = {
   users: User[];
   setUsers: (newState: User[]) => void;
   filters: { (data: string | null): void }[];
+  loading: Boolean;
 };
 
 const getFullName = (user: User) => `${user?.firstName} ${user?.lastName}`;
@@ -44,6 +45,7 @@ const UsersTable = ({
   users,
   filters,
   setUsers,
+  loading,
 }: UsersTableProps) => {
   const [isAscending, setIsAscending] = useState(true);
   const [confirmDeleteUser, setConfirmDeleteUser] = useState(false);
@@ -151,7 +153,11 @@ const UsersTable = ({
         </Tr>
       </Thead>
       <Tbody>
-        {users.length === 0 ? <EmptyTable filters={filters} /> : tableBody}
+        {users.length === 0 && !loading ? (
+          <EmptyTable filters={filters} />
+        ) : (
+          tableBody
+        )}
       </Tbody>
       {confirmDeleteUser && (
         <ConfirmationModal

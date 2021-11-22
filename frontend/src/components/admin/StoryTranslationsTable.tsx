@@ -33,12 +33,14 @@ export type StoryTranslationsTableProps = {
   storyTranslationSlice: StoryTranslation[];
   paginator: ReactNode;
   filters: { (data: string | null): void }[];
+  loading: Boolean;
 };
 
 const StoryTranslationsTable = ({
   storyTranslationSlice,
   paginator,
   filters,
+  loading,
 }: StoryTranslationsTableProps) => {
   const [confirmDeleteTranslation, setConfirmDeleteTranslation] =
     useState(false);
@@ -145,7 +147,7 @@ const StoryTranslationsTable = ({
         </Tr>
       </Thead>
       <Tbody>
-        {storyTranslationSlice.length === 0 ? (
+        {storyTranslationSlice.length === 0 && !loading ? (
           <EmptyTable filters={filters} />
         ) : (
           tableBody

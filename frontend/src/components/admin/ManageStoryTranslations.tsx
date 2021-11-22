@@ -26,7 +26,7 @@ const ManageStoryTranslations = () => {
     searchText || "",
   );
 
-  const { pageResults, paginator } = usePagination<StoryTranslation>(
+  const { loading, pageResults, paginator } = usePagination<StoryTranslation>(
     query.string,
     query.fieldName,
     ITEMS_PER_PAGE,
@@ -56,6 +56,7 @@ const ManageStoryTranslations = () => {
         useStage
       />
       <StoryTranslationsTable
+        loading={loading}
         storyTranslationSlice={pageResults}
         paginator={paginator}
         filters={[setLanguage, setLevel, setStage, setSearchText]}
