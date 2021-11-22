@@ -31,13 +31,14 @@ export const insertSortedComments = (
   let i = 0;
   while (i < existingComments.length) {
     if (existingComments[i].lineIndex > newComment.lineIndex) break;
-    i += 1;
     if (
       existingComments[i].lineIndex === newComment.lineIndex &&
       existingComments[i].commentIndex === newComment.commentIndex - 1
     ) {
+      i += 1;
       break;
     }
+    i += 1;
   }
 
   const comments = [
