@@ -133,23 +133,17 @@ const ManageStoryTranslationPage = () => {
   };
 
   const callUpdateStoryMutation = async () => {
-    if (
-      title !== tempTitle ||
-      description !== tempDescription ||
-      youtubeLink !== tempYoutubeLink
-    ) {
-      setTitle(tempTitle);
-      setDescription(tempDescription);
-      setYoutubeLink(tempYoutubeLink);
-      await updateStory({
-        variables: {
-          storyId: storyIdParam,
-          title: tempTitle,
-          description: tempDescription,
-          youtubeLink: tempYoutubeLink,
-        },
-      });
-    }
+    await updateStory({
+      variables: {
+        storyId: storyIdParam,
+        title: tempTitle,
+        description: tempDescription,
+        youtubeLink: tempYoutubeLink,
+      },
+    });
+    setTitle(tempTitle);
+    setDescription(tempDescription);
+    setYoutubeLink(tempYoutubeLink);
   };
 
   const cancelChanges = () => {
@@ -195,25 +189,25 @@ const ManageStoryTranslationPage = () => {
               Title
             </Heading>
             <Input
+              onChange={(event) => setTempTitle(event.target.value)}
               type="title"
               value={tempTitle || ""}
-              onChange={(event) => setTempTitle(event.target.value)}
             />
             <Heading size="sm" marginTop="24px" marginBottom="18px">
               Description
             </Heading>
             <Textarea
+              onChange={(event) => setTempDescription(event.target.value)}
               type="description"
               value={tempDescription || ""}
-              onChange={(event) => setTempDescription(event.target.value)}
             />
             <Heading size="sm" marginTop="24px" marginBottom="18px">
               YouTube Link
             </Heading>
             <Input
+              onChange={(event) => setTempYoutubeLink(event.target.value)}
               type="youtubeLink"
               value={tempYoutubeLink}
-              onChange={(event) => setTempYoutubeLink(event.target.value)}
             />
           </FormControl>
           <Heading size="sm" marginTop="24px">
@@ -223,7 +217,6 @@ const ManageStoryTranslationPage = () => {
             Permanently delete this story translation and all data associated
             with it.
           </Text>
-          {/* TODO: Use outline variant after hard coded outline variant is removed */}
           <Button
             colorScheme="red"
             margin="10px 0px"
@@ -264,7 +257,6 @@ const ManageStoryTranslationPage = () => {
         padding="20px 30px"
       >
         <Flex direction="row">
-          {/* TODO: Get total number of lines to calculate progress */}
           <ProgressBar
             percentageComplete={(numTranslatedLines / numContentLines) * 100}
             type="Translation"
@@ -277,12 +269,25 @@ const ManageStoryTranslationPage = () => {
         <Box>
           <Button
             colorScheme="blue"
-            variant="blueOutline"
+            isDisabled={
+              title === tempTitle &&
+              description === tempDescription &&
+              youtubeLink === tempYoutubeLink
+            }
             onClick={cancelChanges}
+            variant="blueOutline"
           >
             Cancel
           </Button>
-          <Button colorScheme="blue" onClick={callUpdateStoryMutation}>
+          <Button
+            colorScheme="blue"
+            isDisabled={
+              title === tempTitle &&
+              description === tempDescription &&
+              youtubeLink === tempYoutubeLink
+            }
+            onClick={callUpdateStoryMutation}
+          >
             Save Changes
           </Button>
         </Box>
