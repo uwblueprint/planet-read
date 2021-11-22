@@ -133,17 +133,23 @@ const ManageStoryTranslationPage = () => {
   };
 
   const callUpdateStoryMutation = async () => {
-    await updateStory({
-      variables: {
-        storyId: storyIdParam,
-        title: tempTitle,
-        description: tempDescription,
-        youtubeLink: tempYoutubeLink,
-      },
-    });
-    setTitle(tempTitle);
-    setDescription(tempDescription);
-    setYoutubeLink(tempYoutubeLink);
+    if (
+      title !== tempTitle ||
+      description !== tempDescription ||
+      youtubeLink !== tempYoutubeLink
+    ) {
+      await updateStory({
+        variables: {
+          storyId: storyIdParam,
+          title: tempTitle,
+          description: tempDescription,
+          youtubeLink: tempYoutubeLink,
+        },
+      });
+      setTitle(tempTitle);
+      setDescription(tempDescription);
+      setYoutubeLink(tempYoutubeLink);
+    }
   };
 
   const cancelChanges = () => {
