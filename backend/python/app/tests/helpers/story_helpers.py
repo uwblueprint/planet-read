@@ -1,6 +1,22 @@
 from ...models.story import Story
 
 
+class StoryRequestDTO:
+    def __init__(
+        self,
+        title,
+        description,
+        youtube_link,
+        level,
+        translated_languages,
+    ):
+        self.title = title
+        self.description = description
+        self.youtube_link = youtube_link
+        self.level = level
+        self.translated_languages = translated_languages
+
+
 def assert_story_equals_model(story_response, story_model, graphql_response=True):
     assert story_response["title"] == story_model.title
     assert story_response["description"] == story_model.description
