@@ -1,9 +1,10 @@
-import React, { useState } from "react";
+import React, { useState, Dispatch, SetStateAction } from "react";
 import { Icon } from "@chakra-ui/icon";
 import { MdDelete } from "react-icons/md";
 import {
   Badge,
   Button,
+  Link,
   Table,
   Thead,
   Tbody,
@@ -16,6 +17,15 @@ import { StoryTranslation } from "../../APIClients/queries/StoryQueries";
 import { getLevelVariant } from "../../utils/StatusUtils";
 import convertStageTitleCase from "../../utils/StageUtils";
 import { convertLanguageTitleCase } from "../../utils/LanguageUtils";
+import { generateSortFn } from "../../utils/Utils";
+
+interface AssignedStoryTranslationsFieldSortDict {
+  [field: string]: {
+    sortFn: (a: StoryTranslation, b: StoryTranslation) => number;
+    isAscending: boolean;
+    setIsAscending: Dispatch<SetStateAction<boolean>>;
+  };
+}
 
 export type AssignedStoryTranslationsTableProps = {
   storyTranslations: StoryTranslation[];
@@ -43,91 +53,75 @@ const AssignedStoryTranslationsTable = ({
     return "Error";
   };
 
-  const titleSort = (t1: StoryTranslation, t2: StoryTranslation) =>
-    isAscendingTitle
-      ? t1.title.localeCompare(t2.title)
-      : t2.title.localeCompare(t1.title);
-
   const roleSort = (t1: StoryTranslation, t2: StoryTranslation) =>
     isAscendingRole
       ? getRole(t1).localeCompare(getRole(t2))
       : getRole(t2).localeCompare(getRole(t1));
 
-  const languageSort = (t1: StoryTranslation, t2: StoryTranslation) =>
-    isAscendingLanguage
-      ? t1.language.localeCompare(t2.language)
-      : t2.language.localeCompare(t1.language);
+  const sortDict: AssignedStoryTranslationsFieldSortDict = {
+    title: {
+      sortFn: generateSortFn<StoryTranslation>("title", isAscendingTitle),
+      isAscending: isAscendingTitle,
+      setIsAscending: setIsAscendingTitle,
+    },
+    role: {
+      sortFn: roleSort,
+      isAscending: isAscendingRole,
+      setIsAscending: setIsAscendingRole,
+    },
+    language: {
+      sortFn: generateSortFn<StoryTranslation>("language", isAscendingLanguage),
+      isAscending: isAscendingLanguage,
+      setIsAscending: setIsAscendingLanguage,
+    },
+    stage: {
+      sortFn: generateSortFn<StoryTranslation>("stage", isAscendingStage),
+      isAscending: isAscendingStage,
+      setIsAscending: setIsAscendingStage,
+    },
+  };
 
-  const stageSort = (t1: StoryTranslation, t2: StoryTranslation) =>
-    isAscendingStage
-      ? t1.stage.localeCompare(t2.stage)
-      : t2.stage.localeCompare(t1.stage);
-
-  const sort = (field: String) => {
+  const sort = (field: string) => {
     const newStoryTranslations = [...storyTranslations];
-    switch (field) {
-      case "title": {
-        setIsAscendingTitle(!isAscendingTitle);
+    const { sortFn, isAscending, setIsAscending } = sortDict[field];
 
-        newStoryTranslations.sort(titleSort);
-        break;
-      }
-      case "role": {
-        setIsAscendingRole(!isAscendingRole);
+    setIsAscending(!isAscending);
+    newStoryTranslations.sort(sortFn);
 
-        newStoryTranslations.sort(roleSort);
-        break;
-      }
-      case "language": {
-        setIsAscendingLanguage(!isAscendingLanguage);
-
-        newStoryTranslations.sort(languageSort);
-        break;
-      }
-      case "stage": {
-        setIsAscendingStage(!isAscendingStage);
-
-        newStoryTranslations.sort(stageSort);
-        break;
-      }
-      default: {
-        break;
-      }
-    }
     setStoryTranslations(newStoryTranslations);
   };
 
-  const tableBody = storyTranslations.map(
-    (translation: StoryTranslation, index: number) => (
-      <Tr
-        borderBottom={
-          index === storyTranslations.length - 1 ? "1em solid transparent" : ""
-        }
-        key={`${translation?.storyTranslationId}`}
-      >
-        <Td>{translation.title}</Td>
-        <Td>{getRole(translation)}</Td>
-        <Td>
-          <Badge
-            background={getLevelVariant(translation.level)}
-            marginBottom="3px"
-            marginTop="3px"
-          >{`${convertLanguageTitleCase(translation.language)} | Level ${
-            translation.level
-          }`}</Badge>
-        </Td>
-        <Td>{convertStageTitleCase(translation.stage)}</Td>
-        <Td>
-          <IconButton
-            aria-label={`Delete story translation for ${translation.title}`}
-            background="transparent"
-            icon={<Icon as={MdDelete} />}
-            width="fit-content"
-          />
-        </Td>
-      </Tr>
-    ),
-  );
+  const tableBody = storyTranslations.map((translation: StoryTranslation) => (
+    <Tr key={`${translation?.storyTranslationId}`}>
+      <Td>
+        <Link
+          isExternal
+          href={`/story/${translation.storyId}/${translation.storyTranslationId}`}
+        >
+          {translation.title}
+        </Link>
+      </Td>
+      <Td>{getRole(translation)}</Td>
+      <Td>
+        <Badge
+          background={getLevelVariant(translation.level)}
+          marginBottom="3px"
+          marginTop="3px"
+        >{`${convertLanguageTitleCase(translation.language)} | Level ${
+          translation.level
+        }`}</Badge>
+      </Td>
+      <Td>{convertStageTitleCase(translation.stage)}</Td>
+      <Td>
+        <IconButton
+          aria-label={`Delete story translation for ${translation.title}`}
+          background="transparent"
+          icon={<Icon as={MdDelete} />}
+          width="fit-content"
+        />
+      </Td>
+    </Tr>
+  ));
   return (
     <Table
       borderRadius="12px"
@@ -155,17 +149,16 @@ const AssignedStoryTranslationsTable = ({
           <Th cursor="pointer" onClick={() => sort("stage")}>{`PROGRESS ${
             isAscendingStage ? "↑" : "↓"
           }`}</Th>
-          <Th>ACTION</Th>
+          <Th width="7%">ACTION</Th>
         </Tr>
       </Thead>
       <Tbody>{tableBody}</Tbody>
-      {/* <hr marginTop="-10px"/>  How do I add a horizontal line lol */}
       <Button
-        variant="blueOutline"
-        size="secondary"
-        margin="5px 0px 15px 10px"
-        width="200px"
         border="2px"
+        margin="10px 0px 15px 10px"
+        size="secondary"
+        variant="blueOutline"
+        width="200px"
       >
         ASSIGN NEW STORY
       </Button>

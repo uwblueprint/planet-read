@@ -48,3 +48,10 @@ export const insertSortedComments = (
   ];
   return comments;
 };
+
+export const generateSortFn =
+  <T extends { [field: string]: any }>(field: string, isAscending: boolean) =>
+  (t1: T, t2: T) =>
+    isAscending
+      ? t1[field].localeCompare(t2[field])
+      : t2[field].localeCompare(t1[field]);
