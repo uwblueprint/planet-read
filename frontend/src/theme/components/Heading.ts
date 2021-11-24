@@ -10,5 +10,10 @@ const Heading = {
       fontSize: "24px",
     },
   },
+  variants: {
+    light: {
+      fontWeight: "400",
+    },
+  },
 };
 export default Heading;

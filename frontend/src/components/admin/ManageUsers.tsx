@@ -23,14 +23,15 @@ const ManageUsers = ({ isTranslators }: ManageUsersProps) => {
     searchText || "",
   );
 
-  useQuery(query.string, {
+  const { loading, data } = useQuery(query.string, {
     fetchPolicy: "cache-and-network",
-    onCompleted: (data) => {
+    onCompleted: () => {
       const newUsers = [...data[query.fieldName]];
       newUsers.sort(alphabeticalCompare);
       setUsers(newUsers);
     },
   });
+
   return (
     <Box textAlign="center">
       <Flex>
@@ -50,9 +51,11 @@ const ManageUsers = ({ isTranslators }: ManageUsersProps) => {
         searchBarPlaceholder={USER_TABLE_FILTER_SEARCH_BAR_PLACEHOLDER}
       />
       <UsersTable
+        loading={loading}
         isTranslators={isTranslators}
         users={users}
         setUsers={setUsers}
+        filters={[setLanguage, setLevel, setSearchText]}
       />
     </Box>
   );
