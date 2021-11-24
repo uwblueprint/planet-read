@@ -24,6 +24,7 @@ import {
   ApprovedLanguagesMap,
   parseApprovedLanguages,
 } from "../../utils/Utils";
+import ApprovedLanguagesTable from "../admin/ApprovedLanguagesTable";
 
 type UserProfilePageProps = {
   userId: string;
@@ -37,8 +38,6 @@ const UserProfilePage = () => {
   const [role, setRole] = useState<string>("");
   const [confirmDeleteUser, setConfirmDeleteUser] = useState(false);
 
-  // TODO: remove this when tables are implemented
-  /* eslint-disable */
   const [approvedLanguagesTranslation, setApprovedLanguagesTranslation] =
     useState<ApprovedLanguagesMap>();
   const [approvedLanguagesReview, setApprovedLanguagesReview] =
@@ -95,8 +94,6 @@ const UserProfilePage = () => {
   if (loading) return <div />;
   if (error) return <Redirect to="/404" />;
 
-  // TODO: make util function for parsing json
-
   return (
     <Flex direction="column" height="100vh">
       <Header />
@@ -120,11 +117,14 @@ const UserProfilePage = () => {
           </Heading>
           <Text>TODO</Text>
         </Flex>
-        <Flex direction="column" margin="40px">
-          <Heading size="lg" marginTop="40px">
+        <Flex direction="column" margin="40px" flex={1}>
+          <Heading size="lg" marginTop="40px" marginBottom="20px">
             Approved Languages & Levels
           </Heading>
-          <Text>TODO: table here</Text>
+          <ApprovedLanguagesTable
+            approvedLanguagesTranslation={approvedLanguagesTranslation}
+            approvedLanguagesReview={approvedLanguagesReview}
+          />
           <Heading size="lg" marginTop="56px">
             Assigned Story Translations
           </Heading>
@@ -158,7 +158,6 @@ const UserProfilePage = () => {
           <Button colorScheme="blue" variant="blueOutline">
             Cancel
           </Button>
-          {/* TODO: make this functional.*/}
           <Button colorScheme="blue" marginLeft="24px" marginRight="48px">
             Save Changes
           </Button>
