@@ -49,7 +49,7 @@ const FontSizeSlider = ({ setFontSize }: FontSizeSliderProps) => {
           <Box position="relative" right={10} />
           <SliderFilledTrack />
         </SliderTrack>
-        <SliderThumb boxSize={3} />
+        <SliderThumb boxSize={3} boxShadow="0px 0px 2px black" />
       </Slider>
     </Box>
   );
