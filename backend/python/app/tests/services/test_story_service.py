@@ -1,34 +1,66 @@
+import pytest
+
 from ...models.story import Story
-from ..helpers.story_helpers import assert_story_equals_model
+from ...models.story_content import StoryContent
+from ..helpers.db_helpers import db_session_add_commit_obj
+from ..helpers.story_helpers import StoryRequestDTO, assert_story_equals_model
 
 
 def test_get_story(app, db, services):
-    obj = Story(title="title", description="description", youtube_link="", level=1)
-    db.session.add(obj)
-    assert db.session.commit() == None
+    obj = db_session_add_commit_obj(
+        db, Story(title="title", description="description", youtube_link="", level=1)
+    )
 
     resp = services["story"].get_story(obj.id)
     assert_story_equals_model(resp, obj, graphql_response=False)
 
 
-def test_get_story_invalid_id():
-    pass
+def test_get_story_invalid_id(app, db, services):
+    with pytest.raises(Exception) as e:
+        _ = services["story"].get_story(-1)
+        assert "Invalid id" in str(e.value)
+
+    obj = db_session_add_commit_obj(
+        db, Story(title="title", description="description", youtube_link="", level=1)
+    )
+
+    with pytest.raises(Exception) as e:
+        _ = services["story"].get_story(obj.id + 1)
+        assert "Invalid id" in str(e.value)
 
 
-def test_get_stories():
-    pass
+def test_get_stories(app, db, services):
+    obj = db_session_add_commit_obj(
+        db, Story(title="title", description="description", youtube_link="", level=1)
+    )
+    obj_1 = db_session_add_commit_obj(
+        db,
+        Story(title="title_1", description="description_1", youtube_link="", level=2),
+    )
+
+    resp = services["story"].get_stories()
+    assert_story_equals_model(resp[0], obj, graphql_response=False)
+    assert_story_equals_model(resp[1], obj_1, graphql_response=False)
 
 
-def test_create_story():
-    pass
+def test_create_story(app, db, services):
+    story = StoryRequestDTO(
+        title="title",
+        description="description",
+        youtube_link="",
+        level=1,
+        translated_languages=[],
+    )
+    content = ["line1", "line2", "line3"]
+    resp = services["story"].create_story(story, content)
 
+    story_obj = Story.query.get(resp.id)
+    assert resp == story_obj
 
-def test_create_story_raises_error_if_story_commit_fails_and_nothing_saved():
-    pass
-
-
-def test_create_story_raises_error_if_story_content_commit_fails_and_nothing_saved():
-    pass
+    content_objs = StoryContent.query.filter_by(story_id=resp.id).all()
+    assert len(content_objs) == len(resp.contents)
+    for content_obj, resp_content in zip(content_objs, resp.contents):
+        assert content_obj == resp_content
 
 
 def test_get_stories_available_for_translation():

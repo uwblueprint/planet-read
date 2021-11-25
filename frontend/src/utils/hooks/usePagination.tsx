@@ -111,7 +111,7 @@ function usePagination<ResultType>(
 
   const pageResults = results.slice(startIndex, endIndex + 1);
 
-  return { pageResults, paginator };
+  return { loading, pageResults, paginator };
 }
 
 export default usePagination;
