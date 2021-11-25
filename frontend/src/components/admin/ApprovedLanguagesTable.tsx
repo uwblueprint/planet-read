@@ -118,7 +118,7 @@ const ApprovedLanguagesTable = ({
             <SliderTrack height="6px">
               <SliderFilledTrack bg="blue.500" />
             </SliderTrack>
-            <SliderThumb />
+            <SliderThumb boxShadow="0px 0px 3px black" />
             {[1, 2, 3, 4].map((val) => (
               <SliderMark
                 key={val}
