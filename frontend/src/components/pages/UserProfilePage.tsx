@@ -21,9 +21,14 @@ import {
 import ConfirmationModal from "../utils/ConfirmationModal";
 import { GET_USER, User } from "../../APIClients/queries/UserQueries";
 import {
+  GET_STORY_TRANSLATIONS_BY_USER,
+  StoryTranslation,
+} from "../../APIClients/queries/StoryQueries";
+import {
   ApprovedLanguagesMap,
   parseApprovedLanguages,
 } from "../../utils/Utils";
+import AssignedStoryTranslationsTable from "../admin/AssignedStoryTranslationsTable";
 
 type UserProfilePageProps = {
   userId: string;
@@ -36,6 +41,9 @@ const UserProfilePage = () => {
   const [email, setEmail] = useState<string>("");
   const [role, setRole] = useState<string>("");
   const [confirmDeleteUser, setConfirmDeleteUser] = useState(false);
+  const [storyTranslations, setStoryTranslations] = useState<
+    StoryTranslation[]
+  >([]);
 
   // TODO: remove this when tables are implemented
   /* eslint-disable */
@@ -65,6 +73,13 @@ const UserProfilePage = () => {
           Object.keys(reviewLanguages).length > 0 ? "& Reviewer" : ""
         }`,
       );
+    },
+  });
+
+  useQuery(GET_STORY_TRANSLATIONS_BY_USER(parseInt(userId, 10)), {
+    fetchPolicy: "cache-and-network",
+    onCompleted: (data) => {
+      setStoryTranslations(data.storyTranslationsByUser);
     },
   });
 
@@ -120,15 +135,19 @@ const UserProfilePage = () => {
           </Heading>
           <Text>TODO</Text>
         </Flex>
-        <Flex direction="column" margin="40px">
+        <Flex direction="column" margin="40px" width="100%">
           <Heading size="lg" marginTop="40px">
             Approved Languages & Levels
           </Heading>
           <Text>TODO: table here</Text>
-          <Heading size="lg" marginTop="56px">
+          <Heading size="lg" marginTop="56px" marginBottom="20px">
             Assigned Story Translations
           </Heading>
-          <Text>TODO: table here</Text>
+          <AssignedStoryTranslationsTable
+            storyTranslations={storyTranslations}
+            setStoryTranslations={setStoryTranslations}
+            userId={parseInt(userId, 10)}
+          />
           <Heading size="sm" marginTop="56px">
             Delete user
           </Heading>
