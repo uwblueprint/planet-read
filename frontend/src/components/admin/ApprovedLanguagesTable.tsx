@@ -12,6 +12,7 @@ import {
   SliderTrack,
   SliderFilledTrack,
   SliderThumb,
+  SliderMark,
 } from "@chakra-ui/react";
 import { ApprovedLanguagesMap, generateSortFn } from "../../utils/Utils";
 import { convertLanguageTitleCase } from "../../utils/LanguageUtils";
@@ -33,6 +34,7 @@ type ApprovedLanguage = {
   language: string;
   level: number;
   role: string;
+  sliderValue: number;
 };
 
 const ApprovedLanguagesTable = ({
@@ -64,7 +66,6 @@ const ApprovedLanguagesTable = ({
     const { sortFn, isAscending, setIsAscending } = fieldSortDict[field];
     setIsAscending(!isAscending);
     newApprovedLanguages.sort(sortFn);
-    console.log(newApprovedLanguages);
     setApprovedLanguages(newApprovedLanguages);
   };
 
@@ -73,11 +74,11 @@ const ApprovedLanguagesTable = ({
       const translationLanguages = Object.entries(
         approvedLanguagesTranslation,
       ).map(([language, level]) => {
-        return { language, level, role: "Translator" };
+        return { language, level, role: "Translator", sliderValue: level };
       });
-      const reviewLanguages = Object.entries(approvedLanguagesTranslation).map(
+      const reviewLanguages = Object.entries(approvedLanguagesReview).map(
         ([language, level]) => {
-          return { language, level, role: "Reviewer" };
+          return { language, level, role: "Reviewer", sliderValue: level };
         },
       );
       const combined = translationLanguages.concat(reviewLanguages);
@@ -85,6 +86,12 @@ const ApprovedLanguagesTable = ({
       setApprovedLanguages(combined);
     }
   }, [approvedLanguagesTranslation, approvedLanguagesReview]);
+
+  const onSliderValueChange = (index: number, newValue: number) => {
+    const newApprovedLanguages = [...approvedLanguages];
+    newApprovedLanguages[index].sliderValue = newValue;
+    setApprovedLanguages(newApprovedLanguages);
+  };
 
   const tableBody = approvedLanguages.map(
     (approvedLanguage: ApprovedLanguage, index: number) => (
@@ -98,18 +105,29 @@ const ApprovedLanguagesTable = ({
         <Td>{approvedLanguage.role}</Td>
         <Td colSpan={4} align="center">
           <Slider
-            defaultValue={1}
+            defaultValue={approvedLanguage.level}
             min={1}
             max={4}
             step={1}
             marginLeft="20px"
             size="lg"
             width="79%"
+            onChange={(val) => onSliderValueChange(index, val)}
           >
             <SliderTrack height="6px">
               <SliderFilledTrack bg="blue.500" />
             </SliderTrack>
             <SliderThumb />
+            {[1, 2, 3, 4].map((val) => (
+              <SliderMark
+                key={val}
+                value={val}
+                height="6px"
+                width="4px"
+                marginTop="-3px"
+                bg={approvedLanguage.sliderValue > val ? "#64A1CD" : "#ECF1F4"}
+              />
+            ))}
           </Slider>
         </Td>
       </Tr>
