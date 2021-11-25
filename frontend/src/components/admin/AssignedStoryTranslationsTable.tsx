@@ -126,7 +126,6 @@ const AssignedStoryTranslationsTable = ({
     <Table
       borderRadius="12px"
       boxShadow="0px 0px 2px grey"
-      size="sm"
       theme="gray"
       variant="striped"
       width="100%"

@@ -87,6 +87,7 @@ const ApprovedLanguagesTable = ({
     }
   }, [approvedLanguagesTranslation, approvedLanguagesReview]);
 
+  // TODO: call gql mutation to update the level
   const onSliderValueChange = (index: number, newValue: number) => {
     const newApprovedLanguages = [...approvedLanguages];
     newApprovedLanguages[index].sliderValue = newValue;
@@ -125,6 +126,7 @@ const ApprovedLanguagesTable = ({
                 height="6px"
                 width="4px"
                 marginTop="-3px"
+                // #64A1CD is light blue, #ECF1F4 is light gray
                 bg={approvedLanguage.sliderValue > val ? "#64A1CD" : "#ECF1F4"}
               />
             ))}
