@@ -1,5 +1,38 @@
 version: 2.1
 jobs:
+  lint:
+    docker:
+      - image: cimg/python:3.9.7
+    steps:
+      - checkout
+      - run:
+          name: Run linter checks
+          command: |
+            pip install black isort
+            echo "Running black checks..."
+            black backend/python/app/ --check
+            echo "Checking import order..."
+            isort --profile black backend/python/app/ -c
+            echo "Code properly linted!"
+
+  build:
+    docker:
+      - image: cimg/base:2021.05
+    steps:
+      - checkout
+      - setup_remote_docker:
+          version: 19.03.13
+      - run:
+          name: Create env file
+          command: touch .env # empty .env file needed to build containers
+      - run:
+          name: Build backend and frontend images
+          command: |
+            set -x
+            echo "Build images"
+            docker-compose build frontend 
+            docker-compose build py-backend
+
   test:
     docker:
       - image: cimg/base:2021.05
@@ -20,38 +53,47 @@ jobs:
             echo "Running backend tests"
             docker-compose -f docker-compose.testing.yml up --abort-on-container-exit
 
-  build:
+  deploy:
     docker:
-      - image: cimg/base:2021.05
-    steps:
-      - checkout
-      - setup_remote_docker:
-          version: 19.03.13
-      - run:
-          name: Create env file
-          command: touch .env # empty .env file needed to build containers
-      - run:
-          name: Build backend and frontend images
-          command: |
-            set -x
-            echo "Build images"
-            docker-compose build frontend 
-            docker-compose build py-backend
-
-  lint:
-    docker:
-      - image: cimg/python:3.9.7
+      - image: cimg/node:14.15.5
     steps:
       - checkout
       - run:
-          name: Run linter checks
+          name: Build frontend
           command: |
-            pip install black isort
-            echo "Running black checks..."
-            black backend/python/app/ --check
-            echo "Checking import order..."
-            isort --profile black backend/python/app/ -c
-            echo "Code properly linted!"
+            cd frontend
+            yarn install --frozen-lockfile
+            yarn build
+      - run:
+          name: Setup Credentials
+          command: |
+            sudo apt-get update
+            sudo apt-get -qq install git-ftp
+            echo "Setting up FTP credentials..."
+            HOST=`echo ${FTP_HOST_BASE64} | base64 --decode`
+            USERNAME=`echo ${FTP_USERNAME_BASE64} | base64 --decode`
+            PASSWORD=`echo ${FTP_PASSWORD_BASE64} | base64 --decode`
+            echo "export HOST=$HOST" >> $BASH_ENV
+            echo "export USERNAME=$USERNAME" >> $BASH_ENV
+            echo "export PASSWORD=$PASSWORD" >> $BASH_ENV
+      - run:
+          name: Deploy frontend
+          command: |
+            echo "Deploying frontend..."
+            git config git-ftp.url ${HOST}
+            git config git-ftp.user ${USERNAME}
+            git config git-ftp.password ${PASSWORD}
+            git ftp push --insecure --syncroot frontend/build
+            echo "Frontend deployed!"
+      - run:
+          name: Deploy backend
+          command: |
+            echo "Deploying backend..."
+            git config git-ftp.url "${HOST}/~/backend/"
+            git config git-ftp.user ${USERNAME}
+            git config git-ftp.password ${PASSWORD}
+            git ftp push --insecure --syncroot backend/python
+            echo "Backend deployed!"
 
 workflows:
   version: 2
@@ -64,3 +106,11 @@ workflows:
       - test:
           requires:
             - build
+      - deploy:
+          requires:
+            - test
+          filters:
+            tags:
+              only: /.*/
+            branches:
+              ignore: /.*/
