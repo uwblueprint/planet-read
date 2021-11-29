@@ -237,8 +237,12 @@ class StoryService(IStoryService):
                     StoryTranslationContent.translation_content.label(
                         "translation_content"
                     ),
-                    (translator.first_name + " " + translator.last_name).label("translator_name"),
-                    (reviewer.first_name + " " + reviewer.last_name).label("reviewer_name"),
+                    (translator.first_name + " " + translator.last_name).label(
+                        "translator_name"
+                    ),
+                    (reviewer.first_name + " " + reviewer.last_name).label(
+                        "reviewer_name"
+                    ),
                 )
                 .join(StoryTranslation, Story.id == StoryTranslation.story_id)
                 .join(
