@@ -215,6 +215,10 @@ class StoryService(IStoryService):
 
     def get_story_translation(self, id):
         try:
+
+            translator = aliased(User)
+            reviewer = aliased(User)
+
             story_details = (
                 db.session.query(
                     Story.id.label("story_id"),
@@ -233,11 +237,23 @@ class StoryService(IStoryService):
                     StoryTranslationContent.translation_content.label(
                         "translation_content"
                     ),
+                    (translator.first_name + " " + translator.last_name).label("translator_name"),
+                    (reviewer.first_name + " " + reviewer.last_name).label("reviewer_name"),
                 )
                 .join(StoryTranslation, Story.id == StoryTranslation.story_id)
                 .join(
                     StoryTranslationContent,
                     StoryTranslationContent.story_translation_id == StoryTranslation.id,
+                )
+                .join(
+                    translator,
+                    StoryTranslation.translator_id == translator.id,
+                    isouter=True,
+                )
+                .join(
+                    reviewer,
+                    StoryTranslation.reviewer_id == reviewer.id,
+                    isouter=True,
                 )
                 .filter(StoryTranslation.id == id)
                 .all()
