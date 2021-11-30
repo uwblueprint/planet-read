@@ -8,7 +8,7 @@ roles_enum = db.Enum("User", "Admin", name="roles")
 
 
 class UserAll(db.Model):
-    __tablename__ = "users"
+    __tablename__ = "users_all"
 
     id = db.Column(db.Integer, primary_key=True, nullable=False)
     first_name = db.Column(TEXT, nullable=False)

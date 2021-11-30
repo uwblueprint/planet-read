@@ -15,8 +15,8 @@ class StoryTranslationAll(db.Model):
     story_id = db.Column(db.Integer, db.ForeignKey("stories.id"), nullable=False)
     language = db.Column(TEXT, nullable=False)
     stage = db.Column(stages_enum, nullable=False)
-    translator_id = db.Column(db.Integer, db.ForeignKey("users.id"), index=True)
-    reviewer_id = db.Column(db.Integer, db.ForeignKey("users.id"), index=True)
+    translator_id = db.Column(db.Integer, db.ForeignKey("users_all.id"), index=True)
+    reviewer_id = db.Column(db.Integer, db.ForeignKey("users_all.id"), index=True)
     translation_contents = db.relationship(StoryTranslationContentAll)
     is_deleted = db.Column(Boolean, default=False, nullable=False)
 

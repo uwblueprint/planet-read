@@ -18,7 +18,7 @@ class CommentAll(db.Model):
         nullable=False,
     )
     story_translation_content = db.relationship(StoryTranslationContentAll)
-    user_id = db.Column(db.Integer, db.ForeignKey("users.id"), nullable=False)
+    user_id = db.Column(db.Integer, db.ForeignKey("users_all.id"), nullable=False)
     comment_index = db.Column(db.Integer, nullable=False)
     time = db.Column(DATETIME, nullable=False)
     resolved = db.Column(db.Boolean, nullable=False)

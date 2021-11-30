@@ -110,7 +110,7 @@ If you want to run any other pytest commands, run them manually with:
 docker exec -it planet-read_py-backend_1 /bin/bash <pytest command>
 ```
 
-# Deployment
+# Staging Deployment
 
 Main branch Frontend deployment: https://planet-read-uwbp.web.app/
 Main branch Backend deployment: https://uwbp-planet-read-preview.herokuapp.com/
@@ -120,6 +120,18 @@ We maintain firebase and a heroku deployment for frontend & backend.
 The heroku app is the backend at the head of the main branch. The database is rebuilt and filled with `insert_test_data.py` data on each deployment.
 
 Each pr has it's own firebase deployment. Each deployment points to the same heroku app at master, so frontend pr deployment links with any backend changes should be used with caution.
+
+# Production Deployment
+
+Code is pushed to the server on each new release. Releases should be tagged as `v1.X.Y`, where X=major version (e.g. after each sprint), and Y=minor version (e.g. for a patch or hotfix). To create a new release:
+
+1. Follow [this link](https://github.com/uwblueprint/planet-read/releases/new) to create a new release
+2. Create a new tag based on the major minor versioning scheme above (i.e. `v1.X.Y`). Ensure the target branch is set to `main`
+3. Enter the release title: `v1.X.Y`
+4. In the description, highlight key features/tickets included in the release
+5. Click `Publish Release` and verify the CircleCI deploy job passes!
+
+You can view all releases [here](https://github.com/uwblueprint/planet-read/releases), and all tags [here](https://github.com/uwblueprint/planet-read/tags).
 
 # Other
 
