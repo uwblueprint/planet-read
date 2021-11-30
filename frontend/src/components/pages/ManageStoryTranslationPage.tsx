@@ -176,14 +176,12 @@ const ManageStoryTranslationPage = () => {
           {/* TODO: Use translatorName and reviewerName */}
           <Heading size="sm">Translator</Heading>
           <Link isExternal href={`/user/${translatorId}`}>
-            {translatorId}
             {translatorName}
           </Link>
           {reviewerId && (
             <>
               <Heading size="sm">Reviewer</Heading>
               <Link isExternal href={`/user/${reviewerId}`}>
-                {reviewerId}
                 {reviewerName}
               </Link>
             </>
