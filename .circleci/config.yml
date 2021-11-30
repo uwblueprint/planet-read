@@ -83,7 +83,7 @@ jobs:
             git config git-ftp.url ${HOST}
             git config git-ftp.user ${USERNAME}
             git config git-ftp.password ${PASSWORD}
-            git ftp init --insecure --syncroot frontend/build
+            git ftp push --insecure --syncroot frontend/build
             echo "Frontend deployed!"
       - run:
           name: Deploy backend
@@ -92,7 +92,7 @@ jobs:
             git config git-ftp.url "${HOST}/~/backend/"
             git config git-ftp.user ${USERNAME}
             git config git-ftp.password ${PASSWORD}
-            git ftp init --insecure --syncroot backend/python
+            git ftp push --insecure --syncroot backend/python
             echo "Backend deployed!"
 
 workflows:

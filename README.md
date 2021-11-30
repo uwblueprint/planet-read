@@ -128,7 +128,7 @@ Code is pushed to the server on each new release. Releases should be tagged as `
 1. Follow [this link](https://github.com/uwblueprint/planet-read/releases/new) to create a new release
 2. Create a new tag based on the major minor versioning scheme above (i.e. `v1.X.Y`). Ensure the target branch is set to `main`
 3. Enter the release title: `v1.X.Y`
-4. In the description, highlight key features/tickets included in the release
+4. In the description, highlight key features/tickets included in the release, and click the button to `Auto-generate release notes`
 5. Click `Publish Release` and verify the CircleCI deploy job passes!
 
 You can view all releases [here](https://github.com/uwblueprint/planet-read/releases), and all tags [here](https://github.com/uwblueprint/planet-read/tags).
