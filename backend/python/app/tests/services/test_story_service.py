@@ -1,5 +1,6 @@
-import pytest
 import random
+
+import pytest
 
 from ...models.story import Story
 from ...models.story_content import StoryContent
@@ -73,16 +74,30 @@ def test_get_stories_available_for_translation():
 
 
 def test_create_translation(app, db, services):
-    alphanumeric = 'abcdefghijklmnopqrstuvwxyz0123456789'
+    alphanumeric = "abcdefghijklmnopqrstuvwxyz0123456789"
 
-    translator_authId = ''.join(random.choice(alphanumeric) for i in range(10))
+    translator_authId = "".join(random.choice(alphanumeric) for i in range(10))
     translator_obj = db_session_add_commit_obj(
-        db, UserAll(first_name="Translatorfirst", last_name="Translatorlast", email=f"{translator_authId}", is_deleted=False, auth_id=translator_authId)
+        db,
+        UserAll(
+            first_name="Translatorfirst",
+            last_name="Translatorlast",
+            email=f"{translator_authId}",
+            is_deleted=False,
+            auth_id=translator_authId,
+        ),
     )
 
-    reviewer_authId = ''.join(random.choice(alphanumeric) for i in range(10))
+    reviewer_authId = "".join(random.choice(alphanumeric) for i in range(10))
     reviewer_obj = db_session_add_commit_obj(
-        db, UserAll(first_name="Reviewerfirst", last_name="Reviewerlast", email=f"{reviewer_authId}", is_deleted=False, auth_id=reviewer_authId)
+        db,
+        UserAll(
+            first_name="Reviewerfirst",
+            last_name="Reviewerlast",
+            email=f"{reviewer_authId}",
+            is_deleted=False,
+            auth_id=reviewer_authId,
+        ),
     )
 
     story = StoryRequestDTO(
@@ -100,16 +115,19 @@ def test_create_translation(app, db, services):
         story_id=story_obj.id,
         language="English",
         stage="TRANSLATE",
-        translator_id =translator_obj.id,
+        translator_id=translator_obj.id,
         reviewer_id=reviewer_obj.id,
     )
     story_translation_resp = services["story"].create_translation(story_translation)
     story_translation_obj = StoryTranslation.query.get(story_translation_resp.id)
     assert story_translation_resp == story_translation_obj
 
-    get_story_translation_resp = services["story"].get_story_translation(story_translation_obj.id)
-    content_objs = StoryContent.query.filter_by(story_id = story_resp.id).all()
+    get_story_translation_resp = services["story"].get_story_translation(
+        story_translation_obj.id
+    )
+    content_objs = StoryContent.query.filter_by(story_id=story_resp.id).all()
     assert len(content_objs) == get_story_translation_resp["num_content_lines"]
+
 
 def test_create_translation_raises_error_if_story_translation_commit_fails_and_nothing_saved():
     pass
@@ -120,16 +138,30 @@ def test_create_translation_raises_error_if_translation_content_commit_fails_and
 
 
 def test_get_story_translation(app, db, services):
-    alphanumeric = 'abcdefghijklmnopqrstuvwxyz0123456789'
+    alphanumeric = "abcdefghijklmnopqrstuvwxyz0123456789"
 
-    translator_authId = ''.join(random.choice(alphanumeric) for i in range(10))
+    translator_authId = "".join(random.choice(alphanumeric) for i in range(10))
     translator_obj = db_session_add_commit_obj(
-        db, UserAll(first_name="Translatorfirst", last_name="Translatorlast", email=f"{translator_authId}", is_deleted=False, auth_id=translator_authId)
+        db,
+        UserAll(
+            first_name="Translatorfirst",
+            last_name="Translatorlast",
+            email=f"{translator_authId}",
+            is_deleted=False,
+            auth_id=translator_authId,
+        ),
     )
 
-    reviewer_authId = ''.join(random.choice(alphanumeric) for i in range(10))
+    reviewer_authId = "".join(random.choice(alphanumeric) for i in range(10))
     reviewer_obj = db_session_add_commit_obj(
-        db, UserAll(first_name="Reviewerfirst", last_name="Reviewerlast", email=f"{reviewer_authId}", is_deleted=False, auth_id=reviewer_authId)
+        db,
+        UserAll(
+            first_name="Reviewerfirst",
+            last_name="Reviewerlast",
+            email=f"{reviewer_authId}",
+            is_deleted=False,
+            auth_id=reviewer_authId,
+        ),
     )
 
     story_obj = db_session_add_commit_obj(
@@ -137,15 +169,34 @@ def test_get_story_translation(app, db, services):
     )
 
     story_translation_obj = db_session_add_commit_obj(
-        db, StoryTranslation(story_id=story_obj.id, language="English", stage="TRANSLATE", translator_id=translator_obj.id, reviewer_id=reviewer_obj.id)
+        db,
+        StoryTranslation(
+            story_id=story_obj.id,
+            language="English",
+            stage="TRANSLATE",
+            translator_id=translator_obj.id,
+            reviewer_id=reviewer_obj.id,
+        ),
     )
 
     story_translation_content_obj_1 = db_session_add_commit_obj(
-        db, StoryTranslationContent(story_translation_id=story_translation_obj.id, line_index=0, translation_content="Translation content 1.", status="APPROVED")
+        db,
+        StoryTranslationContent(
+            story_translation_id=story_translation_obj.id,
+            line_index=0,
+            translation_content="Translation content 1.",
+            status="APPROVED",
+        ),
     )
 
     story_translation_content_obj_2 = db_session_add_commit_obj(
-        db, StoryTranslationContent(story_translation_id=story_translation_obj.id, line_index=1, translation_content="", status="DEFAULT")
+        db,
+        StoryTranslationContent(
+            story_translation_id=story_translation_obj.id,
+            line_index=1,
+            translation_content="",
+            status="DEFAULT",
+        ),
     )
 
     translation_contents = [
@@ -154,7 +205,8 @@ def test_get_story_translation(app, db, services):
             "line_index": story_translation_content_obj_1.line_index,
             "translation_content": story_translation_content_obj_1.translation_content,
             "status": story_translation_content_obj_1.status,
-        }, {
+        },
+        {
             "id": story_translation_content_obj_2.id,
             "line_index": story_translation_content_obj_2.line_index,
             "translation_content": story_translation_content_obj_2.translation_content,
@@ -175,8 +227,12 @@ def test_get_story_translation(app, db, services):
     assert resp["description"] == story_obj.description
     assert resp["youtube_link"] == story_obj.youtube_link
     assert resp["level"] == story_obj.level
-    assert resp["num_translated_lines"] == services["story"]._get_num_translated_lines(translation_contents)
-    assert resp["num_approved_lines"] == services["story"]._get_num_approved_lines(translation_contents)
+    assert resp["num_translated_lines"] == services["story"]._get_num_translated_lines(
+        translation_contents
+    )
+    assert resp["num_approved_lines"] == services["story"]._get_num_approved_lines(
+        translation_contents
+    )
     assert resp["num_content_lines"] == len(translation_contents)
 
 
