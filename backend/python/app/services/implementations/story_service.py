@@ -570,6 +570,24 @@ class StoryService(IStoryService):
             self.logger.error(error)
             raise error
 
+    def remove_user_from_story_translation(self, story_translation_id, user_id):
+        try:
+            story_translation = StoryTranslation.query.get(story_translation_id)
+            if not story_translation:
+                raise Exception("Error. Story translation does not exist.")
+            if user_id == story_translation.translator_id:
+                return self.soft_delete_story_translation(story_translation_id)
+            elif user_id == story_translation.reviewer_id:
+                story_translation.reviewer_id = None
+                db.session.commit()
+            else:
+                raise Exception(
+                    "Error. User is not a translator or reviewer of this story translation."
+                )
+        except Exception as error:
+            self.logger.error(error)
+            raise error
+
     def _get_num_translated_lines(self, translation_contents):
         return len(translation_contents) - [
             _["translation_content"].strip() for _ in translation_contents
