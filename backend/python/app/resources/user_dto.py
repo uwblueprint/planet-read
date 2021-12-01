@@ -10,6 +10,7 @@ class UserDTO:
         profile_pic=None,
         approved_languages_translation=None,
         approved_languages_review=None,
+        additional_experiences=None,
     ):
         self.id = id
         self.first_name = first_name
@@ -20,3 +21,4 @@ class UserDTO:
         self.profile_pic = profile_pic
         self.approved_languages_translation = approved_languages_translation
         self.approved_languages_review = approved_languages_review
+        self.additional_experiences = additional_experiences
