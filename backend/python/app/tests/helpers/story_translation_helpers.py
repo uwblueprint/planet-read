@@ -1,4 +1,8 @@
 from ...models.story import Story
+from ...models.story_translation import StoryTranslation
+from ...models.story_translation_content import StoryTranslationContent
+from ...models.user_all import UserAll
+from .db_helpers import db_session_add_commit_obj
 
 
 class StoryTranslationRequestDTO:
@@ -15,3 +19,123 @@ class StoryTranslationRequestDTO:
         self.stage = stage
         self.translator_id = translator_id
         self.reviewer_id = reviewer_id
+
+
+def assert_story_translation_equals_model(
+    story_translation_response,
+    story_model,
+    story_translation_model,
+    translation_contents,
+    num_translated_lines,
+    num_approved_lines,
+):
+    assert story_translation_response["id"] == story_translation_model.id
+    assert story_translation_response["language"] == story_translation_model.language
+    assert story_translation_response["stage"] == story_translation_model.stage
+    assert story_translation_response["translation_contents"] == translation_contents
+    assert (
+        story_translation_response["translator_id"]
+        == story_translation_model.translator_id
+    )
+    assert (
+        story_translation_response["reviewer_id"] == story_translation_model.reviewer_id
+    )
+    assert story_translation_response["story_id"] == story_translation_model.story_id
+    assert story_translation_response["title"] == story_model.title
+    assert story_translation_response["description"] == story_model.description
+    assert story_translation_response["youtube_link"] == story_model.youtube_link
+    assert story_translation_response["level"] == story_model.level
+    assert story_translation_response["num_translated_lines"] == num_translated_lines
+    assert story_translation_response["num_approved_lines"] == num_approved_lines
+    assert story_translation_response["num_content_lines"] == len(translation_contents)
+
+
+def create_story(db):
+    return db_session_add_commit_obj(
+        db,
+        Story(
+            title="East of Eden",
+            description="Follow the intertwined destinies of two families whose generations reenact the poisonous rivalry of Cain and Abel.",
+            youtube_link="https://www.youtube.com/watch?v=redECmF7wh8",
+            level=4,
+        ),
+    )
+
+
+def create_translator(db):
+    return db_session_add_commit_obj(
+        db,
+        UserAll(
+            first_name="Carl",
+            last_name="Sagan",
+            email="carl.sagan@uwblueprint.org",
+            auth_id="secret",
+            role="User",
+            approved_languages_translation={"ENGLISH_US": 4, "ENGLISH_UK": 4},
+            approved_languages_review={"ENGLISH_US": 4, "ENGLISH_UK": 4},
+        ),
+    )
+
+
+def create_reviewer(db):
+    return db_session_add_commit_obj(
+        db,
+        UserAll(
+            first_name="Dwight",
+            last_name="D. Eisenhower",
+            email="dwight.d.eisenhower@uwblueprint.org",
+            auth_id="anothersecret",
+            role="User",
+            approved_languages_translation={"ENGLISH_US": 4, "ENGLISH_UK": 4},
+            approved_languages_review={"ENGLISH_US": 4, "ENGLISH_UK": 4},
+        ),
+    )
+
+
+def create_story_translation(db, story, translator, reviewer):
+    return db_session_add_commit_obj(
+        db,
+        StoryTranslation(
+            story_id=story.id,
+            language="ENGLISH_US",
+            stage="TRANSLATE",
+            translator_id=translator.id,
+            reviewer_id=reviewer.id,
+        ),
+    )
+
+
+def create_story_translation_contents(db, story_translation):
+    story_translation_content_1 = db_session_add_commit_obj(
+        db,
+        StoryTranslationContent(
+            story_translation_id=story_translation.id,
+            line_index=0,
+            translation_content="Translation content 1.",
+            status="APPROVED",
+        ),
+    )
+    story_translation_content_2 = db_session_add_commit_obj(
+        db,
+        StoryTranslationContent(
+            story_translation_id=story_translation.id,
+            line_index=1,
+            translation_content="",
+            status="DEFAULT",
+        ),
+    )
+    story_translation_contents = [
+        {
+            "id": story_translation_content_1.id,
+            "line_index": story_translation_content_1.line_index,
+            "translation_content": story_translation_content_1.translation_content,
+            "status": story_translation_content_1.status,
+        },
+        {
+            "id": story_translation_content_2.id,
+            "line_index": story_translation_content_2.line_index,
+            "translation_content": story_translation_content_2.translation_content,
+            "status": story_translation_content_2.status,
+        },
+    ]
+    return story_translation_contents
