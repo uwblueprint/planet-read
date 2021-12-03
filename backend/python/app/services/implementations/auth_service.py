@@ -50,7 +50,7 @@ class AuthService(IAuthService):
             google_user = self.firebase_rest_client.sign_in_with_google(id_token)
             auth_id = google_user["localId"]
             token = Token(google_user["idToken"], google_user["refreshToken"])
-            onFirebase = False
+            on_firebase = False
             try:
                 user = self.user_service.get_user_by_email(
                     google_user["email"]
@@ -62,7 +62,7 @@ class AuthService(IAuthService):
                 firebase_admin.auth.get_user(
                     auth_id
                 )  # If a person is on firebase but isn't there locally (a check that's mainly useful in a dev environment) so that we don't double create accounts
-                onFirebase = True
+                on_firebase = True
             except firebase_admin.auth.UserNotFoundError as e:
                 self.logger.error("User not found locally, but exists on Firebase")
             user = self.user_service.create_user(
@@ -72,7 +72,7 @@ class AuthService(IAuthService):
                     role_id="User",
                     email=google_user["email"],
                     auth_id=auth_id,
-                    onFirebase=onFirebase,
+                    on_firebase=on_firebase,
                 )
             )  # TODO: Pass in the profile photo from google
         except Exception as e:

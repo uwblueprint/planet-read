@@ -16,6 +16,7 @@ class UserDTO(graphene.ObjectType):
     profile_pic = graphene.Int()
     approved_languages_translation = graphene.JSONString()
     approved_languages_review = graphene.JSONString()
+    additional_experiences = graphene.JSONString()
 
 
 class CreateUserWithEmailDTO(graphene.InputObjectType):
@@ -28,6 +29,8 @@ class CreateUserWithEmailDTO(graphene.InputObjectType):
     profile_pic = graphene.Int(required=False, default=None)
     approved_languages_translation = graphene.JSONString(required=False, default=None)
     approved_languages_review = graphene.JSONString(required=False, default=None)
+    additional_experiences = graphene.JSONString(required=False, default=None)
+    sign_up_method = graphene.String(default="PASSWORD")
 
 
 class CreateUserWithGoogleDTO(graphene.InputObjectType):
@@ -40,6 +43,7 @@ class CreateUserWithGoogleDTO(graphene.InputObjectType):
     profile_pic = graphene.Int(required=False, default=None)
     approved_languages_translation = graphene.JSONString(required=False, default=None)
     approved_languages_review = graphene.JSONString(required=False, default=None)
+    additional_experiences = graphene.JSONString(required=False, default=None)
 
 
 class UpdateUserDTO(graphene.InputObjectType):
@@ -51,3 +55,4 @@ class UpdateUserDTO(graphene.InputObjectType):
     profile_pic = graphene.Int(required=False, default=None)
     approved_languages_translation = graphene.JSONString(required=False, default=None)
     approved_languages_review = graphene.JSONString(required=False, default=None)
+    additional_experiences = graphene.JSONString(required=False, default=None)
