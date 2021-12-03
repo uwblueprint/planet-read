@@ -576,7 +576,7 @@ class StoryService(IStoryService):
             if not story_translation:
                 raise Exception("Error. Story translation does not exist.")
             if user_id == story_translation.translator_id:
-                return self.soft_delete_story_translation(story_translation_id)
+                self.soft_delete_story_translation(story_translation_id)
             elif user_id == story_translation.reviewer_id:
                 story_translation.reviewer_id = None
                 db.session.commit()

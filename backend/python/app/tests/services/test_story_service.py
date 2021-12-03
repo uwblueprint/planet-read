@@ -227,7 +227,7 @@ def test_remove_translator_from_story_translation(app, db, services):
 
 
 def test_remove_user_from_invalid_story_translation(app, db, services):
-    st_id = 31415
+    st_id = -31415
     assert StoryTranslation.query.get(st_id) == None
     with pytest.raises(Exception) as e:
         services["story"].remove_user_from_story_translation(
@@ -238,7 +238,7 @@ def test_remove_user_from_invalid_story_translation(app, db, services):
 
 def test_remove_invalid_user_from_story_translation(app, db, services):
     story_translation = create_story_translation(db)
-    user_id = 92653
+    user_id = -92653
     assert User.query.get(user_id) == None
     with pytest.raises(Exception) as e:
         services["story"].remove_user_from_story_translation(
