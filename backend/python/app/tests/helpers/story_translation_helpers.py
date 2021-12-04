@@ -124,18 +124,17 @@ def create_story_translation_contents(db, story_translation):
             status="DEFAULT",
         ),
     )
+    keys = ["id", "line_index", "status", "translation_content"]
+    story_translation_content_1_dict = story_translation_content_1.to_dict()
+    story_translation_content_2_dict = story_translation_content_2.to_dict()
+    story_translation_content_1 = dict(
+        [(k, story_translation_content_1_dict[k]) for k in keys]
+    )
+    story_translation_content_2 = dict(
+        [(k, story_translation_content_2_dict[k]) for k in keys]
+    )
     story_translation_contents = [
-        {
-            "id": story_translation_content_1.id,
-            "line_index": story_translation_content_1.line_index,
-            "translation_content": story_translation_content_1.translation_content,
-            "status": story_translation_content_1.status,
-        },
-        {
-            "id": story_translation_content_2.id,
-            "line_index": story_translation_content_2.line_index,
-            "translation_content": story_translation_content_2.translation_content,
-            "status": story_translation_content_2.status,
-        },
+        story_translation_content_1,
+        story_translation_content_2,
     ]
     return story_translation_contents
