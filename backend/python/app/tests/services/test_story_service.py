@@ -2,8 +2,18 @@ import pytest
 
 from ...models.story import Story
 from ...models.story_content import StoryContent
+from ...models.story_translation import StoryTranslation
 from ..helpers.db_helpers import db_session_add_commit_obj
 from ..helpers.story_helpers import StoryRequestDTO, assert_story_equals_model
+from ..helpers.story_translation_helpers import (
+    StoryTranslationRequestDTO,
+    assert_story_translation_equals_model,
+    create_reviewer,
+    create_story,
+    create_story_translation,
+    create_story_translation_contents,
+    create_translator,
+)
 
 
 def test_get_story(app, db, services):
@@ -67,8 +77,38 @@ def test_get_stories_available_for_translation():
     pass
 
 
-def test_create_translation():
-    pass
+def test_create_translation(app, db, services):
+    translator_obj = create_translator(db)
+    reviewer_obj = create_reviewer(db)
+
+    story = StoryRequestDTO(
+        title="Title",
+        description="Description",
+        youtube_link="",
+        level=1,
+        translated_languages=[],
+    )
+    content = ["Story content 1.", "Story content 2.", "Story content 3."]
+    story_resp = services["story"].create_story(story, content)
+    story_obj = Story.query.get(story_resp.id)
+
+    story_translation = StoryTranslationRequestDTO(
+        story_id=story_obj.id,
+        language="English",
+        stage="TRANSLATE",
+        translator_id=translator_obj.id,
+        reviewer_id=reviewer_obj.id,
+    )
+    story_translation_resp = services["story"].create_translation(story_translation)
+    story_translation_obj = StoryTranslation.query.get(story_translation_resp.id)
+    assert story_translation_resp == story_translation_obj
+
+    get_story_translation_resp = services["story"].get_story_translation(
+        story_translation_obj.id
+    )
+    content_objs = StoryContent.query.filter_by(story_id=story_resp.id).all()
+    assert len(content_objs) == get_story_translation_resp["num_content_lines"]
+    assert len(content_objs) == len(get_story_translation_resp["translation_contents"])
 
 
 def test_create_translation_raises_error_if_story_translation_commit_fails_and_nothing_saved():
@@ -79,9 +119,35 @@ def test_create_translation_raises_error_if_translation_content_commit_fails_and
     pass
 
 
-def test_get_story_translation():
-    # includes all fields, including num_translated_lines
-    pass
+def test_get_story_translation(app, db, services):
+    translator_obj = create_translator(db)
+    reviewer_obj = create_reviewer(db)
+    story_obj = create_story(db)
+    story_translation_obj = create_story_translation(
+        db, story_obj, translator_obj, reviewer_obj
+    )
+    story_translation_contents = create_story_translation_contents(
+        db, story_translation_obj
+    )
+
+    story_translation_response = services["story"].get_story_translation(
+        story_translation_obj.id
+    )
+    num_translated_lines = services["story"]._get_num_translated_lines(
+        story_translation_contents
+    )
+    num_approved_lines = services["story"]._get_num_approved_lines(
+        story_translation_contents
+    )
+
+    assert_story_translation_equals_model(
+        story_translation_response,
+        story_obj,
+        story_translation_obj,
+        story_translation_contents,
+        num_translated_lines,
+        num_approved_lines,
+    )
 
 
 def test_get_story_translation_raises_error_for_invalid_id():
