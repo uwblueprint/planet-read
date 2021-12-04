@@ -32,7 +32,19 @@ def assert_story_translation_equals_model(
     assert story_translation_response["id"] == story_translation_model.id
     assert story_translation_response["language"] == story_translation_model.language
     assert story_translation_response["stage"] == story_translation_model.stage
-    assert story_translation_response["translation_contents"] == translation_contents
+    for translation_content_response, translation_content in zip(
+        story_translation_response["translation_contents"], translation_contents
+    ):
+        assert translation_content_response["id"] == translation_content["id"]
+        assert (
+            translation_content_response["line_index"]
+            == translation_content["line_index"]
+        )
+        assert (
+            translation_content_response["translation_content"]
+            == translation_content["translation_content"]
+        )
+        assert translation_content_response["status"] == translation_content["status"]
     assert (
         story_translation_response["translator_id"]
         == story_translation_model.translator_id
@@ -124,17 +136,8 @@ def create_story_translation_contents(db, story_translation):
             status="DEFAULT",
         ),
     )
-    keys = ["id", "line_index", "status", "translation_content"]
-    story_translation_content_1_dict = story_translation_content_1.to_dict()
-    story_translation_content_2_dict = story_translation_content_2.to_dict()
-    story_translation_content_1 = dict(
-        [(k, story_translation_content_1_dict[k]) for k in keys]
-    )
-    story_translation_content_2 = dict(
-        [(k, story_translation_content_2_dict[k]) for k in keys]
-    )
     story_translation_contents = [
-        story_translation_content_1,
-        story_translation_content_2,
+        story_translation_content_1.to_dict(),
+        story_translation_content_2.to_dict(),
     ]
     return story_translation_contents
