@@ -234,6 +234,65 @@ class UserService(IUserService):
         new_user_dict["email"] = user.email
         return UserDTO(**new_user_dict)
 
+    def update_me(self, user_id, user):
+        # TODO: start a new story test for given language when user wants to increase their level
+        try:
+            old_user = User.query.get(user_id)
+
+            if not old_user:
+                raise Exception("user_id {user_id} not found".format(user_id=user_id))
+
+            User.query.filter_by(id=user_id).update(
+                {
+                    User.first_name: user.first_name,
+                    User.last_name: user.last_name,
+                    User.email: user.email,
+                    User.resume: user.resume,
+                    User.profile_pic: user.profile_pic,
+                    User.additional_experiences: user.additional_experiences,
+                }
+            )
+
+            db.session.commit()
+
+            try:
+                firebase_admin.auth.update_user(old_user.auth_id, email=user.email)
+            except Exception as firebase_error:
+                try:
+                    old_user_dict = {
+                        User.first_name: old_user.first_name,
+                        User.last_name: old_user.last_name,
+                        User.role: old_user.role,
+                    }
+                    User.query.filter_by(id=user_id).update(**old_user_dict)
+                    db.session.commit()
+
+                except Exception as postgres_error:
+                    reason = getattr(postgres_error, "message", None)
+                    error_message = [
+                        "Failed to rollback Postgres user update after Firebase user update failure.",
+                        "Reason = {reason},".format(
+                            reason=(reason if reason else str(postgres_error))
+                        ),
+                        "Postgres user id with possibly inconsistent data = {user_id}".format(
+                            user_id=user_id
+                        ),
+                    ]
+                    self.logger.error(" ".join(error_message))
+
+                raise firebase_error
+
+        except Exception as e:
+            reason = getattr(e, "message", None)
+            self.logger.error(
+                "Failed to update user. Reason = {reason}".format(
+                    reason=(reason if reason else str(e))
+                )
+            )
+            raise e
+        
+        return UserService.get_user_by_id(self, user_id)
+
     def update_user_by_id(self, user_id, user):
         try:
             old_user = User.query.get(user_id)
@@ -251,6 +310,7 @@ class UserService(IUserService):
                     User.approved_languages_translation: user.approved_languages_translation,
                     User.approved_languages_review: user.approved_languages_review,
                     User.additional_experiences: user.additional_experiences,
+                    User.email: user.email,
                 }
             )
 

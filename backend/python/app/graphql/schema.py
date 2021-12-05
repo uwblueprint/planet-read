@@ -24,8 +24,9 @@ from .mutations.story_mutation import (
 from .mutations.user_mutation import (
     CreateUser,
     SoftDeleteUser,
-    UpdateUser,
+    UpdateMe,
     UpdateUserApprovedLanguages,
+    UpdateUserByID,
 )
 from .queries.comment_query import resolve_comments_by_story_translation
 from .queries.file_query import resolve_file_by_id
@@ -56,7 +57,8 @@ class Mutation(graphene.ObjectType):
     create_user = CreateUser.Field()
     create_story_translation = CreateStoryTranslation.Field()
     reset_password = ResetPassword.Field()
-    update_user = UpdateUser.Field()
+    update_me = UpdateMe.Field()
+    update_user_by_id = UpdateUserByID.Field()
     login = Login.Field()
     login_with_google = LoginWithGoogle.Field()
     logout = Logout.Field()

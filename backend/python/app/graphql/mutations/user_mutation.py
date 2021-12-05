@@ -1,6 +1,7 @@
 import graphene
 
 from ...middlewares.auth import (
+    get_user_id_from_request,
     require_authorization_by_role_gql,
     require_authorization_by_user_id_not_equal,
 )
@@ -22,20 +23,40 @@ class CreateUser(graphene.Mutation):
         return CreateUser(user=user_response, ok=ok)
 
 
-class UpdateUser(graphene.Mutation):
+class UpdateMe(graphene.Mutation):
+    class Arguments:
+        user = UpdateUserDTO(required=True)
+
+    user = graphene.Field(lambda: UserDTO)
+
+    def mutate(root, info, user):
+        """
+        Update the user that made the request
+        """
+        try:
+            user_id = int(get_user_id_from_request())
+            updated_user = services["user"].update_me(user_id, user)
+            return UpdateMe(user=updated_user)
+        except Exception as e:
+            error_message = getattr(e, "message", None)
+            raise Exception(error_message if error_message else str(e))
+
+
+class UpdateUserByID(graphene.Mutation):
     class Arguments:
         id = graphene.ID(required=True)
         user = UpdateUserDTO(required=True)
 
     user = graphene.Field(lambda: UserDTO)
 
+    @require_authorization_by_role_gql({"Admin"})
     def mutate(root, info, id, user):
         """
         Update the user with the specified user_id
         """
         try:
             updated_user = services["user"].update_user_by_id(id, user)
-            return UpdateUser(user=updated_user)
+            return UpdateUserByID(user=updated_user)
         except Exception as e:
             error_message = getattr(e, "message", None)
             raise Exception(error_message if error_message else str(e))
@@ -84,7 +105,7 @@ class SoftDeleteUser(graphene.Mutation):
 
 """
 TODO mutations:
- updateUser(id: ID!, user: UpdateUserDTO!): UserDTO!
+ UpdateUserByID(id: ID!, user: UpdateUserDTO!): UserDTO!
  deleteUserById(id: ID!): ID
  deleteUserByEmail(email: String!): IDdeleteUserById
  deleteUserByEmail
