@@ -22,6 +22,7 @@ class UserAll(db.Model):
     # should be language: highest approved level
     approved_languages_translation = db.Column(db.JSON)
     approved_languages_review = db.Column(db.JSON)
+    additional_experiences = db.Column(db.JSON)
     is_deleted = db.Column(Boolean, default=False, nullable=False)
 
     def to_dict(self, include_relationships=False):

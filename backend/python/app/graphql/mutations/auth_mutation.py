@@ -54,6 +54,7 @@ class Login(graphene.Mutation):
     email = graphene.String()
     approved_languages_translation = graphene.String()
     approved_languages_review = graphene.String()
+    additional_experiences = graphene.String()
 
     def mutate(root, info, email, password):
         try:
@@ -68,6 +69,7 @@ class Login(graphene.Mutation):
             email = auth_dto.email
             approved_languages_translation = auth_dto.approved_languages_translation
             approved_languages_review = auth_dto.approved_languages_review
+            additional_experiences = auth_dto.additional_experiences
 
             return Login(
                 access_token,
@@ -79,6 +81,7 @@ class Login(graphene.Mutation):
                 email,
                 approved_languages_translation,
                 approved_languages_review,
+                additional_experiences,
             )
         except Exception as e:
             error_message = getattr(e, "message", None)
@@ -98,6 +101,7 @@ class LoginWithGoogle(graphene.Mutation):
     email = graphene.String()
     approved_languages_translation = graphene.String()
     approved_languages_review = graphene.String()
+    additional_experiences = graphene.String()
 
     def mutate(root, info, tokenId):
         try:
@@ -112,6 +116,7 @@ class LoginWithGoogle(graphene.Mutation):
             email = auth_dto.email
             approved_languages_translation = auth_dto.approved_languages_translation
             approved_languages_review = auth_dto.approved_languages_review
+            additional_experiences = auth_dto.additional_experiences
 
             return LoginWithGoogle(
                 access_token,
@@ -123,6 +128,7 @@ class LoginWithGoogle(graphene.Mutation):
                 email,
                 approved_languages_translation,
                 approved_languages_review,
+                additional_experiences,
             )
         except Exception as e:
             error_message = getattr(e, "message", None)

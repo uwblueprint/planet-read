@@ -10,6 +10,7 @@ class CreateUserWithEmailDTO:
         profile_pic=None,
         approved_languages_translation=None,
         approved_languages_review=None,
+        additional_experiences=None,
     ):
         self.first_name = first_name
         self.last_name = last_name
@@ -20,7 +21,8 @@ class CreateUserWithEmailDTO:
         self.profile_pic = profile_pic
         self.approved_languages_translation = approved_languages_translation
         self.approved_languages_review = approved_languages_review
-        self.signUpMethod = "PASSWORD"
+        self.additional_experiences = additional_experiences
+        self.sign_up_method = "PASSWORD"
 
 
 class CreateUserWithGoogleDTO:
@@ -31,11 +33,12 @@ class CreateUserWithGoogleDTO:
         role,
         email,
         auth_id,
-        onFirebase,
+        on_firebase,
         resume=None,
         profile_pic=None,
         approved_languages_translation=None,
         approved_languages_review=None,
+        additional_experiences=None,
     ):
         self.first_name = first_name
         self.last_name = last_name
@@ -46,5 +49,6 @@ class CreateUserWithGoogleDTO:
         self.profile_pic = profile_pic
         self.approved_languages_translation = approved_languages_translation
         self.approved_languages_review = approved_languages_review
-        self.signUpMethod = "GOOGLE"
-        self.onFirebase = onFirebase
+        self.additional_experiences = additional_experiences
+        self.on_firebase = on_firebase
+        self.sign_up_method = "GOOGLE"

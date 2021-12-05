@@ -16,6 +16,7 @@ class AuthDTO(Token, UserDTO):
         profile_pic,
         approved_languages_translation,
         approved_languages_review,
+        additional_experiences,
     ):
         Token.__init__(self, access_token, refresh_token)
         UserDTO.__init__(
@@ -29,4 +30,5 @@ class AuthDTO(Token, UserDTO):
             profile_pic,
             approved_languages_translation,
             approved_languages_review,
+            additional_experiences,
         )

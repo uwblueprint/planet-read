@@ -175,13 +175,13 @@ class UserService(IUserService):
         mysql_user = None
         auth_id = None
         try:
-            if user.signUpMethod == "PASSWORD":
+            if user.sign_up_method == "PASSWORD":
                 firebase_user = firebase_admin.auth.create_user(
                     email=user.email, password=user.password
                 )
                 auth_id = firebase_user.uid
-            elif user.signUpMethod == "GOOGLE":
-                if not user.onFirebase:
+            elif user.sign_up_method == "GOOGLE":
+                if not user.on_firebase:
                     firebase_user = firebase_admin.auth.create_user(uid=user.auth_id)
                 auth_id = user.auth_id
 
@@ -195,6 +195,7 @@ class UserService(IUserService):
                 "profile_pic": user.profile_pic,
                 "approved_languages_translation": user.approved_languages_translation,
                 "approved_languages_review": user.approved_languages_review,
+                "additional_experiences": user.additional_experiences,
             }
 
             try:
@@ -204,7 +205,7 @@ class UserService(IUserService):
             except Exception as postgres_error:
                 # rollback user creation in Firebase
                 try:
-                    if not (user.signUpMethod == "GOOGLE" and user.onFirebase):
+                    if not (user.sign_up_method == "GOOGLE" and user.on_firebase):
                         firebase_admin.auth.delete_user(firebase_user.uid)
                 except Exception as firebase_error:
                     reason = getattr(firebase_error, "message", None)
@@ -249,6 +250,7 @@ class UserService(IUserService):
                     User.profile_pic: user.profile_pic,
                     User.approved_languages_translation: user.approved_languages_translation,
                     User.approved_languages_review: user.approved_languages_review,
+                    User.additional_experiences: user.additional_experiences,
                 }
             )
 
@@ -290,7 +292,7 @@ class UserService(IUserService):
             )
             raise e
 
-        return UserDTO(user_id, user.first_name, user.last_name, user.email, user.role)
+        return UserDTO(user_id, **user)
 
     def soft_delete_user(self, user_id):
         try:
@@ -402,15 +404,14 @@ class UserService(IUserService):
                 synchronize_session="fetch"
             )
 
-            # Not this ticket, but I think these exceptions won't work, where is user_id declared in this function?
             if delete_count < 1:
                 raise Exception(
-                    "user_id {user_id} was not deleted".format(user_id=user_id)
+                    "User with email {email} was not deleted".format(email=email)
                 )
             elif delete_count > 1:
                 raise Exception(
-                    "user_id {user_id} had multiple instances. Delete not committed.".format(
-                        user_id=user_id
+                    "User with email {email} had multiple instances. Delete not committed.".format(
+                        email=email
                     )
                 )
 
