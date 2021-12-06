@@ -122,8 +122,8 @@ def test_create_translation_raises_error_if_translation_content_commit_fails_and
 
 def test_get_story_translation(app, db, services):
     (
-        _,
-        _,
+        _trans,
+        _rev,
         story_obj,
         story_translation_obj,
     ) = create_story_translation(db)
@@ -206,7 +206,7 @@ def test_get_story_translations_available_for_review():
 
 
 def test_remove_reviewer_from_story_translation(app, db, services):
-    _, _, _, story_translation = create_story_translation(db)
+    _trans, _rev, _story, story_translation = create_story_translation(db)
     assert StoryTranslation.query.get(story_translation.id).reviewer_id != None
     services["story"].remove_user_from_story_translation(
         story_translation_id=story_translation.id, user_id=story_translation.reviewer_id
@@ -215,7 +215,7 @@ def test_remove_reviewer_from_story_translation(app, db, services):
 
 
 def test_remove_translator_from_story_translation(app, db, services):
-    _, _, _, story_translation = create_story_translation(db)
+    _trans, _rev, _story, story_translation = create_story_translation(db)
     assert StoryTranslation.query.get(story_translation.id).translator_id != None
     services["story"].remove_user_from_story_translation(
         story_translation_id=story_translation.id,
@@ -236,7 +236,7 @@ def test_remove_user_from_invalid_story_translation(app, db, services):
 
 
 def test_remove_invalid_user_from_story_translation(app, db, services):
-    _, _, _, story_translation = create_story_translation(db)
+    _trans, _rev, _story, story_translation = create_story_translation(db)
     user_id = -92653
     assert User.query.get(user_id) == None
     with pytest.raises(Exception) as e:
