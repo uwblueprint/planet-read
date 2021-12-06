@@ -101,12 +101,3 @@ class SoftDeleteUser(graphene.Mutation):
         except Exception as e:
             error_message = getattr(e, "message", None)
             raise Exception(error_message if error_message else str(e))
-
-
-"""
-TODO mutations:
- UpdateUserByID(id: ID!, user: UpdateUserDTO!): UserDTO!
- deleteUserById(id: ID!): ID
- deleteUserByEmail(email: String!): IDdeleteUserById
- deleteUserByEmail
-"""
