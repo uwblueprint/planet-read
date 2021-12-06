@@ -290,7 +290,7 @@ class UserService(IUserService):
                 )
             )
             raise e
-        
+
         return UserService.get_user_by_id(self, user_id)
 
     def update_user_by_id(self, user_id, user):
