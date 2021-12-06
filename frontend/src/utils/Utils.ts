@@ -55,3 +55,7 @@ export const generateSortFn =
     isAscending
       ? t1[field].localeCompare(t2[field])
       : t2[field].localeCompare(t1[field]);
+
+export const isObjEmpty = (o: object): boolean => {
+  return Object.keys(o).length === 0;
+};

@@ -49,3 +49,8 @@ export const MANAGE_USERS_TABLE_DELETE_USER_CONFIRMATION =
   "By deleting the user, all their data will be removed from the database. The user will not be able to access this platform, and this action cannot be undone.";
 
 export const MANAGE_USERS_TABLE_DELETE_USER_BUTTON = "I'm sure, delete user";
+
+export const ASSIGN_STORY_CONFIRMATION =
+  "By assigning a story to the user, other users can no longer assign themselves to the same role for this story.";
+
+export const ASSIGN_STORY_BUTTON = "I'm sure, assign story";
