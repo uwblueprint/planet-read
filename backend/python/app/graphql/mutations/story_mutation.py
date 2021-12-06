@@ -173,3 +173,22 @@ class SoftDeleteStoryTranslation(graphene.Mutation):
         except Exception as e:
             error_message = getattr(e, "message", None)
             raise Exception(error_message if error_message else str(e))
+
+
+class RemoveUserFromStoryTranslation(graphene.Mutation):
+    class Arguments:
+        story_translation_id = graphene.Int(required=True)
+        user_id = graphene.Int(required=True)
+
+    ok = graphene.Boolean()
+
+    @require_authorization_by_role_gql({"Admin"})
+    def mutate(root, info, story_translation_id, user_id):
+        try:
+            services["story"].remove_user_from_story_translation(
+                story_translation_id, user_id
+            )
+            return RemoveUserFromStoryTranslation(ok=True)
+        except Exception as e:
+            error_message = getattr(e, "message", None)
+            raise Exception(error_message if error_message else str(e))

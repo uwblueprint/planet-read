@@ -154,5 +154,15 @@ class IStoryService(ABC):
     def soft_delete_story_translation(self, id):
         """
         Soft delete a story translation by setting is_deleted=True
-        :param id: id of story translaiton
+        :param id: id of the story translation
+        """
+
+    @abstractmethod
+    def remove_user_from_story_translation(self, story_translation_id, user_id):
+        """
+        Remove a user from a story translation; if the user is a reviewer, set
+        the reviewer_id=None, if the user is a translator, soft delete the story
+        translation
+        :param story_translation_id: id of the story translation
+        :param user_id: id of the user to be removed
         """

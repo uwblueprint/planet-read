@@ -1,5 +1,5 @@
 from ...models.story import Story
-from ...models.story_translation import StoryTranslation
+from ...models.story_translation_all import StoryTranslationAll
 from ...models.story_translation_content import StoryTranslationContent
 from ...models.user_all import UserAll
 from .db_helpers import db_session_add_commit_obj
@@ -104,10 +104,10 @@ def create_reviewer(db):
     )
 
 
-def create_story_translation(db, story, translator, reviewer):
+def _create_story_translation(db, story, translator, reviewer):
     return db_session_add_commit_obj(
         db,
-        StoryTranslation(
+        StoryTranslationAll(
             story_id=story.id,
             language="ENGLISH_US",
             stage="TRANSLATE",
@@ -141,3 +141,16 @@ def create_story_translation_contents(db, story_translation):
         story_translation_content_2.to_dict(),
     ]
     return story_translation_contents
+
+
+def create_story_translation(db):
+    """Wrapper function to create translator, reviewer, story and story
+    translation objects.
+    :return: Tuple of translator, reviewer, story and story translation objects"""
+    translator_obj = create_translator(db)
+    reviewer_obj = create_reviewer(db)
+    story_obj = create_story(db)
+    story_translation_obj = _create_story_translation(
+        db, story_obj, translator_obj, reviewer_obj
+    )
+    return translator_obj, reviewer_obj, story_obj, story_translation_obj
