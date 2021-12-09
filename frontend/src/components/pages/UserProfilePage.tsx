@@ -30,6 +30,8 @@ import {
 } from "../../utils/Utils";
 import ApprovedLanguagesTable from "../admin/ApprovedLanguagesTable";
 import AssignedStoryTranslationsTable from "../admin/AssignedStoryTranslationsTable";
+import { StoryAssignStage } from "../../constants/Enums";
+import InfoAlert from "../utils/InfoAlert";
 
 type UserProfilePageProps = {
   userId: string;
@@ -50,6 +52,10 @@ const UserProfilePage = () => {
     useState<ApprovedLanguagesMap>();
   const [approvedLanguagesReview, setApprovedLanguagesReview] =
     useState<ApprovedLanguagesMap>();
+
+  const [storyAssignStage, setStoryAssignStage] = useState<StoryAssignStage>(
+    StoryAssignStage.INITIAL,
+  );
 
   const history = useHistory();
 
@@ -143,10 +149,24 @@ const UserProfilePage = () => {
           <Heading size="lg" marginTop="56px" marginBottom="20px">
             Assigned Story Translations
           </Heading>
+          {storyAssignStage !== StoryAssignStage.INITIAL && (
+            <Box marginBottom="22px">
+              <InfoAlert
+                message={
+                  storyAssignStage === StoryAssignStage.SUCCESS
+                    ? "A new story was assigned to the user."
+                    : "No stories were assigned to the user."
+                }
+              />
+            </Box>
+          )}
           <AssignedStoryTranslationsTable
             storyTranslations={storyTranslations}
             setStoryTranslations={setStoryTranslations}
             userId={parseInt(userId, 10)}
+            approvedLanguagesTranslation={approvedLanguagesTranslation}
+            approvedLanguagesReview={approvedLanguagesReview}
+            setStoryAssignStage={setStoryAssignStage}
           />
           <Heading size="sm" marginTop="56px">
             Delete user

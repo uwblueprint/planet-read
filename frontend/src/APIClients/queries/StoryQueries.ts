@@ -143,6 +143,44 @@ export const buildHomePageStoriesQuery = (
   return result as QueryInformation;
 };
 
+export const buildAssignStoryQuery = (
+  isTranslator: boolean,
+  language: string | null,
+  level: number | null,
+): QueryInformation => {
+  const result = isTranslator
+    ? {
+        fieldName: "storiesAvailableForTranslation",
+        string: gql`
+          query StoriesAvailableForTranslation {
+            storiesAvailableForTranslation(
+              language: "${language}",
+              level: ${level}
+            ) {
+              storyId: id
+              ${STORY_FIELDS}
+            }
+          }
+        `,
+      }
+    : {
+        fieldName: "storyTranslationsAvailableForReview",
+        string: gql`
+          query StoriesAvailableForTranslation {
+            storyTranslationsAvailableForReview(
+              language: "${language}",
+              level: ${level}
+            ) {
+              storyId
+              storyTranslationId: id
+              ${STORY_FIELDS}
+            }
+          }
+        `,
+      };
+  return result as QueryInformation;
+};
+
 export type StoryTranslation = {
   storyTranslationId: number;
   language: string;

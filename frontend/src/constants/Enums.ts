@@ -4,3 +4,9 @@ export enum Role {
   Reviewer,
   Translator,
 }
+
+export enum StoryAssignStage {
+  INITIAL,
+  SUCCESS,
+  CANCELLED,
+}
