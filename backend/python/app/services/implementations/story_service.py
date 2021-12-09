@@ -321,6 +321,20 @@ class StoryService(IStoryService):
             self.logger.error("User can't be assigned as a reviewer")
             raise Exception("User can't be assigned as a reviewer")
 
+    def remove_reviewer_from_story_translation(self, story_translation):
+        try:
+            story_translation = StoryTranslation.query.get(story_translation["id"])
+            story_translation.reviewer_id = None
+            db.session.commit()
+        except Exception as error:
+            reason = getattr(error, "message", None)
+            self.logger.error(
+                "Failed to remove reviewer from story translation. Reason = {reason}".format(
+                    reason=(reason if reason else str(error))
+                )
+            )
+            raise error
+
     def update_story(self, story_id, title, description, youtube_link):
         try:
             story = Story.query.get(story_id)

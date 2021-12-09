@@ -20,6 +20,10 @@ import {
   AssignReviewerResponse,
   CREATE_TRANSLATION,
   CreateTranslationResponse,
+  UnassignReviewerResponse,
+  SoftDeleteStoryTranslationResponse,
+  SOFT_DELETE_STORY_TRANSLATION,
+  UNASSIGN_REVIEWER,
 } from "../../APIClients/mutations/StoryMutations";
 import { getLevelVariant } from "../../utils/StatusUtils";
 import convertStageTitleCase from "../../utils/StageUtils";
@@ -29,6 +33,9 @@ import ConfirmationModal from "../utils/ConfirmationModal";
 import {
   ASSIGN_STORY_BUTTON,
   ASSIGN_STORY_CONFIRMATION,
+  UNASSIGN_REVIEWER_FROM_STORY_TRANSLATION_CONFIRMATION,
+  UNASSIGN_TRANSLATOR_FROM_STORY_TRANSLATION_CONFIRMATION,
+  UNASSIGN_USER_FROM_STORY_TRANSLATION_BUTTON,
 } from "../../utils/Copy";
 import AssignStoryModal, { StoryToAssign } from "../utils/AssignStoryModal";
 import { StoryAssignStage } from "../../constants/Enums";
@@ -63,6 +70,10 @@ const AssignedStoryTranslationsTable = ({
   const [isAscendingLanguage, setIsAscendingLanguage] = useState(true);
   const [isAscendingStage, setIsAscendingStage] = useState(true);
 
+  const [confirmUnassignUser, setConfirmUnassignUser] = useState(false);
+  const [translationToRemoveUser, setTranslationToRemoveUser] =
+    useState<StoryTranslation | null>(null);
+
   const [assignStory, setAssignStory] = useState(false);
   const [confirmAssignStory, setConfirmAssignStory] = useState(false);
 
@@ -85,6 +96,15 @@ const AssignedStoryTranslationsTable = ({
   };
   const openConfirmAssignStoryModal = () => {
     setConfirmAssignStory(true);
+  };
+
+  const closeConfirmUnassignUserModal = () => {
+    setTranslationToRemoveUser(null);
+    setConfirmUnassignUser(false);
+  };
+  const openConfirmUnassignUserModal = (translation: StoryTranslation) => {
+    setTranslationToRemoveUser(translation);
+    setConfirmUnassignUser(true);
   };
 
   const getRole = (translation: StoryTranslation) => {
@@ -175,6 +195,38 @@ const AssignedStoryTranslationsTable = ({
     }
   };
 
+  const [deleteStoryTranslation] = useMutation<{
+    response: SoftDeleteStoryTranslationResponse;
+  }>(SOFT_DELETE_STORY_TRANSLATION);
+  const unassignTranslator = async (storyTranslationId: number) => {
+    await deleteStoryTranslation({
+      variables: {
+        id: storyTranslationId,
+      },
+    });
+    return null;
+  };
+
+  const [removeReviewer] = useMutation<{
+    removeReviewerFromStoryTranslation: UnassignReviewerResponse;
+  }>(UNASSIGN_REVIEWER);
+  const unassignReviewer = async (
+    storyTranslationId: number,
+  ): Promise<string | null> => {
+    try {
+      const result = await removeReviewer({
+        variables: {
+          storyTranslationId,
+        },
+      });
+      return result.data?.removeReviewerFromStoryTranslation.ok
+        ? null
+        : "Error removing user from story translation!";
+    } catch (err) {
+      return err as string;
+    }
+  };
+
   const onConfirmAssignStory = async () => {
     const assignUser = storyToAssign!!.storyTranslationId
       ? assignReviewer
@@ -189,6 +241,23 @@ const AssignedStoryTranslationsTable = ({
     } else {
       setStoryAssignStage(StoryAssignStage.SUCCESS);
       // TODO: remove this line and add story translation locally
+      window.location.reload();
+    }
+  };
+
+  const onConfirmUnassignUser = async () => {
+    const storyTranslation = translationToRemoveUser!;
+    const removeUser =
+      getRole(storyTranslation) === "Translator"
+        ? unassignTranslator
+        : unassignReviewer;
+
+    const err = await removeUser(storyTranslation.storyTranslationId);
+    closeConfirmUnassignUserModal();
+
+    if (err !== null) {
+      window.alert(err);
+    } else {
       window.location.reload();
     }
   };
@@ -220,6 +289,7 @@ const AssignedStoryTranslationsTable = ({
           background="transparent"
           icon={<Icon as={MdDelete} />}
           width="fit-content"
+          onClick={() => openConfirmUnassignUserModal(translation)}
         />
       </Td>
     </Tr>
@@ -285,6 +355,23 @@ const AssignedStoryTranslationsTable = ({
           onClose={closeConfirmAssignStoryModal}
           confirmationMessage={ASSIGN_STORY_CONFIRMATION}
           buttonMessage={ASSIGN_STORY_BUTTON}
+        />
+      )}
+      {confirmUnassignUser && (
+        <ConfirmationModal
+          confirmation={confirmUnassignUser}
+          onConfirmationClick={onConfirmUnassignUser}
+          onClose={closeConfirmUnassignUserModal}
+          confirmationMessage={
+            /* eslint-disable */
+            translationToRemoveUser
+              ? getRole(translationToRemoveUser) === "Translator"
+                ? UNASSIGN_TRANSLATOR_FROM_STORY_TRANSLATION_CONFIRMATION
+                : UNASSIGN_REVIEWER_FROM_STORY_TRANSLATION_CONFIRMATION
+              : ""
+            /* eslint-enable */
+          }
+          buttonMessage={UNASSIGN_USER_FROM_STORY_TRANSLATION_BUTTON}
         />
       )}
     </>
