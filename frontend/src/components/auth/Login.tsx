@@ -97,6 +97,9 @@ const Login = () => {
     }
   };
 
+  if (authenticatedUser && isSignup) {
+    return <Redirect to="/complete-profile" />;
+  }
   if (authenticatedUser) {
     return <Redirect to="/" />;
   }

@@ -7,9 +7,12 @@ import {
   FormControl,
   Input,
   Heading,
+  IconButton,
   Text,
   Textarea,
 } from "@chakra-ui/react";
+import { Icon } from "@chakra-ui/icon";
+import { MdFolder } from "react-icons/md";
 import Header from "../navigation/Header";
 
 const DropdownIndicator = () => {
@@ -24,11 +27,15 @@ const DropdownIndicator = () => {
 };
 
 const CompleteProfilePage = () => {
+  const onSubmitClick = () => {
+    window.location.href = `/`;
+  };
+
   return (
     <Flex direction="column" height="100vh">
       <Header />
-      <Flex direction="row" flex={1} width="60%">
-        <Flex direction="column" margin="40px" flex={1}>
+      <Flex direction="row" flex={1} marginLeft="50px">
+        <Flex direction="column" margin="40px" flex={1} maxWidth="50%">
           <Heading size="lg">Complete your profile!</Heading>
           <Text marginBottom="20px">
             For the purposes of this platform, please enter your details
@@ -58,17 +65,43 @@ const CompleteProfilePage = () => {
             Select the language that you would like to start with. Additional
             languages can be added after signing up.
           </Text>
-          <Box width="80%">
+          <Box width="60%">
             <Select
               placeholder="Select language"
               components={{ DropdownIndicator }}
             />
           </Box>
         </Flex>
-        <Flex>
-          <Heading size="sm" marginTop="36px">
-            Inprogress
+        <Flex direction="column" marginTop="160px" flex={1} marginLeft="60px">
+          <Heading size="sm">Upload your CV (optional)</Heading>
+          <Flex
+            direction="column"
+            border="2px"
+            borderColor="rgba(29, 108, 165, 0.4)"
+            maxWidth="80%"
+            height="250px"
+            rounded="md"
+            bg="#e8f0f6"
+            align="center"
+            justify="center"
+          >
+            <IconButton
+              aria-label="Folder icon"
+              background="transparent"
+              icon={<Icon as={MdFolder} width={16} height={16} />}
+              width="fit-content"
+              marginBottom="16px"
+              color="#1d6ca5"
+            />
+            <Text>Drag & drop your files here (.PDF, .docx)</Text>
+            <Button colorScheme="blue" marginTop="16px" width="160px">
+              Browse Files
+            </Button>
+          </Flex>
+          <Heading size="sm" marginTop="24px">
+            Uploaded files
           </Heading>
+          <Text>Drag & drop a file or browse files to upload a CV.</Text>
         </Flex>
       </Flex>
       <Flex
@@ -80,11 +113,14 @@ const CompleteProfilePage = () => {
         padding="20px 30px"
       >
         <Box>
-          <Button colorScheme="blue" variant="blueOutline">
-            Cancel
-          </Button>
-          <Button colorScheme="blue" marginLeft="24px" marginRight="48px">
-            Save Changes
+          <Button
+            colorScheme="blue"
+            marginLeft="24px"
+            marginRight="48px"
+            width="240px"
+            onClick={onSubmitClick}
+          >
+            SUBMIT FOR REVIEW
           </Button>
         </Box>
       </Flex>
