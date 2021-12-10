@@ -1,4 +1,5 @@
 import React, { Dispatch, SetStateAction, useEffect, useState } from "react";
+import { useMutation } from "@apollo/client";
 import {
   Table,
   Thead,
@@ -16,11 +17,10 @@ import {
 } from "@chakra-ui/react";
 import { ApprovedLanguagesMap, generateSortFn } from "../../utils/Utils";
 import { convertLanguageTitleCase } from "../../utils/LanguageUtils";
-
-type ApprovedLanguagesTableProps = {
-  approvedLanguagesTranslation: ApprovedLanguagesMap | undefined;
-  approvedLanguagesReview: ApprovedLanguagesMap | undefined;
-};
+import {
+  UPDATE_USER_APPROVED_LANGUAGES,
+  UpdateUserApprovedLanguagesResponse,
+} from "../../APIClients/mutations/UserMutations";
 
 interface ApprovedLanguageFieldSortDict {
   [field: string]: {
@@ -37,9 +37,20 @@ type ApprovedLanguage = {
   sliderValue: number;
 };
 
+type ApprovedLanguagesTableProps = {
+  approvedLanguagesTranslation: ApprovedLanguagesMap | undefined;
+  approvedLanguagesReview: ApprovedLanguagesMap | undefined;
+  userId: number;
+  setAlertText: (newText: string) => void;
+  setAlert: (open: boolean) => void;
+};
+
 const ApprovedLanguagesTable = ({
   approvedLanguagesTranslation,
   approvedLanguagesReview,
+  userId,
+  setAlertText,
+  setAlert,
 }: ApprovedLanguagesTableProps) => {
   const [approvedLanguages, setApprovedLanguages] = useState<
     ApprovedLanguage[]
@@ -47,6 +58,44 @@ const ApprovedLanguagesTable = ({
 
   const [isAscendingLanguage, setIsAscendingLanguage] = useState(true);
   const [isAscendingRole, setIsAscendingRole] = useState(true);
+
+  const [updateUserApprovedLanguages] = useMutation<{
+    response: UpdateUserApprovedLanguagesResponse;
+  }>(UPDATE_USER_APPROVED_LANGUAGES);
+
+  const getAlertText = (
+    isTranslate: boolean,
+    language: string,
+    level: number,
+    oldLevel: number,
+  ) => {
+    return `${
+      isTranslate ? "Translator" : "Reviewer"
+    }'s approval for ${convertLanguageTitleCase(
+      language,
+    )} has been updated to Level ${level} from Level ${oldLevel}.`;
+  };
+
+  const callUpdateUserApprovedLanguagesMutation = async (
+    isTranslate: boolean,
+    language: string,
+    level: number,
+    oldLevel: number,
+  ) => {
+    const result = await updateUserApprovedLanguages({
+      variables: {
+        userId,
+        isTranslate,
+        language,
+        level,
+      },
+    });
+
+    if (result.data !== undefined) {
+      setAlert(true);
+      setAlertText(getAlertText(isTranslate, language, level, oldLevel));
+    }
+  };
 
   const fieldSortDict: ApprovedLanguageFieldSortDict = {
     language: {
@@ -87,11 +136,19 @@ const ApprovedLanguagesTable = ({
     }
   }, [approvedLanguagesTranslation, approvedLanguagesReview]);
 
-  // TODO: call gql mutation to update the level
-  const onSliderValueChange = (index: number, newValue: number) => {
-    const newApprovedLanguages = [...approvedLanguages];
-    newApprovedLanguages[index].sliderValue = newValue;
-    setApprovedLanguages(newApprovedLanguages);
+  const onSliderValueChange = (
+    isTranslate: boolean,
+    language: string,
+    newLevel: number,
+    oldLevel: number,
+  ) => {
+    callUpdateUserApprovedLanguagesMutation(
+      isTranslate,
+      language,
+      newLevel,
+      oldLevel,
+    );
+    setTimeout(() => setAlert(false), 5000);
   };
 
   const tableBody = approvedLanguages.map(
@@ -113,7 +170,14 @@ const ApprovedLanguagesTable = ({
             marginLeft="20px"
             size="lg"
             width="79%"
-            onChange={(val) => onSliderValueChange(index, val)}
+            onChange={(val: number) =>
+              onSliderValueChange(
+                approvedLanguage.role === "Translator",
+                approvedLanguage.language,
+                val,
+                approvedLanguage.level,
+              )
+            }
           >
             <SliderTrack height="6px">
               <SliderFilledTrack bg="blue.500" />
