@@ -79,6 +79,18 @@ export const ASSIGN_REVIEWER = gql`
 // TODO: update mutation to retrieve story translation fields
 export type AssignReviewerResponse = { ok: boolean };
 
+export const UNASSIGN_REVIEWER = gql`
+  mutation UnassignReviewer($storyTranslationId: ID!) {
+    removeReviewerFromStoryTranslation(
+      storyTranslationId: $storyTranslationId
+    ) {
+      ok
+    }
+  }
+`;
+
+export type UnassignReviewerResponse = { ok: boolean };
+
 export const UPDATE_STORY_TRANSLATION_STAGE = gql`
   mutation UpdateStoryTranslationStage(
     $storyTranslationData: UpdateStoryTranslationStageRequestDTO!

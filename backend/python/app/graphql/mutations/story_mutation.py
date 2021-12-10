@@ -69,6 +69,24 @@ class AssignUserAsReviewer(graphene.Mutation):
             raise Exception(error_message if error_message else str(e))
 
 
+class RemoveReviewerFromStoryTranslation(graphene.Mutation):
+    class Arguments:
+        story_translation_id = graphene.ID(required=True)
+
+    ok = graphene.Boolean()
+
+    def mutate(root, info, story_translation_id):
+        try:
+            story_translation = services["story"].get_story_translation(
+                story_translation_id
+            )
+            services["story"].remove_reviewer_from_story_translation(story_translation)
+            return RemoveReviewerFromStoryTranslation(ok=True)
+        except Exception as e:
+            error_message = getattr(e, "message", None)
+            raise Exception(error_message if error_message else str(e))
+
+
 class UpdateStoryTranslationContents(graphene.Mutation):
     class Arguments:
         story_translation_contents = graphene.List(StoryTranslationContentRequestDTO)

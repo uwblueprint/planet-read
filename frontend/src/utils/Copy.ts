@@ -54,3 +54,12 @@ export const ASSIGN_STORY_CONFIRMATION =
   "By assigning a story to the user, other users can no longer assign themselves to the same role for this story.";
 
 export const ASSIGN_STORY_BUTTON = "I'm sure, assign story";
+
+export const UNASSIGN_TRANSLATOR_FROM_STORY_TRANSLATION_CONFIRMATION =
+  "By removing the translator from this story translation, this story translation will be deleted. This action cannot be undone.";
+
+export const UNASSIGN_REVIEWER_FROM_STORY_TRANSLATION_CONFIRMATION =
+  "By removing the reviewer from this story translation, the user will not be able to access this translation. The translation will need a new reviewer. This action cannot be undone.";
+
+export const UNASSIGN_USER_FROM_STORY_TRANSLATION_BUTTON =
+  "I'm sure, remove user";
