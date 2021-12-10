@@ -14,6 +14,8 @@ class StoryTranslation(db.Model):
     def __init__(self, **kwargs):
         super(StoryTranslation, self).__init__(**kwargs)
         self.is_deleted = False
+        if self.is_test is None:
+            self.is_test = False
 
     __table__ = story_translations_active
 

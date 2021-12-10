@@ -19,6 +19,10 @@ class StoryTranslationAll(db.Model):
     reviewer_id = db.Column(db.Integer, db.ForeignKey("users_all.id"), index=True)
     translation_contents = db.relationship(StoryTranslationContentAll)
     is_deleted = db.Column(Boolean, default=False, nullable=False)
+    is_test = db.Column(Boolean, default=False, nullable=False)
+    test_grade = db.Column(db.Integer)
+    test_result = db.Column(db.JSON)
+    test_feedback = db.Column(TEXT)
 
     def to_dict(self, include_relationships=False):
         cls = type(self)
