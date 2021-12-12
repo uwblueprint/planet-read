@@ -14,17 +14,8 @@ import {
 import { Icon } from "@chakra-ui/icon";
 import { MdFolder } from "react-icons/md";
 import Header from "../navigation/Header";
-
-const DropdownIndicator = () => {
-  return (
-    <Box
-      borderLeft="5px solid transparent"
-      borderRight="5px solid transparent"
-      borderTop="9px solid black"
-      margin="10px"
-    />
-  );
-};
+import DropdownIndicator from "../utils/DropdownIndicator";
+import { languageOptions } from "../../constants/Languages";
 
 const CompleteProfilePage = () => {
   const onSubmitClick = () => {
@@ -41,64 +32,66 @@ const CompleteProfilePage = () => {
             For the purposes of this platform, please enter your details
           </Text>
           <FormControl>
-            <Heading size="sm" marginTop="24px">
+            <Heading marginTop="24px" size="sm">
               Full name*
             </Heading>
             <Input type="name" />
-            <Heading size="sm" marginTop="24px">
+            <Heading marginTop="24px" size="sm">
               Email*
             </Heading>
             <Input type="email" />
-            <Heading size="sm" marginTop="24px">
+            <Heading marginTop="24px" size="sm">
               Educational qualifications*
             </Heading>
-            <Textarea type="qualifications" height="150px" />
-            <Heading size="sm" marginTop="24px">
+            <Textarea height="150px" type="qualifications" />
+            <Heading marginTop="24px" size="sm">
               Language experience*
             </Heading>
-            <Textarea type="experience" height="150px" />
+            <Textarea height="150px" type="experience" />
           </FormControl>
-          <Heading size="sm" marginTop="24px">
+          <Heading marginTop="24px" size="sm">
             Select language*
           </Heading>
           <Text marginBottom="12px">
             Select the language that you would like to start with. Additional
             languages can be added after signing up.
           </Text>
-          <Box width="60%">
+          <Box width="60%" marginBottom="200px">
             <Select
               placeholder="Select language"
+              options={languageOptions}
               components={{ DropdownIndicator }}
             />
           </Box>
         </Flex>
-        <Flex direction="column" marginTop="160px" flex={1} marginLeft="60px">
+        <Flex direction="column" flex={1} marginLeft="60px" marginTop="160px">
           <Heading size="sm">Upload your CV (optional)</Heading>
           <Flex
-            direction="column"
-            border="2px"
-            borderColor="rgba(29, 108, 165, 0.4)"
-            maxWidth="80%"
-            height="250px"
-            rounded="md"
-            bg="#e8f0f6"
             align="center"
+            background="#e8f0f6"
+            border="2px"
+            // this is blue.100 at 10% opacity
+            borderColor="rgba(29, 108, 165, 0.1)"
+            direction="column"
+            height="250px"
             justify="center"
+            maxWidth="80%"
+            rounded="md"
           >
             <IconButton
               aria-label="Folder icon"
               background="transparent"
+              color="blue.100"
               icon={<Icon as={MdFolder} width={16} height={16} />}
-              width="fit-content"
               marginBottom="16px"
-              color="#1d6ca5"
+              width="fit-content"
             />
             <Text>Drag & drop your files here (.PDF, .docx)</Text>
             <Button colorScheme="blue" marginTop="16px" width="160px">
               Browse Files
             </Button>
           </Flex>
-          <Heading size="sm" marginTop="24px">
+          <Heading marginTop="24px" size="sm">
             Uploaded files
           </Heading>
           <Text>Drag & drop a file or browse files to upload a CV.</Text>
@@ -117,8 +110,8 @@ const CompleteProfilePage = () => {
             colorScheme="blue"
             marginLeft="24px"
             marginRight="48px"
-            width="240px"
             onClick={onSubmitClick}
+            width="240px"
           >
             SUBMIT FOR REVIEW
           </Button>
