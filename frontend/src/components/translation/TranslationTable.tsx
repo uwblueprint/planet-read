@@ -63,6 +63,8 @@ const TranslationTable = ({
     setStoryTranslationContentId(storyTranslationContentId);
   };
 
+  const showStatusColumn = !isTest || isReviewable;
+
   const storyCells = translatedStoryLines.map((storyLine: StoryLine) => {
     const displayLineNumber = storyLine.lineIndex + 1;
     return (
@@ -101,7 +103,7 @@ const TranslationTable = ({
             </Flex>
           </Tooltip>
         )}
-        {!isTest && (
+        {showStatusColumn && (
           <Flex direction="column" width="140px" margin="5px">
             {isReviewable ? (
               <StatusBadge
@@ -145,16 +147,17 @@ const TranslationTable = ({
     );
   });
 
-  const statusHeader = isReviewable ? (
-    <ApproveAll
-      numApprovedLines={numApprovedLines!}
-      setNumApprovedLines={setNumApprovedLines!!}
-      totalLines={translatedStoryLines.length}
-      storyTranslationId={storyTranslationId}
-    />
-  ) : (
-    <Text variant="statusHeader">Status</Text>
-  );
+  const StatusHeader = () =>
+    isReviewable ? (
+      <ApproveAll
+        numApprovedLines={numApprovedLines!}
+        setNumApprovedLines={setNumApprovedLines!!}
+        totalLines={translatedStoryLines.length} // eslint-disable-line
+        storyTranslationId={storyTranslationId}
+      />
+    ) : (
+      <Text variant="statusHeader">Status</Text>
+    );
 
   return (
     <Flex direction="column">
@@ -177,7 +180,7 @@ const TranslationTable = ({
             )}
           </Text>
         </Flex>
-        {!isTest && statusHeader}
+        {showStatusColumn && <StatusHeader />}
       </Flex>
       {storyCells}
     </Flex>
