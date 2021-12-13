@@ -44,6 +44,9 @@ const UserProfilePage = () => {
   const [email, setEmail] = useState<string>("");
   const [role, setRole] = useState<string>("");
   const [confirmDeleteUser, setConfirmDeleteUser] = useState(false);
+  const [alertText, setAlertText] = useState<string>("");
+  const [alert, setAlert] = useState(false);
+  const [alertTimeout, setAlertTimeout] = useState(0);
   const [storyTranslations, setStoryTranslations] = useState<
     StoryTranslation[]
   >([]);
@@ -139,12 +142,22 @@ const UserProfilePage = () => {
           <Text>TODO</Text>
         </Flex>
         <Flex direction="column" margin="40px" flex={1}>
-          <Heading size="lg" marginTop="40px" marginBottom="20px">
+          <Heading size="lg" marginTop="40px" marginBottom="10px">
             Approved Languages & Levels
           </Heading>
+          {alert ? (
+            <InfoAlert message={alertText} colour="orange.50" />
+          ) : (
+            <Flex height="50px" />
+          )}
           <ApprovedLanguagesTable
             approvedLanguagesTranslation={approvedLanguagesTranslation}
             approvedLanguagesReview={approvedLanguagesReview}
+            userId={parseInt(userId, 10)}
+            setAlertText={setAlertText}
+            setAlert={setAlert}
+            alertTimeout={alertTimeout}
+            setAlertTimeout={setAlertTimeout}
           />
           <Heading size="lg" marginTop="56px" marginBottom="20px">
             Assigned Story Translations
