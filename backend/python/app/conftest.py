@@ -39,23 +39,19 @@ def db(app):
 
     yield db
 
-    try:
-        db.session.query(CommentAll).delete()
-        db.session.commit()
-        db.session.query(StoryTranslationContentAll).delete()
-        db.session.commit()
-        db.session.query(StoryContent).delete()
-        db.session.commit()
-        db.session.query(StoryTranslationAll).delete()
-        db.session.commit()
-        db.session.query(Story).delete()
-        db.session.commit()
-        db.session.query(UserAll).delete()
-        db.session.commit()
-    except:
-        db.session.rollback()
-    finally:
-        db.session.close()
+    db.session.query(CommentAll).delete()
+    db.session.commit()
+    db.session.query(StoryTranslationContentAll).delete()
+    db.session.commit()
+    db.session.query(StoryContent).delete()
+    db.session.commit()
+    db.session.query(StoryTranslationAll).delete()
+    db.session.commit()
+    db.session.query(Story).delete()
+    db.session.commit()
+    db.session.query(UserAll).delete()
+    db.session.commit()
+    db.session.close()
 
 
 @pytest.fixture(scope="session")
