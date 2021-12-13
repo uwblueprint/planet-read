@@ -18,6 +18,7 @@ import { levelOptions } from "../../constants/Levels";
 import { stageOptions } from "../../constants/Stage";
 import { convertLanguageTitleCase } from "../../utils/LanguageUtils";
 import { FILTER_TOOL_TIP_COPY } from "../../utils/Copy";
+import DropdownIndicator from "../utils/DropdownIndicator";
 
 export type TableFilterProps = {
   language: string | null;
@@ -47,17 +48,6 @@ const FilterBadges = ({ filterValue, setFilterValue }: FilterBadgesProps) => {
         ✕
       </Button>
     </Badge>
-  );
-};
-
-const DropdownIndicator = () => {
-  return (
-    <Box
-      borderLeft="5px solid transparent"
-      borderRight="5px solid transparent"
-      borderTop="9px solid black"
-      margin="10px"
-    />
   );
 };
 
