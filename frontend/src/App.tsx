@@ -13,6 +13,7 @@ import TranslationPage from "./components/pages/TranslationPage";
 import ReviewPage from "./components/pages/ReviewPage";
 import UserProfilePage from "./components/pages/UserProfilePage";
 import ManageStoryTranslationPage from "./components/pages/ManageStoryTranslationPage";
+import CompleteProfilePage from "./components/pages/CompleteProfilePage";
 import customTheme from "./theme/index";
 
 import AUTHENTICATED_USER_KEY from "./constants/AuthConstants";
@@ -55,6 +56,11 @@ const App = () => {
             <Router>
               <Switch>
                 <Route exact path="/login" component={Login} />
+                <PrivateRoute
+                  exact
+                  path="/complete-profile"
+                  component={CompleteProfilePage}
+                />
                 <PrivateRoute exact path="/" component={HomePage} />
                 <PrivateRoute
                   exact
