@@ -35,6 +35,7 @@ def test_create_story(app, db, client):
         description="this should explain things",
         youtube_link="don't think we validate this yet",
         level=10001,
+        is_test=False,
     )
     contents = ["line 1", "line 2", "line 3"]
 

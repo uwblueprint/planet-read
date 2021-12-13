@@ -8,6 +8,12 @@ function convertStatusTitleCase(status: string) {
       return "Approved";
     case "ACTION_REQUIRED":
       return "Action";
+    case "TEST_CORRECT":
+      return "Test Correct";
+    case "TEST_INCORRECT":
+      return "Test Incorrect";
+    case "TEST_PARTIALLY_CORRECT":
+      return "Test Partially Correct";
     default:
       return statusEnum.replace(/_/g, " ");
   }
