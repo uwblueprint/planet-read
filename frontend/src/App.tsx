@@ -21,6 +21,7 @@ import AuthContext, { AuthenticatedUser } from "./contexts/AuthContext";
 import client from "./APIClients/BaseGQLClient";
 
 import { getLocalStorageObj } from "./utils/LocalStorageUtils";
+import StoryTestGradingPage from "./components/pages/StoryTestGradingPage";
 
 /*
  * https://github.com/chakra-ui/chakra-ui/issues/4987#issuecomment-965575708
@@ -77,6 +78,11 @@ const App = () => {
                   exact
                   path="/review/:storyIdParam/:storyTranslationIdParam"
                   component={ReviewPage}
+                />
+                <PrivateRoute
+                  exact
+                  path="/grade/:storyIdParam/:storyTranslationIdParam"
+                  component={StoryTestGradingPage}
                 />
                 <PrivateRoute
                   exact
