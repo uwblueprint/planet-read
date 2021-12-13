@@ -15,6 +15,7 @@ import { Icon } from "@chakra-ui/icon";
 import { MdFolder } from "react-icons/md";
 import Header from "../navigation/Header";
 import DropdownIndicator from "../utils/DropdownIndicator";
+import { convertLanguageTitleCase } from "../../utils/LanguageUtils";
 import { languageOptions } from "../../constants/Languages";
 
 const CompleteProfilePage = () => {
@@ -60,6 +61,9 @@ const CompleteProfilePage = () => {
             <Select
               placeholder="Select language"
               options={languageOptions}
+              getOptionLabel={(option: any) => `
+                ${convertLanguageTitleCase(option.value || "")}
+              `}
               components={{ DropdownIndicator }}
             />
           </Box>
