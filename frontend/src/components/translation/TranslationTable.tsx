@@ -32,6 +32,7 @@ export type TranslationTableProps = {
   changedStoryLines?: number;
   isReviewable?: boolean;
   reviewPage?: boolean;
+  isTest?: boolean;
 };
 
 const TranslationTable = ({
@@ -52,6 +53,7 @@ const TranslationTable = ({
   changedStoryLines,
   isReviewable = false,
   reviewPage = false,
+  isTest = false,
 }: TranslationTableProps) => {
   const handleCommentButton = (
     displayLineNumber: number,
@@ -99,47 +101,61 @@ const TranslationTable = ({
             </Flex>
           </Tooltip>
         )}
-        <Flex direction="column" width="140px" margin="5px">
-          {isReviewable ? (
-            <StatusBadge
-              translatedStoryLines={translatedStoryLines}
-              setTranslatedStoryLines={setTranslatedStoryLines}
-              storyLine={storyLine}
-              numApprovedLines={numApprovedLines!!}
-              setNumApprovedLines={setNumApprovedLines!!}
-            />
-          ) : (
-            <Tooltip
-              hasArrow
-              label={REVIEW_PAGE_TOOL_TIP_COPY}
-              isDisabled={editable || !reviewPage}
-            >
-              <Badge
-                textTransform="capitalize"
-                variant={getStatusVariant(storyLine.status)}
-                marginBottom="10px"
+        {!isTest && (
+          <Flex direction="column" width="140px" margin="5px">
+            {isReviewable ? (
+              <StatusBadge
+                translatedStoryLines={translatedStoryLines}
+                setTranslatedStoryLines={setTranslatedStoryLines}
+                storyLine={storyLine}
+                numApprovedLines={numApprovedLines!!}
+                setNumApprovedLines={setNumApprovedLines!!}
+              />
+            ) : (
+              <Tooltip
+                hasArrow
+                label={REVIEW_PAGE_TOOL_TIP_COPY}
+                isDisabled={editable || !reviewPage}
               >
-                {storyLine.status}
-              </Badge>
-            </Tooltip>
-          )}
-          {commentLine > -1 && (
-            <Button
-              variant="addComment"
-              onClick={() =>
-                handleCommentButton(
-                  displayLineNumber,
-                  storyLine.storyTranslationContentId!!,
-                )
-              }
-            >
-              Comment
-            </Button>
-          )}
-        </Flex>
+                <Badge
+                  textTransform="capitalize"
+                  variant={getStatusVariant(storyLine.status)}
+                  marginBottom="10px"
+                >
+                  {storyLine.status}
+                </Badge>
+              </Tooltip>
+            )}
+            {commentLine > -1 && (
+              <Button
+                variant="addComment"
+                onClick={() =>
+                  handleCommentButton(
+                    displayLineNumber,
+                    storyLine.storyTranslationContentId!!,
+                  )
+                }
+              >
+                Comment
+              </Button>
+            )}
+          </Flex>
+        )}
       </Flex>
     );
   });
+
+  const statusHeader = isReviewable ? (
+    <ApproveAll
+      numApprovedLines={numApprovedLines!}
+      setNumApprovedLines={setNumApprovedLines!!}
+      totalLines={translatedStoryLines.length}
+      storyTranslationId={storyTranslationId}
+    />
+  ) : (
+    <Text variant="statusHeader">Status</Text>
+  );
+
   return (
     <Flex direction="column">
       <Flex alignItems="flex-start" direction="row">
@@ -161,16 +177,7 @@ const TranslationTable = ({
             )}
           </Text>
         </Flex>
-        {isReviewable ? (
-          <ApproveAll
-            numApprovedLines={numApprovedLines!}
-            setNumApprovedLines={setNumApprovedLines!!}
-            totalLines={translatedStoryLines.length}
-            storyTranslationId={storyTranslationId}
-          />
-        ) : (
-          <Text variant="statusHeader">Status</Text>
-        )}
+        {!isTest && statusHeader}
       </Flex>
       {storyCells}
     </Flex>

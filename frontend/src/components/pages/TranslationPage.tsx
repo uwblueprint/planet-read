@@ -54,6 +54,9 @@ const TranslationPage = () => {
   const [language, setLanguage] = useState<string>("");
   const [stage, setStage] = useState<string>("");
 
+  // TODO: remove eslint comment when setIsTest is used
+  const [isTest, setIsTest] = useState(false);  // eslint-disable-line
+
   // AutoSave
   const [changedStoryLines, setChangedStoryLines] = useState<
     Map<number, StoryLine>
@@ -173,6 +176,9 @@ const TranslationPage = () => {
         setTitle(data.storyById.title);
         setNumTranslatedLines(data.storyTranslationById.numTranslatedLines);
 
+        // TODO: uncomment when query is updated
+        // setIsTest(data.storyById.isTest);
+
         const contentArray: StoryLine[] = [];
         storyContent.forEach(({ content, lineIndex }: Content) => {
           contentArray.push({
@@ -225,7 +231,7 @@ const TranslationPage = () => {
   if (+authenticatedUser!!.id !== translatorId) return <Redirect to="/404" />;
 
   return (
-    <Flex height="100vh" direction="column" position="absolute">
+    <Flex height="100vh" width="100%" direction="column" position="absolute">
       <Header title={title} />
       <Divider />
       <Flex justify="space-between" flex={1} minHeight={0}>
@@ -269,6 +275,7 @@ const TranslationPage = () => {
               translator
               setTranslatedStoryLines={setTranslatedStoryLines}
               changedStoryLines={changedStoryLines.size}
+              isTest={isTest}
             />
           </Flex>
           <Flex margin="20px 30px" justify="space-between" alignItems="center">
@@ -297,15 +304,17 @@ const TranslationPage = () => {
             </Tooltip>
           </Flex>
         </Flex>
-        <CommentsPanel
-          disabled={!editable}
-          storyTranslationContentId={storyTranslationContentId}
-          commentLine={commentLine}
-          storyTranslationId={storyTranslationId}
-          setCommentLine={setCommentLine}
-          setTranslatedStoryLines={setTranslatedStoryLines}
-          translatedStoryLines={translatedStoryLines}
-        />
+        {!isTest && (
+          <CommentsPanel
+            disabled={!editable}
+            storyTranslationContentId={storyTranslationContentId}
+            commentLine={commentLine}
+            storyTranslationId={storyTranslationId}
+            setCommentLine={setCommentLine}
+            setTranslatedStoryLines={setTranslatedStoryLines}
+            translatedStoryLines={translatedStoryLines}
+          />
+        )}
       </Flex>
       <Autosave
         storylines={Array.from(changedStoryLines.values())}
