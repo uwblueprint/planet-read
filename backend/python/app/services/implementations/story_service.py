@@ -97,19 +97,35 @@ class StoryService(IStoryService):
             self.logger.error(str(error))
             raise error
         try:
-            translation_id = new_story_translation.id
-            story_id = new_story_translation.story_id
-            story_lines = len(StoryContent.query.filter_by(story_id=story_id).all())
-            new_story_translation_content_cache = [
-                StoryTranslationContent(
-                    story_translation_id=translation_id,
-                    line_index=line,
-                    translation_content="",
-                )
-                for line in range(story_lines)
-            ]
-            db.session.bulk_save_objects(new_story_translation_content_cache)
+            self._insert_empty_story_translation_contents(db, new_story_translation)
+        except Exception as error:
+            db.session.delete(new_story_translation)
             db.session.commit()
+            self.logger.error(str(error))
+            raise error
+        return new_story_translation
+
+    def create_translation_test(self, user_id, level, language):
+        try:
+            test_story = (
+                Story.query.filter(Story.is_test == True)
+                .filter(Story.level == level)
+                .first()
+            )
+            new_story_translation = StoryTranslation(
+                story_id=test_story.id,
+                language=language,
+                stage="TRANSLATE",
+                translator_id=user_id,
+                is_test=True,
+            )
+            db.session.add(new_story_translation)
+            db.session.commit()
+        except Exception as error:
+            self.logger.error(str(error))
+            raise error
+        try:
+            self._insert_empty_story_translation_contents(db, new_story_translation)
         except Exception as error:
             db.session.delete(new_story_translation)
             db.session.commit()
@@ -634,3 +650,18 @@ class StoryService(IStoryService):
         return set(
             [story_translation.language for story_translation in story_translations]
         )
+
+    def _insert_empty_story_translation_contents(self, db, new_story_translation):
+        translation_id = new_story_translation.id
+        story_id = new_story_translation.story_id
+        story_lines = len(StoryContent.query.filter_by(story_id=story_id).all())
+        new_story_translation_content_cache = [
+            StoryTranslationContent(
+                story_translation_id=translation_id,
+                line_index=line,
+                translation_content="",
+            )
+            for line in range(story_lines)
+        ]
+        db.session.bulk_save_objects(new_story_translation_content_cache)
+        db.session.commit()

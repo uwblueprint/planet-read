@@ -112,12 +112,36 @@ def test_create_translation(app, db, services):
     assert len(content_objs) == len(get_story_translation_resp["translation_contents"])
 
 
-def test_create_translation_raises_error_if_story_translation_commit_fails_and_nothing_saved():
-    pass
+def test_create_translation_test(app, db, services):
+    translator_obj = create_translator(db)
 
+    story = StoryRequestDTO(
+        title="Title",
+        description="Description",
+        youtube_link="",
+        level=2,
+        translated_languages=[],
+    )
+    content = ["Story content 1.", "Story content 2.", "Story content 3."]
+    story_resp = services["story"].create_story(story, content)
+    story_obj = Story.query.get(story_resp.id)
+    # Hacky way to make a test story since theres no service to make one
+    story_obj.is_test = True
+    db.session.commit()
 
-def test_create_translation_raises_error_if_translation_content_commit_fails_and_nothing_saved():
-    pass
+    story_translation_resp = services["story"].create_translation_test(
+        translator_obj.id, 2, "ENGLISH"
+    )
+    story_translation_obj = StoryTranslation.query.get(story_translation_resp.id)
+    assert story_translation_resp == story_translation_obj
+    assert story_translation_obj.is_test
+
+    get_story_translation_resp = services["story"].get_story_translation(
+        story_translation_obj.id
+    )
+    content_objs = StoryContent.query.filter_by(story_id=story_resp.id).all()
+    assert len(content_objs) == get_story_translation_resp["num_content_lines"]
+    assert len(content_objs) == len(get_story_translation_resp["translation_contents"])
 
 
 def test_get_story_translation(app, db, services):

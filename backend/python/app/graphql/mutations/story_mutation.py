@@ -48,6 +48,25 @@ class CreateStoryTranslation(graphene.Mutation):
             raise Exception(error_message if error_message else str(e))
 
 
+class CreateStoryTranslationTest(graphene.Mutation):
+    class Arguments:
+        user_id = graphene.ID(required=True)
+        level = graphene.Int(required=True)
+        language = graphene.String(required=True)
+
+    story = graphene.Field(lambda: CreateStoryTranslationResponseDTO)
+
+    def mutate(root, info, user_id, level, language):
+        try:
+            new_story_translation = services["story"].create_translation_test(
+                user_id, level, language
+            )
+            return CreateStoryTranslation(story=new_story_translation)
+        except Exception as e:
+            error_message = getattr(e, "message", None)
+            raise Exception(error_message if error_message else str(e))
+
+
 class AssignUserAsReviewer(graphene.Mutation):
     class Arguments:
         user_id = graphene.ID(required=True)
