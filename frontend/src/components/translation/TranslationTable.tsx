@@ -24,9 +24,9 @@ export type TranslationTableProps = {
   translatedLanguage: string;
   originalLanguage: string;
   setTranslatedStoryLines: (storyLines: StoryLine[]) => void;
-  commentLine: number;
-  setCommentLine: (line: number) => void;
-  setStoryTranslationContentId: (id: number) => void;
+  commentLine?: number;
+  setCommentLine?: (line: number) => void;
+  setStoryTranslationContentId?: (id: number) => void;
   numApprovedLines?: number;
   setNumApprovedLines?: (numLines: number) => void;
   changedStoryLines?: number;
@@ -59,8 +59,8 @@ const TranslationTable = ({
     displayLineNumber: number,
     storyTranslationContentId: number,
   ) => {
-    setCommentLine(displayLineNumber);
-    setStoryTranslationContentId(storyTranslationContentId);
+    setCommentLine!!(displayLineNumber);
+    setStoryTranslationContentId!!(storyTranslationContentId);
   };
 
   const showStatusColumn = !isTest || isReviewable;
@@ -128,7 +128,7 @@ const TranslationTable = ({
                 </Badge>
               </Tooltip>
             )}
-            {commentLine > -1 && (
+            {commentLine! > -1 && (
               <Button
                 variant="addComment"
                 onClick={() =>
