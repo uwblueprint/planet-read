@@ -43,6 +43,8 @@ type ApprovedLanguagesTableProps = {
   userId: number;
   setAlertText: (newText: string) => void;
   setAlert: (open: boolean) => void;
+  alertTimeout: number;
+  setAlertTimeout: (id: number) => void;
 };
 
 const ApprovedLanguagesTable = ({
@@ -51,6 +53,8 @@ const ApprovedLanguagesTable = ({
   userId,
   setAlertText,
   setAlert,
+  alertTimeout,
+  setAlertTimeout,
 }: ApprovedLanguagesTableProps) => {
   const [approvedLanguages, setApprovedLanguages] = useState<
     ApprovedLanguage[]
@@ -73,7 +77,7 @@ const ApprovedLanguagesTable = ({
       isTranslate ? "Translator" : "Reviewer"
     }'s approval for ${convertLanguageTitleCase(
       language,
-    )} has been updated to Level ${level} from Level ${oldLevel}.`;
+    )} has been updated: Level ${oldLevel} → Level ${level}.`;
   };
 
   const callUpdateUserApprovedLanguagesMutation = async (
@@ -94,6 +98,10 @@ const ApprovedLanguagesTable = ({
     if (result.data !== undefined) {
       setAlert(true);
       setAlertText(getAlertText(isTranslate, language, level, oldLevel));
+
+      window.clearTimeout(alertTimeout);
+      const timeout: number = window.setTimeout(() => setAlert(false), 5000);
+      setAlertTimeout(timeout);
     }
   };
 
@@ -148,7 +156,6 @@ const ApprovedLanguagesTable = ({
       newLevel,
       oldLevel,
     );
-    setTimeout(() => setAlert(false), 5000);
   };
 
   const tableBody = approvedLanguages.map(
@@ -207,6 +214,7 @@ const ApprovedLanguagesTable = ({
       theme="gray"
       variant="striped"
       width="100%"
+      marginTop="20px"
     >
       <Thead>
         <Tr
