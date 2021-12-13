@@ -40,6 +40,30 @@ class IStoryService(ABC):
         pass
 
     @abstractmethod
+    def create_translation(self, translation):
+        """Create a new StoryTranslation object
+
+        :param story: dictionary of story translation fields
+        :return: dictionary of StoryTranslation object
+        :rtype: dictionary
+        :raises Exception: if story fields are invalid
+        """
+        pass
+
+    @abstractmethod
+    def create_translation_test(self, user_id, level, language):
+        """Create a new StoryTranslation object that is_test=True
+
+        :param user_id: ID target translator_id
+        :param level: int Story test level
+        :param language: String target test language
+        :return: dictionary of StoryTranslation object
+        :rtype: dictionary
+        :raises Exception: if story fields are invalid
+        """
+        pass
+
+    @abstractmethod
     def get_story_translations_by_user(self, user_id, is_translator, language, level):
         """Return a list of stories currently being translated/reviewed
 
