@@ -2,19 +2,21 @@ import React from "react";
 import { Alert, AlertIcon } from "@chakra-ui/react";
 import { MdInfoOutline } from "react-icons/md";
 
-type AlertProps = {
+export type AlertProps = {
   message: string;
+  colour?: string;
 };
 
-const InfoAlert = ({ message }: AlertProps) => {
+const InfoAlert = ({ message, colour = "gray.200" }: AlertProps) => {
   return (
     <Alert
       status="info"
       borderRadius={8}
-      bg="gray.200"
+      bg={colour}
       justifyContent="center"
       textColor="black"
       opacity="60%"
+      height="50px"
     >
       <AlertIcon as={MdInfoOutline} color="black" />
       {message}
