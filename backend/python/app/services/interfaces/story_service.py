@@ -43,7 +43,7 @@ class IStoryService(ABC):
     def create_translation(self, translation):
         """Create a new StoryTranslation object
 
-        :param story: dictionary of story translation fields
+        :param translation: dictionary of story translation fields
         :return: dictionary of StoryTranslation object
         :rtype: dictionary
         :raises Exception: if story fields are invalid
