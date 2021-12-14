@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import { useParams, useHistory, Redirect } from "react-router-dom";
 import {
   Box,
@@ -9,7 +9,10 @@ import {
   useStyleConfig,
 } from "@chakra-ui/react";
 import { useQuery, useMutation } from "@apollo/client";
+
+import AuthContext from "../../contexts/AuthContext";
 import Header from "../navigation/Header";
+import UserProfileForm from "../userProfile/UserProfileForm";
 import {
   SoftDeleteUserResponse,
   SOFT_DELETE_USER,
@@ -29,7 +32,7 @@ import {
   parseApprovedLanguages,
 } from "../../utils/Utils";
 import ApprovedLanguagesTable from "../admin/ApprovedLanguagesTable";
-import AssignedStoryTranslationsTable from "../admin/AssignedStoryTranslationsTable";
+import AssignedStoryTranslationsTable from "../userProfile/AssignedStoryTranslationsTable";
 import { StoryAssignStage } from "../../constants/Enums";
 import InfoAlert from "../utils/InfoAlert";
 
@@ -38,7 +41,12 @@ type UserProfilePageProps = {
 };
 
 const UserProfilePage = () => {
+  const { authenticatedUser } = useContext(AuthContext);
   const { userId } = useParams<UserProfilePageProps>();
+  const isAdmin = authenticatedUser!!.role === "Admin";
+
+  if (+authenticatedUser!!.id !== parseInt(userId, 10) && !isAdmin)
+    return <Redirect to="/404" />;
 
   const [fullName, setFullName] = useState<string>("");
   const [email, setEmail] = useState<string>("");
@@ -142,14 +150,16 @@ const UserProfilePage = () => {
           <Text>TODO</Text>
         </Flex>
         <Flex direction="column" margin="40px" flex={1}>
+          {!isAdmin && <UserProfileForm isSignup={false} />}
           <Heading size="lg" marginTop="40px" marginBottom="10px">
             Approved Languages & Levels
           </Heading>
-          {alert ? (
-            <InfoAlert message={alertText} colour="orange.50" />
-          ) : (
-            <Flex height="50px" />
-          )}
+          {isAdmin &&
+            (alert ? (
+              <InfoAlert message={alertText} colour="orange.50" />
+            ) : (
+              <Flex height="50px" />
+            ))}
           <ApprovedLanguagesTable
             approvedLanguagesTranslation={approvedLanguagesTranslation}
             approvedLanguagesReview={approvedLanguagesReview}
@@ -158,12 +168,13 @@ const UserProfilePage = () => {
             setAlert={setAlert}
             alertTimeout={alertTimeout}
             setAlertTimeout={setAlertTimeout}
+            isAdmin={isAdmin}
           />
           <Heading size="lg" marginTop="56px" marginBottom="20px">
             Assigned Story Translations
           </Heading>
-          {storyAssignStage !== StoryAssignStage.INITIAL && (
-            <Box marginBottom="22px">
+          {isAdmin &&
+            (storyAssignStage !== StoryAssignStage.INITIAL ? (
               <InfoAlert
                 message={
                   storyAssignStage === StoryAssignStage.SUCCESS
@@ -171,8 +182,9 @@ const UserProfilePage = () => {
                     : "No stories were assigned to the user."
                 }
               />
-            </Box>
-          )}
+            ) : (
+              <Flex height="50px" />
+            ))}
           <AssignedStoryTranslationsTable
             storyTranslations={storyTranslations}
             setStoryTranslations={setStoryTranslations}
@@ -180,22 +192,27 @@ const UserProfilePage = () => {
             approvedLanguagesTranslation={approvedLanguagesTranslation}
             approvedLanguagesReview={approvedLanguagesReview}
             setStoryAssignStage={setStoryAssignStage}
+            isAdmin={isAdmin}
           />
-          <Heading size="sm" marginTop="56px">
-            Delete user
-          </Heading>
-          <Text>
-            Permanently delete this user and all data associated with them.
-          </Text>
-          <Button
-            colorScheme="red"
-            margin="10px 0px"
-            width="250px"
-            variant="outline"
-            onClick={() => openModal()}
-          >
-            Delete User
-          </Button>
+          {isAdmin && (
+            <>
+              <Heading size="sm" marginTop="56px">
+                Delete user
+              </Heading>
+              <Text>
+                Permanently delete this user and all data associated with them.
+              </Text>
+              <Button
+                colorScheme="red"
+                margin="10px 0px"
+                width="250px"
+                variant="outline"
+                onClick={() => openModal()}
+              >
+                Delete User
+              </Button>
+            </>
+          )}
         </Flex>
       </Flex>
       <Flex
