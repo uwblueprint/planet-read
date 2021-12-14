@@ -36,6 +36,10 @@ def upgrade():
         "story_translations_all", sa.Column("test_result", sa.JSON(), nullable=True)
     )
 
+    op.execute(
+        "ALTER TABLE story_translation_contents_all MODIFY COLUMN status ENUM('DEFAULT', 'ACTION_REQUIRED', 'APPROVED', 'TEST_CORRECT', 'TEST_PARTIALLY_CORRECT', 'TEST_INCORRECT') NOT NULL;"
+    )
+
     active_translations_view = """
         CREATE OR REPLACE VIEW story_translations
         AS        
@@ -54,4 +58,12 @@ def downgrade():
     op.drop_column("story_translations_all", "test_feedback")
     op.drop_column("story_translations_all", "is_test")
     op.drop_column("stories", "is_test")
+
+    active_translations_view = """
+        CREATE OR REPLACE VIEW story_translations
+        AS        
+        SELECT * from story_translations_all
+        WHERE is_deleted=0;
+    """
+    op.execute(active_translations_view)
     # ### end Alembic commands ###

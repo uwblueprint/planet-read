@@ -179,6 +179,12 @@ def require_authorization_as_story_user_by_role(as_translator):
         def wrapper(root, info, *args, **kwargs):
             access_token = get_access_token(info.context)
 
+            authorized_as_admin = auth_service.is_authorized_by_role(
+                access_token, {"Admin"}
+            )
+            if authorized_as_admin:
+                return api_func(root, info, *args, **kwargs)
+
             authorized = False
             if "story_translation_id" in kwargs:
                 authorized = (
