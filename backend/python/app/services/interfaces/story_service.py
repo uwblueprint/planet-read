@@ -97,14 +97,13 @@ class IStoryService(ABC):
     def get_story_translation_tests(self, user, language, level, stage, story_title):
         """Return a list of story translation tests based on filters
 
-        :param user: UserDTO 
+        :param user: UserDTO
         :param language: language of story translation tests to filter by
         :param level: level of story translation tests to filter by
         :param stage: stage of story translation tests to filter by
         :param story_title: story_title of story translation tests to filter by
         :return: list of StoryTranslationTestResponseDTO's
         :rtype: list of StoryTranslationTestResponseDTO's
-'s
         """
         pass
 

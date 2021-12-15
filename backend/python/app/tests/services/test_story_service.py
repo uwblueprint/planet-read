@@ -10,7 +10,6 @@ from ..helpers.story_helpers import StoryRequestDTO, assert_story_equals_model
 from ..helpers.story_translation_helpers import (
     StoryTranslationRequestDTO,
     assert_story_translation_equals_model,
-    assert_story_translation_test_equals_model,
     create_admin,
     create_reviewer,
     create_story_translation,
@@ -185,8 +184,8 @@ def test_get_story_translations():
     # includes all fields
     pass
 
-def test_get_story_translation_tests(app, db, services):
 
+def test_get_story_translation_tests(app, db, services):
     first_translator_obj = create_translator(db)
     second_translator_obj = create_reviewer(db)
     admin_obj = create_admin(db)
@@ -215,18 +214,24 @@ def test_get_story_translation_tests(app, db, services):
 
     # Test for admin
     tests = [first_story_translation_resp, second_story_translation_resp]
-    admin_get_story_translation_tests_resp = services["story"].get_story_translation_tests(admin_obj)
+    admin_get_story_translation_tests_resp = services[
+        "story"
+    ].get_story_translation_tests(admin_obj)
     assert len(admin_get_story_translation_tests_resp) == 2
     for test_resp, test in zip(admin_get_story_translation_tests_resp, tests):
-        assert_story_translation_test_equals_model(test_resp, story, test)
-    
+        assert_story_translation_equals_model(test_resp, story, test)
+
     # Test for user
-    user_get_story_translation_tests_resp = services["story"].get_story_translation_tests(first_translator_obj)
+    user_get_story_translation_tests_resp = services[
+        "story"
+    ].get_story_translation_tests(first_translator_obj)
     assert len(user_get_story_translation_tests_resp) == 1
 
     user_story_translation_test = user_get_story_translation_tests_resp[0]
     assert user_story_translation_test["translator_id"] == first_translator_obj.id
-    assert_story_translation_test_equals_model(user_story_translation_test, story, first_story_translation_resp)
+    assert_story_translation_equals_model(
+        user_story_translation_test, story, first_story_translation_resp
+    )
 
 
 def test_assign_user_as_reviewer():

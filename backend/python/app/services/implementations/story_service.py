@@ -228,7 +228,7 @@ class StoryService(IStoryService):
         except Exception as error:
             self.logger.error(str(error))
             raise error
-    
+
     def get_story_translation_tests(
         self,
         user,

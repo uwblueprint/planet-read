@@ -79,6 +79,7 @@ class StoryTranslationResponseDTO(graphene.ObjectType):
     translator_name = graphene.String()
     reviewer_name = graphene.String()
 
+
 class StoryTranslationTestResponseDTO(graphene.ObjectType):
     id = graphene.Int(required=True)
     language = graphene.String(required=True)

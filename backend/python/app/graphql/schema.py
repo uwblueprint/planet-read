@@ -190,7 +190,7 @@ class Query(graphene.ObjectType):
     ):
         return resolve_story_translation_tests(
             root, info, language, level, stage, story_title
-        ) 
+        )
 
     def resolve_story_translation_by_id(root, info, id):
         return resolve_story_translation_by_id(root, info, id)

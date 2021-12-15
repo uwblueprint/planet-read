@@ -1,4 +1,7 @@
-from ...middlewares.auth import require_authorization_by_role_gql, get_user_id_from_request
+from ...middlewares.auth import (
+    get_user_id_from_request,
+    require_authorization_by_role_gql,
+)
 from ..service import services
 
 
@@ -41,6 +44,6 @@ def resolve_story_translations(root, info, language, level, stage, story_title):
 def resolve_story_translation_tests(root, info, language, level, stage, story_title):
     user_id = int(get_user_id_from_request())
     user = services["user"].get_user_by_id(user_id)
-    return services["story"].get_story_translation_tests(user, language, level, stage, story_title)
-
-
+    return services["story"].get_story_translation_tests(
+        user, language, level, stage, story_title
+    )
