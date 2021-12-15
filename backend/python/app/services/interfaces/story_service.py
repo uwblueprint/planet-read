@@ -94,6 +94,20 @@ class IStoryService(ABC):
         pass
 
     @abstractmethod
+    def get_story_translation_tests(self, user, language, level, stage, story_title):
+        """Return a list of story translation tests based on filters
+
+        :param user: UserDTO
+        :param language: language of story translation tests to filter by
+        :param level: level of story translation tests to filter by
+        :param stage: stage of story translation tests to filter by
+        :param story_title: story_title of story translation tests to filter by
+        :return: list of StoryTranslationTestResponseDTO's
+        :rtype: list of StoryTranslationTestResponseDTO's
+        """
+        pass
+
+    @abstractmethod
     def get_story_translation(self, id):
         """Return a story currently being translated/reviewed
         :param id: id of the story translation

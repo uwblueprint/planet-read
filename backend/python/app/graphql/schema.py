@@ -38,6 +38,7 @@ from .queries.story_query import (
     resolve_stories_available_for_translation,
     resolve_story_by_id,
     resolve_story_translation_by_id,
+    resolve_story_translation_tests,
     resolve_story_translations,
     resolve_story_translations_available_for_review,
     resolve_story_translations_by_user,
@@ -49,6 +50,7 @@ from .types.story_type import (
     StoryResponseDTO,
     StoryTranslationConnection,
     StoryTranslationResponseDTO,
+    StoryTranslationTestResponseDTO,
 )
 from .types.user_type import UserDTO
 
@@ -96,6 +98,13 @@ class Query(graphene.ObjectType):
     story_by_id = graphene.Field(StoryResponseDTO, id=graphene.Int(required=True))
     story_translations = graphene.relay.ConnectionField(
         StoryTranslationConnection,
+        language=graphene.String(),
+        level=graphene.Int(),
+        stage=graphene.String(),
+        story_title=graphene.String(),
+    )
+    story_translation_tests = graphene.Field(
+        graphene.List(StoryTranslationTestResponseDTO),
         language=graphene.String(),
         level=graphene.Int(),
         stage=graphene.String(),
@@ -173,6 +182,13 @@ class Query(graphene.ObjectType):
         root, info, language=None, level=None, stage=None, story_title=None, **kwargs
     ):
         return resolve_story_translations(
+            root, info, language, level, stage, story_title
+        )
+
+    def resolve_story_translation_tests(
+        root, info, language=None, level=None, stage=None, story_title=None, **kwargs
+    ):
+        return resolve_story_translation_tests(
             root, info, language, level, stage, story_title
         )
 

@@ -10,6 +10,7 @@ from ..helpers.story_helpers import StoryRequestDTO, assert_story_equals_model
 from ..helpers.story_translation_helpers import (
     StoryTranslationRequestDTO,
     assert_story_translation_equals_model,
+    create_admin,
     create_reviewer,
     create_story_translation,
     create_story_translation_contents,
@@ -180,8 +181,57 @@ def test_get_story_translation_raises_error_for_invalid_id():
 
 
 def test_get_story_translations():
-    # includes all fields, including num_translated_lines
+    # includes all fields
     pass
+
+
+def test_get_story_translation_tests(app, db, services):
+    first_translator_obj = create_translator(db)
+    second_translator_obj = create_reviewer(db)
+    admin_obj = create_admin(db)
+
+    # Create test story
+    story = StoryRequestDTO(
+        title="Title",
+        description="Description",
+        youtube_link="",
+        level=2,
+        translated_languages=[],
+    )
+    content = ["Story content 1.", "Story content 2.", "Story content 3."]
+    story_resp = services["story"].create_story(story, content)
+    story_obj = Story.query.get(story_resp.id)
+    story_obj.is_test = True
+    db.session.commit()
+
+    # Create story translation tests
+    first_story_translation_resp = services["story"].create_translation_test(
+        first_translator_obj.id, 2, "ENGLISH"
+    )
+    second_story_translation_resp = services["story"].create_translation_test(
+        second_translator_obj.id, 2, "ENGLISH"
+    )
+
+    # Test for admin
+    tests = [first_story_translation_resp, second_story_translation_resp]
+    admin_get_story_translation_tests_resp = services[
+        "story"
+    ].get_story_translation_tests(admin_obj)
+    assert len(admin_get_story_translation_tests_resp) == 2
+    for test_resp, test in zip(admin_get_story_translation_tests_resp, tests):
+        assert_story_translation_equals_model(test_resp, story, test)
+
+    # Test for user
+    user_get_story_translation_tests_resp = services[
+        "story"
+    ].get_story_translation_tests(first_translator_obj)
+    assert len(user_get_story_translation_tests_resp) == 1
+
+    user_story_translation_test = user_get_story_translation_tests_resp[0]
+    assert user_story_translation_test["translator_id"] == first_translator_obj.id
+    assert_story_translation_equals_model(
+        user_story_translation_test, story, first_story_translation_resp
+    )
 
 
 def test_assign_user_as_reviewer():

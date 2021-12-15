@@ -25,15 +25,15 @@ def assert_story_translation_equals_model(
     story_translation_response,
     story_model,
     story_translation_model,
-    translation_contents,
-    num_translated_lines,
-    num_approved_lines,
+    translation_contents=[],
+    num_translated_lines=0,
+    num_approved_lines=0,
 ):
     assert story_translation_response["id"] == story_translation_model.id
     assert story_translation_response["language"] == story_translation_model.language
     assert story_translation_response["stage"] == story_translation_model.stage
     for translation_content_response, translation_content in zip(
-        story_translation_response["translation_contents"], translation_contents
+        story_translation_response.get("translation_contents", []), translation_contents
     ):
         assert translation_content_response["id"] == translation_content["id"]
         assert (
@@ -57,9 +57,14 @@ def assert_story_translation_equals_model(
     assert story_translation_response["description"] == story_model.description
     assert story_translation_response["youtube_link"] == story_model.youtube_link
     assert story_translation_response["level"] == story_model.level
-    assert story_translation_response["num_translated_lines"] == num_translated_lines
-    assert story_translation_response["num_approved_lines"] == num_approved_lines
-    assert story_translation_response["num_content_lines"] == len(translation_contents)
+    assert (
+        story_translation_response.get("num_translated_lines", 0)
+        == num_translated_lines
+    )
+    assert story_translation_response.get("num_approved_lines", 0) == num_approved_lines
+    assert story_translation_response.get("num_content_lines", 0) == len(
+        translation_contents
+    )
 
 
 def create_story(db):
@@ -100,6 +105,21 @@ def create_reviewer(db):
             role="User",
             approved_languages_translation={"ENGLISH_US": 4, "ENGLISH_UK": 4},
             approved_languages_review={"ENGLISH_US": 4, "ENGLISH_UK": 4},
+        ),
+    )
+
+
+def create_admin(db):
+    return db_session_add_commit_obj(
+        db,
+        UserAll(
+            first_name="Angela",
+            last_name="Merkel",
+            email="planetread+angelamerkel@uwblueprint.org",
+            auth_id="thirdsecret",
+            role="Admin",
+            approved_languages_translation={"GERMAN": 4},
+            approved_languages_review={"GERMAN": 4},
         ),
     )
 
