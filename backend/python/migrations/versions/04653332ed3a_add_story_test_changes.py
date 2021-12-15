@@ -30,7 +30,7 @@ def upgrade():
         sa.Column("test_feedback", mysql.TEXT(), nullable=True),
     )
     op.add_column(
-        "story_translations_all", sa.Column("test_grade", sa.Integer(), nullable=True)
+        "story_translations_all", sa.Column("test_grade", sa.Float(), nullable=True)
     )
     op.add_column(
         "story_translations_all", sa.Column("test_result", sa.JSON(), nullable=True)

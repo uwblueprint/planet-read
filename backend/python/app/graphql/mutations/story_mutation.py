@@ -12,6 +12,7 @@ from ..types.story_type import (
     StoryResponseDTO,
     StoryTranslationContentRequestDTO,
     StoryTranslationContentResponseDTO,
+    StoryTranslationResponseDTO,
     StoryTranslationUpdateStatusResponseDTO,
     UpdateStoryTranslationStageRequestDTO,
 )
@@ -157,6 +158,27 @@ class ApproveAllStoryTranslationContent(graphene.Mutation):
             )
 
             return ApproveAllStoryTranslationContent(ok=True)
+        except Exception as e:
+            error_message = getattr(e, "message", None)
+            raise Exception(error_message if error_message else str(e))
+
+
+class FinishGradingStoryTranslation(graphene.Mutation):
+    class Arguments:
+        test_result = graphene.JSONString(required=True)
+        test_feedback = graphene.String(required=False)
+        story_translation_test_id = graphene.Int(required=True)
+
+    ok = graphene.Boolean()
+    story_translation = graphene.Field(lambda: StoryTranslationResponseDTO)
+
+    @require_authorization_by_role_gql({"Admin"})
+    def mutate(root, info, test_result, test_feedback, story_translation_test_id):
+        try:
+            result = services["story"].finish_grading_story_translation(
+                test_result, test_feedback, story_translation_test_id
+            )
+            return FinishGradingStoryTranslation(ok=True, story_translation=result)
         except Exception as e:
             error_message = getattr(e, "message", None)
             raise Exception(error_message if error_message else str(e))
