@@ -79,12 +79,27 @@ class StoryTranslationResponseDTO(graphene.ObjectType):
     translator_name = graphene.String()
     reviewer_name = graphene.String()
 
+class StoryTranslationTestResponseDTO(graphene.ObjectType):
+    id = graphene.Int(required=True)
+    language = graphene.String(required=True)
+    stage = graphene.Field(StageEnum, required=True)
+    translator_id = graphene.Int()
+    story_id = graphene.Int(required=True)
+    title = graphene.String(required=True)
+    description = graphene.String(required=True)
+    youtube_link = graphene.String(required=True)
+    level = graphene.Int(required=True)
+    translator_name = graphene.String()
+    test_grade = graphene.Int()
+    test_result = graphene.JSONString(required=False)
+    test_feedback = graphene.String()
+    date_submitted = graphene.DateTime()
+
 
 class StoryTranslationNode(graphene.ObjectType):
     story_translation_id = graphene.Int(required=True)
     language = graphene.String(required=True)
     stage = graphene.Field(StageEnum, required=True)
-    translation_contents = graphene.List(StoryTranslationContentResponseDTO)
     translator_id = graphene.Int()
     reviewer_id = graphene.Int()
     story_id = graphene.Int(required=True)
@@ -92,8 +107,6 @@ class StoryTranslationNode(graphene.ObjectType):
     description = graphene.String(required=True)
     youtube_link = graphene.String(required=True)
     level = graphene.Int(required=True)
-    num_translated_lines = graphene.Int()
-    num_approved_lines = graphene.Int()
     translator_name = graphene.String()
     reviewer_name = graphene.String()
 

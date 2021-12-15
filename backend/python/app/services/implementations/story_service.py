@@ -228,6 +228,77 @@ class StoryService(IStoryService):
         except Exception as error:
             self.logger.error(str(error))
             raise error
+    
+    def get_story_translation_tests(
+        self,
+        user,
+        language=None,
+        level=None,
+        stage=None,
+        story_title=None,
+    ):
+        try:
+            filters = [StoryTranslation.is_test]
+            if language is not None:
+                filters.append(StoryTranslation.language == language)
+            if stage is not None:
+                filters.append(StoryTranslation.stage == stage)
+            if level is not None:
+                filters.append(Story.level == level)
+            if story_title is not None:
+                filters.append(Story.title.like(f"%{story_title}%"))
+            if user.role != "Admin":
+                filters.append(StoryTranslation.translator_id == user.id)
+
+            stories = (
+                Story.query.join(
+                    StoryTranslation,
+                    Story.id == StoryTranslation.story_id,
+                )
+                .filter(*filters)
+                .order_by(Story.id)
+                .all()
+            )
+
+            translator = aliased(User)
+
+            story_translation_data = (
+                db.session.query(StoryTranslation, translator)
+                .join(Story, Story.id == StoryTranslation.story_id)
+                .join(
+                    translator,
+                    StoryTranslation.translator_id == translator.id,
+                    isouter=True,
+                )
+                .filter(*filters)
+                .order_by(Story.id)
+                .all()
+            )
+
+            story_translations = []
+
+            for i in range(len(story_translation_data)):
+                story_translation, translator = story_translation_data[i]
+                story = next(
+                    filter(lambda x: x.id == story_translation.story_id, stories)
+                )
+
+                story_translations.append(
+                    {
+                        **story.to_dict(),
+                        **story_translation.to_dict(include_relationships=True),
+                        "translator_name": (
+                            f"{translator.first_name} {translator.last_name}"
+                            if translator
+                            else None
+                        ),
+                    }
+                )
+            return story_translations
+
+        except Exception as error:
+            self.logger.error(str(error))
+            raise error
 
     def get_story_translation(self, id):
         try:
