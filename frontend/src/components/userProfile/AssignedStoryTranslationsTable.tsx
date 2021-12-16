@@ -55,6 +55,7 @@ export type AssignedStoryTranslationsTableProps = {
   approvedLanguagesTranslation: ApprovedLanguagesMap | undefined;
   approvedLanguagesReview: ApprovedLanguagesMap | undefined;
   setStoryAssignStage: (newStage: StoryAssignStage) => void;
+  isAdmin?: boolean;
 };
 
 const AssignedStoryTranslationsTable = ({
@@ -64,6 +65,7 @@ const AssignedStoryTranslationsTable = ({
   approvedLanguagesTranslation,
   approvedLanguagesReview,
   setStoryAssignStage,
+  isAdmin = false,
 }: AssignedStoryTranslationsTableProps) => {
   const [isAscendingTitle, setIsAscendingTitle] = useState(true);
   const [isAscendingRole, setIsAscendingRole] = useState(true);
@@ -262,13 +264,21 @@ const AssignedStoryTranslationsTable = ({
     }
   };
 
+  const generateStoryTranslationLink = (translation: StoryTranslation) => {
+    const suffix = `${translation.storyId}/${translation.storyTranslationId}`;
+    if (isAdmin) {
+      return `/story/${suffix}`;
+    }
+    if (getRole(translation) === "Translator") {
+      return `/translation/${suffix}`;
+    }
+    return `/review/${suffix}`;
+  };
+
   const tableBody = storyTranslations.map((translation: StoryTranslation) => (
     <Tr key={`${translation?.storyTranslationId}`}>
       <Td>
-        <Link
-          isExternal
-          href={`/story/${translation.storyId}/${translation.storyTranslationId}`}
-        >
+        <Link isExternal href={generateStoryTranslationLink(translation)}>
           {translation.title}
         </Link>
       </Td>
@@ -283,15 +293,17 @@ const AssignedStoryTranslationsTable = ({
         }`}</Badge>
       </Td>
       <Td>{convertStageTitleCase(translation.stage)}</Td>
-      <Td>
-        <IconButton
-          aria-label={`Delete story translation for ${translation.title}`}
-          background="transparent"
-          icon={<Icon as={MdDelete} />}
-          width="fit-content"
-          onClick={() => openConfirmUnassignUserModal(translation)}
-        />
-      </Td>
+      {isAdmin && (
+        <Td>
+          <IconButton
+            aria-label={`Delete story translation for ${translation.title}`}
+            background="transparent"
+            icon={<Icon as={MdDelete} />}
+            width="fit-content"
+            onClick={() => openConfirmUnassignUserModal(translation)}
+          />
+        </Td>
+      )}
     </Tr>
   ));
   return (
@@ -321,20 +333,22 @@ const AssignedStoryTranslationsTable = ({
             <Th cursor="pointer" onClick={() => sort("stage")}>{`PROGRESS ${
               isAscendingStage ? "↑" : "↓"
             }`}</Th>
-            <Th width="7%">ACTION</Th>
+            {isAdmin && <Th width="7%">ACTION</Th>}
           </Tr>
         </Thead>
         <Tbody>{tableBody}</Tbody>
-        <Button
-          border="2px"
-          margin="10px 0px 15px 10px"
-          size="secondary"
-          variant="blueOutline"
-          width="200px"
-          onClick={openAssignStoryModal}
-        >
-          ASSIGN NEW STORY
-        </Button>
+        {isAdmin && (
+          <Button
+            border="2px"
+            margin="10px 0px 15px 10px"
+            size="secondary"
+            variant="blueOutline"
+            width="200px"
+            onClick={openAssignStoryModal}
+          >
+            ASSIGN NEW STORY
+          </Button>
+        )}
       </Table>
       {assignStory && (
         <AssignStoryModal

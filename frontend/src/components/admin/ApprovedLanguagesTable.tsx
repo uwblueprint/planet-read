@@ -4,6 +4,7 @@ import {
   Table,
   Thead,
   Tbody,
+  Tooltip,
   Tr,
   Th,
   Td,
@@ -37,7 +38,7 @@ type ApprovedLanguage = {
   sliderValue: number;
 };
 
-type ApprovedLanguagesTableProps = {
+export type ApprovedLanguagesTableProps = {
   approvedLanguagesTranslation: ApprovedLanguagesMap | undefined;
   approvedLanguagesReview: ApprovedLanguagesMap | undefined;
   userId: number;
@@ -45,6 +46,7 @@ type ApprovedLanguagesTableProps = {
   setAlert: (open: boolean) => void;
   alertTimeout: number;
   setAlertTimeout: (id: number) => void;
+  isAdmin?: boolean;
 };
 
 const ApprovedLanguagesTable = ({
@@ -55,6 +57,7 @@ const ApprovedLanguagesTable = ({
   setAlert,
   alertTimeout,
   setAlertTimeout,
+  isAdmin = false,
 }: ApprovedLanguagesTableProps) => {
   const [approvedLanguages, setApprovedLanguages] = useState<
     ApprovedLanguage[]
@@ -170,6 +173,7 @@ const ApprovedLanguagesTable = ({
         <Td>{approvedLanguage.role}</Td>
         <Td colSpan={4} align="center">
           <Slider
+            isDisabled={!isAdmin}
             defaultValue={approvedLanguage.level}
             min={1}
             max={4}
@@ -203,6 +207,26 @@ const ApprovedLanguagesTable = ({
             ))}
           </Slider>
         </Td>
+        {!isAdmin && (
+          <Tooltip
+            hasArrow
+            label="Currently at maximum language level."
+            isDisabled={approvedLanguage.level !== 4}
+          >
+            <Td>
+              <Button
+                aria-label="Level up approval language and level"
+                background="white"
+                size="sm"
+                width="103px"
+                variant="blueOutline"
+                isDisabled={approvedLanguage.level === 4}
+              >
+                Level Up
+              </Button>
+            </Td>
+          </Tooltip>
+        )}
       </Tr>
     ),
   );
@@ -236,6 +260,7 @@ const ApprovedLanguagesTable = ({
           {["LEVEL 1", "LEVEL 2", "LEVEL 3", "LEVEL 4"].map((level) => (
             <Th key={level}>{level}</Th>
           ))}
+          {!isAdmin && <Th width="7%">ACTION</Th>}
         </Tr>
       </Thead>
       <Tbody>{tableBody}</Tbody>
@@ -246,7 +271,7 @@ const ApprovedLanguagesTable = ({
           variant="blueOutline"
           width="254px"
         >
-          Approve New Language/Level
+          Add New Language
         </Button>
       </Tfoot>
     </Table>
