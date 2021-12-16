@@ -72,7 +72,7 @@ const UserProfileForm = ({ isSignup = true }: UserProfileFormProps) => (
         </>
       )}
     </Flex>
-    <Flex direction="column" flex={1} marginLeft="60px" marginTop="160px">
+    <Flex direction="column" flex={1} marginLeft="60px" marginTop="75px">
       <Heading size="sm">Upload your CV (optional)</Heading>
       <Flex
         align="center"
