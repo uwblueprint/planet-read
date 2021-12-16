@@ -83,7 +83,10 @@ jobs:
             git config git-ftp.url ${HOST}
             git config git-ftp.user ${USERNAME}
             git config git-ftp.password ${PASSWORD}
+            touch .git-ftp-include
+            cat frontend/.git-ftp-include > .git-ftp-include
             git ftp push --insecure --syncroot frontend/build
+            rm .git-ftp-include
             echo "Frontend deployed!"
       - run:
           name: Deploy backend
