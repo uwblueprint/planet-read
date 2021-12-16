@@ -96,13 +96,26 @@ class StoryService(IStoryService):
         except Exception as error:
             self.logger.error(str(error))
             raise error
+
         try:
             self._insert_empty_story_translation_contents(db, new_story_translation)
+
+            # Update story.translated_languages
+            story = Story.query.filter_by(id=new_story_translation.story_id).first()
+
+            if new_story_translation.language not in story.translated_languages:
+                story.translated_languages.append(new_story_translation.language)
+                Story.query.filter_by(id=new_story_translation.story_id).update(
+                    story.to_dict()
+                )
+
+            db.session.commit()
         except Exception as error:
             db.session.delete(new_story_translation)
             db.session.commit()
             self.logger.error(str(error))
             raise error
+
         return new_story_translation
 
     def create_translation_test(self, user_id, level, language):
@@ -595,6 +608,14 @@ class StoryService(IStoryService):
                     comment.is_deleted = True
                 translation_content.is_deleted = True
             story_translation.is_deleted = True
+
+            # Remove language from story.translated_languages
+            story = Story.query.filter_by(id=story_translation.story_id).first()
+            if story.translated_languages is not None:
+                story.translated_languages.remove(story_translation.language)
+                Story.query.filter_by(id=story_translation.story_id).update(
+                    story.to_dict()
+                )
 
             db.session.commit()
         except Exception as error:
