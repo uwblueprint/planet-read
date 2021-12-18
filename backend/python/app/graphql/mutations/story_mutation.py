@@ -1,6 +1,7 @@
 import graphene
 
 from ...middlewares.auth import (
+    get_user_id_from_request,
     require_authorization_as_story_user_by_role,
     require_authorization_by_role_gql,
 )
@@ -12,7 +13,7 @@ from ..types.story_type import (
     StoryResponseDTO,
     StoryTranslationContentRequestDTO,
     StoryTranslationContentResponseDTO,
-    StoryTranslationResponseDTO,
+    StoryTranslationTestResponseDTO,
     StoryTranslationUpdateStatusResponseDTO,
     UpdateStoryTranslationStageRequestDTO,
 )
@@ -170,13 +171,14 @@ class FinishGradingStoryTranslation(graphene.Mutation):
         story_translation_test_id = graphene.Int(required=True)
 
     ok = graphene.Boolean()
-    story_translation = graphene.Field(lambda: StoryTranslationResponseDTO)
+    story_translation = graphene.Field(lambda: StoryTranslationTestResponseDTO)
 
     @require_authorization_by_role_gql({"Admin"})
     def mutate(root, info, test_result, test_feedback, story_translation_test_id):
         try:
+            reviewer_id = int(get_user_id_from_request())
             result = services["story"].finish_grading_story_translation(
-                test_result, test_feedback, story_translation_test_id
+                reviewer_id, test_result, test_feedback, story_translation_test_id
             )
             return FinishGradingStoryTranslation(ok=True, story_translation=result)
         except Exception as e:
