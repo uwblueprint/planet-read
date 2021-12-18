@@ -10,6 +10,7 @@ import {
 import {
   UPDATE_STORY_TRANSLATION_CONTENT_STATUS,
   UpdateStoryTranslationContentStatusResponse,
+  UPDATE_STORY_TRANSLATION_LAST_ACTIVITY,
 } from "../../APIClients/mutations/StoryMutations";
 import { StoryLine } from "../translation/Autosave";
 import ConfirmationModal from "../utils/ConfirmationModal";
@@ -19,6 +20,8 @@ import {
 } from "../../utils/Copy";
 
 export type StatusBadgeProps = {
+  storyTranslationId: number;
+  isTranslator: boolean;
   translatedStoryLines: StoryLine[];
   setTranslatedStoryLines: (storyLines: StoryLine[]) => void;
   storyLine: StoryLine;
@@ -27,6 +30,8 @@ export type StatusBadgeProps = {
 };
 
 const StatusBadge = ({
+  storyTranslationId,
+  isTranslator,
   translatedStoryLines,
   setTranslatedStoryLines,
   storyLine,
@@ -36,6 +41,10 @@ const StatusBadge = ({
   const [updateStatus] = useMutation<{
     response: UpdateStoryTranslationContentStatusResponse;
   }>(UPDATE_STORY_TRANSLATION_CONTENT_STATUS);
+
+  const [updateActivity] = useMutation<{}>(
+    UPDATE_STORY_TRANSLATION_LAST_ACTIVITY,
+  );
 
   const [sendAsApprovedLastLine, setSendAsApprovedLastLine] = useState(false);
 
@@ -48,6 +57,12 @@ const StatusBadge = ({
       variables: {
         storyTranslationContentId: storyLine.storyTranslationContentId!!,
         status: newStatus,
+      },
+    });
+    updateActivity({
+      variables: {
+        storyTranslationId,
+        isTranslator,
       },
     });
     if (result) {

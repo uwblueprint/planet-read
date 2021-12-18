@@ -102,6 +102,8 @@ const TranslationTable = ({
         <Flex direction="column" width="140px" margin="5px">
           {isReviewable ? (
             <StatusBadge
+              storyTranslationId={storyTranslationId}
+              isTranslator={translator}
               translatedStoryLines={translatedStoryLines}
               setTranslatedStoryLines={setTranslatedStoryLines}
               storyLine={storyLine}

@@ -21,6 +21,7 @@ from .mutations.story_mutation import (
     UpdateStory,
     UpdateStoryTranslationContents,
     UpdateStoryTranslationContentStatus,
+    UpdateStoryTranslationLastActivity,
     UpdateStoryTranslationStage,
 )
 from .mutations.user_mutation import (
@@ -81,6 +82,7 @@ class Mutation(graphene.ObjectType):
     update_user_approved_language = UpdateUserApprovedLanguages.Field()
     soft_delete_user = SoftDeleteUser.Field()
     remove_user_from_story_translation = RemoveUserFromStoryTranslation.Field()
+    update_story_translation_last_activity = UpdateStoryTranslationLastActivity.Field()
 
 
 class Query(graphene.ObjectType):

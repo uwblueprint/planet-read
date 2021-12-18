@@ -1,6 +1,9 @@
 import { useCallback, useEffect } from "react";
 import { useMutation } from "@apollo/client";
-import { UPDATE_STORY_TRANSLATION_CONTENTS } from "../../APIClients/mutations/StoryMutations";
+import {
+  UPDATE_STORY_TRANSLATION_CONTENTS,
+  UPDATE_STORY_TRANSLATION_LAST_ACTIVITY,
+} from "../../APIClients/mutations/StoryMutations";
 
 import debounce from "../../utils/DebounceUtils";
 
@@ -13,18 +16,29 @@ export type StoryLine = {
 };
 
 type AutosaveProps = {
+  storyTranslationId: number;
+  isTranslator: boolean;
   storylines: StoryLine[];
   onSuccess: () => void;
 };
 
 // Inspiration from https://www.synthace.com/autosave-with-react-hooks/
-const Autosave = ({ storylines, onSuccess }: AutosaveProps) => {
+const Autosave = ({
+  storyTranslationId,
+  isTranslator,
+  storylines,
+  onSuccess,
+}: AutosaveProps) => {
   const handleError = (errorMessage: string) => {
     alert(errorMessage);
   };
 
   const [updateTranslation] = useMutation<{}>(
     UPDATE_STORY_TRANSLATION_CONTENTS,
+  );
+
+  const [updateActivity] = useMutation<{}>(
+    UPDATE_STORY_TRANSLATION_LAST_ACTIVITY,
   );
 
   const debouncedSave = useCallback(
@@ -43,6 +57,12 @@ const Autosave = ({ storylines, onSuccess }: AutosaveProps) => {
       try {
         const result = await updateTranslation({
           variables: { storyTranslationContents },
+        });
+        updateActivity({
+          variables: {
+            storyTranslationId,
+            isTranslator,
+          },
         });
 
         if (result.data == null) {

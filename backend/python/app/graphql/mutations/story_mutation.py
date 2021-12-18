@@ -210,3 +210,21 @@ class RemoveUserFromStoryTranslation(graphene.Mutation):
         except Exception as e:
             error_message = getattr(e, "message", None)
             raise Exception(error_message if error_message else str(e))
+
+
+class UpdateStoryTranslationLastActivity(graphene.Mutation):
+    class Arguments:
+        story_translation_id = graphene.Int(required=True)
+        is_translator = graphene.Boolean(required=True)
+
+    ok = graphene.Boolean()
+
+    def mutate(root, info, story_translation_id, is_translator):
+        try:
+            services["story"].update_story_translation_last_activity(
+                story_translation_id, is_translator
+            )
+            return UpdateStoryTranslationLastActivity(ok=True)
+        except Exception as e:
+            error_message = getattr(e, "message", None)
+            raise Exception(error_message if error_message else str(e))

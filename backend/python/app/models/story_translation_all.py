@@ -1,4 +1,4 @@
-from sqlalchemy import Boolean, inspect
+from sqlalchemy import Boolean, DateTime, inspect
 from sqlalchemy.dialects.mysql import TEXT
 from sqlalchemy.orm.properties import ColumnProperty
 
@@ -19,6 +19,8 @@ class StoryTranslationAll(db.Model):
     reviewer_id = db.Column(db.Integer, db.ForeignKey("users_all.id"), index=True)
     translation_contents = db.relationship(StoryTranslationContentAll)
     is_deleted = db.Column(Boolean, default=False, nullable=False)
+    translator_last_activity = db.Column(DateTime)
+    reviewer_last_activity = db.Column(DateTime)
 
     def to_dict(self, include_relationships=False):
         cls = type(self)

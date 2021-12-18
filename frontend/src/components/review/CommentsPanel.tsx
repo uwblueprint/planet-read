@@ -71,6 +71,8 @@ const CommentsPanel = ({
           {/* TODO: show correct placement of the WIPComment component once existing comment is displayed */}
           {comments.map((comment: CommentResponse) => (
             <ExistingComment
+              storyTranslationId={storyTranslationId}
+              isTranslator={!reviewPage}
               key={comment.id}
               comment={comment}
               WIPLineIndex={commentLine}
@@ -143,6 +145,8 @@ const CommentsPanel = ({
       </Flex>
       {commentLine > 0 && (
         <WIPComment
+          storyTranslationId={storyTranslationId}
+          isTranslator={!reviewPage}
           WIPLineIndex={commentLine}
           storyTranslationContentId={storyTranslationContentId}
           setCommentLine={setCommentLine}

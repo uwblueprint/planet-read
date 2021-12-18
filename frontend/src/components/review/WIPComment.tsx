@@ -6,12 +6,15 @@ import {
   CreateCommentResponse,
   CREATE_COMMMENT,
 } from "../../APIClients/mutations/CommentMutations";
+import { UPDATE_STORY_TRANSLATION_LAST_ACTIVITY } from "../../APIClients/mutations/StoryMutations";
 import { CommentResponse } from "../../APIClients/queries/CommentQueries";
 import { StoryLine } from "../translation/Autosave";
 import { convertStatusTitleCase } from "../../utils/StatusUtils";
 import { insertSortedComments } from "../../utils/Utils";
 
 export type WIPCommentProps = {
+  storyTranslationId: number;
+  isTranslator: boolean;
   storyTranslationContentId: number;
   WIPLineIndex: number;
   setCommentLine: (line: number) => void;
@@ -22,6 +25,8 @@ export type WIPCommentProps = {
 };
 
 const WIPComment = ({
+  storyTranslationId,
+  isTranslator,
   storyTranslationContentId,
   WIPLineIndex,
   setCommentLine,
@@ -42,6 +47,10 @@ const WIPComment = ({
     createComment: CreateCommentResponse;
   }>(CREATE_COMMMENT);
 
+  const [updateActivity] = useMutation<{}>(
+    UPDATE_STORY_TRANSLATION_LAST_ACTIVITY,
+  );
+
   const createNewComment = async () => {
     try {
       const commentData = {
@@ -50,6 +59,12 @@ const WIPComment = ({
       };
       const result = await createComment({
         variables: { commentData },
+      });
+      updateActivity({
+        variables: {
+          storyTranslationId,
+          isTranslator,
+        },
       });
       if (result.data?.createComment.ok) {
         setText("");
@@ -71,7 +86,7 @@ const WIPComment = ({
       }
     }
   };
-  const name = `${authenticatedUser!!.firstName} 
+  const name = `${authenticatedUser!!.firstName}
                 ${authenticatedUser!!.lastName}`;
   return (
     <Flex

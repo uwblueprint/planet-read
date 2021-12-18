@@ -7,10 +7,13 @@ import {
   UPDATE_COMMENT_BY_ID,
   UpdateCommentResponse,
 } from "../../APIClients/mutations/CommentMutations";
+import { UPDATE_STORY_TRANSLATION_LAST_ACTIVITY } from "../../APIClients/mutations/StoryMutations";
 import { CommentResponse } from "../../APIClients/queries/CommentQueries";
 import { StoryLine } from "../translation/Autosave";
 
 export type ExistingCommentProps = {
+  storyTranslationId: number;
+  isTranslator: boolean;
   comment: CommentResponse;
   updateCommentsAsResolved: (index: number) => void;
   comments: CommentResponse[];
@@ -21,6 +24,8 @@ export type ExistingCommentProps = {
 };
 
 const ExistingComment = ({
+  storyTranslationId,
+  isTranslator,
   comment,
   updateCommentsAsResolved,
   setComments,
@@ -51,6 +56,10 @@ const ExistingComment = ({
     updateCommentById: UpdateCommentResponse;
   }>(UPDATE_COMMENT_BY_ID);
 
+  const [updateActivity] = useMutation<{}>(
+    UPDATE_STORY_TRANSLATION_LAST_ACTIVITY,
+  );
+
   const resolveExistingComment = async () => {
     try {
       if (!resolved) {
@@ -63,6 +72,13 @@ const ExistingComment = ({
         const result = await updateComment({
           variables: { commentData },
         });
+        updateActivity({
+          variables: {
+            storyTranslationId,
+            isTranslator,
+          },
+        });
+
         if (result.data?.updateCommentById.ok) {
           updateCommentsAsResolved(id);
         }
@@ -130,6 +146,8 @@ const ExistingComment = ({
       </Flex>
       {reply > -1 && (
         <WIPComment
+          storyTranslationId={storyTranslationId}
+          isTranslator={isTranslator}
           WIPLineIndex={reply + 1}
           storyTranslationContentId={storyTranslationContentId}
           setCommentLine={setReply}

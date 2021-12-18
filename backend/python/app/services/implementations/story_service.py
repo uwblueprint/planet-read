@@ -1,3 +1,5 @@
+from datetime import datetime
+
 from flask import current_app
 from sqlalchemy.orm import aliased
 
@@ -599,6 +601,23 @@ class StoryService(IStoryService):
                 raise Exception(
                     "Error. User is not a translator or reviewer of this story translation."
                 )
+        except Exception as error:
+            self.logger.error(error)
+            raise error
+
+    def update_story_translation_last_activity(
+        self, story_translation_id, is_translator
+    ):
+        try:
+            story_translation = StoryTranslation.query.get(story_translation_id)
+            if not story_translation:
+                raise Exception("Error. Story translation does not exist.")
+            if is_translator:
+                story_translation.translator_last_activity = datetime.utcnow()
+                db.session.commit()
+            else:
+                story_translation.reviewer_last_activity = datetime.utcnow()
+                db.session.commit()
         except Exception as error:
             self.logger.error(error)
             raise error

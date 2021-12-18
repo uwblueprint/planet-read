@@ -129,3 +129,18 @@ export const UPDATE_STORY = gql`
   }
 `;
 export type UpdateStoryResponse = { ok: boolean };
+
+export const UPDATE_STORY_TRANSLATION_LAST_ACTIVITY = gql`
+  mutation UpdateStoryTranslationLastActivity(
+    $storyTranslationId: Int!
+    $isTranslator: Boolean!
+  ) {
+    updateStoryTranslationLastActivity(
+      storyTranslationId: $storyTranslationId
+      isTranslator: $isTranslator
+    ) {
+      ok
+    }
+  }
+`;
+export type UpdateStoryTranslationLastActivityResponse = { ok: boolean };

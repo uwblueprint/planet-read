@@ -308,6 +308,8 @@ const TranslationPage = () => {
         />
       </Flex>
       <Autosave
+        storyTranslationId={storyTranslationId}
+        isTranslator
         storylines={Array.from(changedStoryLines.values())}
         onSuccess={clearUnsavedChangesMap}
       />

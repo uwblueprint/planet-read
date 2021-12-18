@@ -166,3 +166,14 @@ class IStoryService(ABC):
         :param story_translation_id: id of the story translation
         :param user_id: id of the user to be removed
         """
+
+    @abstractmethod
+    def update_story_translation_last_activity(
+        self, story_translation_id, is_translator
+    ):
+        """
+        Update translator_last_activity or reviewer_last_activity columns of the
+        story translation to the current time depending on if the user is a translator
+        :param story_translation_id: id of the story translation
+        :param is_translator: whether the user is a translator
+        """
