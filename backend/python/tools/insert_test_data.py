@@ -49,7 +49,7 @@ def insert_test_data():
                 (6, 'The Great Gatsby', 'Set in the Jazz Age on Long Island, near New York City, the novel depicts mysterious millionaire Jay Gatsby and Gatsby and Daisy Buchanan.', 'https://www.youtube.com/watch?v=e6Iu29TNfkM', 4, '[\"ENGLISH_US\"]', false), \
                 (7, 'Nineteen Eighty-Four', 'Nineteen Eighty-Four, often referred to as 1984, is a dystopian social science fiction novel by the English novelist George Orwell.', 'https://www.youtube.com/watch?v=h9JIKngJnCU', 2, '[]', false), \
                 (8, 'The Musical Donkey', 'There was a donkey who felt so happy that he sang through the night in the cucumber field. The problem was that the cucumbers couldn\"t bear it. What did they do?', 'https://www.youtube.com/watch?v=QfcttsaHTIY', 2, '[]', true), \
-                (9, 'The Musical Donkey  Level 3', 'There was a donkey who felt so happy that he sang through the night in the cucumber field. The problem was that the cucumbers couldn\"t bear it. What did they do?', 'https://www.youtube.com/watch?v=QfcttsaHTIY', 3, '[]', true), \
+                (9, 'The Little Pianist', 'Azul loves to play the piano and he wants to become not just a good pianist but a great pianist. See how he learns the secret!', 'https://www.youtube.com/watch?v=4GsjEPRMzdw', 3, '[]', true), \
                 (10, 'The River and the Mountain', 'The River thinks that the Mountain\"s life is more comfortable and peaceful than hers. Is it true?', 'https://www.youtube.com/watch?v=DlQ4zvJymKI', 4, '[]', true);"
     )
 
@@ -74,7 +74,21 @@ def insert_test_data():
         "The cucumbers could not bear it.   What could they do? One by one, they jumped out of the field and ran to the farmer's house. The next morning, when the farmer woke up, he was not alone. All around him were cucumbers - wide awake, looking at him. And in the field the donkey was fast asleep.",
     ]
 
-    the_river_and_mountain = [
+    the_little_pianist_content = [
+        "There was once a little boy named Azul. He loved to play the piano and dreamed of becoming a pianist some day. Every Sunday, Azul went to his piano class, and practiced every night at home, just before going to bed.",
+        "Azul became good at it because he was so sincere. He would forget to brush his teeth but would never forget to practice playing the piano!",
+        "One day, Vicki, his piano teacher told him, 'Azul, you will perform tomorrow in front of a large audience. You are getting to be quite the pianist! Your fingers move like a squirrel on the piano keys. But there is something missing.' ",
+        "'What is it?' Azul just had to know. He really… really wanted to be, not just a good pianist, but a great pianist. Vicki smiled. She whispered into Azul's ear a piano teacher's secret. 'Play with your heart, not with your fingers.' ",
+        "As always, Vicki pulled out her box of stickers. Azul held out his hand and Vicki stuck on it, a gorgeous sticker of a butterfly. 'There, think of this butterfly when you want to play with your heart,' she said.",
+        # Observation: Word doc double quotes seem to be different from ascii double quotes. They can be inserted and require no escape characters.
+        "That day, when all the children played in the park, Azul just stared at his butterfly. He wondered, “I can play with my fingers because I can move them. I can touch the piano keys. How can I play with my heart? I can’t even see my heart.”",
+        "For the first time, in a long time, Azul went to bed without playing the piano. The night before his performance, he did not practice because he did not know how to play with his heart! When Azul woke up, he looked for the butterfly sticker.",
+        "Oh no! The sticker was gone too! Now Azul was nervous. Really nervous… He tried playing the piano, but his fingers would just not move! However, that did not stop the clock from ticking. Soon it was performance time.",
+        "The piano was in the middle of a round stage, surrounded by rows of people. Azul walked onto the stage, sat on the piano bench and closed his eyes for a second. Remembering Vicki's words, he thought of the butterfly.",
+        "In the quiet of the auditorium, Azul heard the flutter of wings. A butterfly sat on his shoulder and started to hum a tune. His fingers began to move by themselves. His heart began to play the butterfly's song.",
+    ]
+
+    the_river_and_mountain_content = [
         "One day, the river thought to herself, 'Do I have to keep flowing all my life? Can't I stop and rest for a little while?' She needed advice, so she called out to the mountain and shared her thoughts with him. The mountain just laughed and said: 'Hey, look at me, I have been standing in the same place for ages!'",
         "The river replied, 'You are firm and fixed in one place, how could you ever get tired? Look at me, I have to be on the move all the time. I don't get to rest for even a single minute!'",
         "The mountain smiled. 'That is how you see it, but I get tired of standing here,' he replied. 'Every day I see the same trees and the same patch of sky. Sometimes I wish: if only I could run around like the river. I would visit new forests and villages. I would water their fields, give life, and be so deeply loved by all.'",
@@ -96,8 +110,15 @@ def insert_test_data():
                 '
             )
 
-    for story_id in range(8, 10):
-        for i, content in enumerate(the_musical_content):
+    # story contents for the story tests
+    story_test_pairs = [
+        (8, the_musical_content),
+        (9, the_little_pianist_content),
+        (10, the_river_and_mountain_content),
+    ]
+    for i, pair in enumerate(story_test_pairs):
+        story_id, story_content = pair
+        for i, content in enumerate(story_content):
             id = (story_id - 1) * 10 + i + 1
             db.engine.execute(
                 f'INSERT IGNORE INTO story_contents \
@@ -106,17 +127,6 @@ def insert_test_data():
                         ({id}, {story_id}, {i}, "{content}") \
                 '
             )
-
-    story_id = 10
-    for i, content in enumerate(the_river_and_mountain):
-        id = (story_id - 1) * 10 + i + 1
-        db.engine.execute(
-            f'INSERT IGNORE INTO story_contents \
-                    (id, story_id, line_index, content) \
-                VALUES \
-                    ({id}, {story_id}, {i}, "{content}") \
-            '
-        )
 
     # story translations
     db.engine.execute("ALTER TABLE story_translations_all AUTO_INCREMENT = 1;")
