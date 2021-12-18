@@ -82,6 +82,7 @@ const STORY_FIELDS = `
 
 export const buildHomePageStoriesQuery = (
   displayMyStories: boolean,
+  displayMyTests: boolean,
   language: string,
   isTranslator: boolean,
   level: number,
@@ -89,7 +90,23 @@ export const buildHomePageStoriesQuery = (
 ): QueryInformation => {
   let result = {};
 
-  if (isTranslator && !displayMyStories) {
+  if (displayMyTests) {
+    result = {
+      fieldName: "storyTranslationTests",
+      string: gql`
+            query StoryTranslationTests {
+              storyTranslationTests
+              {
+                storyTranslationId: id
+                storyId
+                translatorId
+                language
+                ${STORY_FIELDS}
+              }
+            }
+        `,
+    };
+  } else if (isTranslator && !displayMyStories) {
     result = {
       fieldName: "storiesAvailableForTranslation",
       string: gql`

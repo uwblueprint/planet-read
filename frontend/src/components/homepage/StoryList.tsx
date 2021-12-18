@@ -5,6 +5,7 @@ import "./StoryList.css";
 export type StoryListProps = {
   stories: StoryCardProps[] | null;
   displayMyStories: boolean;
+  displayMyTests: boolean;
 };
 
 const LoadingCard = () => {
@@ -25,7 +26,11 @@ const NoStoriesFoundCard = () => {
   );
 };
 
-const StoryList = ({ stories, displayMyStories }: StoryListProps) => {
+const StoryList = ({
+  stories,
+  displayMyStories,
+  displayMyTests,
+}: StoryListProps) => {
   const createCardId = (storyId: number, storyTranslationId?: number) =>
     `story-${storyId}${
       storyTranslationId ? `-translation-${storyTranslationId}` : ``
@@ -61,6 +66,7 @@ const StoryList = ({ stories, displayMyStories }: StoryListProps) => {
         level={level}
         language={language}
         isMyStory={displayMyStories}
+        isMyTest={displayMyTests}
         translatorId={translatorId}
         reviewerId={reviewerId}
       />

@@ -25,6 +25,7 @@ const HomePage = () => {
   );
 
   const [displayMyStories, setDisplayMyStories] = useState<boolean>(true);
+  const [displayMyTests, setDisplayMyTests] = useState<boolean>(false);
   const [language, setLanguage] = useState<string>(
     Object.keys(approvedLanguagesTranslation)[0],
   );
@@ -54,11 +55,13 @@ const HomePage = () => {
 
   const handleDisplayMyStoriesChange = (nextOption: string) => {
     setStories(null);
+    setDisplayMyTests(nextOption === "My Tests");
     setDisplayMyStories(nextOption === "My Work");
   };
 
   const query = buildHomePageStoriesQuery(
     displayMyStories,
+    displayMyTests,
     language,
     isTranslator,
     level,
@@ -71,12 +74,13 @@ const HomePage = () => {
     onCompleted: (data) => {
       // Only the storyTranslationsByUser query returns the language in the gql
       // response; otherwise it must be added based on the user's language filter
-      const storyData = displayMyStories
-        ? data[query.fieldName]
-        : data[query.fieldName].map((storyObj: any) => ({
-            ...storyObj,
-            language,
-          }));
+      const storyData =
+        displayMyStories || displayMyTests
+          ? data[query.fieldName]
+          : data[query.fieldName].map((storyObj: any) => ({
+              ...storyObj,
+              language,
+            }));
       setStories(storyData);
     },
   });
@@ -94,7 +98,7 @@ const HomePage = () => {
           setLanguage={setLanguage}
           role={isTranslator}
           setIsTranslator={setIsTranslator}
-          isDisabled={displayMyStories}
+          isDisabled={displayMyStories || displayMyTests}
         />
         <Flex
           direction="column"
@@ -106,12 +110,16 @@ const HomePage = () => {
             size="tertiary"
             stacked={false}
             unselectedVariant="ghost"
-            options={["My Work", "Browse Stories"]}
-            name="My Work and Browse Stories toggle"
+            options={["My Work", "Browse Stories", "My Tests"]}
+            name="My Work, Browse Stories, and My Tests toggle"
             defaultValue="My Work"
             onChange={handleDisplayMyStoriesChange}
           />
-          <StoryList stories={stories} displayMyStories={displayMyStories} />
+          <StoryList
+            stories={stories}
+            displayMyStories={displayMyStories}
+            displayMyTests={displayMyTests}
+          />
         </Flex>
       </Flex>
       {showScrollToTop && (

@@ -180,6 +180,8 @@ class StoryService(IStoryService):
             if role_filter is not None:
                 filters.append(role_filter)
 
+            filters.append(StoryTranslation.is_test == False)
+
             stories = (
                 Story.query.join(
                     StoryTranslation,
