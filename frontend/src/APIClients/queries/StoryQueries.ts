@@ -237,8 +237,6 @@ export const buildStoriesQuery = (
               level
               translatorName
               reviewerName
-              numTranslatedLines
-              numApprovedLines
             }
           }
           pageInfo {
