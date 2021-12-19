@@ -55,7 +55,7 @@ const TranslationPage = () => {
   const [stage, setStage] = useState<string>("");
 
   // TODO: remove eslint comment when setIsTest is used
-  const [isTest, setIsTest] = useState(false);  // eslint-disable-line
+  const [isTest, setIsTest] = useState(false); // eslint-disable-line
 
   // AutoSave
   const [changedStoryLines, setChangedStoryLines] = useState<

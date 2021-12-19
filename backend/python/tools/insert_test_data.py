@@ -31,7 +31,7 @@ def insert_test_data():
             ('Dwight', 'D. Eisenhower', 'planetread+dwightdeisenhower@uwblueprint.org', '{os.getenv('AUTH_ID_4', '')}', 'User', '{{\"ENGLISH_UK\":4, \"ENGLISH_US\":4, \"GERMAN\":3}}', '{{\"ENGLISH_UK\":3, \"ENGLISH_US\":4}}'), \
             ('Alexander', 'Hamilton', 'planetread+alexanderhamilton@uwblueprint.org', '{os.getenv('AUTH_ID_5', '')}', 'User', '{{\"MANDARIN\":4, \"ENGLISH_UK\":3}}', '{{\"MANDARIN\":2}}'), \
             ('Angela', 'Merkel', 'planetread+angelamerkel@uwblueprint.org', '{os.getenv('AUTH_ID_6', '')}', 'Admin', '{{\"GERMAN\":4}}', '{{\"GERMAN\":4}}'), \
-            ('Richard', 'Feynman', 'planetread+richardfeynman@uwblueprint.org', '{os.getenv('AUTH_ID_7', '')}', 'User', '{{\"PORTUGUESE\":4, \"ENGLISH_UK\":4, \"GERMAN\":1}}', '{{\"PORTUGUESE\":1}}'); \
+            ('Richard', 'Feynman', 'planetread+richardfeynman@uwblueprint.org', '{os.getenv('AUTH_ID_7', '')}', 'User', '{{\"ARABIC\":4, \"ENGLISH_UK\":4, \"GERMAN\":1}}', '{{\"ARABIC\":1}}'); \
     "
     )
 
@@ -45,7 +45,7 @@ def insert_test_data():
                 (2, 'War and Peace', 'War and Peace is a literary work mixed with chapters on history and philosophy by the Russian author Leo Tolstoy.', 'https://www.youtube.com/watch?v=4dn7TEjnbPY', 1, '[\"GERMAN\", \"POLISH\"]', false), \
                 (3, 'A Tale of Two Cities', 'An 1859 historical novel by Charles Dickens, set in London and Paris before and during the French Revolution.', 'https://www.youtube.com/watch?v=5czA_L_eOp4', 3, '[\"MANDARIN\", \"ENGLISH_UK\"]', false), \
                 (4, 'Pride and Prejudice', 'Pride and Prejudice preaches the difference between superficial goodness and actual goodness.', 'https://www.youtube.com/watch?v=5xTh44G6RYs', 4, '[\"GERMAN\", \"ENGLISH_UK\"]', false), \
-                (5, 'To Kill a Mockingbird', 'To Kill a Mockingbird is a novel by the American author Harper Lee. A sentence cannot do this novel justice.', 'https://www.youtube.com/watch?v=3xM8hvEE2dI', 3, '[\"GERMAN\", \"ENGLISH_UK\", \"PORTUGUESE\", \"DUTCH\"]', false), \
+                (5, 'To Kill a Mockingbird', 'To Kill a Mockingbird is a novel by the American author Harper Lee. A sentence cannot do this novel justice.', 'https://www.youtube.com/watch?v=3xM8hvEE2dI', 3, '[\"GERMAN\", \"ENGLISH_UK\", \"ARABIC\", \"DUTCH\"]', false), \
                 (6, 'The Great Gatsby', 'Set in the Jazz Age on Long Island, near New York City, the novel depicts mysterious millionaire Jay Gatsby and Gatsby and Daisy Buchanan.', 'https://www.youtube.com/watch?v=e6Iu29TNfkM', 4, '[\"ENGLISH_US\"]', false), \
                 (7, 'Nineteen Eighty-Four', 'Nineteen Eighty-Four, often referred to as 1984, is a dystopian social science fiction novel by the English novelist George Orwell.', 'https://www.youtube.com/watch?v=h9JIKngJnCU', 2, '[]', false), \
                 (8, 'The Musical Donkey', 'There was a donkey who felt so happy that he sang through the night in the cucumber field. The problem was that the cucumbers couldn\"t bear it. What did they do?', 'https://www.youtube.com/watch?v=QfcttsaHTIY', 2, '[]', true), \
@@ -144,14 +144,14 @@ def insert_test_data():
             (8, 4, 'ENGLISH_UK', 'TRANSLATE', 4), \
             (9, 5, 'GERMAN', 'TRANSLATE', 4), \
             (10, 5, 'ENGLISH_UK', 'TRANSLATE', 1), \
-            (11, 5, 'PORTUGUESE', 'TRANSLATE', 7), \
+            (11, 5, 'ARABIC', 'TRANSLATE', 7), \
             (12, 5, 'DUTCH', 'TRANSLATE', 3), \
             (13, 6, 'ENGLISH_US', 'TRANSLATE', 1);"
     )
 
     # story translation contents
     db.engine.execute("ALTER TABLE story_translation_contents_all AUTO_INCREMENT = 1;")
-    full_translation = [2, 3, 5, 7, 11, 13]
+    full_translation = [2, 3, 5, 7, 13]
     story_count = 0
     for story_translation_id in full_translation:
         for i, content in enumerate(generic_content):
@@ -165,7 +165,7 @@ def insert_test_data():
             )
         story_count += 1
 
-    empty_translation = [1, 4, 6, 8, 9, 10, 12]
+    empty_translation = [1, 4, 6, 8, 9, 10, 11, 12]
     for story_translation_id in empty_translation:
         for line_index in range(10):
             id = story_count * 10 + line_index + 1

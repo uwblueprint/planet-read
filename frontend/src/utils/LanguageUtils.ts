@@ -1,7 +1,7 @@
 import { convertStringTitleCase } from "./Utils";
 
 // Change language string to title case
-function convertLanguageTitleCase(language: string) {
+export function convertLanguageTitleCase(language: string) {
   // Handles 4 edge cases: ENGLISH_US, ENGLISH_UK, ENGLISH_INDIA, ASANTE_TWI
   switch (language) {
     case "ENGLISH_US":
@@ -21,7 +21,7 @@ function convertLanguageTitleCase(language: string) {
   }
 }
 
-function convertTitleCaseToLanguage(language: string) {
+export function convertTitleCaseToLanguage(language: string) {
   switch (language) {
     case "English (US)":
       return "ENGLISH_US";
@@ -40,4 +40,5 @@ function convertTitleCaseToLanguage(language: string) {
   }
 }
 
-export { convertLanguageTitleCase, convertTitleCaseToLanguage };
+export const isRtlLanguage = (titleCaseLanguage: string) =>
+  ["Arabic", "Hebrew", "Kurdish", "Urdu"].includes(titleCaseLanguage);
