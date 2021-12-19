@@ -83,10 +83,22 @@ const AssignedStoryTranslationsTable = ({
     null,
   );
 
+  const [alertTimeout, setAlertTimeout] = useState(0);
+
+  const resetAlertTimeout = () => {
+    window.clearTimeout(alertTimeout);
+    const timeout: number = window.setTimeout(
+      () => setStoryAssignStage(StoryAssignStage.INITIAL),
+      5000,
+    );
+    setAlertTimeout(timeout);
+  };
+
   const closeAssignStoryModal = (cancelled = true) => {
     setAssignStory(false);
     if (cancelled) {
       setStoryAssignStage(StoryAssignStage.CANCELLED);
+      resetAlertTimeout();
     }
   };
   const openAssignStoryModal = () => {
@@ -244,6 +256,7 @@ const AssignedStoryTranslationsTable = ({
       setStoryAssignStage(StoryAssignStage.SUCCESS);
       // TODO: remove this line and add story translation locally
       window.location.reload();
+      resetAlertTimeout();
     }
   };
 
@@ -314,6 +327,7 @@ const AssignedStoryTranslationsTable = ({
         theme="gray"
         variant="striped"
         width="100%"
+        marginTop="20px"
       >
         <Thead>
           <Tr
