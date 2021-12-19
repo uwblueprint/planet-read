@@ -47,6 +47,10 @@ const App = () => {
   const [authenticatedUser, setAuthenticatedUser] =
     useState<AuthenticatedUser>(currentUser);
 
+  const isAdmin = authenticatedUser
+    ? authenticatedUser.role === "Admin"
+    : false;
+
   return (
     <ChakraProvider theme={customTheme}>
       <ForceLightMode>
@@ -62,13 +66,16 @@ const App = () => {
                   path="/complete-profile"
                   component={CompleteProfilePage}
                 />
-                <PrivateRoute exact path="/" component={HomePage} />
+                <PrivateRoute
+                  exact
+                  path="/"
+                  component={isAdmin ? AdminPage : HomePage}
+                />
                 <PrivateRoute
                   exact
                   path="/user/:userId"
                   component={UserProfilePage}
                 />
-                <PrivateRoute exact path="/admin" component={AdminPage} />
                 <PrivateRoute
                   exact
                   path="/translation/:storyIdParam/:storyTranslationIdParam"
