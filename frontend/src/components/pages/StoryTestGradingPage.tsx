@@ -46,7 +46,6 @@ const StoryTestGradingPage = () => {
   const [translatedStoryLines, setTranslatedStoryLines] = useState<StoryLine[]>(
     [],
   );
-  const [reviewerId, setReviewerId] = useState(-1);
   const [numApprovedLines, setNumApprovedLines] = useState(0);
 
   const [fontSize, setFontSize] = useState<string>("12px");
@@ -98,7 +97,6 @@ const StoryTestGradingPage = () => {
     {
       fetchPolicy: "cache-and-network",
       onCompleted: (data) => {
-        setReviewerId(data.storyTranslationById.reviewerId);
         const storyContent = data.storyById.contents;
         const translatedContent = data.storyTranslationById.translationContents;
         setLanguage(data.storyTranslationById.language);
@@ -128,8 +126,8 @@ const StoryTestGradingPage = () => {
     },
   );
 
-  if (loading || reviewerId === -1) return <div />;
-  if (+authenticatedUser!!.id !== reviewerId) return <Redirect to="/404" />;
+  if (loading) return <div />;
+  if (authenticatedUser!!.role !== "Admin") return <Redirect to="/404" />;
   return (
     <Flex
       height="100vh"

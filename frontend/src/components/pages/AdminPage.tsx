@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import Header, { AdminPageOption } from "../navigation/Header";
 import ManageStoryTranslations from "../admin/ManageStoryTranslations";
 import ManageUsers from "../admin/ManageUsers";
+import ManageStoryTests from "../admin/ManageStoryTests";
 
 const AdminPage = () => {
   const [adminPageOption, setAdminPageOption] = useState(
@@ -15,6 +16,8 @@ const AdminPage = () => {
         return <ManageUsers isTranslators />;
       case AdminPageOption.Reviewers:
         return <ManageUsers isTranslators={false} />;
+      case AdminPageOption.Tests:
+        return <ManageStoryTests />;
       default:
         return <ManageStoryTranslations />;
     }

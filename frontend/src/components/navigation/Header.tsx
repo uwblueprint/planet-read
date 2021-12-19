@@ -10,6 +10,7 @@ export enum AdminPageOption {
   StoryTranslations = 1,
   Translators,
   Reviewers,
+  Tests,
 }
 
 export type HeaderProps = {
@@ -91,6 +92,16 @@ const Header = ({
             }
           >
             Manage Reviewers
+          </Button>
+          <Button
+            onClick={() => setAdminPageOption(AdminPageOption.Tests)}
+            variant={
+              adminPageOption === AdminPageOption.Tests
+                ? "headerSelect"
+                : "header"
+            }
+          >
+            Manage Tests
           </Button>
         </Flex>
       )}
