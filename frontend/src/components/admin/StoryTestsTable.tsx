@@ -19,8 +19,8 @@ import { convertLanguageTitleCase } from "../../utils/LanguageUtils";
 import convertStageTitleCase from "../../utils/StageUtils";
 import { getLevelVariant } from "../../utils/StatusUtils";
 import {
-  MANAGE_STORY_TRANSLATIONS_TABLE_DELETE_TRANSLATION_BUTTON,
-  MANAGE_STORY_TRANSLATIONS_TABLE_DELETE_TRANSLATION_CONFIRMATION,
+  MANAGE_TESTS_TABLE_DELETE_TEST_BUTTON,
+  MANAGE_TESTS_TABLE_DELETE_TEST_CONFIRMATION,
 } from "../../utils/Copy";
 import ConfirmationModal from "../utils/ConfirmationModal";
 import { generateSortFn } from "../../utils/Utils";
@@ -211,13 +211,8 @@ const StoryTestsTable = ({
           confirmation={confirmDeleteTranslation}
           onClose={closeModal}
           onConfirmationClick={callSoftDeleteStoryTranslationMutation}
-          // TODO: change text
-          confirmationMessage={
-            MANAGE_STORY_TRANSLATIONS_TABLE_DELETE_TRANSLATION_CONFIRMATION
-          }
-          buttonMessage={
-            MANAGE_STORY_TRANSLATIONS_TABLE_DELETE_TRANSLATION_BUTTON
-          }
+          confirmationMessage={MANAGE_TESTS_TABLE_DELETE_TEST_CONFIRMATION}
+          buttonMessage={MANAGE_TESTS_TABLE_DELETE_TEST_BUTTON}
         />
       )}
     </Table>

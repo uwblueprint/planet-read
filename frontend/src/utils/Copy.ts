@@ -68,3 +68,8 @@ export const DELETE_STORY_CONFIRMATION =
   "By removing this story and all story translations associated with it, all data will be removed from the database. This action cannot be undone.";
 
 export const DELETE_STORY_BUTTON = "I'm sure, remove";
+
+export const MANAGE_TESTS_TABLE_DELETE_TEST_CONFIRMATION =
+  "By deleting this test, the user has to wait for 30 days before they can take this test again.";
+
+export const MANAGE_TESTS_TABLE_DELETE_TEST_BUTTON = "I'm sure, delete test";
