@@ -102,27 +102,28 @@ workflows:
   version: 2
   lint-build-test:
     jobs:
-      - lint:
-          filters:
-            tags:
-              only: /^v.*/
-      - build:
-          requires:
-            - lint
-          filters:
-            tags:
-              only: /^v.*/
-      - test:
-          requires:
-            - build
-          filters:
-            tags:
-              only: /^v.*/
-      - deploy:
-          requires:
-            - test
-          filters:
-            tags:
-              only: /^v.*/
-            branches:
-              ignore: /.*/
+      - deploy
+      # - lint:
+      #     filters:
+      #       tags:
+      #         only: /^v.*/
+      # - build:
+      #     requires:
+      #       - lint
+      #     filters:
+      #       tags:
+      #         only: /^v.*/
+      # - test:
+      #     requires:
+      #       - build
+      #     filters:
+      #       tags:
+      #         only: /^v.*/
+      # - deploy:
+      #     requires:
+      #       - test
+      #     filters:
+      #       tags:
+      #         only: /^v.*/
+      #       branches:
+      #         ignore: /.*/
