@@ -1,6 +1,9 @@
 import graphene
 
-from ...middlewares.auth import require_authorization_by_role_gql
+from ...middlewares.auth import (
+    get_user_id_from_request,
+    require_authorization_by_role_gql,
+)
 from ..service import services
 from ..types.comment_type import (
     CommentResponseDTO,
@@ -19,7 +22,10 @@ class CreateComment(graphene.Mutation):
 
     @require_authorization_by_role_gql({"User", "Admin"})
     def mutate(root, info, comment_data):
-        comment_response = services["comment"].create_comment(comment=comment_data)
+        user_id = get_user_id_from_request()
+        comment_response = services["comment"].create_comment(
+            comment=comment_data, user_id=user_id
+        )
         ok = True
         return CreateComment(ok=ok, comment=comment_response)
 

@@ -27,7 +27,7 @@ def get_user_id_from_request():
         access_token, check_revoked=True
     )
     user_id = auth_service.user_service.get_user_id_by_auth_id(decoded_id_token["uid"])
-    return user_id
+    return int(user_id)
 
 
 """

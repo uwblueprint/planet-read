@@ -3,7 +3,6 @@ from datetime import datetime
 from flask import current_app
 from sqlalchemy import func
 
-from ...middlewares.auth import get_user_id_from_request
 from ...models import db
 from ...models.comment import Comment
 from ...models.comment_all import CommentAll
@@ -17,10 +16,8 @@ class CommentService(ICommentService):
     def __init__(self, logger=current_app.logger):
         self.logger = logger
 
-    def create_comment(self, comment):
+    def create_comment(self, comment, user_id):
         try:
-            # TODO: remove cast to int once get_user_id_from_request is updated
-            user_id = int(get_user_id_from_request())
             new_comment = CommentAll(**comment)
             new_comment.user_id = user_id
 

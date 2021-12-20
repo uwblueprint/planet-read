@@ -6,7 +6,6 @@ from ...graphql.types.story_type import (
     StoryTranslationContentResponseDTO,
     StoryTranslationUpdateStatusResponseDTO,
 )
-from ...middlewares.auth import get_user_id_from_request
 from ...models import db
 from ...models.comment import Comment
 from ...models.story import Story
@@ -544,14 +543,12 @@ class StoryService(IStoryService):
         else:
             raise Exception("Story translation contents cannot be changed right now.")
 
-    def update_story_translation_stage(self, story_translation_data):
+    def update_story_translation_stage(self, story_translation_data, user_id):
         try:
             story_translation = StoryTranslation.query.filter_by(
                 id=story_translation_data["id"]
             ).first()
             new_stage = story_translation_data["stage"]
-            # TODO: remove cast to int once get_user_id_from_request is updated
-            user_id = int(get_user_id_from_request())
 
             if (
                 (new_stage == StageEnum.TRANSLATE or new_stage == StageEnum.PUBLISH)
