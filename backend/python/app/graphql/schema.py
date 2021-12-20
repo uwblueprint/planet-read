@@ -16,6 +16,7 @@ from .mutations.story_mutation import (
     CreateStory,
     CreateStoryTranslation,
     CreateStoryTranslationTest,
+    FinishGradingStoryTranslation,
     RemoveReviewerFromStoryTranslation,
     RemoveUserFromStoryTranslation,
     SoftDeleteStoryTranslation,
@@ -85,6 +86,7 @@ class Mutation(graphene.ObjectType):
     update_user_approved_language = UpdateUserApprovedLanguages.Field()
     soft_delete_user = SoftDeleteUser.Field()
     remove_user_from_story_translation = RemoveUserFromStoryTranslation.Field()
+    finish_grading_story_translation = FinishGradingStoryTranslation.Field()
 
 
 class Query(graphene.ObjectType):

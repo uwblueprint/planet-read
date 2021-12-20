@@ -679,6 +679,74 @@ class StoryService(IStoryService):
             )
             raise error
 
+    def finish_grading_story_translation(
+        self, reviewer_id, test_result, test_feedback, story_translation_test_id
+    ):
+        try:
+
+            if "translate" not in test_result:
+                raise Exception(
+                    "Error: test_feedback must contain translate attributes."
+                )
+
+            story_translation_test = (
+                db.session.query(StoryTranslation)
+                .filter(StoryTranslation.id == story_translation_test_id)
+                .first()
+            )
+
+            if story_translation_test.is_test == False:
+                raise Exception("Error: Cannot grade a non-test story translation.")
+
+            story_translation_contents = (
+                db.session.query(StoryTranslationContent)
+                .filter(
+                    StoryTranslationContent.story_translation_id
+                    == story_translation_test_id
+                )
+                .all()
+            )
+
+            language = story_translation_test.language
+            user = (
+                db.session.query(User)
+                .filter(User.id == story_translation_test.translator_id)
+                .first()
+            )
+
+            translate_level = test_result["translate"]
+            appr_lang = user.approved_languages_translation or {}
+            appr_lang[language] = translate_level
+            user.approved_languages_translation = appr_lang
+
+            if "review" in test_result:
+                review_level = test_result["review"]
+                appr_lang = user.approved_languages_review or {}
+                appr_lang[language] = review_level
+                user.approved_languages_review = appr_lang
+
+            User.query.filter_by(id=user.id).update(user.to_dict())
+
+            story_translation_test.reviewer_id = reviewer_id
+            story_translation_test.test_feedback = test_feedback
+            story_translation_test.test_result = test_result
+            story_translation_test.test_grade = self._get_final_grade(
+                story_translation_contents
+            )
+            story_translation_test.stage = "PUBLISH"
+            db.session.commit()
+
+        except Exception as error:
+            reason = getattr(error, "message", None)
+            self.logger.error(
+                "Failed to update story translation. Reason = {reason}".format(
+                    reason=(reason if reason else str(error))
+                )
+            )
+            raise error
+
+        return story_translation_test
+
     def soft_delete_story_translation(self, id):
         try:
             story_translation = StoryTranslationAll.query.get(id)
@@ -768,3 +836,15 @@ class StoryService(IStoryService):
         ]
         db.session.bulk_save_objects(new_story_translation_content_cache)
         db.session.commit()
+
+    def _get_final_grade(self, story_translation_contents):
+
+        final_grade = 0
+        for s in story_translation_contents:
+            status = s.status
+            if status == StoryTranslationContentStatus.TEST_CORRECT:
+                final_grade += 1
+            elif status == StoryTranslationContentStatus.TEST_PARTIALLY_CORRECT:
+                final_grade += 0.5
+
+        return final_grade

@@ -1,4 +1,4 @@
-from sqlalchemy import Boolean, inspect
+from sqlalchemy import Boolean, Float, inspect
 from sqlalchemy.dialects.mysql import TEXT
 from sqlalchemy.orm.properties import ColumnProperty
 
@@ -20,7 +20,7 @@ class StoryTranslationAll(db.Model):
     translation_contents = db.relationship(StoryTranslationContentAll)
     is_deleted = db.Column(Boolean, default=False, nullable=False)
     is_test = db.Column(Boolean, default=False, nullable=False)
-    test_grade = db.Column(db.Integer)
+    test_grade = db.Column(Float(3, 2))
     test_result = db.Column(db.JSON)
     test_feedback = db.Column(TEXT)
 
