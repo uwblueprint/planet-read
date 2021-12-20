@@ -1,4 +1,4 @@
-from sqlalchemy import Boolean, Float, inspect
+from sqlalchemy import Boolean, DateTime, Float, inspect
 from sqlalchemy.dialects.mysql import TEXT
 from sqlalchemy.orm.properties import ColumnProperty
 
@@ -23,6 +23,8 @@ class StoryTranslationAll(db.Model):
     test_grade = db.Column(Float(3, 2))
     test_result = db.Column(db.JSON)
     test_feedback = db.Column(TEXT)
+    translator_last_activity = db.Column(DateTime)
+    reviewer_last_activity = db.Column(DateTime)
 
     def to_dict(self, include_relationships=False):
         cls = type(self)
