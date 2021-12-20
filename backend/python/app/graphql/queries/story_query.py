@@ -42,7 +42,7 @@ def resolve_story_translations(root, info, language, level, stage, story_title):
 
 @require_authorization_by_role_gql({"User", "Admin"})
 def resolve_story_translation_tests(root, info, language, level, stage, story_title):
-    user_id = int(get_user_id_from_request())
+    user_id = get_user_id_from_request()
     user = services["user"].get_user_by_id(user_id)
     return services["story"].get_story_translation_tests(
         user, language, level, stage, story_title

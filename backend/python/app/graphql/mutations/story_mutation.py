@@ -213,7 +213,10 @@ class UpdateStoryTranslationStage(graphene.Mutation):
 
     def mutate(root, info, story_translation_data):
         try:
-            services["story"].update_story_translation_stage(story_translation_data)
+            user_id = get_user_id_from_request()
+            services["story"].update_story_translation_stage(
+                story_translation_data, user_id
+            )
             return UpdateStoryTranslationStage(ok=True)
         except Exception as e:
             error_message = getattr(e, "message", None)

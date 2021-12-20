@@ -34,7 +34,7 @@ class UpdateMe(graphene.Mutation):
         Update the user that made the request
         """
         try:
-            user_id = int(get_user_id_from_request())
+            user_id = get_user_id_from_request()
             updated_user = services["user"].update_me(user_id, user)
             return UpdateMe(user=updated_user)
         except Exception as e:
