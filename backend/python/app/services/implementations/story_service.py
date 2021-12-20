@@ -684,9 +684,9 @@ class StoryService(IStoryService):
     ):
         try:
 
-            if "translate" not in test_result or "review" not in test_result:
+            if "translate" not in test_result:
                 raise Exception(
-                    "Error: test_feedback must contain translate and review attributes."
+                    "Error: test_feedback must contain translate attributes."
                 )
 
             story_translation_test = (
@@ -707,29 +707,25 @@ class StoryService(IStoryService):
                 .all()
             )
 
+            language = story_translation_test.language
+            user = (
+                db.session.query(User)
+                .filter(User.id == story_translation_test.translator_id)
+                .first()
+            )
+
             translate_level = test_result["translate"]
-            review_level = test_result["review"]
+            appr_lang = user.approved_languages_translation or {}
+            appr_lang[language] = translate_level
+            user.approved_languages_translation = appr_lang
 
-            if translate_level or review_level:
-                language = story_translation_test.language
+            if "review" in test_result:
+                review_level = test_result["review"]
+                appr_lang = user.approved_languages_review or {}
+                appr_lang[language] = review_level
+                user.approved_languages_review = appr_lang
 
-                user = (
-                    db.session.query(User)
-                    .filter(User.id == story_translation_test.translator_id)
-                    .first()
-                )
-
-                if translate_level:
-                    appr_lang = user.approved_languages_translation or {}
-                    appr_lang[language] = translate_level
-                    user.approved_languages_translation = appr_lang
-
-                if review_level:
-                    appr_lang = user.approved_languages_review or {}
-                    appr_lang[language] = review_level
-                    user.approved_languages_review = appr_lang
-
-                User.query.filter_by(id=user.id).update(user.to_dict())
+            User.query.filter_by(id=user.id).update(user.to_dict())
 
             story_translation_test.reviewer_id = reviewer_id
             story_translation_test.test_feedback = test_feedback
