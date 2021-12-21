@@ -214,6 +214,8 @@ export type StoryTranslation = {
   reviewerName: string | null;
   numTranslatedLines: number;
   numApprovedLines: number;
+  translatorLastActivity: string | null;
+  reviewerLastActivity: string | null;
 };
 
 export const buildStoryTranslationsQuery = (
@@ -257,6 +259,8 @@ export const buildStoryTranslationsQuery = (
               level
               translatorName
               reviewerName
+              translatorLastActivity
+              reviewerLastActivity
             }
           }
           pageInfo {
