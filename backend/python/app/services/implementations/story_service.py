@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, timedelta
 
 from flask import current_app
 from sqlalchemy.orm import aliased
@@ -121,6 +121,25 @@ class StoryService(IStoryService):
 
     def create_translation_test(self, user_id, level, language):
         try:
+            story_translation_tests = (
+                StoryTranslation.query.filter(StoryTranslation.translator_id == user_id)
+                .filter(StoryTranslation.language == language)
+                .all()
+            )
+
+            last_30_days = datetime.utcnow() - timedelta(days=30)
+
+            for story_translation_test in story_translation_tests:
+                if story_translation_test.stage != "PUBLISH":
+                    self.logger.error("User has an ongoing story translation test.")
+                    raise Exception("User has an ongoing story translation test.")
+                elif (
+                    story_translation_test.translator_last_activity
+                    and last_30_days < story_translation_test.translator_last_activity
+                ):
+                    self.logger.error("User has failed a test within the last 30 days.")
+                    raise Exception("User has failed a test within the last 30 days.")
+
             test_story = (
                 Story.query.filter(Story.is_test == True)
                 .filter(Story.level == level)
