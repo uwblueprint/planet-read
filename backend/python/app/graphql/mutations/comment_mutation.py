@@ -40,8 +40,9 @@ class UpdateCommentById(graphene.Mutation):
     @require_authorization_by_role_gql({"User", "Admin"})
     def mutate(root, info, comment_data):
         try:
+            user_id = get_user_id_from_request()
             comment_response = services["comment"].update_comment(
-                updated_comment=comment_data
+                updated_comment=comment_data, user_id=user_id
             )
             ok = True
             return UpdateCommentById(ok=ok, comment=comment_response)

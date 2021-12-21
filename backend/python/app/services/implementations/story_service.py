@@ -1,3 +1,5 @@
+from datetime import datetime
+
 from flask import current_app
 from sqlalchemy.orm import aliased
 
@@ -523,6 +525,9 @@ class StoryService(IStoryService):
                     StoryTranslationContent, story_translation_contents
                 )
                 db.session.commit()
+
+                self._update_story_translation_last_activity(story_translation, True)
+
                 return story_translation_contents
             except Exception as error:
                 reason = getattr(error, "message", None)
@@ -550,15 +555,19 @@ class StoryService(IStoryService):
             ).first()
             new_stage = story_translation_data["stage"]
 
+            is_translator = user_id == story_translation.translator_id
+            is_reviewer = user_id == story_translation.reviewer_id
+
             if (
                 (new_stage == StageEnum.TRANSLATE or new_stage == StageEnum.PUBLISH)
-                and user_id == story_translation.reviewer_id
-            ) or (
-                new_stage == StageEnum.REVIEW
-                and user_id == story_translation.translator_id
-            ):
+                and is_reviewer
+            ) or (new_stage == StageEnum.REVIEW and is_translator):
                 story_translation.stage = new_stage
                 db.session.commit()
+
+                self._update_story_translation_last_activity(
+                    story_translation, is_translator
+                )
             else:
                 error = "User is not authorized to update translation stage to: {stage}".format(
                     stage=new_stage
@@ -630,6 +639,8 @@ class StoryService(IStoryService):
 
                 story_translation_content.status = status
                 db.session.commit()
+
+                self._update_story_translation_last_activity(story_translation, False)
             else:
                 raise Exception(
                     "Error. Story Translation is not in REVIEW stage and its statuses cannot be updated."
@@ -663,6 +674,11 @@ class StoryService(IStoryService):
                     translation_content[1].status = "APPROVED"
 
                 db.session.commit()
+
+                story_translation = StoryTranslation.query.filter_by(
+                    id=story_translation_id
+                ).first()
+                self._update_story_translation_last_activity(story_translation, False)
             else:
                 raise Exception(
                     "Error. Story Translation is not in REVIEW stage and its statuses cannot be updated."
@@ -845,3 +861,17 @@ class StoryService(IStoryService):
                 final_grade += 0.5
 
         return final_grade
+
+    def _update_story_translation_last_activity(self, story_translation, is_translator):
+        try:
+            if not story_translation:
+                raise Exception("Error. Story translation does not exist.")
+            if is_translator:
+                story_translation.translator_last_activity = datetime.utcnow()
+                db.session.commit()
+            else:
+                story_translation.reviewer_last_activity = datetime.utcnow()
+                db.session.commit()
+        except Exception as error:
+            self.logger.error(error)
+            raise error

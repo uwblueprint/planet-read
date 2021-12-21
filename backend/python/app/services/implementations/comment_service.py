@@ -10,6 +10,9 @@ from ...models.story_translation import StoryTranslation
 from ...models.story_translation_content import StoryTranslationContent
 from ...models.story_translation_content_status import StoryTranslationContentStatus
 from ..interfaces.comment_service import ICommentService
+from .story_service import StoryService
+
+story_service = StoryService(current_app.logger)
 
 
 class CommentService(ICommentService):
@@ -84,6 +87,10 @@ class CommentService(ICommentService):
 
             new_comment.line_index = stc.line_index
 
+            story_service._update_story_translation_last_activity(
+                story_translation, is_translator
+            )
+
             return new_comment
         elif story_translation_stage == "TRANSLATE" and is_reviewer:
             raise Exception(
@@ -135,7 +142,7 @@ class CommentService(ICommentService):
 
         return comments
 
-    def update_comment(self, updated_comment):
+    def update_comment(self, updated_comment, user_id):
         try:
             comment = Comment.query.filter_by(id=updated_comment.id).first()
             if not comment:
@@ -145,6 +152,21 @@ class CommentService(ICommentService):
             for key, value in updated_comment.__dict__.items():
                 setattr(comment, key, value)
             db.session.commit()
+
+            story_translation = (
+                StoryTranslation.query.join(
+                    StoryTranslationContent,
+                    StoryTranslation.id == StoryTranslationContent.story_translation_id,
+                )
+                .filter(
+                    StoryTranslationContent.id == comment.story_translation_content_id
+                )
+                .first()
+            )
+            is_translator = user_id == story_translation.translator_id
+            story_service._update_story_translation_last_activity(
+                story_translation, is_translator
+            )
         except Exception as error:
             reason = getattr(error, "message", None)
             self.logger.error(
