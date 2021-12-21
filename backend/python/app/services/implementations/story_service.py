@@ -675,6 +675,9 @@ class StoryService(IStoryService):
 
                 db.session.commit()
 
+                story_translation = StoryTranslation.query.filter_by(
+                    id=story_translation_id
+                ).first()
                 self._update_story_translation_last_activity(story_translation, False)
             else:
                 raise Exception(
