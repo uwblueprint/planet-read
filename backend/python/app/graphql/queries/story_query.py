@@ -36,8 +36,12 @@ def resolve_story_translations_available_for_review(root, info, language, level)
 
 
 @require_authorization_by_role_gql({"Admin"})
-def resolve_story_translations(root, info, language, level, stage, story_title):
-    return services["story"].get_story_translations(language, level, stage, story_title)
+def resolve_story_translations(
+    root, info, language, level, stage, story_title, story_id
+):
+    return services["story"].get_story_translations(
+        language, level, stage, story_title, story_id
+    )
 
 
 @require_authorization_by_role_gql({"User", "Admin"})
