@@ -10,6 +10,9 @@ from ...models.story_translation import StoryTranslation
 from ...models.story_translation_content import StoryTranslationContent
 from ...models.story_translation_content_status import StoryTranslationContentStatus
 from ..interfaces.comment_service import ICommentService
+from .story_service import StoryService
+
+story_service = StoryService(current_app.logger)
 
 
 class CommentService(ICommentService):
@@ -84,7 +87,7 @@ class CommentService(ICommentService):
 
             new_comment.line_index = stc.line_index
 
-            self._update_story_translation_last_activity(
+            story_service._update_story_translation_last_activity(
                 story_translation, is_translator
             )
 
@@ -161,7 +164,7 @@ class CommentService(ICommentService):
                 .first()
             )
             is_translator = user_id == story_translation.translator_id
-            self._update_story_translation_last_activity(
+            story_service._update_story_translation_last_activity(
                 story_translation, is_translator
             )
         except Exception as error:
@@ -191,17 +194,3 @@ class CommentService(ICommentService):
 
         # TODO: return updated comments as list of CommentResponseDTO's
         return updated_comments
-
-    def _update_story_translation_last_activity(self, story_translation, is_translator):
-        try:
-            if not story_translation:
-                raise Exception("Error. Story translation does not exist.")
-            if is_translator:
-                story_translation.translator_last_activity = datetime.utcnow()
-                db.session.commit()
-            else:
-                story_translation.reviewer_last_activity = datetime.utcnow()
-                db.session.commit()
-        except Exception as error:
-            self.logger.error(error)
-            raise error
