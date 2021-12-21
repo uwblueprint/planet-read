@@ -1,4 +1,6 @@
-from sqlalchemy import Boolean, inspect
+from datetime import datetime
+
+from sqlalchemy import Boolean, DateTime, inspect
 from sqlalchemy.dialects.mysql import LONGTEXT, TEXT
 from sqlalchemy.orm.properties import ColumnProperty
 
@@ -19,6 +21,7 @@ class Story(db.Model):
     translated_languages = db.Column(db.JSON)
     contents = db.relationship(StoryContent)
     is_test = db.Column(Boolean, default=False, nullable=False)
+    date_uploaded = db.Column(DateTime, default=datetime.utcnow(), nullable=False)
 
     def to_dict(self, include_relationships=False):
         cls = type(self)

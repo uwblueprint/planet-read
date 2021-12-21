@@ -39,18 +39,18 @@ def insert_test_data():
     db.engine.execute("ALTER TABLE stories AUTO_INCREMENT = 1;")
     db.engine.execute(
         "INSERT IGNORE INTO stories \
-                (id, title, description, youtube_link, level, translated_languages, is_test) \
+                (id, title, description, youtube_link, level, translated_languages, is_test, date_uploaded) \
             VALUES \
-                (1, 'East of Eden', 'Follow the intertwined destinies of two families whose generations reenact the poisonous rivalry of Cain and Abel.', 'https://www.youtube.com/watch?v=redECmF7wh8', 4, '[\"GERMAN\", \"ENGLISH_UK\"]', false), \
-                (2, 'War and Peace', 'War and Peace is a literary work mixed with chapters on history and philosophy by the Russian author Leo Tolstoy.', 'https://www.youtube.com/watch?v=4dn7TEjnbPY', 1, '[\"GERMAN\", \"POLISH\"]', false), \
-                (3, 'A Tale of Two Cities', 'An 1859 historical novel by Charles Dickens, set in London and Paris before and during the French Revolution.', 'https://www.youtube.com/watch?v=5czA_L_eOp4', 3, '[\"MANDARIN\", \"ENGLISH_UK\"]', false), \
-                (4, 'Pride and Prejudice', 'Pride and Prejudice preaches the difference between superficial goodness and actual goodness.', 'https://www.youtube.com/watch?v=5xTh44G6RYs', 4, '[\"GERMAN\", \"ENGLISH_UK\"]', false), \
-                (5, 'To Kill a Mockingbird', 'To Kill a Mockingbird is a novel by the American author Harper Lee. A sentence cannot do this novel justice.', 'https://www.youtube.com/watch?v=3xM8hvEE2dI', 3, '[\"GERMAN\", \"ENGLISH_UK\", \"ARABIC\", \"DUTCH\"]', false), \
-                (6, 'The Great Gatsby', 'Set in the Jazz Age on Long Island, near New York City, the novel depicts mysterious millionaire Jay Gatsby and Gatsby and Daisy Buchanan.', 'https://www.youtube.com/watch?v=e6Iu29TNfkM', 4, '[\"ENGLISH_US\"]', false), \
-                (7, 'Nineteen Eighty-Four', 'Nineteen Eighty-Four, often referred to as 1984, is a dystopian social science fiction novel by the English novelist George Orwell.', 'https://www.youtube.com/watch?v=h9JIKngJnCU', 2, '[]', false), \
-                (8, 'The Musical Donkey', 'There was a donkey who felt so happy that he sang through the night in the cucumber field. The problem was that the cucumbers couldn\"t bear it. What did they do?', 'https://www.youtube.com/watch?v=QfcttsaHTIY', 2, '[]', true), \
-                (9, 'The Little Pianist', 'Azul loves to play the piano and he wants to become not just a good pianist but a great pianist. See how he learns the secret!', 'https://www.youtube.com/watch?v=4GsjEPRMzdw', 3, '[]', true), \
-                (10, 'The River and the Mountain', 'The River thinks that the Mountain\"s life is more comfortable and peaceful than hers. Is it true?', 'https://www.youtube.com/watch?v=DlQ4zvJymKI', 4, '[]', true);"
+                (1, 'East of Eden', 'Follow the intertwined destinies of two families whose generations reenact the poisonous rivalry of Cain and Abel.', 'https://www.youtube.com/watch?v=redECmF7wh8', 4, '[\"GERMAN\", \"ENGLISH_UK\"]', false, '1997-10-31 06:48:42'), \
+                (2, 'War and Peace', 'War and Peace is a literary work mixed with chapters on history and philosophy by the Russian author Leo Tolstoy.', 'https://www.youtube.com/watch?v=4dn7TEjnbPY', 1, '[\"GERMAN\", \"POLISH\"]', false, '1999-12-01 01:48:42'), \
+                (3, 'A Tale of Two Cities', 'An 1859 historical novel by Charles Dickens, set in London and Paris before and during the French Revolution.', 'https://www.youtube.com/watch?v=5czA_L_eOp4', 3, '[\"MANDARIN\", \"ENGLISH_UK\"]', false,'2000-05-14 01:48:42'), \
+                (4, 'Pride and Prejudice', 'Pride and Prejudice preaches the difference between superficial goodness and actual goodness.', 'https://www.youtube.com/watch?v=5xTh44G6RYs', 4, '[\"GERMAN\", \"ENGLISH_UK\"]', false, '2008-08-03 19:27:26'), \
+                (5, 'To Kill a Mockingbird', 'To Kill a Mockingbird is a novel by the American author Harper Lee. A sentence cannot do this novel justice.', 'https://www.youtube.com/watch?v=3xM8hvEE2dI', 3, '[\"GERMAN\", \"ENGLISH_UK\", \"ARABIC\", \"DUTCH\"]', false, '2010-10-21 19:27:26'), \
+                (6, 'The Great Gatsby', 'Set in the Jazz Age on Long Island, near New York City, the novel depicts mysterious millionaire Jay Gatsby and Gatsby and Daisy Buchanan.', 'https://www.youtube.com/watch?v=e6Iu29TNfkM', 4, '[\"ENGLISH_US\"]', false, '2012-12-25 19:27:26'), \
+                (7, 'Nineteen Eighty-Four', 'Nineteen Eighty-Four, often referred to as 1984, is a dystopian social science fiction novel by the English novelist George Orwell.', 'https://www.youtube.com/watch?v=h9JIKngJnCU', 2, '[]', false, '1984-01-01 19:27:26'), \
+                (8, 'The Musical Donkey', 'There was a donkey who felt so happy that he sang through the night in the cucumber field. The problem was that the cucumbers couldn\"t bear it. What did they do?', 'https://www.youtube.com/watch?v=QfcttsaHTIY', 2, '[]', true, '2000-09-06 19:27:26'), \
+                (9, 'The Little Pianist', 'Azul loves to play the piano and he wants to become not just a good pianist but a great pianist. See how he learns the secret!', 'https://www.youtube.com/watch?v=4GsjEPRMzdw', 3, '[]', true, '2000-12-21 19:27:26'), \
+                (10, 'The River and the Mountain', 'The River thinks that the Mountain\"s life is more comfortable and peaceful than hers. Is it true?', 'https://www.youtube.com/watch?v=DlQ4zvJymKI', 4, '[]', true, '2000-12-21 19:27:26');"
     )
 
     generic_content = [

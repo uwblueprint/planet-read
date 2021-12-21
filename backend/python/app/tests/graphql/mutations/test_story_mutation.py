@@ -1,3 +1,5 @@
+from datetime import datetime
+
 from ....models.story import Story
 from ....models.story_content import StoryContent
 from ...helpers.story_helpers import assert_story_equals_model
@@ -13,6 +15,7 @@ CREATE_STORY = """
             story {
                 id
                 title
+                dateUploaded
                 description
                 youtubeLink
                 translatedLanguages
@@ -30,12 +33,18 @@ CREATE_STORY = """
 
 
 def test_create_story(app, db, client):
+
+    # seconds need to be dropped for testing purposes since there may be a discrepancy between the new_story and the test_db_story
+    # microseconds should get dropped since the database does not store the microseconds
+    time = datetime.utcnow().replace(microsecond=0, second=0)
+
     new_story = Story(
         title="title test",
         description="this should explain things",
         youtube_link="don't think we validate this yet",
         level=10001,
         is_test=False,
+        date_uploaded=time,
     )
     contents = ["line 1", "line 2", "line 3"]
 
@@ -55,6 +64,9 @@ def test_create_story(app, db, client):
     returned_dict = result["data"]["createStory"]
     story_db_id = returned_dict["story"]["id"]
     test_db_story = Story.query.get(story_db_id).to_dict(include_relationships=False)
+    test_db_story["date_uploaded"] = test_db_story["date_uploaded"].replace(
+        microsecond=0, second=0
+    )
     test_db_story_contents = StoryContent.query.filter_by(story_id=story_db_id).all()
 
     assert returned_dict["ok"]
@@ -63,6 +75,7 @@ def test_create_story(app, db, client):
     assert_story_equals_model(story_dict, new_story)
 
     new_story.id = story_db_id
+
     assert test_db_story == new_story.to_dict(include_relationships=False)
 
     for i in range(len(contents)):

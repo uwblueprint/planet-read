@@ -24,6 +24,7 @@ class StoryResponseDTO(graphene.ObjectType):
     level = graphene.Int(required=True)
     translated_languages = graphene.List(LanguageEnum)
     contents = graphene.List(StoryContentsResponseDTO)
+    date_uploaded = graphene.DateTime()
 
 
 class StoryRequestDTO(graphene.InputObjectType):
