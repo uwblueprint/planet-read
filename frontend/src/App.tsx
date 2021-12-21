@@ -12,7 +12,7 @@ import NotFound from "./components/pages/NotFound";
 import TranslationPage from "./components/pages/TranslationPage";
 import ReviewPage from "./components/pages/ReviewPage";
 import UserProfilePage from "./components/pages/UserProfilePage";
-import ManageStoryTranslationPage from "./components/pages/ManageStoryTranslationPage";
+import ManageStoryPage from "./components/pages/ManageStoryPage";
 import CompleteProfilePage from "./components/pages/CompleteProfilePage";
 import customTheme from "./theme/index";
 
@@ -93,8 +93,8 @@ const App = () => {
                 />
                 <PrivateRoute
                   exact
-                  path="/story/:storyIdParam/:storyTranslationIdParam"
-                  component={ManageStoryTranslationPage}
+                  path="/story/:storyIdParam"
+                  component={ManageStoryPage}
                 />
                 <Route exact path="/404" component={NotFound} />
                 <Route exact path="*" component={NotFound} />

@@ -3,7 +3,7 @@ import { Box, Heading, Flex } from "@chakra-ui/react";
 import StoryTranslationsTable from "./StoryTranslationsTable";
 import TableFilter from "./TableFilter";
 import {
-  buildStoriesQuery,
+  buildStoryTranslationsQuery,
   StoryTranslation,
 } from "../../APIClients/queries/StoryQueries";
 import { convertTitleCaseToLanguage } from "../../utils/LanguageUtils";
@@ -19,7 +19,8 @@ const ManageStoryTranslations = () => {
   const [stage, setStage] = useState<string | null>(null);
   const [searchText, setSearchText] = useState<string | null>(null);
 
-  const query = buildStoriesQuery(
+  const query = buildStoryTranslationsQuery(
+    0,
     convertTitleCaseToLanguage(language || ""),
     parseInt(level || "", 10) || 0,
     convertTitleCaseToStage(stage || ""),

@@ -63,3 +63,8 @@ export const UNASSIGN_REVIEWER_FROM_STORY_TRANSLATION_CONFIRMATION =
 
 export const UNASSIGN_USER_FROM_STORY_TRANSLATION_BUTTON =
   "I'm sure, remove user";
+
+export const DELETE_STORY_CONFIRMATION =
+  "By removing this story and all story translations associated with it, all data will be removed from the database. This action cannot be undone.";
+
+export const DELETE_STORY_BUTTON = "I'm sure, remove";
