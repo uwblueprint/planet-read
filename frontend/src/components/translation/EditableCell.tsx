@@ -9,6 +9,7 @@ export type EditableCellProps = {
   fontSize: string;
   maxChars: number;
   onChange: (newContent: string, lineIndex: number, maxChars: number) => void;
+  isRtl?: boolean;
 };
 
 const EditableCell = ({
@@ -17,6 +18,7 @@ const EditableCell = ({
   fontSize,
   maxChars,
   onChange,
+  isRtl = false,
 }: EditableCellProps) => {
   const textareaRef = useRef<any>(null);
   const [height, setHeight] = useState<string>("auto");
@@ -29,6 +31,7 @@ const EditableCell = ({
 
   return (
     <Textarea
+      dir={isRtl ? "rtl" : "ltr"}
       ref={textareaRef}
       variant={
         text?.length === maxChars ? "maxCharsReached" : "translationEditable"

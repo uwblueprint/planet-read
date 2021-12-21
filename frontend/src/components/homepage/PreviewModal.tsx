@@ -17,7 +17,10 @@ import {
 import { Icon } from "@chakra-ui/icon";
 import { MdTrendingFlat } from "react-icons/md";
 
-import { convertLanguageTitleCase } from "../../utils/LanguageUtils";
+import {
+  isRtlLanguage,
+  convertLanguageTitleCase,
+} from "../../utils/LanguageUtils";
 import { getLevelVariant } from "../../utils/StatusUtils";
 import convertStageTitleCase from "../../utils/StageUtils";
 import {
@@ -91,7 +94,12 @@ const PreviewModal = ({
         {c}
       </Text>
       {storyTranslationId && (
-        <Text variant="previewModalTranslationContent">
+        <Text
+          textAlign={
+            isRtlLanguage(convertLanguageTitleCase(language)) ? "right" : "left"
+          }
+          variant="previewModalTranslationContent"
+        >
           {translationContent[index]}
         </Text>
       )}

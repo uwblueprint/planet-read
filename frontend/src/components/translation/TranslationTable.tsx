@@ -5,6 +5,7 @@ import { StoryLine } from "./Autosave";
 import StatusBadge from "../review/StatusBadge";
 import ApproveAll from "../review/ApproveAll";
 import { getStatusVariant } from "../../utils/StatusUtils";
+import { isRtlLanguage } from "../../utils/LanguageUtils";
 import {
   TRANSLATION_PAGE_TOOL_TIP_COPY,
   REVIEW_PAGE_TOOL_TIP_COPY,
@@ -88,6 +89,7 @@ const TranslationTable = ({
               maxChars={storyLine.originalContent.length * 2}
               onChange={onUserInput!!}
               fontSize={fontSize}
+              isRtl={isRtlLanguage(translatedLanguage)}
             />
           </Flex>
         ) : (
@@ -97,7 +99,12 @@ const TranslationTable = ({
             isDisabled={!translator}
           >
             <Flex flex={1} height="100%">
-              <Text variant="cell" flexGrow={1} fontSize={fontSize}>
+              <Text
+                textAlign={isRtlLanguage(translatedLanguage) ? "right" : "left"}
+                flexGrow={1}
+                fontSize={fontSize}
+                variant="cell"
+              >
                 {storyLine.translatedContent!!}
               </Text>
             </Flex>
