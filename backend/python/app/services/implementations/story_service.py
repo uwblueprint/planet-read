@@ -131,11 +131,11 @@ class StoryService(IStoryService):
 
             for story_translation_test in story_translation_tests:
                 if story_translation_test.stage != "PUBLISH":
-                    self.logger.error("User has an ongoing story translation test.")
-                    raise Exception("User has an ongoing story translation test.")
+                    self.logger.error(f"User has an ongoing story translation test for language {language}.")
+                    raise Exception(f"User has an ongoing story translation test for language {language}.")
                 elif (
-                    story_translation_test.translator_last_activity
-                    and last_30_days < story_translation_test.translator_last_activity
+                    story_translation_test.test_result == {} and story_translation_test.reviewer_last_activity
+                    and last_30_days < story_translation_test.reviewer_last_activity
                 ):
                     self.logger.error("User has failed a test within the last 30 days.")
                     raise Exception("User has failed a test within the last 30 days.")
@@ -715,12 +715,6 @@ class StoryService(IStoryService):
         self, reviewer_id, test_result, test_feedback, story_translation_test_id
     ):
         try:
-
-            if "translate" not in test_result:
-                raise Exception(
-                    "Error: test_feedback must contain translate attributes."
-                )
-
             story_translation_test = (
                 db.session.query(StoryTranslation)
                 .filter(StoryTranslation.id == story_translation_test_id)
@@ -746,10 +740,13 @@ class StoryService(IStoryService):
                 .first()
             )
 
-            translate_level = test_result["translate"]
-            appr_lang = user.approved_languages_translation or {}
-            appr_lang[language] = translate_level
-            user.approved_languages_translation = appr_lang
+            if "translate" in test_result:
+                translate_level = test_result["translate"]
+                appr_lang = user.approved_languages_translation or {}
+                appr_lang[language] = translate_level
+                user.approved_languages_translation = appr_lang
+            else:
+                test_result = {}
 
             if "review" in test_result:
                 review_level = test_result["review"]
@@ -767,6 +764,7 @@ class StoryService(IStoryService):
             )
             story_translation_test.stage = "PUBLISH"
             db.session.commit()
+            self._update_story_translation_last_activity(story_translation_test, False)
 
         except Exception as error:
             reason = getattr(error, "message", None)
