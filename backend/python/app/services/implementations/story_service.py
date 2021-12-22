@@ -125,6 +125,7 @@ class StoryService(IStoryService):
             story_translation_tests = (
                 StoryTranslation.query.filter(StoryTranslation.translator_id == user_id)
                 .filter(StoryTranslation.language == language)
+                .filter(StoryTranslation.is_test == True)
                 .all()
             )
 

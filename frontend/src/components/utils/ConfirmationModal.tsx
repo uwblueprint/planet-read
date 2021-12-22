@@ -13,10 +13,11 @@ import {
   Text,
 } from "@chakra-ui/react";
 
-type ConfirmationModalProps = {
+export type ConfirmationModalProps = {
   confirmation: boolean;
   onClose: () => void;
   onConfirmationClick: () => void;
+  confirmationHeading?: string;
   confirmationMessage: string;
   buttonMessage: string;
 };
@@ -25,6 +26,7 @@ const ConfirmationModal = ({
   confirmation,
   onClose,
   onConfirmationClick,
+  confirmationHeading = "Are you sure?",
   confirmationMessage,
   buttonMessage,
 }: ConfirmationModalProps) => {
@@ -45,7 +47,7 @@ const ConfirmationModal = ({
         >
           <Flex>
             <Heading as="h3" size="md">
-              Are you sure?
+              {confirmationHeading}
             </Heading>
             <ModalCloseButton
               position="static"

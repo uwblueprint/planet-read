@@ -129,3 +129,22 @@ export const UPDATE_STORY = gql`
   }
 `;
 export type UpdateStoryResponse = { ok: boolean };
+
+export const CREATE_TRANSLATION_TEST = gql`
+  mutation UpdateStory($userId: ID!, $level: Int!, $language: String!) {
+    createStoryTranslationTest(
+      userId: $userId
+      level: $level
+      language: $language
+    ) {
+      story {
+        id
+      }
+    }
+  }
+`;
+export type CreateTranslationTestResponse = {
+  story: {
+    id: number;
+  };
+};
