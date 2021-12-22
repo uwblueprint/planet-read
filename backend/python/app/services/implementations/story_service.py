@@ -802,7 +802,10 @@ class StoryService(IStoryService):
 
             # Remove language from story.translated_languages
             story = Story.query.filter_by(id=story_translation.story_id).first()
-            if story.translated_languages is not None:
+            if (
+                story.translated_languages is not None
+                and story_translation.language in story.translated_languages
+            ):
                 story.translated_languages.remove(story_translation.language)
                 Story.query.filter_by(id=story_translation.story_id).update(
                     story.to_dict()

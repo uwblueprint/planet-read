@@ -305,3 +305,62 @@ export const GET_STORY_TRANSLATIONS_BY_USER = (userId: number) => gql`
     }
   }
 `;
+
+export type StoryTestResult = {
+  translate: number;
+  review?: number;
+};
+
+export type StoryTranslationTest = {
+  id: number;
+  language: string;
+  stage: string;
+  translatorId: number;
+  storyId: number;
+  title: string;
+  description: string;
+  youtubeLink: string;
+  level: number;
+  translatorName: string;
+  testGrade: number;
+  testResult: StoryTestResult | null;
+  testFeedback: string;
+  dateSubmitted: Date;
+};
+
+export const buildStoryTranslationTestsQuery = (
+  language?: string,
+  level?: number,
+  stage?: string,
+  storyTitle?: string,
+) => {
+  let queryParams = language ? `language: "${language}", ` : "";
+  queryParams += level ? `level: ${level}, ` : "";
+  queryParams += stage ? `stage: "${stage}", ` : "";
+  queryParams += storyTitle ? `storyTitle: "${storyTitle}", ` : "";
+  queryParams = queryParams ? `(${queryParams})` : "";
+
+  return {
+    fieldName: "storyTranslationTests",
+    string: gql`
+      query StoryTranslationsTests {
+        storyTranslationTests ${queryParams} {
+          id
+          language
+          stage
+          translatorId
+          storyId
+          title
+          description
+          youtubeLink
+          level
+          translatorName
+          testGrade
+          testResult
+          testFeedback
+          dateSubmitted
+        }
+      }
+    `,
+  };
+};
