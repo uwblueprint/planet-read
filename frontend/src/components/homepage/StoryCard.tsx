@@ -116,12 +116,17 @@ const StoryCard = ({
     setPreview(!preview);
   };
 
+  const openTest = () => {
+    history.push(`/translation/${storyId}/${storyTranslationId}`);
+  };
+
   const openTranslation = () => {
     const storyTranslationUrlBase = isTranslator ? "translation" : "review";
     history.push(
       `/${storyTranslationUrlBase}/${storyId}/${storyTranslationId}`,
     );
   };
+
   const primaryBtnText = () => {
     if (isMyStory) {
       return storyTranslationId ? "view translation" : "edit translation";
@@ -133,6 +138,9 @@ const StoryCard = ({
   };
 
   const primaryBtnOnClick = () => {
+    if (isMyTest) {
+      return openTest;
+    }
     if (isMyStory) {
       return openTranslation;
     }
