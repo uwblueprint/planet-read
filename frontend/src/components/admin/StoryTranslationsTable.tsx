@@ -74,6 +74,29 @@ const StoryTranslationsTable = ({
     window.location.reload();
   };
 
+  const lastEditedDate = (storyTranslation: StoryTranslation): Date | null => {
+    const translatorLastActivity = storyTranslation?.translatorLastActivity
+      ? new Date(storyTranslation.translatorLastActivity)
+      : null;
+    const reviewerLastActivity = storyTranslation?.reviewerLastActivity
+      ? new Date(storyTranslation.reviewerLastActivity)
+      : null;
+
+    if (!translatorLastActivity) {
+      return reviewerLastActivity;
+    }
+    if (!reviewerLastActivity) {
+      return translatorLastActivity;
+    }
+
+    return new Date(
+      Math.max(
+        translatorLastActivity.getTime(),
+        reviewerLastActivity.getTime(),
+      ),
+    );
+  };
+
   const tableBody = storyTranslationSlice.map(
     (storyTranslationObj: StoryTranslation, index: number) => (
       <Tr
@@ -114,6 +137,7 @@ const StoryTranslationsTable = ({
             {storyTranslationObj?.reviewerName}
           </Link>
         </Td>
+        <Td>{lastEditedDate(storyTranslationObj)?.toLocaleDateString?.()}</Td>
         <Td>
           <IconButton
             aria-label={`Delete story translation ${storyTranslationObj?.storyTranslationId} for story ${storyTranslationObj?.title}`}
@@ -148,6 +172,7 @@ const StoryTranslationsTable = ({
           <Th>PROGRESS</Th>
           <Th>TRANSLATOR</Th>
           <Th>REVIEWER</Th>
+          <Th>LAST EDITED</Th>
           <Th>ACTION</Th>
         </Tr>
       </Thead>
