@@ -34,6 +34,8 @@ export type StoryTranslationsTableProps = {
   paginator: ReactNode;
   filters: { (data: string | null): void }[];
   loading: Boolean;
+  showStoryTitle?: Boolean;
+  width?: string;
 };
 
 const StoryTranslationsTable = ({
@@ -41,6 +43,8 @@ const StoryTranslationsTable = ({
   paginator,
   filters,
   loading,
+  showStoryTitle = true,
+  width = "95%",
 }: StoryTranslationsTableProps) => {
   const [confirmDeleteTranslation, setConfirmDeleteTranslation] =
     useState(false);
@@ -80,14 +84,14 @@ const StoryTranslationsTable = ({
             : ""
         }
       >
-        <Td>
-          <Link
-            isExternal
-            href={`/story/${storyTranslationObj?.storyId}/${storyTranslationObj?.storyTranslationId}`}
-          >
-            {storyTranslationObj?.title}
-          </Link>
-        </Td>
+        {showStoryTitle && (
+          <Td>
+            <Link isExternal href={`/story/${storyTranslationObj?.storyId}`}>
+              {storyTranslationObj?.title}
+            </Link>
+          </Td>
+        )}
+
         <Td>
           <Badge
             background={getLevelVariant(storyTranslationObj?.level)}
@@ -131,14 +135,15 @@ const StoryTranslationsTable = ({
       size="sm"
       theme="gray"
       variant="striped"
-      width="95%"
+      width={width}
     >
       <Thead>
         <Tr
           borderTop="1em solid transparent"
           borderBottom="0.5em solid transparent"
         >
-          <Th>STORY TITLE</Th>
+          {showStoryTitle && <Th>STORY TITLE</Th>}
+
           <Th>LANGUAGE & LEVEL</Th>
           <Th>PROGRESS</Th>
           <Th>TRANSLATOR</Th>

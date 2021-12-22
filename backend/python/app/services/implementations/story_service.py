@@ -166,6 +166,7 @@ class StoryService(IStoryService):
         level=None,
         stage=None,
         story_title=None,
+        story_id=None,
         role_filter=None,
     ):
         try:
@@ -180,6 +181,8 @@ class StoryService(IStoryService):
                 filters.append(Story.title.like(f"%{story_title}%"))
             if role_filter is not None:
                 filters.append(role_filter)
+            if story_id is not None:
+                filters.append(StoryTranslation.story_id == story_id)
 
             stories = (
                 Story.query.join(

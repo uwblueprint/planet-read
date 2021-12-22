@@ -1,5 +1,30 @@
 import { DocumentNode, gql } from "@apollo/client";
 
+const STORY_FIELDS = `
+    title
+    description
+    youtubeLink
+    level
+    `;
+
+export type Story = {
+  title: string;
+  description: string;
+  youtubeLink: string;
+  level: number;
+};
+
+export const GET_STORY = (id: number) =>
+  gql`
+      query GetStory {
+        storyById(
+          id: ${id}
+        ) {
+          ${STORY_FIELDS}
+        }
+      }
+    `;
+
 export const GET_STORY_TRANSLATION = (id: number) =>
   gql`
       query GetStoryTranslation {
@@ -72,13 +97,6 @@ export type QueryInformation = {
   fieldName: string;
   string: DocumentNode;
 };
-
-const STORY_FIELDS = `
-    title
-    description
-    youtubeLink
-    level
-    `;
 
 export const buildHomePageStoriesQuery = (
   displayMyStories: boolean,
@@ -198,7 +216,8 @@ export type StoryTranslation = {
   numApprovedLines: number;
 };
 
-export const buildStoriesQuery = (
+export const buildStoryTranslationsQuery = (
+  storyId?: number,
   language?: string,
   level?: number,
   stage?: string,
@@ -208,6 +227,7 @@ export const buildStoriesQuery = (
   queryParams += level ? `level: ${level}, ` : "";
   queryParams += stage ? `stage: "${stage}", ` : "";
   queryParams += storyTitle ? `storyTitle: "${storyTitle}", ` : "";
+  queryParams += storyId ? `storyId: ${storyId}, ` : "";
 
   return {
     fieldName: "storyTranslations",
