@@ -152,15 +152,16 @@ const ManageStoryPage = () => {
             <Box
               css={{
                 borderRadius: "8px",
-                height: "200px",
-                margin: "40px",
+                marginTop: "40px",
+                marginLeft: "40px",
                 MozBorderRadius: "8px",
                 overflow: "hidden",
                 webkitBorderRadius: "8px",
+                width: "25%",
               }}
             >
               <iframe
-                height="200px"
+                height="100%"
                 width="100%"
                 src={embedLink(youtubeLink)}
                 title="YouTube video player"
