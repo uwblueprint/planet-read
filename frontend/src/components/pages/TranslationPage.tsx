@@ -1,7 +1,7 @@
 import React, { useContext, useState } from "react";
 import { useQuery, useMutation } from "@apollo/client";
 import { Box, Button, Divider, Flex, Text, Tooltip } from "@chakra-ui/react";
-import { useParams, Redirect } from "react-router-dom";
+import { useParams, Redirect, useHistory } from "react-router-dom";
 
 import AuthContext from "../../contexts/AuthContext";
 import ProgressBar from "../utils/ProgressBar";
@@ -56,6 +56,8 @@ const TranslationPage = () => {
 
   // TODO: remove eslint comment when setIsTest is used
   const [isTest, setIsTest] = useState(false); // eslint-disable-line
+
+  const history = useHistory();
 
   // AutoSave
   const [changedStoryLines, setChangedStoryLines] = useState<
@@ -154,7 +156,7 @@ const TranslationPage = () => {
         variables: { storyTranslationData },
       });
       if (result.data?.updateStoryTranslationStage.ok) {
-        window.location.reload();
+        history.push("/");
       } else {
         window.alert("Unable to send for review.");
       }
