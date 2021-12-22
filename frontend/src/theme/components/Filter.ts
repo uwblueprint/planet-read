@@ -5,6 +5,7 @@ const Filter = {
     justifyContent: "flex-start",
     marginRight: "10px",
     minWidth: "292px",
+    minHeight: "80vh",
     padding: "50px 50px 50px 50px",
   },
 };
