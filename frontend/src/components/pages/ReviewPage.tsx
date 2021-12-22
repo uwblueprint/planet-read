@@ -1,7 +1,7 @@
 import React, { useContext, useState } from "react";
 import { useQuery, useMutation } from "@apollo/client";
 import { Box, Divider, Flex, Button, Tooltip } from "@chakra-ui/react";
-import { useParams, Redirect } from "react-router-dom";
+import { useParams, Redirect, useHistory } from "react-router-dom";
 
 import AuthContext from "../../contexts/AuthContext";
 import ProgressBar from "../utils/ProgressBar";
@@ -62,6 +62,8 @@ const ReviewPage = () => {
   const [returnToTranslator, setReturnToTranslator] = useState(false);
   const [submitTranslation, setSubmitTranslation] = useState(false);
 
+  const history = useHistory();
+
   const closeReturnToTranslatorModal = () => {
     setReturnToTranslator(false);
   };
@@ -97,7 +99,7 @@ const ReviewPage = () => {
           variables: { storyTranslationData },
         });
         if (result.data?.updateStoryTranslationStage.ok) {
-          window.location.reload();
+          history.push("/");
         } else {
           window.alert(`Unable to update story stage to ${stage}.`);
         }
