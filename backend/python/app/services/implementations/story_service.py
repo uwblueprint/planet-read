@@ -208,6 +208,8 @@ class StoryService(IStoryService):
             if story_id is not None:
                 filters.append(StoryTranslation.story_id == story_id)
 
+            filters.append(StoryTranslation.is_test == False)
+
             stories = (
                 Story.query.join(
                     StoryTranslation,

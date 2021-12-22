@@ -32,6 +32,7 @@ export type StoryCardProps = {
   level: number;
   language: string;
   isMyStory: boolean;
+  isMyTest: boolean;
   translatorId?: number;
   reviewerId?: number;
 };
@@ -45,6 +46,7 @@ const StoryCard = ({
   level,
   language,
   isMyStory,
+  isMyTest,
   translatorId,
 }: StoryCardProps) => {
   const { authenticatedUser } = useContext(AuthContext);
@@ -114,20 +116,31 @@ const StoryCard = ({
     setPreview(!preview);
   };
 
+  const openTest = () => {
+    history.push(`/translation/${storyId}/${storyTranslationId}`);
+  };
+
   const openTranslation = () => {
     const storyTranslationUrlBase = isTranslator ? "translation" : "review";
     history.push(
       `/${storyTranslationUrlBase}/${storyId}/${storyTranslationId}`,
     );
   };
+
   const primaryBtnText = () => {
     if (isMyStory) {
       return storyTranslationId ? "view translation" : "edit translation";
+    }
+    if (isMyTest) {
+      return "take test";
     }
     return storyTranslationId ? "review" : "translate";
   };
 
   const primaryBtnOnClick = () => {
+    if (isMyTest) {
+      return openTest;
+    }
     if (isMyStory) {
       return openTranslation;
     }
@@ -173,6 +186,7 @@ const StoryCard = ({
                 {isTranslator ? "Translator" : "Reviewer"}
               </Badge>
             )}
+            {isMyTest && <Badge variant="role">Test Book</Badge>}
           </Flex>
         </Flex>
         <Text size="xs">{truncateText(description, 100)}</Text>
@@ -198,7 +212,7 @@ const StoryCard = ({
           marginTop="5px"
           onClick={previewBook}
         >
-          preview book
+          {isMyTest ? "preview" : "preview book"}
         </Button>
       </Flex>
       {preview && (
