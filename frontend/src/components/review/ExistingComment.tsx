@@ -86,7 +86,10 @@ const ExistingComment = ({
     setReply(storyContentId);
   };
 
-  const newDate = new Date(time);
+  const newTime = new Date(time);
+  const displayTime = new Date(
+    newTime.getTime() - newTime.getTimezoneOffset() * 60000,
+  );
 
   return (
     <Flex
@@ -106,7 +109,7 @@ const ExistingComment = ({
       <Flex justify="space-between" marginBottom="10px">
         <p>{name}</p>
         <p>
-          {newDate.toLocaleDateString("en-US", {
+          {displayTime.toLocaleDateString("en-US", {
             month: "short",
             day: "numeric",
             hour: "numeric",
