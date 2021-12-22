@@ -1,5 +1,4 @@
-import React, { useEffect, useState } from "react";
-import { useQuery } from "@apollo/client";
+import React, { useState } from "react";
 import Select from "react-select";
 import {
   Button,
@@ -18,11 +17,12 @@ import {
   useStyleConfig,
 } from "@chakra-ui/react";
 
+import { languageOptions } from "../../constants/Languages";
+import { levelOptions } from "../../constants/Levels";
 import { roleOptions } from "../../constants/Roles";
 
-import { buildAssignStoryQuery } from "../../APIClients/queries/StoryQueries";
 import { convertLanguageTitleCase } from "../../utils/LanguageUtils";
-import { ApprovedLanguagesMap, isObjEmpty } from "../../utils/Utils";
+import { ApprovedLanguagesMap } from "../../utils/Utils";
 import DropdownIndicator from "./DropdownIndicator";
 import { colourStyles } from "../../theme/components/Select";
 
@@ -35,86 +35,47 @@ export type StoryToAssign = {
   language: string;
 };
 
-export type AssignStoryModalProps = {
+export type NewApprovedLanguage = {
+  language: string;
+  level: number;
+  role: string;
+};
+
+export type ApprovedLanguageModalProps = {
   isOpen: boolean;
   onClose: () => void;
-  onAssignStory: (story: StoryToAssign) => void;
+  onAssign: (newApprovedLanguage: NewApprovedLanguage) => void;
   approvedLanguagesTranslation: ApprovedLanguagesMap;
   approvedLanguagesReview: ApprovedLanguagesMap;
 };
 
-const AssignStoryModal = ({
+const ApproveLanguageModal = ({
   isOpen,
   onClose,
-  onAssignStory,
+  onAssign,
   approvedLanguagesTranslation,
   approvedLanguagesReview,
-}: AssignStoryModalProps) => {
-  const isApprovedReviewer = !isObjEmpty(approvedLanguagesReview);
-
-  // default selection to Translator if user is not an approved reviewer
-  const [role, setRole] = useState<string | null>(
-    isApprovedReviewer ? null : "Translator",
-  );
+}: ApprovedLanguageModalProps) => {
+  const [role, setRole] = useState<string | null>(null);
   const [language, setLanguage] = useState<string | null>(null);
   const [level, setLevel] = useState<number | null>(null);
-  const [stories, setStories] = useState<StoryToAssign[]>([]);
-  const [selectedStory, setSelectedStory] = useState<StoryToAssign | null>(
-    null,
+
+  const currentApprovedLanguages = new Set(
+    Object.keys(
+      role === "Translator"
+        ? approvedLanguagesTranslation
+        : approvedLanguagesReview,
+    ),
   );
 
-  const query = buildAssignStoryQuery(role === "Translator", language, level);
-
-  useQuery(query.string, {
-    fetchPolicy: "cache-and-network",
-    skip: language == null || level == null,
-    onCompleted: (data) => {
-      const storyData = data[query!!.fieldName].map((storyObj: any) => ({
-        ...storyObj,
-        language,
-      }));
-      setStories(storyData);
-    },
-  });
-
-  useEffect(() => {
-    // reset story selection when one of the fields change
-    setSelectedStory(null);
-    setStories([]);
-  }, [language, level, role]);
-
-  useEffect(() => {
-    // reset fields every time role changes
-    setLanguage(null);
-    setLevel(null);
-  }, [role]);
-
-  const approvedLanguages =
-    role === "Translator"
-      ? approvedLanguagesTranslation
-      : approvedLanguagesReview;
-
-  const languageOptions = role
-    ? Object.keys(approvedLanguages).map((value) => ({
-        value,
-      }))
-    : [];
-
-  const maxApprovedLevel = approvedLanguages[language ?? ""] || 0;
-
-  // display levels that the user is approved for
-  const levelOptions = language
-    ? [...Array(maxApprovedLevel + 1).keys()]
-        .slice(1)
-        .map((value) => ({ value: `${value}` }))
-    : [];
+  // don't show languages that the user is already approved for
+  const newLanguageOptions = languageOptions.filter(
+    (lang) => !currentApprovedLanguages.has(lang.value),
+  );
 
   const disabledStyle = useStyleConfig("Disabled");
-  const isRoleSelectDisabled = !isApprovedReviewer;
   const isLanguageSelectDisabled = role == null;
-  const isLevelSelectDisabled = language == null;
-  const isTitleSelectDisabled =
-    (language == null || level == null) && stories.length === 0;
+  const isLevelSelectDisabled = role == null;
   return (
     <Modal
       isOpen={isOpen}
@@ -132,10 +93,10 @@ const AssignStoryModal = ({
         />
         <ModalHeader paddingTop="20px">
           <Heading as="h3" size="lg">
-            Assign Story
+            Approve New Language/Level
           </Heading>
           <Text fontSize="16px" fontWeight="normal">
-            Please assign an existing story to the user.
+            Please assign the user a new language and level.
           </Text>
         </ModalHeader>
         <ModalBody paddingTop="24px" paddingBottom="36px">
@@ -151,10 +112,7 @@ const AssignStoryModal = ({
               <Text marginBottom="12px">
                 Please select a role to assign to the user.
               </Text>
-              <Box
-                width="80%"
-                sx={isRoleSelectDisabled ? disabledStyle : undefined}
-              >
+              <Box width="80%">
                 <Select
                   placeholder="Select role"
                   options={roleOptions}
@@ -163,7 +121,6 @@ const AssignStoryModal = ({
                   value={role ? { value: role } : null}
                   styles={colourStyles}
                   components={{ DropdownIndicator }}
-                  isDisabled={isRoleSelectDisabled}
                 />
               </Box>
             </GridItem>
@@ -178,7 +135,7 @@ const AssignStoryModal = ({
               >
                 <Select
                   placeholder="Select language"
-                  options={languageOptions}
+                  options={newLanguageOptions}
                   onChange={(option: any) => setLanguage(option.value)}
                   getOptionLabel={(option: any) =>
                     convertLanguageTitleCase(option.value)
@@ -190,7 +147,7 @@ const AssignStoryModal = ({
                 />
               </Box>
             </GridItem>
-            <GridItem rowStart={2}>
+            <GridItem rowStart={3}>
               <Heading size="sm">Level</Heading>
               <Text marginBottom="12px">
                 Please select a level to assign to the user.
@@ -213,35 +170,22 @@ const AssignStoryModal = ({
                 />
               </Box>
             </GridItem>
-            <GridItem rowStart={3}>
-              <Heading size="sm">Title</Heading>
-              <Text marginBottom="12px">
-                Please select a book title to assign to the user.
-              </Text>
-              <Box
-                width="80%"
-                sx={isTitleSelectDisabled ? disabledStyle : undefined}
-              >
-                <Select
-                  placeholder="Select book title"
-                  options={stories}
-                  onChange={(option: any) => setSelectedStory(option)}
-                  getOptionLabel={(option: any) => option.title}
-                  value={selectedStory}
-                  styles={colourStyles}
-                  components={{ DropdownIndicator }}
-                />
-              </Box>
-            </GridItem>
           </Grid>
           <Flex marginRight="28px" justifyContent="flex-end">
             <Button
               fontSize="14px"
               colorScheme="blue"
-              onClick={() => onAssignStory(selectedStory!)}
-              isDisabled={selectedStory == null}
+              width="120px"
+              onClick={() =>
+                onAssign({
+                  language: language!,
+                  level: level!,
+                  role: role!,
+                })
+              }
+              isDisabled={!language || !level}
             >
-              Assign Story
+              Assign
             </Button>
           </Flex>
         </ModalBody>
@@ -250,4 +194,4 @@ const AssignStoryModal = ({
   );
 };
 
-export default AssignStoryModal;
+export default ApproveLanguageModal;

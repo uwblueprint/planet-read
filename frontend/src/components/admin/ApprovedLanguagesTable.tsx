@@ -22,6 +22,9 @@ import {
   UPDATE_USER_APPROVED_LANGUAGES,
   UpdateUserApprovedLanguagesResponse,
 } from "../../APIClients/mutations/UserMutations";
+import ApproveLanguageModal, {
+  NewApprovedLanguage,
+} from "../utils/ApproveLanguageModal";
 
 interface ApprovedLanguageFieldSortDict {
   [field: string]: {
@@ -41,6 +44,10 @@ type ApprovedLanguage = {
 export type ApprovedLanguagesTableProps = {
   approvedLanguagesTranslation: ApprovedLanguagesMap | undefined;
   approvedLanguagesReview: ApprovedLanguagesMap | undefined;
+  setApprovedLanguagesTranslation: (
+    approvedLanguages: ApprovedLanguagesMap,
+  ) => void;
+  setApprovedLanguagesReview: (approvedLanguages: ApprovedLanguagesMap) => void;
   userId: number;
   setAlertText: (newText: string) => void;
   setAlert: (open: boolean) => void;
@@ -52,6 +59,8 @@ export type ApprovedLanguagesTableProps = {
 const ApprovedLanguagesTable = ({
   approvedLanguagesTranslation,
   approvedLanguagesReview,
+  setApprovedLanguagesTranslation,
+  setApprovedLanguagesReview,
   userId,
   setAlertText,
   setAlert,
@@ -66,6 +75,27 @@ const ApprovedLanguagesTable = ({
   const [isAscendingLanguage, setIsAscendingLanguage] = useState(true);
   const [isAscendingRole, setIsAscendingRole] = useState(true);
 
+  const [approveNewLanguage, setApproveNewLanguage] = useState(false);
+
+  const resetAlertTimeout = () => {
+    window.clearTimeout(alertTimeout);
+    const timeout: number = window.setTimeout(() => setAlert(false), 5000);
+    setAlertTimeout(timeout);
+  };
+
+  const openApproveLanguageModal = () => {
+    setApproveNewLanguage(true);
+  };
+
+  const closeApproveLanguageModal = (cancelled = true) => {
+    setApproveNewLanguage(false);
+    if (cancelled) {
+      setAlert(true);
+      setAlertText("No new language was assigned to the user.");
+      resetAlertTimeout();
+    }
+  };
+
   const [updateUserApprovedLanguages] = useMutation<{
     response: UpdateUserApprovedLanguagesResponse;
   }>(UPDATE_USER_APPROVED_LANGUAGES);
@@ -75,12 +105,17 @@ const ApprovedLanguagesTable = ({
     language: string,
     level: number,
     oldLevel: number,
+    isNewLanguage: boolean,
   ) => {
-    return `${
-      isTranslate ? "Translator" : "Reviewer"
-    }'s approval for ${convertLanguageTitleCase(
-      language,
-    )} has been updated: Level ${oldLevel} → Level ${level}.`;
+    return isNewLanguage
+      ? `A new language was approved for the user: ${convertLanguageTitleCase(
+          language,
+        )}`
+      : `${
+          isTranslate ? "Translator" : "Reviewer"
+        }'s approval for ${convertLanguageTitleCase(
+          language,
+        )} has been updated: Level ${oldLevel} → Level ${level}.`;
   };
 
   const callUpdateUserApprovedLanguagesMutation = async (
@@ -88,6 +123,7 @@ const ApprovedLanguagesTable = ({
     language: string,
     level: number,
     oldLevel: number,
+    isNewLanguage = false,
   ) => {
     const result = await updateUserApprovedLanguages({
       variables: {
@@ -99,12 +135,25 @@ const ApprovedLanguagesTable = ({
     });
 
     if (result.data !== undefined) {
-      setAlert(true);
-      setAlertText(getAlertText(isTranslate, language, level, oldLevel));
+      if (isNewLanguage) {
+        const approvedLanguagesMap = isTranslate
+          ? approvedLanguagesTranslation
+          : approvedLanguagesReview;
+        const setApprovedLanguagesMap = isTranslate
+          ? setApprovedLanguagesTranslation
+          : setApprovedLanguagesReview;
 
-      window.clearTimeout(alertTimeout);
-      const timeout: number = window.setTimeout(() => setAlert(false), 5000);
-      setAlertTimeout(timeout);
+        // update local state
+        const newApprovedLanguages = { ...approvedLanguagesMap };
+        newApprovedLanguages[language] = level;
+        setApprovedLanguagesMap(newApprovedLanguages);
+      }
+
+      setAlert(true);
+      setAlertText(
+        getAlertText(isTranslate, language, level, oldLevel, isNewLanguage),
+      );
+      resetAlertTimeout();
     }
   };
 
@@ -159,6 +208,17 @@ const ApprovedLanguagesTable = ({
       newLevel,
       oldLevel,
     );
+  };
+
+  const onApproveLanguage = (newLanguage: NewApprovedLanguage) => {
+    callUpdateUserApprovedLanguagesMutation(
+      newLanguage.role === "Translator",
+      newLanguage.language,
+      newLanguage.level,
+      0,
+      true,
+    );
+    closeApproveLanguageModal(false);
   };
 
   const tableBody = approvedLanguages.map(
@@ -232,49 +292,61 @@ const ApprovedLanguagesTable = ({
   );
 
   return (
-    <Table
-      borderRadius="12px"
-      boxShadow="0px 0px 2px grey"
-      theme="gray"
-      variant="striped"
-      width="100%"
-      marginTop="20px"
-    >
-      <Thead>
-        <Tr
-          borderTop="1em solid transparent"
-          borderBottom="0.5em solid transparent"
-        >
-          <Th
-            cursor="pointer"
-            onClick={() => sortApprovedLanguages("language")}
-            width="12%"
+    <>
+      <Table
+        borderRadius="12px"
+        boxShadow="0px 0px 2px grey"
+        theme="gray"
+        variant="striped"
+        width="100%"
+        marginTop="20px"
+      >
+        <Thead>
+          <Tr
+            borderTop="1em solid transparent"
+            borderBottom="0.5em solid transparent"
           >
-            {`LANGUAGE ${isAscendingLanguage ? "↑" : "↓"}`}
-          </Th>
-          <Th
-            cursor="pointer"
-            onClick={() => sortApprovedLanguages("role")}
-            width="12%"
-          >{`ROLE ${isAscendingRole ? "↑" : "↓"}`}</Th>
-          {["LEVEL 1", "LEVEL 2", "LEVEL 3", "LEVEL 4"].map((level) => (
-            <Th key={level}>{level}</Th>
-          ))}
-          {!isAdmin && <Th width="7%">ACTION</Th>}
-        </Tr>
-      </Thead>
-      <Tbody>{tableBody}</Tbody>
-      <Tfoot padding="12px">
-        <Button
-          margin="16px 0px 16px 12px"
-          size="secondary"
-          variant="blueOutline"
-          width="254px"
-        >
-          Add New Language
-        </Button>
-      </Tfoot>
-    </Table>
+            <Th
+              cursor="pointer"
+              onClick={() => sortApprovedLanguages("language")}
+              width="12%"
+            >
+              {`LANGUAGE ${isAscendingLanguage ? "↑" : "↓"}`}
+            </Th>
+            <Th
+              cursor="pointer"
+              onClick={() => sortApprovedLanguages("role")}
+              width="12%"
+            >{`ROLE ${isAscendingRole ? "↑" : "↓"}`}</Th>
+            {["LEVEL 1", "LEVEL 2", "LEVEL 3", "LEVEL 4"].map((level) => (
+              <Th key={level}>{level}</Th>
+            ))}
+            {!isAdmin && <Th width="7%">ACTION</Th>}
+          </Tr>
+        </Thead>
+        <Tbody>{tableBody}</Tbody>
+        <Tfoot padding="12px">
+          <Button
+            margin="16px 0px 16px 12px"
+            size="secondary"
+            variant="blueOutline"
+            width="254px"
+            onClick={openApproveLanguageModal}
+          >
+            Add New Language
+          </Button>
+        </Tfoot>
+      </Table>
+      {approveNewLanguage && (
+        <ApproveLanguageModal
+          isOpen={approveNewLanguage}
+          onClose={closeApproveLanguageModal}
+          onAssign={onApproveLanguage}
+          approvedLanguagesTranslation={approvedLanguagesTranslation!}
+          approvedLanguagesReview={approvedLanguagesReview!}
+        />
+      )}
+    </>
   );
 };
 

@@ -1,5 +1,5 @@
 import React from "react";
-import Select, { StylesConfig } from "react-select";
+import Select from "react-select";
 import { MdSearch } from "react-icons/md";
 import { Icon } from "@chakra-ui/icon";
 import {
@@ -19,6 +19,7 @@ import { stageOptions } from "../../constants/Stage";
 import { convertLanguageTitleCase } from "../../utils/LanguageUtils";
 import { FILTER_TOOL_TIP_COPY } from "../../utils/Copy";
 import DropdownIndicator from "../utils/DropdownIndicator";
+import { colourStyles } from "../../theme/components/Select";
 
 export type TableFilterProps = {
   language: string | null;
@@ -49,26 +50,6 @@ const FilterBadges = ({ filterValue, setFilterValue }: FilterBadgesProps) => {
       </Button>
     </Badge>
   );
-};
-
-const colourStyles: StylesConfig = {
-  control: (styles) => ({
-    ...styles,
-    backgroundColor: "#F1F4F7", // #F1F4F7 is gray.100
-    border: "none",
-  }),
-  option: (styles, { isSelected }) => {
-    return {
-      ...styles,
-      color: "black",
-      backgroundColor: isSelected ? "#F1F4F7" : "white", // #F1F4F7 is gray.100
-      "&:hover": {
-        backgroundColor: "#F1F4F7", // #F1F4F7 is gray.100
-      },
-    };
-  },
-  indicatorSeparator: (styles) => ({ ...styles, display: "none" }),
-  placeholder: (styles) => ({ ...styles, color: "black" }),
 };
 
 const TableFilter = ({

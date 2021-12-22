@@ -163,6 +163,8 @@ const UserProfilePage = () => {
           <ApprovedLanguagesTable
             approvedLanguagesTranslation={approvedLanguagesTranslation}
             approvedLanguagesReview={approvedLanguagesReview}
+            setApprovedLanguagesTranslation={setApprovedLanguagesTranslation}
+            setApprovedLanguagesReview={setApprovedLanguagesReview}
             userId={parseInt(userId, 10)}
             setAlertText={setAlertText}
             setAlert={setAlert}
@@ -170,12 +172,13 @@ const UserProfilePage = () => {
             setAlertTimeout={setAlertTimeout}
             isAdmin={isAdmin}
           />
-          <Heading size="lg" marginTop="56px" marginBottom="20px">
+          <Heading size="lg" marginTop="56px" marginBottom="10px">
             Assigned Story Translations
           </Heading>
           {isAdmin &&
             (storyAssignStage !== StoryAssignStage.INITIAL ? (
               <InfoAlert
+                colour="orange.50"
                 message={
                   storyAssignStage === StoryAssignStage.SUCCESS
                     ? "A new story was assigned to the user."
