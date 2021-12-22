@@ -35,7 +35,7 @@ const CommentsPanel = ({
   reviewPage = false,
 }: CommentPanelProps) => {
   const [comments, setComments] = useState<CommentResponse[]>([]);
-  const [filterIndex, setFilterIndex] = useState(0);
+  const [filterIndex, setFilterIndex] = useState(2);
 
   const filterOptions = ["All", "Resolved", "Unresolved"];
   const filterToResolved = [null, true, false];
