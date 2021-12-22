@@ -10,7 +10,7 @@ import { convertTitleCaseToStage } from "../../utils/StageUtils";
 import StoryTestsTable from "./StoryTestsTable";
 
 const ManageStoryTests = () => {
-  // TODO: uncomment when filters are implemented
+  // TODO: uncomment if filters are implemented
   /* eslint-disable */
   const [language, setLanguage] = useState<string | null>(null);
   const [level, setLevel] = useState<string | null>(null);
@@ -30,7 +30,7 @@ const ManageStoryTests = () => {
     fetchPolicy: "cache-and-network",
     onCompleted: () => {
       const result = [...data[query.fieldName]];
-      setStoryTests(result);
+      setStoryTests(result.filter((test) => test.stage === "REVIEW"));
     },
   });
 

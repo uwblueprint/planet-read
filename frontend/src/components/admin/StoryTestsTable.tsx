@@ -16,7 +16,6 @@ import {
   Button,
 } from "@chakra-ui/react";
 import { convertLanguageTitleCase } from "../../utils/LanguageUtils";
-import convertStageTitleCase from "../../utils/StageUtils";
 import { getLevelVariant } from "../../utils/StatusUtils";
 import {
   MANAGE_TESTS_TABLE_DELETE_TEST_BUTTON,
@@ -48,7 +47,6 @@ const StoryTestsTable = ({
   setStoryTests,
 }: StoryTestsTableProps) => {
   const [isAscendingName, setIsAscendingName] = useState(true);
-  const [isAscendingStage, setIsAscendingStage] = useState(true);
   const [isAscendingDate, setIsAscendingDate] = useState(true);
 
   const [confirmDeleteTranslation, setConfirmDeleteTranslation] =
@@ -104,11 +102,6 @@ const StoryTestsTable = ({
       isAscending: isAscendingName,
       setIsAscending: setIsAscendingName,
     },
-    stage: {
-      sortFn: generateSortFn<StoryTranslationTest>("stage", isAscendingStage),
-      isAscending: isAscendingStage,
-      setIsAscending: setIsAscendingStage,
-    },
     date: {
       sortFn: dateSort,
       isAscending: isAscendingDate,
@@ -150,7 +143,6 @@ const StoryTestsTable = ({
             }`}
           </Badge>
         </Td>
-        <Td>{convertStageTitleCase(storyTest.stage)}</Td>
         <Td>{storyTest.dateSubmitted?.toLocaleDateString()}</Td>
         <Td>
           <Button
@@ -196,9 +188,6 @@ const StoryTestsTable = ({
             isAscendingName ? "↑" : "↓"
           }`}</Th>
           <Th>LANGUAGE & LEVEL</Th>
-          <Th cursor="pointer" onClick={() => sort("stage")}>{`PROGRESS ${
-            isAscendingStage ? "↑" : "↓"
-          }`}</Th>
           <Th cursor="pointer" onClick={() => sort("date")}>{`DATE SUBMITTED ${
             isAscendingDate ? "↑" : "↓"
           }`}</Th>
