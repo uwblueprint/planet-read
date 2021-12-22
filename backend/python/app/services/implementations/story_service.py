@@ -131,10 +131,15 @@ class StoryService(IStoryService):
 
             for story_translation_test in story_translation_tests:
                 if story_translation_test.stage != "PUBLISH":
-                    self.logger.error(f"User has an ongoing story translation test for language {language}.")
-                    raise Exception(f"User has an ongoing story translation test for language {language}.")
+                    self.logger.error(
+                        f"User has an ongoing story translation test for language {language}."
+                    )
+                    raise Exception(
+                        f"User has an ongoing story translation test for language {language}."
+                    )
                 elif (
-                    story_translation_test.test_result == {} and story_translation_test.reviewer_last_activity
+                    story_translation_test.test_result == {}
+                    and story_translation_test.reviewer_last_activity
                     and last_30_days < story_translation_test.reviewer_last_activity
                 ):
                     self.logger.error("User has failed a test within the last 30 days.")
