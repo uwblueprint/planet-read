@@ -43,6 +43,7 @@ class StoryService(IStoryService):
         # create story
         try:
             new_story = Story(**story.__dict__)
+            new_story.date_uploaded = datetime.utcnow()
         except Exception as error:
             self.logger.error(str(error))
             raise error
