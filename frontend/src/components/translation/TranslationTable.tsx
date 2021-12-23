@@ -118,7 +118,7 @@ const TranslationTable = ({
             width="160px"
             marginLeft="12px"
             marginTop="10px"
-            marginRight={isTest ? `${STATUS_COLUMN_MARGIN_OFFSET}px` : "0"}
+            marginRight={isTest ? `${STATUS_COLUMN_MARGIN_OFFSET}px` : "8px"}
           >
             {isReviewable ? (
               <StatusBadge

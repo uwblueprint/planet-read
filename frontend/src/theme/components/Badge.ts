@@ -3,7 +3,7 @@ const Badge = {
     borderRadius: "24px",
     fontSize: "14px",
     padding: "6px 10px",
-    margin: "0 8px",
+    margin: "0 5px",
     textTransform: "capitalize",
     textAlign: "center",
   },

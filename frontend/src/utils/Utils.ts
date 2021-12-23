@@ -62,6 +62,9 @@ export const isObjEmpty = (o: object): boolean => {
 
 // Retrieved from: https://stackoverflow.com/a/11818658
 export const truncate = (num: number, decimals: number): string => {
+  if (Number.isNaN(num)) {
+    return "0";
+  }
   const re = new RegExp(`^-?\\d+(?:.\\d{0,${decimals || -1}})?`);
   return num.toString().match(re)![0];
 };
