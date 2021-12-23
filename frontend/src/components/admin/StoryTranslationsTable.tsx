@@ -136,7 +136,7 @@ const StoryTranslationsTable = ({
           </Link>
         </Td>
         <Td>
-          <Link isExternal to={`/user/${storyTranslationObj?.reviewerId}`}>
+          <Link isExternal href={`#/user/${storyTranslationObj?.reviewerId}`}>
             {storyTranslationObj?.reviewerName}
           </Link>
         </Td>

@@ -300,7 +300,7 @@ const AssignedStoryTranslationsTable = ({
   const tableBody = storyTranslations.map((translation: StoryTranslation) => (
     <Tr key={`${translation?.storyTranslationId}`}>
       <Td>
-        <Link isExternal to={generateStoryTranslationLink(translation)}>
+        <Link isExternal href={generateStoryTranslationLink(translation)}>
           {translation.title}
         </Link>
       </Td>
