@@ -13,8 +13,12 @@ def resolve_story_by_id(root, info, id):
     return services["story"].get_story(id)
 
 
-def resolve_stories_available_for_translation(root, info, language, level):
-    return services["story"].get_stories_available_for_translation(language, level)
+def resolve_stories_available_for_translation(root, info, language, level, user_id):
+    target_user_id = _select_user_id_for_available_translations_query(user_id)
+
+    return services["story"].get_stories_available_for_translation(
+        language, level, user_id=target_user_id
+    )
 
 
 def resolve_story_translations_by_user(
@@ -29,9 +33,13 @@ def resolve_story_translation_by_id(root, info, id):
     return services["story"].get_story_translation(id)
 
 
-def resolve_story_translations_available_for_review(root, info, language, level):
+def resolve_story_translations_available_for_review(
+    root, info, language, level, user_id=None
+):
+    target_user_id = _select_user_id_for_available_translations_query(user_id)
+
     return services["story"].get_story_translations_available_for_review(
-        language, level
+        language, level, user_id=target_user_id
     )
 
 
@@ -51,3 +59,10 @@ def resolve_story_translation_tests(root, info, language, level, stage, story_ti
     return services["story"].get_story_translation_tests(
         user, language, level, stage, story_title
     )
+
+
+def _select_user_id_for_available_translations_query(user_id):
+    # if caller is admin, use param use_id. Else, use caller id
+    calling_user_id = get_user_id_from_request()
+    isAdmin = services["user"].get_user_by_id(calling_user_id).role == "Admin"
+    return user_id if isAdmin else calling_user_id

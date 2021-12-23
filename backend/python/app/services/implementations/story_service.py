@@ -70,21 +70,13 @@ class StoryService(IStoryService):
 
         return new_story
 
-    def get_stories_available_for_translation(self, language, level):
-        stories = (
-            Story.query.filter(Story.level == level)
-            .filter(~Story.translated_languages.contains(language))
-            .all()
-        )
-        return [story.to_dict(include_relationships=True) for story in stories]
-
     def create_translation(self, translation):
         try:
             new_story_translation = StoryTranslation(**translation.__dict__)
             story_translations_translating = (
-                self._get_story_translations_user_translating(
-                    new_story_translation.translator_id
-                )
+                self._get_story_translations_user_translating_query(
+                    new_story_translation.translator_id, isTranslator=True
+                ).all()
             )
             languages_currently_translating = self._get_story_translation_languages(
                 story_translations_translating
@@ -173,7 +165,9 @@ class StoryService(IStoryService):
             raise error
         return new_story_translation
 
-    def get_story_translations_by_user(self, user_id, is_translator, language, level):
+    def get_story_translations_by_user(
+        self, user_id, is_translator=None, language=None, level=None
+    ):
         if is_translator is None:
             role_filter = (StoryTranslation.translator_id == user_id) | (
                 StoryTranslation.reviewer_id == user_id
@@ -430,8 +424,10 @@ class StoryService(IStoryService):
             raise error
 
     def assign_user_as_reviewer(self, user, story_translation):
-        story_translations_reviewing = self._get_story_translations_user_reviewing(
-            user.id
+        story_translations_reviewing = (
+            self._get_story_translations_user_translating_query(
+                user.id, isTranslator=False
+            ).all()
         )
         languages_currently_reviewing = self._get_story_translation_languages(
             story_translations_reviewing
@@ -608,8 +604,40 @@ class StoryService(IStoryService):
             self.logger.error(error)
             raise error
 
-    def get_story_translations_available_for_review(self, language, level):
+    def get_stories_available_for_translation(self, language, level, user_id):
         try:
+            ongoing_translations = (
+                self._get_story_translations_user_translating_query(
+                    user_id, isTranslator=True
+                )
+                .filter(StoryTranslation.language == language)
+                .all()
+            )
+            if len(ongoing_translations) > 0:
+                return []
+
+            stories = (
+                Story.query.filter(Story.level == level)
+                .filter(~Story.translated_languages.contains(language))
+                .all()
+            )
+            return [story.to_dict(include_relationships=True) for story in stories]
+        except Exception as error:
+            self.logger.error(str(error))
+            raise error
+
+    def get_story_translations_available_for_review(self, language, level, user_id):
+        try:
+            ongoing_translations = (
+                self._get_story_translations_user_translating_query(
+                    user_id, isTranslator=False
+                )
+                .filter(StoryTranslation.language == language)
+                .all()
+            )
+            if len(ongoing_translations) > 0:
+                return []
+
             stories = (
                 Story.query.join(
                     StoryTranslation, Story.id == StoryTranslation.story_id
@@ -848,18 +876,15 @@ class StoryService(IStoryService):
 
         return count
 
-    def _get_story_translations_user_translating(self, user_id):
+    def _get_story_translations_user_translating_query(self, user_id, isTranslator):
         return (
-            StoryTranslation.query.filter(StoryTranslation.translator_id == user_id)
+            StoryTranslation.query.filter(StoryTranslation.is_test == False)
+            .filter(
+                StoryTranslation.translator_id == user_id
+                if isTranslator
+                else StoryTranslation.reviewer_id == user_id
+            )
             .filter(StoryTranslation.stage != "PUBLISH")
-            .all()
-        )
-
-    def _get_story_translations_user_reviewing(self, user_id):
-        return (
-            StoryTranslation.query.filter(StoryTranslation.reviewer_id == user_id)
-            .filter(StoryTranslation.stage != "PUBLISH")
-            .all()
         )
 
     def _get_story_translation_languages(self, story_translations):

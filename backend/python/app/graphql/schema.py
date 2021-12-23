@@ -137,11 +137,13 @@ class Query(graphene.ObjectType):
         graphene.List(StoryTranslationResponseDTO),
         language=graphene.String(required=True),
         level=graphene.Int(required=True),
+        user_id=graphene.ID(),
     )
     stories_available_for_translation = graphene.Field(
         graphene.List(StoryResponseDTO),
         language=graphene.String(required=True),
         level=graphene.Int(required=True),
+        user_id=graphene.ID(),
     )
 
     def resolve_comments_by_story_translation(
@@ -171,8 +173,12 @@ class Query(graphene.ObjectType):
     def resolve_user_by_email(root, info, email):
         return resolve_user_by_email(root, info, email)
 
-    def resolve_stories_available_for_translation(root, info, language, level):
-        return resolve_stories_available_for_translation(root, info, language, level)
+    def resolve_stories_available_for_translation(
+        root, info, language, level, user_id=None
+    ):
+        return resolve_stories_available_for_translation(
+            root, info, language, level, user_id
+        )
 
     def resolve_story_translations_by_user(
         root, info, user_id, is_translator=None, language=None, level=None
@@ -205,9 +211,11 @@ class Query(graphene.ObjectType):
     def resolve_story_translation_by_id(root, info, id):
         return resolve_story_translation_by_id(root, info, id)
 
-    def resolve_story_translations_available_for_review(root, info, language, level):
+    def resolve_story_translations_available_for_review(
+        root, info, language, level, user_id=None
+    ):
         return resolve_story_translations_available_for_review(
-            root, info, language, level
+            root, info, language, level, user_id
         )
 
 

@@ -366,6 +366,7 @@ const AssignedStoryTranslationsTable = ({
       </Table>
       {assignStory && (
         <AssignStoryModal
+          userId={userId}
           isOpen={assignStory}
           onClose={closeAssignStoryModal}
           onAssignStory={(story) => {
