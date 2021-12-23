@@ -308,7 +308,6 @@ const TranslationPage = () => {
         </Flex>
         {!isTest && (
           <CommentsPanel
-            disabled={!editable}
             storyTranslationContentId={storyTranslationContentId}
             commentLine={commentLine}
             storyTranslationId={storyTranslationId}

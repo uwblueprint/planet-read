@@ -44,10 +44,11 @@ class CommentService(ICommentService):
         except Exception as error:
             self.logger.error(str(error))
             raise error
-
-        if (story_translation_stage == "TRANSLATE" and is_translator) or (
-            story_translation_stage == "REVIEW" and is_reviewer
-        ):
+        if story_translation_stage == "PUBLISH" and (is_translator or is_reviewer):
+            raise Exception(
+                "Comments cannot be left after the story has been published."
+            )
+        elif is_translator or is_reviewer:
             try:
                 new_comment.time = datetime.utcnow()
                 new_comment.resolved = False
@@ -85,18 +86,6 @@ class CommentService(ICommentService):
             )
 
             return new_comment
-        elif story_translation_stage == "TRANSLATE" and is_reviewer:
-            raise Exception(
-                "Comments cannot be left by reviewers while the story is being translated."
-            )
-        elif story_translation_stage == "REVIEW" and is_translator:
-            raise Exception(
-                "Comments cannot be left by translators while the story is being reviewed."
-            )
-        elif story_translation_stage == "PUBLISH" and (is_translator or is_reviewer):
-            raise Exception(
-                "Comments cannot be left after the story has been published."
-            )
         else:
             raise Exception("You are not authorized to leave comments on this story.")
 

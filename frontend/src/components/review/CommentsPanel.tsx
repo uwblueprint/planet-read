@@ -1,16 +1,12 @@
 import React, { useState } from "react";
 import { useQuery } from "@apollo/client";
-import { Box, Button, Flex, Select, Text, Tooltip } from "@chakra-ui/react";
+import { Box, Button, Flex, Select, Text } from "@chakra-ui/react";
 import {
   CommentResponse,
   buildCommentsQuery,
 } from "../../APIClients/queries/CommentQueries";
 import WIPComment from "./WIPComment";
 import { StoryLine } from "../translation/Autosave";
-import {
-  TRANSLATION_PAGE_TOOL_TIP_COPY,
-  REVIEW_PAGE_TOOL_TIP_COPY,
-} from "../../utils/Copy";
 import ExistingComment from "./ExistingComment";
 
 export type CommentPanelProps = {
@@ -18,10 +14,8 @@ export type CommentPanelProps = {
   commentLine: number;
   setCommentLine: (line: number) => void;
   storyTranslationContentId: number;
-  disabled: boolean;
   setTranslatedStoryLines: (storyLines: StoryLine[]) => void;
   translatedStoryLines: StoryLine[];
-  reviewPage?: boolean;
 };
 
 const CommentsPanel = ({
@@ -29,10 +23,8 @@ const CommentsPanel = ({
   commentLine,
   storyTranslationContentId,
   setCommentLine,
-  disabled,
   setTranslatedStoryLines,
   translatedStoryLines,
-  reviewPage = false,
 }: CommentPanelProps) => {
   const [comments, setComments] = useState<CommentResponse[]>([]);
   const [filterIndex, setFilterIndex] = useState(2);
@@ -103,10 +95,6 @@ const CommentsPanel = ({
     else setCommentLine(-1);
   };
 
-  const tooltipLabel = reviewPage
-    ? REVIEW_PAGE_TOOL_TIP_COPY
-    : TRANSLATION_PAGE_TOOL_TIP_COPY;
-
   return (
     <Box
       backgroundColor="gray.100"
@@ -116,19 +104,16 @@ const CommentsPanel = ({
       width="450px"
     >
       <Flex marginBottom="50px">
-        <Tooltip hasArrow label={tooltipLabel} isDisabled={!disabled}>
-          <Box>
-            <Button
-              colorScheme="blue"
-              size="secondary"
-              marginRight="10px"
-              onClick={handleCommentButton}
-              disabled={disabled}
-            >
-              Comment
-            </Button>
-          </Box>
-        </Tooltip>
+        <Box>
+          <Button
+            colorScheme="blue"
+            size="secondary"
+            marginRight="10px"
+            onClick={handleCommentButton}
+          >
+            Comment
+          </Button>
+        </Box>
         <Select
           name="comment filter"
           id="comment filter"
@@ -136,7 +121,6 @@ const CommentsPanel = ({
           variant="commentsFilter"
           onChange={handleCommentFilterSelectChange}
           width="160px"
-          disabled={disabled}
         >
           {filterOptionsComponent}
         </Select>

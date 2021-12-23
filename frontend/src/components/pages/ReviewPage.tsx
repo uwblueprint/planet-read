@@ -233,14 +233,12 @@ const ReviewPage = () => {
           </Flex>
         </Flex>
         <CommentsPanel
-          disabled={stage === "TRANSLATE"}
           storyTranslationContentId={storyTranslationContentId}
           commentLine={commentLine}
           storyTranslationId={storyTranslationId}
           setCommentLine={setCommentLine}
           setTranslatedStoryLines={setTranslatedStoryLines}
           translatedStoryLines={translatedStoryLines}
-          reviewPage
         />
         {returnToTranslator && (
           <ConfirmationModal
