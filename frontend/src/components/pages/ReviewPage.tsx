@@ -48,6 +48,7 @@ const ReviewPage = () => {
   const [translatedStoryLines, setTranslatedStoryLines] = useState<StoryLine[]>(
     [],
   );
+  const [translatorId, setTranslatorId] = useState(-1);
   const [reviewerId, setReviewerId] = useState(-1);
   const [numTranslatedLines, setNumTranslatedLines] = useState(0);
   const [numApprovedLines, setNumApprovedLines] = useState(0);
@@ -56,6 +57,8 @@ const ReviewPage = () => {
   const [title, setTitle] = useState<string>("");
   const [language, setLanguage] = useState<string>("");
   const [stage, setStage] = useState<string>("");
+  const [translatorName, setTranslatorName] = useState<string>("");
+  const [reviewerName, setReviewerName] = useState<string>("");
 
   const [commentLine, setCommentLine] = useState(-1);
 
@@ -115,6 +118,7 @@ const ReviewPage = () => {
     {
       fetchPolicy: "cache-and-network",
       onCompleted: (data) => {
+        setTranslatorId(data.storyTranslationById.translatorId);
         setReviewerId(data.storyTranslationById.reviewerId);
         const storyContent = data.storyById.contents;
         const translatedContent = data.storyTranslationById.translationContents;
@@ -123,6 +127,8 @@ const ReviewPage = () => {
         setTitle(data.storyById.title);
         setNumTranslatedLines(data.storyTranslationById.numTranslatedLines);
         setNumApprovedLines(data.storyTranslationById.numApprovedLines);
+        setTranslatorName(data.storyTranslationById.translatorName);
+        setReviewerName(data.storyTranslationById.reviewerName);
 
         const contentArray: StoryLine[] = [];
         storyContent.forEach(({ content, lineIndex }: Content) => {
@@ -237,6 +243,9 @@ const ReviewPage = () => {
           storyTranslationContentId={storyTranslationContentId}
           commentLine={commentLine}
           storyTranslationId={storyTranslationId}
+          translatorId={translatorId}
+          translatorName={translatorName}
+          reviewerName={reviewerName}
           setCommentLine={setCommentLine}
           setTranslatedStoryLines={setTranslatedStoryLines}
           translatedStoryLines={translatedStoryLines}

@@ -1,7 +1,6 @@
-import React, { useState, useContext } from "react";
+import React, { useState } from "react";
 import { useMutation } from "@apollo/client";
 import { Text, Flex, Button } from "@chakra-ui/react";
-import AuthContext from "../../contexts/AuthContext";
 import WIPComment from "./WIPComment";
 import {
   UPDATE_COMMENT_BY_ID,
@@ -11,6 +10,7 @@ import { CommentResponse } from "../../APIClients/queries/CommentQueries";
 import { StoryLine } from "../translation/Autosave";
 
 export type ExistingCommentProps = {
+  userName: string;
   comment: CommentResponse;
   updateCommentsAsResolved: (index: number) => void;
   comments: CommentResponse[];
@@ -21,6 +21,7 @@ export type ExistingCommentProps = {
 };
 
 const ExistingComment = ({
+  userName,
   comment,
   updateCommentsAsResolved,
   setComments,
@@ -46,7 +47,6 @@ const ExistingComment = ({
   const [storyTranslationContentId, setStoryTranslationContentId] =
     useState(stcId);
 
-  const { authenticatedUser } = useContext(AuthContext);
   const [updateComment] = useMutation<{
     updateCommentById: UpdateCommentResponse;
   }>(UPDATE_COMMENT_BY_ID);
@@ -77,10 +77,6 @@ const ExistingComment = ({
     }
   };
 
-  const name = `
-    ${authenticatedUser!!.firstName}
-    ${authenticatedUser!!.lastName}`;
-
   const handleReply = () => {
     setStoryTranslationContentId(storyTranslationContentId);
     setReply(storyContentId);
@@ -107,7 +103,7 @@ const ExistingComment = ({
         </Text>
       )}
       <Flex justify="space-between" marginBottom="10px">
-        <p>{name}</p>
+        <p>{userName}</p>
         <p>
           {displayTime.toLocaleDateString("en-US", {
             month: "short",
