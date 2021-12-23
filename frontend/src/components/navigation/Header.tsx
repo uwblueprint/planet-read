@@ -1,5 +1,12 @@
 import React, { useContext, useState } from "react";
-import { Button, Flex, Heading, IconButton, Image } from "@chakra-ui/react";
+import {
+  Button,
+  Flex,
+  Heading,
+  IconButton,
+  Image,
+  Link,
+} from "@chakra-ui/react";
 import { Icon } from "@chakra-ui/icon";
 import { MdOutlineAccountCircle } from "react-icons/md";
 import Logo from "../../assets/planet-read-logo.svg";
@@ -48,9 +55,15 @@ const Header = ({
       justify="space-between"
     >
       <Flex margin="0px 30px">
-        <Heading margin="10px" size="md">
-          Add my Language
-        </Heading>
+        <Link
+          href="/"
+          textDecoration="none"
+          _hover={{ textDecoration: "none", color: "black" }}
+        >
+          <Heading margin="10px" size="md">
+            Add my Language
+          </Heading>
+        </Link>
         <Image alt="Planet read logo" src={Logo} width="40px" />
       </Flex>
 
