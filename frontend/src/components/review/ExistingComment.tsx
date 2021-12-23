@@ -124,9 +124,11 @@ const ExistingComment = ({
             Reply
           </Button>
         )}
-        <Button onClick={resolveExistingComment} variant="commentLabel">
-          Resolve
-        </Button>
+        {!resolved && (
+          <Button onClick={resolveExistingComment} variant="commentLabel">
+            Resolve
+          </Button>
+        )}
       </Flex>
       {reply > -1 && (
         <WIPComment
