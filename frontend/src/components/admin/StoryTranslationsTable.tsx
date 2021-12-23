@@ -109,7 +109,7 @@ const StoryTranslationsTable = ({
       >
         {showStoryTitle && (
           <Td>
-            <Link isExternal href={`/story/${storyTranslationObj?.storyId}`}>
+            <Link isExternal href={`#/story/${storyTranslationObj?.storyId}`}>
               {storyTranslationObj?.title}
             </Link>
           </Td>
@@ -128,12 +128,15 @@ const StoryTranslationsTable = ({
         </Td>
         <Td>{convertStageTitleCase(storyTranslationObj?.stage)}</Td>
         <Td>
-          <Link isExternal href={`/user/${storyTranslationObj?.translatorId}`}>
+          <Link
+            isExternal
+            href={`/#/user/${storyTranslationObj?.translatorId}`}
+          >
             {storyTranslationObj?.translatorName}
           </Link>
         </Td>
         <Td>
-          <Link isExternal href={`/user/${storyTranslationObj?.reviewerId}`}>
+          <Link isExternal href={`/#/user/${storyTranslationObj?.reviewerId}`}>
             {storyTranslationObj?.reviewerName}
           </Link>
         </Td>

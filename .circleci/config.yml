@@ -62,6 +62,11 @@ jobs:
           name: Build frontend
           command: |
             cd frontend
+            echo "Write environment variables to .env.production"
+            touch .env.production
+            REACT_APP_BACKEND_URL=`echo ${REACT_APP_BACKEND_URL_BASE64} | base64 --decode`
+            echo "REACT_APP_BACKEND_URL=$REACT_APP_BACKEND_URL" > .env.production
+            cat .env.production
             yarn install --frozen-lockfile
             yarn build
       - run:
@@ -85,7 +90,7 @@ jobs:
             git config git-ftp.password ${PASSWORD}
             touch .git-ftp-include
             cat frontend/.git-ftp-include > .git-ftp-include
-            git ftp push --insecure --syncroot frontend/build
+            git ftp init --insecure --syncroot frontend/build
             rm .git-ftp-include
             echo "Frontend deployed!"
       - run:
@@ -95,7 +100,7 @@ jobs:
             git config git-ftp.url "${HOST}/~/backend/"
             git config git-ftp.user ${USERNAME}
             git config git-ftp.password ${PASSWORD}
-            git ftp push --insecure --syncroot backend/python
+            git ftp init --insecure --syncroot backend/python
             echo "Backend deployed!"
 
 workflows:
