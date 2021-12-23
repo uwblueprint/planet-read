@@ -84,3 +84,8 @@ export const NEW_BOOK_TEST_ADDED_MESSAGE =
   "The story translation test to add a new language has been added to the homepage. Please see the 'My Tests' tab.";
 
 export const NEW_BOOK_TEST_ADDED_BUTTON = "Take me to homepage";
+
+export const REMOVE_LANGUAGE_CONFIRMATION =
+  "By removing this language, the user will no longer be able to start translating or reviewing story translations in this language. However, the user will continue having access to any ongoing story translations in this language.";
+
+export const REMOVE_LANGUAGE_BUTTON = "I'm sure, remove";
