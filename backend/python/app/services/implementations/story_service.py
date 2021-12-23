@@ -660,7 +660,7 @@ class StoryService(IStoryService):
 
             if story_translation.stage == "REVIEW":
                 if story_translation.is_test:
-                    if not "TEST_" in status:
+                    if not "TEST_" in status and status != "DEFAULT":
                         raise Exception(
                             "Error. Story Translation Test cannot have non-test statuses on story translation content."
                         )

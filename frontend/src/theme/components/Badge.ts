@@ -3,7 +3,7 @@ const Badge = {
     borderRadius: "24px",
     fontSize: "14px",
     padding: "6px 10px",
-    margin: "0 5px",
+    margin: "0 8px",
     textTransform: "capitalize",
     textAlign: "center",
   },
@@ -19,6 +19,18 @@ const Badge = {
     approved: {
       backgroundColor: "green.50",
       color: "green.100",
+    },
+    correct: {
+      backgroundColor: "green.50",
+      color: "green.100",
+    },
+    partiallyCorrect: {
+      backgroundColor: "orange.50",
+      color: "orange.100",
+    },
+    incorrect: {
+      backgroundColor: "red.50",
+      color: "red.100",
     },
     stage: {
       backgroundColor: "blue.50",

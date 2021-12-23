@@ -1,9 +1,9 @@
 // TODO: remove when functional
 /* eslint-disable */
-import React, { useContext, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { useQuery, useMutation } from "@apollo/client";
-import { Box, Text, Divider, Flex, Button } from "@chakra-ui/react";
-import { useParams, Redirect } from "react-router-dom";
+import { Box, Text, Divider, Flex, Button, Tooltip } from "@chakra-ui/react";
+import { useParams, Redirect, useHistory } from "react-router-dom";
 
 import AuthContext from "../../contexts/AuthContext";
 import ProgressBar from "../utils/ProgressBar";
@@ -16,8 +16,9 @@ import { convertLanguageTitleCase } from "../../utils/LanguageUtils";
 import Header from "../navigation/Header";
 import ConfirmationModal from "../utils/ConfirmationModal";
 import {
-  REVIEW_PAGE_SUBMIT_TRANSLATION_CONFIRMATION,
-  REVIEW_PAGE_SUBMIT_TRANSLATION_BUTTON_MESSAGE,
+  REVIEW_PAGE_TOOL_TIP_COPY,
+  GRADING_PAGE_FAIL_USER_CONFIRMATION,
+  GRADING_PAGE_FAIL_USER_BUTTON,
 } from "../../utils/Copy";
 import {
   UPDATE_STORY_TRANSLATION_STAGE,
@@ -47,24 +48,45 @@ const StoryTestGradingPage = () => {
     [],
   );
   const [numApprovedLines, setNumApprovedLines] = useState(0);
+  const [score, setScore] = useState(0);
 
   const [fontSize, setFontSize] = useState<string>("12px");
   const [title, setTitle] = useState<string>("");
   const [language, setLanguage] = useState<string>("");
   const [stage, setStage] = useState<string>("");
 
-  const [submitTranslation, setSubmitTranslation] = useState(false);
+  const [failUser, setFailUser] = useState(false);
 
-  const closeSubmitTranslationModal = () => {
-    setSubmitTranslation(false);
+  useEffect(() => {
+    calculateScore();
+  }, [translatedStoryLines]);
+
+  const calculateScore = () => {
+    const scoreReducer = (prev: number, cur: StoryLine) => {
+      const status = cur.status;
+      if (status === "Correct") {
+        return prev + 1;
+      } else if (status === "Partially Correct") {
+        return prev + 0.5;
+      }
+      return prev;
+    };
+    const newScore = translatedStoryLines.reduce(scoreReducer, 0);
+    setScore(newScore);
   };
-  const openSubmitTranslationModal = () => {
-    setSubmitTranslation(true);
+
+  const closeFailUserModal = () => {
+    setFailUser(false);
+  };
+  const openFailUserModal = () => {
+    setFailUser(true);
   };
 
   const handleFontSizeChange = (val: string) => {
     setFontSize(val);
   };
+
+  const history = useHistory();
 
   const [updateStoryTranslationStage] = useMutation<{
     updateStoryTranslationStage: UpdateStoryTranslationStageResponse;
@@ -83,7 +105,7 @@ const StoryTestGradingPage = () => {
         if (result.data?.updateStoryTranslationStage.ok) {
           window.location.reload();
         } else {
-          window.alert(`Unable to update story stage to ${stage}.`);
+          window.alert(`Unable to update story test stage to ${stage}.`);
         }
       } catch (error) {
         window.alert(error ?? "Error occurred, please try again.");
@@ -97,6 +119,10 @@ const StoryTestGradingPage = () => {
     {
       fetchPolicy: "cache-and-network",
       onCompleted: (data) => {
+        if (!data.storyTranslationById.isTest) {
+          history.push("/404");
+        }
+
         const storyContent = data.storyById.contents;
         const translatedContent = data.storyTranslationById.translationContents;
         setLanguage(data.storyTranslationById.language);
@@ -145,9 +171,8 @@ const StoryTestGradingPage = () => {
         <Flex width="100%" direction="column">
           <Flex justify="space-between" alignItems="center" margin="10px 30px">
             <FontSizeSlider setFontSize={handleFontSizeChange} />
-            {/* TODO: use actual score */}
-            <Text fontWeight="bold" marginRight="24px" color="blue.100">
-              SCORE: 0/6
+            <Text fontWeight="bold" marginRight="42px" color="blue.100">
+              {`SCORE: ${score}/${translatedStoryLines.length}`}
             </Text>
           </Flex>
           <Divider />
@@ -183,33 +208,48 @@ const StoryTestGradingPage = () => {
               />
             </Flex>
 
-            <Box marginBottom="10px">
-              <Button colorScheme="red" variant="outline" onClick={() => {}}>
-                Fail User
-              </Button>
-              <Button
-                colorScheme="blue"
-                marginLeft="24px"
-                marginRight="20px"
-                onClick={() => {}}
+            <Flex marginBottom="10px">
+              <Tooltip
+                hasArrow
+                label={REVIEW_PAGE_TOOL_TIP_COPY}
+                isDisabled={stage === "REVIEW"}
               >
-                Assign Level
-              </Button>
-            </Box>
+                <Box>
+                  <Button
+                    colorScheme="red"
+                    variant="outline"
+                    disabled={stage === "TRANSLATE"}
+                    onClick={openFailUserModal}
+                  >
+                    Fail User
+                  </Button>
+                </Box>
+              </Tooltip>
+              <Tooltip
+                hasArrow
+                label={REVIEW_PAGE_TOOL_TIP_COPY}
+                isDisabled={stage === "REVIEW"}
+              >
+                <Box marginLeft="24px" marginRight="20px">
+                  <Button
+                    colorScheme="blue"
+                    disabled={stage === "TRANSLATE"}
+                    onClick={() => {}}
+                  >
+                    Assign Level{" "}
+                  </Button>
+                </Box>
+              </Tooltip>
+            </Flex>
           </Flex>
         </Flex>
-        {/* TODO: replace this modal with assign level modal */}
-        {submitTranslation && (
-          <ConfirmationModal
-            confirmation={submitTranslation}
-            onConfirmationClick={createUpdateStoryTranslationStageMutation(
-              "PUBLISH",
-            )}
-            onClose={closeSubmitTranslationModal}
-            confirmationMessage={REVIEW_PAGE_SUBMIT_TRANSLATION_CONFIRMATION}
-            buttonMessage={REVIEW_PAGE_SUBMIT_TRANSLATION_BUTTON_MESSAGE}
-          />
-        )}
+        <ConfirmationModal
+          confirmation={failUser}
+          onConfirmationClick={() => {}} // TODO: implement fail user
+          onClose={closeFailUserModal}
+          confirmationMessage={GRADING_PAGE_FAIL_USER_CONFIRMATION}
+          buttonMessage={GRADING_PAGE_FAIL_USER_BUTTON}
+        />
       </Flex>
     </Flex>
   );

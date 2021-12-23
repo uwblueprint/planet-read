@@ -9,11 +9,11 @@ function convertStatusTitleCase(status: string) {
     case "ACTION_REQUIRED":
       return "Action";
     case "TEST_CORRECT":
-      return "Test Correct";
+      return "Correct";
     case "TEST_INCORRECT":
-      return "Test Incorrect";
+      return "Incorrect";
     case "TEST_PARTIALLY_CORRECT":
-      return "Test Partially Correct";
+      return "Partially Correct";
     default:
       return statusEnum.replace(/_/g, " ");
   }
@@ -27,6 +27,12 @@ function getStatusVariant(status: string | undefined) {
       return "approved";
     case "Action":
       return "action";
+    case "Correct":
+      return "correct";
+    case "Partially Correct":
+      return "partiallyCorrect";
+    case "Incorrect":
+      return "incorrect";
     default:
       return status?.toLowerCase();
   }
