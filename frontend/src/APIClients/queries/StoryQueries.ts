@@ -113,7 +113,7 @@ export const buildHomePageStoriesQuery = (
       fieldName: "storyTranslationTests",
       string: gql`
             query StoryTranslationTests {
-              storyTranslationTests
+              storyTranslationTests (stage: "TRANSLATE")
               {
                 storyTranslationId: id
                 storyId
