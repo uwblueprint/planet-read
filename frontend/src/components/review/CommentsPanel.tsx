@@ -15,6 +15,9 @@ import ExistingComment from "./ExistingComment";
 
 export type CommentPanelProps = {
   storyTranslationId: number;
+  translatorId: number;
+  translatorName: string;
+  reviewerName: string;
   commentLine: number;
   setCommentLine: (line: number) => void;
   storyTranslationContentId: number;
@@ -26,6 +29,9 @@ export type CommentPanelProps = {
 
 const CommentsPanel = ({
   storyTranslationId,
+  translatorId,
+  translatorName,
+  reviewerName,
   commentLine,
   storyTranslationContentId,
   setCommentLine,
@@ -72,6 +78,9 @@ const CommentsPanel = ({
           {comments.map((comment: CommentResponse) => (
             <ExistingComment
               key={comment.id}
+              userName={
+                translatorId === comment.userId ? translatorName : reviewerName
+              }
               comment={comment}
               WIPLineIndex={commentLine}
               updateCommentsAsResolved={updateCommentsAsResolved}

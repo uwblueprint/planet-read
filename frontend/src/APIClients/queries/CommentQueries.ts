@@ -3,6 +3,7 @@ import { QueryInformation } from "./StoryQueries";
 
 const COMMENT_FIELDS = `
     id
+    userId
     commentIndex
     content
     storyTranslationContentId
