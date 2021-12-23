@@ -133,6 +133,13 @@ class CommentService(ICommentService):
                 )
             for key, value in updated_comment.__dict__.items():
                 setattr(comment, key, value)
+
+            if updated_comment["resolved"] == True:
+                thread_comments = Comment.query.filter_by(
+                    story_translation_content_id=comment.story_translation_content_id
+                ).all()
+                for com in thread_comments:
+                    com.resolved = True
             db.session.commit()
 
             story_translation = (

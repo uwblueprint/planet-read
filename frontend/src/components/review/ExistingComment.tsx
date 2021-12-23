@@ -118,12 +118,12 @@ const ExistingComment = ({
         {content}
       </Text>
       <Flex>
-        {!commentIndex && (
+        {!resolved && !commentIndex && (
           <Button onClick={() => handleReply()} variant="commentLabel">
             Reply
           </Button>
         )}
-        {!resolved && (
+        {!resolved && !commentIndex && (
           <Button onClick={resolveExistingComment} variant="commentLabel">
             Resolve
           </Button>
