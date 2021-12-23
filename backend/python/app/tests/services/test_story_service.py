@@ -102,8 +102,10 @@ def test_create_translation(app, db, services):
         reviewer_id=reviewer_obj.id,
     )
     story_translation_resp = services["story"].create_translation(story_translation)
-    story_translation_obj = StoryTranslation.query.get(story_translation_resp.id)
-    assert story_translation_resp == story_translation_obj
+    story_translation_obj = StoryTranslation.query.get(story_translation_resp["id"])
+    assert_story_translation_equals_model(
+        story_translation_resp, story_obj, story_translation_obj
+    )
 
     get_story_translation_resp = services["story"].get_story_translation(
         story_translation_obj.id

@@ -121,6 +121,18 @@ class IStoryService(ABC):
         pass
 
     @abstractmethod
+    def assign_user_as_reviewer(self, user, story_translation):
+        """Assign a user as a reviewer of a story translation
+
+        :param user: user object
+        :param story_translation: dictionary of story translation fields
+        :return: dictionary of StoryTranslation object
+        :rtype: dictionary
+        :raises Exception: if user can't be assigned as a reviewer
+        """
+        pass
+
+    @abstractmethod
     def update_story(self, story_id, title, description, youtube_link):
         """Update a single story
         :param story_id: id of story to be updated

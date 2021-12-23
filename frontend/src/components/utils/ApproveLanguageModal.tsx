@@ -26,15 +26,6 @@ import { ApprovedLanguagesMap } from "../../utils/Utils";
 import DropdownIndicator from "./DropdownIndicator";
 import { colourStyles } from "../../theme/components/Select";
 
-export type StoryToAssign = {
-  storyId: number;
-  storyTranslationId?: number;
-  title: string;
-  description: string;
-  level: number;
-  language: string;
-};
-
 export type NewApprovedLanguage = {
   language: string;
   level: number;

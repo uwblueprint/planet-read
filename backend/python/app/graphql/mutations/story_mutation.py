@@ -74,7 +74,7 @@ class AssignUserAsReviewer(graphene.Mutation):
         user_id = graphene.ID(required=True)
         story_translation_id = graphene.ID(required=True)
 
-    ok = graphene.Boolean()
+    story = graphene.Field(lambda: CreateStoryTranslationResponseDTO)
 
     def mutate(root, info, user_id, story_translation_id):
         try:
@@ -83,8 +83,10 @@ class AssignUserAsReviewer(graphene.Mutation):
             story_translation = services["story"].get_story_translation(
                 story_translation_id
             )
-            services["story"].assign_user_as_reviewer(user, story_translation)
-            return AssignUserAsReviewer(ok=True)
+            new_story_translation = services["story"].assign_user_as_reviewer(
+                user, story_translation
+            )
+            return AssignUserAsReviewer(story=new_story_translation)
         except Exception as e:
             error_message = getattr(e, "message", None)
             raise Exception(error_message if error_message else str(e))

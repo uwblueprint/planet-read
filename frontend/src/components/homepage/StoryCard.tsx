@@ -66,7 +66,7 @@ const StoryCard = ({
       const result = await assignUserAsReviewer({
         variables: { storyTranslationId, userId: +authenticatedUser!!.id },
       });
-      if (result.data?.assignUserAsReviewer.ok) {
+      if (result.data?.assignUserAsReviewer.story.storyId) {
         history.push(`/review/${storyId}/${storyTranslationId}`);
       } else {
         handleError("Unable to assign reviewer.");
@@ -94,9 +94,9 @@ const StoryCard = ({
       const result = await createTranslation({
         variables: { storyTranslationData },
       });
-      if (result.data?.createStoryTranslation.story.id) {
+      if (result.data?.createStoryTranslation.story.storyTranslationId) {
         history.push(
-          `/translation/${storyId}/${result.data?.createStoryTranslation.story.id}`,
+          `/translation/${storyId}/${result.data?.createStoryTranslation.story.storyTranslationId}`,
         );
       } else {
         handleError("Unable to assign translator.");

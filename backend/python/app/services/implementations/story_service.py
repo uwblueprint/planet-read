@@ -119,7 +119,7 @@ class StoryService(IStoryService):
             self.logger.error(str(error))
             raise error
 
-        return new_story_translation
+        return {**story.to_dict(), **new_story_translation.to_dict()}
 
     def create_translation_test(self, user_id, level, language):
         try:
@@ -442,7 +442,6 @@ class StoryService(IStoryService):
             and story_translation["language"] not in languages_currently_reviewing
             and user.approved_languages_review[story_translation["language"]]
             >= story_translation["level"]
-            and story_translation["stage"] == "TRANSLATE"
             and not story_translation["reviewer_id"]
             and user.id != story_translation["translator_id"]
         ):
@@ -453,6 +452,11 @@ class StoryService(IStoryService):
         else:
             self.logger.error("User can't be assigned as a reviewer")
             raise Exception("User can't be assigned as a reviewer")
+
+        return {
+            **self.get_story(story_translation.story_id),
+            **story_translation.to_dict(),
+        }
 
     def remove_reviewer_from_story_translation(self, story_translation):
         try:
