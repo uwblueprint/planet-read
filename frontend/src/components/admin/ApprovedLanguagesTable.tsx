@@ -23,6 +23,8 @@ import {
   NEW_BOOK_TEST_ADDED_HEADING,
   NEW_BOOK_TEST_ADDED_MESSAGE,
   NEW_BOOK_TEST_ADDED_BUTTON,
+  REMOVE_LANGUAGE_CONFIRMATION,
+  REMOVE_LANGUAGE_BUTTON,
 } from "../../utils/Copy";
 
 export type ApprovedLanguagesTableProps = {
@@ -58,8 +60,12 @@ const ApprovedLanguagesTable = ({
   const [alertNewTest, setAlertNewTest] = useState(false);
   const [testLevel, setTestLevel] = useState(0);
   const [testLanguage, setTestLanguage] = useState("");
+  const [languageToRemove, setLanguageToRemove] = useState("");
+  const [isRemoveTranslatorLanguage, setIsRemoveTranslatorLanguage] =
+    useState(false);
 
   const [approveNewLanguage, setApproveNewLanguage] = useState(false);
+  const [removeLanguage, setRemoveLanguage] = useState(false);
 
   const resetAlertTimeout = () => {
     window.clearTimeout(alertTimeout);
@@ -93,16 +99,21 @@ const ApprovedLanguagesTable = ({
     level: number,
     oldLevel: number,
     isNewLanguage: boolean,
+    isRemoveLanguage: boolean,
   ) => {
-    return isNewLanguage
-      ? `A new language was approved for the user: ${convertLanguageTitleCase(
-          language,
-        )}`
-      : `${
-          isTranslate ? "Translator" : "Reviewer"
-        }'s approval for ${convertLanguageTitleCase(
-          language,
-        )} has been updated: Level ${oldLevel} → Level ${level}.`;
+    if (isRemoveLanguage) {
+      return `Language has been removed for the user`;
+    }
+    if (isNewLanguage) {
+      return `A new language was approved for the user: ${convertLanguageTitleCase(
+        language,
+      )}`;
+    }
+    return `${
+      isTranslate ? "Translator" : "Reviewer"
+    }'s approval for ${convertLanguageTitleCase(
+      language,
+    )} has been updated: Level ${oldLevel} → Level ${level}.`;
   };
 
   const callUpdateUserApprovedLanguagesMutation = async (
@@ -112,6 +123,7 @@ const ApprovedLanguagesTable = ({
     oldLevel: number,
     isNewLanguage = false,
   ) => {
+    const isRemoveLanguage = level === -1;
     const result = await updateUserApprovedLanguages({
       variables: {
         userId,
@@ -122,7 +134,7 @@ const ApprovedLanguagesTable = ({
     });
 
     if (result.data !== undefined) {
-      if (isNewLanguage) {
+      if (isNewLanguage || isRemoveLanguage) {
         const approvedLanguagesMap = isTranslate
           ? approvedLanguagesTranslation
           : approvedLanguagesReview;
@@ -132,13 +144,24 @@ const ApprovedLanguagesTable = ({
 
         // update local state
         const newApprovedLanguages = { ...approvedLanguagesMap };
-        newApprovedLanguages[language] = level;
+        if (isNewLanguage) {
+          newApprovedLanguages[language] = level;
+        } else {
+          delete newApprovedLanguages[language];
+        }
         setApprovedLanguagesMap(newApprovedLanguages);
       }
 
       setAlert(true);
       setAlertText(
-        getAlertText(isTranslate, language, level, oldLevel, isNewLanguage),
+        getAlertText(
+          isTranslate,
+          language,
+          level,
+          oldLevel,
+          isNewLanguage,
+          isRemoveLanguage,
+        ),
       );
       resetAlertTimeout();
     }
@@ -185,6 +208,26 @@ const ApprovedLanguagesTable = ({
     setConfirmLevelUp(true);
   };
 
+  const openRemoveLanguageModal = (isTranslate: boolean, language: string) => {
+    setLanguageToRemove(language);
+    setIsRemoveTranslatorLanguage(isTranslate);
+    setRemoveLanguage(true);
+  };
+
+  const closeRemoveLanguageModal = () => {
+    setRemoveLanguage(false);
+  };
+
+  const onRemoveLanguage = () => {
+    callUpdateUserApprovedLanguagesMutation(
+      isRemoveTranslatorLanguage,
+      languageToRemove,
+      -1,
+      0,
+    );
+    closeRemoveLanguageModal();
+  };
+
   const callCreateTranslationTestMutation = async () => {
     try {
       await createTranslationTest({
@@ -208,6 +251,7 @@ const ApprovedLanguagesTable = ({
       <ApprovedLanguagesTableComponent
         addNewLanguage={isAdmin ? openApproveLanguageModal : () => undefined}
         levelUpOnClick={openLevelUpModal}
+        removeLanguageOnClick={openRemoveLanguageModal}
         onSliderValueChange={onSliderValueChange}
         approvedLanguagesTranslation={approvedLanguagesTranslation}
         approvedLanguagesReview={approvedLanguagesReview}
@@ -222,6 +266,13 @@ const ApprovedLanguagesTable = ({
           approvedLanguagesReview={approvedLanguagesReview!}
         />
       )}
+      <ConfirmationModal
+        confirmation={removeLanguage}
+        onClose={closeRemoveLanguageModal}
+        onConfirmationClick={onRemoveLanguage}
+        confirmationMessage={REMOVE_LANGUAGE_CONFIRMATION}
+        buttonMessage={REMOVE_LANGUAGE_BUTTON}
+      />
       <ConfirmationModal
         confirmation={confirmLevelUp}
         onClose={closeLevelUpModal}

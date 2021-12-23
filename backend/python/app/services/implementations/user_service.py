@@ -538,7 +538,7 @@ class UserService(IUserService):
         try:
             if not language in LanguageEnum._member_names_:
                 raise Exception(f"Invalid language provided: {language}")
-            if level > 4 or level < 1:
+            if level > 4:
                 raise Exception(f"Invalid language level provided: {level}")
 
             user = User.query.filter_by(id=user_id).first()
@@ -551,7 +551,10 @@ class UserService(IUserService):
                 else user.approved_languages_review
             ) or {}
 
-            curr_languages[language] = level
+            if level < 1 and language in curr_languages:
+                curr_languages.pop(language)
+            else:
+                curr_languages[language] = level
 
             if is_translate:
                 user.approved_languages_translation = curr_languages

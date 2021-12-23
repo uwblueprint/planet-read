@@ -14,7 +14,10 @@ import {
   SliderFilledTrack,
   SliderThumb,
   SliderMark,
+  Icon,
+  IconButton,
 } from "@chakra-ui/react";
+import { MdOutlineBlock } from "react-icons/md";
 import { ApprovedLanguagesMap, generateSortFn } from "../../utils/Utils";
 import { convertLanguageTitleCase } from "../../utils/LanguageUtils";
 
@@ -36,6 +39,7 @@ type ApprovedLanguage = {
 export type ApprovedLanguagesTableComponentProps = {
   addNewLanguage: () => void;
   levelUpOnClick: (level: number, language: string) => void;
+  removeLanguageOnClick: (isTranslate: boolean, language: string) => void;
   onSliderValueChange: (
     isTranslate: boolean,
     language: string,
@@ -50,6 +54,7 @@ export type ApprovedLanguagesTableComponentProps = {
 const ApprovedLanguagesTableComponent = ({
   addNewLanguage,
   levelUpOnClick,
+  removeLanguageOnClick,
   onSliderValueChange,
   approvedLanguagesTranslation,
   approvedLanguagesReview,
@@ -147,7 +152,22 @@ const ApprovedLanguagesTableComponent = ({
             ))}
           </Slider>
         </Td>
-        {!isAdmin && (
+        {isAdmin ? (
+          <Td>
+            <IconButton
+              aria-label={`Remove approved language ${approvedLanguage.language}`}
+              background="transparent"
+              icon={<Icon as={MdOutlineBlock} />}
+              width="fit-content"
+              onClick={() =>
+                removeLanguageOnClick(
+                  approvedLanguage.role === "Translator",
+                  approvedLanguage.language,
+                )
+              }
+            />
+          </Td>
+        ) : (
           <Tooltip
             hasArrow
             label="Currently at maximum language level."
@@ -206,7 +226,7 @@ const ApprovedLanguagesTableComponent = ({
           {["LEVEL 1", "LEVEL 2", "LEVEL 3", "LEVEL 4"].map((level) => (
             <Th key={level}>{level}</Th>
           ))}
-          {!isAdmin && <Th width="7%">ACTION</Th>}
+          <Th width="7%">ACTION</Th>
         </Tr>
       </Thead>
       <Tbody>{tableBody}</Tbody>
