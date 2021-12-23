@@ -87,6 +87,7 @@ export const GET_STORY_AND_TRANSLATION_CONTENTS = (
       }
       numTranslatedLines
       numApprovedLines
+      isTest
       translatorId
       translatorName
       reviewerId

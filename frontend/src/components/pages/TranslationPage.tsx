@@ -53,11 +53,9 @@ const TranslationPage = () => {
   const [title, setTitle] = useState<string>("");
   const [language, setLanguage] = useState<string>("");
   const [stage, setStage] = useState<string>("");
+  const [isTest, setIsTest] = useState(false);
   const [translatorName, setTranslatorName] = useState<string>("");
   const [reviewerName, setReviewerName] = useState<string>("");
-
-  // TODO: remove eslint comment when setIsTest is used
-  const [isTest, setIsTest] = useState(false); // eslint-disable-line
 
   const history = useHistory();
 
@@ -181,9 +179,7 @@ const TranslationPage = () => {
         setNumTranslatedLines(data.storyTranslationById.numTranslatedLines);
         setTranslatorName(data.storyTranslationById.translatorName);
         setReviewerName(data.storyTranslationById.reviewerName);
-
-        // TODO: uncomment when query is updated
-        // setIsTest(data.storyById.isTest);
+        setIsTest(data.storyTranslationById.isTest);
 
         const contentArray: StoryLine[] = [];
         storyContent.forEach(({ content, lineIndex }: Content) => {

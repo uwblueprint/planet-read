@@ -359,6 +359,7 @@ class StoryService(IStoryService):
                     Story.description.label("description"),
                     Story.youtube_link.label("youtube_link"),
                     Story.level.label("level"),
+                    Story.is_test.label("is_test"),
                     StoryTranslation.id.label("id"),
                     StoryTranslation.language.label("language"),
                     StoryTranslation.stage.label("stage"),
