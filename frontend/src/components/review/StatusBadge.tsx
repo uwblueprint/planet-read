@@ -2,7 +2,12 @@ import React, { useState } from "react";
 import { Badge, Menu, MenuButton, MenuList, MenuItem } from "@chakra-ui/react";
 import { useMutation } from "@apollo/client";
 import { Icon } from "@chakra-ui/icon";
-import { MdCheck, MdTimer, MdArrowDropDown } from "react-icons/md";
+import {
+  MdCheck,
+  MdTimer,
+  MdArrowDropDown,
+  MdPriorityHigh,
+} from "react-icons/md";
 import {
   getStatusVariant,
   convertStatusTitleCase,
@@ -123,6 +128,14 @@ const StatusBadge = ({
           }}
         >
           Pending
+        </MenuItem>
+        <MenuItem
+          icon={<Icon as={MdPriorityHigh} height={6} width={6} />}
+          onClick={async () => {
+            handleStatusChange("ACTION_REQUIRED");
+          }}
+        >
+          Action Required
         </MenuItem>
       </MenuList>
       {sendAsApprovedLastLine && (

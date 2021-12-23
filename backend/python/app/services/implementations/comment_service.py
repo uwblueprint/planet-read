@@ -8,7 +8,6 @@ from ...models.comment import Comment
 from ...models.comment_all import CommentAll
 from ...models.story_translation import StoryTranslation
 from ...models.story_translation_content import StoryTranslationContent
-from ...models.story_translation_content_status import StoryTranslationContentStatus
 from ..interfaces.comment_service import ICommentService
 from .story_service import StoryService
 
@@ -73,12 +72,6 @@ class CommentService(ICommentService):
                 raise error
 
             db.session.add(new_comment)
-            db.session.commit()
-
-            story_translation_content = new_comment.story_translation_content
-            story_translation_content.status = (
-                StoryTranslationContentStatus.ACTION_REQUIRED
-            )
             db.session.commit()
 
             stc = StoryTranslationContent.query.filter_by(
