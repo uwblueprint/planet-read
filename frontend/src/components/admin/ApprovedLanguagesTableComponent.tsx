@@ -17,7 +17,7 @@ import {
   Icon,
   IconButton,
 } from "@chakra-ui/react";
-import { MdOutlineBlock } from "react-icons/md";
+import { MdDelete } from "react-icons/md";
 import { ApprovedLanguagesMap, generateSortFn } from "../../utils/Utils";
 import { convertLanguageTitleCase } from "../../utils/LanguageUtils";
 
@@ -157,7 +157,7 @@ const ApprovedLanguagesTableComponent = ({
             <IconButton
               aria-label={`Remove approved language ${approvedLanguage.language}`}
               background="transparent"
-              icon={<Icon as={MdOutlineBlock} />}
+              icon={<Icon as={MdDelete} />}
               width="fit-content"
               onClick={() =>
                 removeLanguageOnClick(
