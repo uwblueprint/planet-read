@@ -128,10 +128,7 @@ const StoryTranslationsTable = ({
         </Td>
         <Td>{convertStageTitleCase(storyTranslationObj?.stage)}</Td>
         <Td>
-          <Link
-            isExternal
-            href={`/#/user/${storyTranslationObj?.translatorId}`}
-          >
+          <Link isExternal href={`#/user/${storyTranslationObj?.translatorId}`}>
             {storyTranslationObj?.translatorName}
           </Link>
         </Td>

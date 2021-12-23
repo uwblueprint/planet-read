@@ -128,7 +128,7 @@ const StoryTestsTable = ({
         key={`${storyTest.id}`}
       >
         <Td>
-          <Link isExternal href={`/user/${storyTest.translatorId}`}>
+          <Link isExternal href={`#/user/${storyTest.translatorId}`}>
             {storyTest.translatorName}
           </Link>
         </Td>

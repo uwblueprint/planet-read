@@ -36,7 +36,7 @@ const UserModal = ({
   showUser,
 }: UserModalProps) => {
   const onShowProfileClick = () => {
-    window.location.href = `/user/${id}`;
+    window.location.href = `#/user/${id}`;
   };
 
   return (

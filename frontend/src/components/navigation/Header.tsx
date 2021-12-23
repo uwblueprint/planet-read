@@ -56,7 +56,7 @@ const Header = ({
     >
       <Flex margin="0px 30px">
         <Link
-          href="/"
+          href="#/"
           textDecoration="none"
           _hover={{ textDecoration: "none", color: "black" }}
         >
