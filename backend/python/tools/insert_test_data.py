@@ -208,13 +208,13 @@ def insert_test_data():
         "INSERT IGNORE INTO comments \
             (id, story_translation_content_id, user_id, comment_index, time, resolved, content) \
         VALUES \
-            (1, 51, 1, 0, '2021-07-31 01:48:42', True, 'Not sure if this grammar makes sense'), \
-            (2, 51, 4, 1, '2021-08-09 12:28:42', True, 'It''s fine, go back to grammar school man'), \
-            (3, 51, 1, 2, '2021-08-10 21:55:42', True, 'uwu dont need to be so mean man'), \
-            (4, 53, 1, 0, '2021-07-31 13:22:42', False, 'this comment is lonely uwu '), \
-            (5, 54, 4, 0, '2021-08-09 01:38:12', True, 'this comment is likes to be alone uwu '), \
-            (6, 59, 4, 0, '2021-08-09 18:23:32', False, 'this comment is disagreeable'), \
-            (7, 59, 1, 1, '2021-08-10 21:58:42', False, 'I agree!');"
+            (1, 41, 1, 0, '2021-07-31 01:48:42', True, 'Not sure if this grammar makes sense'), \
+            (2, 41, 4, 1, '2021-08-09 12:28:42', True, 'It''s fine, go back to grammar school man'), \
+            (3, 41, 1, 2, '2021-08-10 21:55:42', True, 'uwu dont need to be so mean man'), \
+            (4, 43, 1, 0, '2021-07-31 13:22:42', False, 'this comment is lonely uwu '), \
+            (5, 44, 4, 0, '2021-08-09 01:38:12', True, 'this comment is likes to be alone uwu '), \
+            (6, 49, 4, 0, '2021-08-09 18:23:32', False, 'this comment is disagreeable'), \
+            (7, 49, 1, 1, '2021-08-10 21:58:42', False, 'I agree!');"
     )
 
 
