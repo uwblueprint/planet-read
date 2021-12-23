@@ -14,7 +14,7 @@ const Statistic = ({ header, num }: StatisticProps) => {
       border="1px solid"
       borderRadius="10px"
       color="blue.500"
-      flexGrow="1"
+      flexGrow={1}
       height="150px"
       margin="10px"
       padding="30px 50px"
