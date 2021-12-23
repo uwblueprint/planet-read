@@ -6,6 +6,7 @@ from sqlalchemy.orm import aliased
 from ...graphql.types.story_type import (
     StageEnum,
     StoryTranslationContentResponseDTO,
+    StoryTranslationStatisticsResponseDTO,
     StoryTranslationUpdateStatusResponseDTO,
 )
 from ...models import db
@@ -833,6 +834,28 @@ class StoryService(IStoryService):
         except Exception as error:
             self.logger.error(error)
             raise error
+
+    def get_story_translation_statistics(self):
+        num_translations_in_translation = (
+            db.session.query(StoryTranslation)
+            .filter(StoryTranslation.stage == "TRANSLATE")
+            .count()
+        )
+        num_translations_in_review = (
+            db.session.query(StoryTranslation)
+            .filter(StoryTranslation.stage == "REVIEW")
+            .count()
+        )
+        num_translations_completed = (
+            db.session.query(StoryTranslation)
+            .filter(StoryTranslation.stage == "PUBLISH")
+            .count()
+        )
+        return StoryTranslationStatisticsResponseDTO(
+            num_translations_in_translation=num_translations_in_translation,
+            num_translations_in_review=num_translations_in_review,
+            num_translations_completed=num_translations_completed,
+        )
 
     def _get_num_translated_lines(self, translation_contents):
         return len(translation_contents) - [

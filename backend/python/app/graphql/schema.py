@@ -39,6 +39,7 @@ from .queries.story_query import (
     resolve_stories_available_for_translation,
     resolve_story_by_id,
     resolve_story_translation_by_id,
+    resolve_story_translation_statistics,
     resolve_story_translation_tests,
     resolve_story_translations,
     resolve_story_translations_available_for_review,
@@ -51,6 +52,7 @@ from .types.story_type import (
     StoryResponseDTO,
     StoryTranslationConnection,
     StoryTranslationResponseDTO,
+    StoryTranslationStatisticsResponseDTO,
     StoryTranslationTestResponseDTO,
 )
 from .types.user_type import UserDTO
@@ -143,6 +145,9 @@ class Query(graphene.ObjectType):
         language=graphene.String(required=True),
         level=graphene.Int(required=True),
     )
+    story_translation_statistics = graphene.Field(
+        StoryTranslationStatisticsResponseDTO,
+    )
 
     def resolve_comments_by_story_translation(
         root, info, story_translation_id, resolved=None
@@ -209,6 +214,9 @@ class Query(graphene.ObjectType):
         return resolve_story_translations_available_for_review(
             root, info, language, level
         )
+
+    def resolve_story_translation_statistics(root, info):
+        return resolve_story_translation_statistics(root, info)
 
 
 schema = graphene.Schema(query=Query, mutation=Mutation)

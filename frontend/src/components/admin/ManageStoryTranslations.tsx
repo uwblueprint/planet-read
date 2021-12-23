@@ -1,9 +1,14 @@
 import React, { useState } from "react";
-import { Box, Heading, Flex } from "@chakra-ui/react";
+import { useQuery } from "@apollo/client";
+import { Box, Flex, Heading } from "@chakra-ui/react";
+import { Icon } from "@chakra-ui/icon";
+import { MdLogout } from "react-icons/md";
+import Statistic from "./Statistic";
 import StoryTranslationsTable from "./StoryTranslationsTable";
 import TableFilter from "./TableFilter";
 import {
   buildStoryTranslationsQuery,
+  GET_STORY_TRANSLATION_STATISTICS,
   StoryTranslation,
 } from "../../APIClients/queries/StoryQueries";
 import { convertTitleCaseToLanguage } from "../../utils/LanguageUtils";
@@ -18,6 +23,14 @@ const ManageStoryTranslations = () => {
   const [level, setLevel] = useState<string | null>(null);
   const [stage, setStage] = useState<string | null>(null);
   const [searchText, setSearchText] = useState<string | null>(null);
+  const [numTranslationsInTranslation, setNumTranslationsInTranslation] =
+    useState<number | null>(null);
+  const [numTranslationsInReview, setNumTranslationsInReview] = useState<
+    number | null
+  >(null);
+  const [numTranslationsCompleted, setNumTranslationsCompleted] = useState<
+    number | null
+  >(null);
 
   const query = buildStoryTranslationsQuery(
     0,
@@ -33,8 +46,49 @@ const ManageStoryTranslations = () => {
     ITEMS_PER_PAGE,
   );
 
+  useQuery(GET_STORY_TRANSLATION_STATISTICS, {
+    fetchPolicy: "cache-and-network",
+    onCompleted: (data) => {
+      setNumTranslationsInTranslation(
+        data.storyTranslationStatistics.numTranslationsInTranslation,
+      );
+      setNumTranslationsInReview(
+        data.storyTranslationStatistics.numTranslationsInReview,
+      );
+      setNumTranslationsCompleted(
+        data.storyTranslationStatistics.numTranslationsCompleted,
+      );
+    },
+  });
+
   return (
     <Box textAlign="center">
+      <Flex padding="35px 35px 10px 35px">
+        <Statistic header="IN TRANSLATION" num={numTranslationsInTranslation} />
+        <Statistic header="IN REVIEW" num={numTranslationsInReview} />
+        <Statistic header="COMPLETED" num={numTranslationsCompleted} />
+        <Box
+          border="1px solid"
+          borderRadius="10px"
+          borderColor="gray.200"
+          color="blue.500"
+          height="150px"
+          margin="10px"
+          paddingTop="35px"
+          width="200px"
+        >
+          <Icon
+            as={MdLogout}
+            height={10}
+            marginBottom="10px"
+            transform="rotate(270deg)"
+            width={10}
+          />
+          <Heading size="sm" textTransform="uppercase">
+            IMPORT STORY
+          </Heading>
+        </Box>
+      </Flex>
       <Flex>
         <Heading float="left" margin="20px 30px" size="lg">
           Manage Story Translations

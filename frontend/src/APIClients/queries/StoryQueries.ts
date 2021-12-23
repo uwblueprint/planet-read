@@ -364,3 +364,13 @@ export const buildStoryTranslationTestsQuery = (
     `,
   };
 };
+
+export const GET_STORY_TRANSLATION_STATISTICS = gql`
+  query GetStoryTranslationStatistics {
+    storyTranslationStatistics {
+      numTranslationsInTranslation
+      numTranslationsInReview
+      numTranslationsCompleted
+    }
+  }
+`;
