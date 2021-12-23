@@ -73,3 +73,14 @@ export const MANAGE_TESTS_TABLE_DELETE_TEST_CONFIRMATION =
   "By deleting this test, the user has to wait for 30 days before they can take this test again.";
 
 export const MANAGE_TESTS_TABLE_DELETE_TEST_BUTTON = "I'm sure, delete test";
+export const LEVEL_UP_LANGUAGE_CONFIRMATION =
+  "By levelling up this language, you will be able to access the book test on the homepage. Successfully passing the test will confirm your level up.";
+
+export const LEVEL_UP_LANGUAGE_BUTTON = "I'm sure, level up";
+
+export const NEW_BOOK_TEST_ADDED_HEADING = "New Story Translation Test Added";
+
+export const NEW_BOOK_TEST_ADDED_MESSAGE =
+  "The story translation test to add a new language has been added to the homepage. Please see the 'My Tests' tab.";
+
+export const NEW_BOOK_TEST_ADDED_BUTTON = "Take me to homepage";
