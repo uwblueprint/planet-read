@@ -839,16 +839,19 @@ class StoryService(IStoryService):
         num_translations_in_translation = (
             db.session.query(StoryTranslation)
             .filter(StoryTranslation.stage == "TRANSLATE")
+            .filter(StoryTranslation.is_test == False)
             .count()
         )
         num_translations_in_review = (
             db.session.query(StoryTranslation)
             .filter(StoryTranslation.stage == "REVIEW")
+            .filter(StoryTranslation.is_test == False)
             .count()
         )
         num_translations_completed = (
             db.session.query(StoryTranslation)
             .filter(StoryTranslation.stage == "PUBLISH")
+            .filter(StoryTranslation.is_test == False)
             .count()
         )
         return StoryTranslationStatisticsResponseDTO(

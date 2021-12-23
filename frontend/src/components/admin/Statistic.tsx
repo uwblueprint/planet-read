@@ -4,7 +4,7 @@ import { Box, Heading, Text } from "@chakra-ui/react";
 
 export type StatisticProps = {
   header: string;
-  num: number | null;
+  num: number;
 };
 
 const Statistic = ({ header, num }: StatisticProps) => {

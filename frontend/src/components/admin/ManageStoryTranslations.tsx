@@ -24,13 +24,9 @@ const ManageStoryTranslations = () => {
   const [stage, setStage] = useState<string | null>(null);
   const [searchText, setSearchText] = useState<string | null>(null);
   const [numTranslationsInTranslation, setNumTranslationsInTranslation] =
-    useState<number | null>(null);
-  const [numTranslationsInReview, setNumTranslationsInReview] = useState<
-    number | null
-  >(null);
-  const [numTranslationsCompleted, setNumTranslationsCompleted] = useState<
-    number | null
-  >(null);
+    useState(0);
+  const [numTranslationsInReview, setNumTranslationsInReview] = useState(0);
+  const [numTranslationsCompleted, setNumTranslationsCompleted] = useState(0);
 
   const query = buildStoryTranslationsQuery(
     0,
