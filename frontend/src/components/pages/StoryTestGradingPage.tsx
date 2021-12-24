@@ -21,6 +21,8 @@ import {
   GRADING_PAGE_FAIL_USER_BUTTON,
 } from "../../utils/Copy";
 import {
+  FINISH_GRADING_STORY_TRANSLATION,
+  FinishGradingStoryTranslationResponse,
   UPDATE_STORY_TRANSLATION_STAGE,
   UpdateStoryTranslationStageResponse,
 } from "../../APIClients/mutations/StoryMutations";
@@ -54,6 +56,7 @@ const StoryTestGradingPage = () => {
   const [title, setTitle] = useState<string>("");
   const [language, setLanguage] = useState<string>("");
   const [stage, setStage] = useState<string>("");
+  const [testFeedback] = useState<string>("");
 
   const [failUser, setFailUser] = useState(false);
 
@@ -91,6 +94,25 @@ const StoryTestGradingPage = () => {
   const [updateStoryTranslationStage] = useMutation<{
     updateStoryTranslationStage: UpdateStoryTranslationStageResponse;
   }>(UPDATE_STORY_TRANSLATION_STAGE);
+
+  const [finishGradingStoryTranslation] = useMutation<{
+    finishGradingStoryTranslation: FinishGradingStoryTranslationResponse;
+  }>(FINISH_GRADING_STORY_TRANSLATION);
+
+  const failGrade = async (testFeedback: string | null) => {
+    const result = await finishGradingStoryTranslation({
+      variables: {
+        storyTranslationTestId: storyTranslationId,
+        testFeedback,
+        testResult: "{}",
+      },
+    });
+    if (result.data?.finishGradingStoryTranslation.ok) {
+      history.push("/");
+    } else {
+      window.alert("Could not mark story translation as failed.");
+    }
+  };
 
   const createUpdateStoryTranslationStageMutation = (newStage: string) => {
     const updateStoryTranslationStageMutation = async () => {
@@ -245,7 +267,7 @@ const StoryTestGradingPage = () => {
         </Flex>
         <ConfirmationModal
           confirmation={failUser}
-          onConfirmationClick={() => {}} // TODO: implement fail user
+          onConfirmationClick={() => failGrade(testFeedback)}
           onClose={closeFailUserModal}
           confirmationMessage={GRADING_PAGE_FAIL_USER_CONFIRMATION}
           buttonMessage={GRADING_PAGE_FAIL_USER_BUTTON}

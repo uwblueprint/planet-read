@@ -165,3 +165,29 @@ export type CreateTranslationTestResponse = {
     id: number;
   };
 };
+
+export const FINISH_GRADING_STORY_TRANSLATION = gql`
+  mutation FinishGradingStoryTranslation(
+    $storyTranslationTestId: Int!
+    $testFeedback: String
+    $testResult: JSONString!
+  ) {
+    finishGradingStoryTranslation(
+      storyTranslationTestId: $storyTranslationTestId
+      testFeedback: $testFeedback
+      testResult: $testResult
+    ) {
+      ok
+      storyTranslation {
+        id
+      }
+    }
+  }
+`;
+
+export type FinishGradingStoryTranslationResponse = {
+  ok: boolean;
+  storyTranslation: {
+    id: number;
+  };
+};
