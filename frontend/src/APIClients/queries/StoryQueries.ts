@@ -183,8 +183,9 @@ export const buildHomePageStoriesQuery = (
 
 export const buildAssignStoryQuery = (
   isTranslator: boolean,
-  language: string | null,
-  level: number | null,
+  language: string,
+  level: number,
+  userId: number,
 ): QueryInformation => {
   const result = isTranslator
     ? {
@@ -193,7 +194,8 @@ export const buildAssignStoryQuery = (
           query StoriesAvailableForTranslation {
             storiesAvailableForTranslation(
               language: "${language}",
-              level: ${level}
+              level: ${level},
+              userId: ${userId}
             ) {
               storyId: id
               ${STORY_FIELDS}
@@ -207,7 +209,8 @@ export const buildAssignStoryQuery = (
           query StoriesAvailableForTranslation {
             storyTranslationsAvailableForReview(
               language: "${language}",
-              level: ${level}
+              level: ${level},
+              userId: ${userId}
             ) {
               storyId
               storyTranslationId: id

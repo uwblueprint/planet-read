@@ -36,6 +36,7 @@ export type StoryToAssign = {
 };
 
 export type AssignStoryModalProps = {
+  userId: number;
   isOpen: boolean;
   onClose: () => void;
   onAssignStory: (story: StoryToAssign) => void;
@@ -44,6 +45,7 @@ export type AssignStoryModalProps = {
 };
 
 const AssignStoryModal = ({
+  userId,
   isOpen,
   onClose,
   onAssignStory,
@@ -63,7 +65,12 @@ const AssignStoryModal = ({
     null,
   );
 
-  const query = buildAssignStoryQuery(role === "Translator", language, level);
+  const query = buildAssignStoryQuery(
+    role === "Translator",
+    language!,
+    level!,
+    userId,
+  );
 
   useQuery(query.string, {
     fetchPolicy: "cache-and-network",
