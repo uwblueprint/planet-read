@@ -15,6 +15,7 @@ const colors = {
   },
   red: {
     50: "#FFD4D4",
+    100: "#E53E3E",
   },
   purple: {
     50: "#E0D4FF",

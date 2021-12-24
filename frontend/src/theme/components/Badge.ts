@@ -20,6 +20,18 @@ const Badge = {
       backgroundColor: "green.50",
       color: "green.100",
     },
+    correct: {
+      backgroundColor: "green.50",
+      color: "green.100",
+    },
+    partiallyCorrect: {
+      backgroundColor: "orange.50",
+      color: "orange.100",
+    },
+    incorrect: {
+      backgroundColor: "red.50",
+      color: "red.100",
+    },
     stage: {
       backgroundColor: "blue.50",
     },

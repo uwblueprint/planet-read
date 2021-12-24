@@ -89,3 +89,8 @@ export const REMOVE_LANGUAGE_CONFIRMATION =
   "By removing this language, the user will no longer be able to start translating or reviewing story translations in this language. However, the user will continue having access to any ongoing story translations in this language.";
 
 export const REMOVE_LANGUAGE_BUTTON = "I'm sure, remove";
+
+export const GRADING_PAGE_FAIL_USER_CONFIRMATION =
+  "By failing this user, they have to wait for 30 days before they can take this test again.";
+
+export const GRADING_PAGE_FAIL_USER_BUTTON = "I'm sure, fail user";

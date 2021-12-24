@@ -36,6 +36,8 @@ export type TranslationTableProps = {
   isTest?: boolean;
 };
 
+const STATUS_COLUMN_MARGIN_OFFSET = 36;
+
 const TranslationTable = ({
   storyTranslationId,
   translatedStoryLines,
@@ -111,7 +113,13 @@ const TranslationTable = ({
           </Tooltip>
         )}
         {showStatusColumn && (
-          <Flex direction="column" width="140px" margin="5px">
+          <Flex
+            direction="column"
+            width="160px"
+            marginLeft="12px"
+            marginTop="10px"
+            marginRight={isTest ? `${STATUS_COLUMN_MARGIN_OFFSET}px` : "8px"}
+          >
             {isReviewable ? (
               <StatusBadge
                 translatedStoryLines={translatedStoryLines}
@@ -119,6 +127,7 @@ const TranslationTable = ({
                 storyLine={storyLine}
                 numApprovedLines={numApprovedLines!!}
                 setNumApprovedLines={setNumApprovedLines!!}
+                isTest={isTest}
               />
             ) : (
               <Tooltip
@@ -154,17 +163,23 @@ const TranslationTable = ({
     );
   });
 
-  const StatusHeader = () =>
-    isReviewable ? (
-      <ApproveAll
-        numApprovedLines={numApprovedLines!}
-        setNumApprovedLines={setNumApprovedLines!!}
-        totalLines={translatedStoryLines.length} // eslint-disable-line
-        storyTranslationId={storyTranslationId}
-      />
-    ) : (
-      <Text variant="statusHeader">Status</Text>
-    );
+  const StatusHeader = () => (
+    <Flex
+      width="160px"
+      marginRight={isTest ? `${STATUS_COLUMN_MARGIN_OFFSET + 8}px` : "8px"}
+    >
+      {isReviewable && !isTest ? (
+        <ApproveAll
+          numApprovedLines={numApprovedLines!}
+          setNumApprovedLines={setNumApprovedLines!!}
+          totalLines={translatedStoryLines.length} // eslint-disable-line
+          storyTranslationId={storyTranslationId}
+        />
+      ) : (
+        <Text variant="statusHeader">Status</Text>
+      )}
+    </Flex>
+  );
 
   return (
     <Flex direction="column">

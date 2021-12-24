@@ -7,7 +7,9 @@ import {
   MdTimer,
   MdArrowDropDown,
   MdPriorityHigh,
+  MdErrorOutline,
 } from "react-icons/md";
+import { IconType } from "react-icons";
 import {
   getStatusVariant,
   convertStatusTitleCase,
@@ -29,7 +31,31 @@ export type StatusBadgeProps = {
   storyLine: StoryLine;
   numApprovedLines: number;
   setNumApprovedLines: (numLines: number) => void;
+  isTest: boolean;
 };
+
+type StatusOption = {
+  icon: IconType;
+  stage: string;
+  value: string;
+};
+
+const REVIEW_STATUS_OPTIONS: StatusOption[] = [
+  { icon: MdCheck, stage: "APPROVED", value: "Approve" },
+  { icon: MdTimer, stage: "DEFAULT", value: "Pending" },
+  { icon: MdPriorityHigh, stage: "ACTION_REQUIRED", value: "Action Required" },
+];
+
+const TEST_GRADING_STATUS_OPTIONS: StatusOption[] = [
+  { icon: MdTimer, stage: "DEFAULT", value: "Pending" },
+  { icon: MdCheck, stage: "TEST_CORRECT", value: "Correct" },
+  {
+    icon: MdErrorOutline,
+    stage: "TEST_PARTIALLY_CORRECT",
+    value: "Partially correct",
+  },
+  { icon: MdPriorityHigh, stage: "TEST_INCORRECT", value: "Incorrect" },
+];
 
 const StatusBadge = ({
   translatedStoryLines,
@@ -37,6 +63,7 @@ const StatusBadge = ({
   storyLine,
   numApprovedLines,
   setNumApprovedLines,
+  isTest,
 }: StatusBadgeProps) => {
   const [updateStatus] = useMutation<{
     response: UpdateStoryTranslationContentStatusResponse;
@@ -100,43 +127,31 @@ const StatusBadge = ({
     closeModal();
   };
 
+  const statusOptions = isTest
+    ? TEST_GRADING_STATUS_OPTIONS
+    : REVIEW_STATUS_OPTIONS;
+
   return (
     <Menu>
       <MenuButton
         as={Badge}
         textTransform="capitalize"
         variant={getStatusVariant(storyLine.status)}
-        marginBottom="10px"
-        text-align="center"
       >
         {storyLine.status}
         <Icon as={MdArrowDropDown} height={6} width={6} />
       </MenuButton>
       <MenuList>
-        <MenuItem
-          icon={<Icon as={MdCheck} height={6} width={6} />}
-          onClick={async () => {
-            handleStatusChange("APPROVED");
-          }}
-        >
-          Approve
-        </MenuItem>
-        <MenuItem
-          icon={<Icon as={MdTimer} height={6} width={6} />}
-          onClick={async () => {
-            handleStatusChange("DEFAULT");
-          }}
-        >
-          Pending
-        </MenuItem>
-        <MenuItem
-          icon={<Icon as={MdPriorityHigh} height={6} width={6} />}
-          onClick={async () => {
-            handleStatusChange("ACTION_REQUIRED");
-          }}
-        >
-          Action Required
-        </MenuItem>
+        {statusOptions.map((option) => (
+          <MenuItem
+            icon={<Icon as={option.icon} height={6} width={6} />}
+            onClick={async () => {
+              handleStatusChange(option.stage);
+            }}
+          >
+            {option.value}
+          </MenuItem>
+        ))}
       </MenuList>
       {sendAsApprovedLastLine && (
         <ConfirmationModal
