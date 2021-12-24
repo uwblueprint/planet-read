@@ -1,6 +1,6 @@
 import { DocumentNode, gql } from "@apollo/client";
 
-const STORY_FIELDS = `
+export const STORY_FIELDS = `
     title
     description
     youtubeLink

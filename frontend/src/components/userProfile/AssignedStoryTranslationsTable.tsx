@@ -48,6 +48,11 @@ interface AssignedStoryTranslationsFieldSortDict {
   };
 }
 
+type AssignStoryTranslationResponse = {
+  storyTranslation?: StoryTranslation;
+  error?: string;
+};
+
 export type AssignedStoryTranslationsTableProps = {
   storyTranslations: StoryTranslation[];
   setStoryTranslations: (newStoryTranslations: StoryTranslation[]) => void;
@@ -172,28 +177,31 @@ const AssignedStoryTranslationsTable = ({
   const [createTranslation] = useMutation<{
     createStoryTranslation: CreateTranslationResponse;
   }>(CREATE_TRANSLATION);
-  const assignTranslator = async (): Promise<string | null> => {
-    try {
-      const storyTranslationData = {
-        storyId: storyToAssign!!.storyId,
-        translatorId: userId,
-        language: storyToAssign!!.language,
-      };
-      const result = await createTranslation({
-        variables: { storyTranslationData },
-      });
-      return result.data?.createStoryTranslation.story.id
-        ? null
-        : "Error assigning user as translator!";
-    } catch (err) {
-      return err as string;
-    }
-  };
+  const assignTranslator =
+    async (): Promise<AssignStoryTranslationResponse> => {
+      try {
+        const storyTranslationData = {
+          storyId: storyToAssign!!.storyId,
+          translatorId: userId,
+          language: storyToAssign!!.language,
+        };
+        const result = await createTranslation({
+          variables: { storyTranslationData },
+        });
+
+        if (result.data?.createStoryTranslation.story) {
+          return { storyTranslation: result.data.createStoryTranslation.story };
+        }
+        return { error: "Error assigning user as translator!" };
+      } catch (err) {
+        return { error: err as string };
+      }
+    };
 
   const [assignUserAsReviewer] = useMutation<{
     assignUserAsReviewer: AssignReviewerResponse;
   }>(ASSIGN_REVIEWER);
-  const assignReviewer = async (): Promise<string | null> => {
+  const assignReviewer = async (): Promise<AssignStoryTranslationResponse> => {
     try {
       const result = await assignUserAsReviewer({
         variables: {
@@ -201,11 +209,13 @@ const AssignedStoryTranslationsTable = ({
           userId,
         },
       });
-      return result.data?.assignUserAsReviewer.ok
-        ? null
-        : "Error assigning user as reviewer!";
+      if (result.data?.assignUserAsReviewer.story) {
+        return { storyTranslation: result.data.assignUserAsReviewer.story };
+      }
+
+      return { error: "Error assigning user as reviewer!" };
     } catch (err) {
-      return err as string;
+      return { error: err as string };
     }
   };
 
@@ -246,16 +256,15 @@ const AssignedStoryTranslationsTable = ({
       ? assignReviewer
       : assignTranslator;
 
-    const err = await assignUser();
+    const { storyTranslation, error } = await assignUser();
     closeAssignStoryModal(false);
     closeConfirmAssignStoryModal();
 
-    if (err !== null) {
-      window.alert(err);
+    if (error) {
+      window.alert(error);
     } else {
       setStoryAssignStage(StoryAssignStage.SUCCESS);
-      // TODO: remove this line and add story translation locally
-      window.location.reload();
+      setStoryTranslations([...storyTranslations!, storyTranslation!]);
       resetAlertTimeout();
     }
   };
@@ -280,7 +289,7 @@ const AssignedStoryTranslationsTable = ({
   const generateStoryTranslationLink = (translation: StoryTranslation) => {
     const suffix = `${translation.storyId}/${translation.storyTranslationId}`;
     if (isAdmin) {
-      return `/story/${suffix}`;
+      return `/story/${translation.storyId}`;
     }
     if (getRole(translation) === "Translator") {
       return `/translation/${suffix}`;

@@ -1,4 +1,5 @@
 import { gql } from "@apollo/client";
+import { StoryTranslation, STORY_FIELDS } from "../queries/StoryQueries";
 
 export const UPDATE_STORY_TRANSLATION_CONTENTS = gql`
   mutation UpdateStoryTranslationContents(
@@ -52,17 +53,22 @@ export const CREATE_TRANSLATION = gql`
   ) {
     createStoryTranslation(storyTranslationData: $storyTranslationData) {
       story {
-        id
+        storyTranslationId: id
+        storyId
+        translatorId
+        reviewerId
+        language
+        stage
+        translatorLastActivity
+        reviewerLastActivity
+        ${STORY_FIELDS}
       }
     }
   }
 `;
 
-// TODO: update mutation to retrieve story translation fields
 export type CreateTranslationResponse = {
-  story: {
-    id: number;
-  };
+  story: StoryTranslation;
 };
 
 export const ASSIGN_REVIEWER = gql`
@@ -71,13 +77,24 @@ export const ASSIGN_REVIEWER = gql`
       storyTranslationId: $storyTranslationId
       userId: $userId
     ) {
-      ok
+      story {
+        storyTranslationId: id
+        storyId
+        translatorId
+        reviewerId
+        language
+        stage
+        translatorLastActivity
+        reviewerLastActivity
+        ${STORY_FIELDS}
+      }
     }
   }
 `;
 
-// TODO: update mutation to retrieve story translation fields
-export type AssignReviewerResponse = { ok: boolean };
+export type AssignReviewerResponse = {
+  story: StoryTranslation;
+};
 
 export const UNASSIGN_REVIEWER = gql`
   mutation UnassignReviewer($storyTranslationId: ID!) {
