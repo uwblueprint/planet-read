@@ -26,6 +26,7 @@ import {
   UPDATE_STORY_TRANSLATION_STAGE,
   UpdateStoryTranslationStageResponse,
 } from "../../APIClients/mutations/StoryMutations";
+import AssignTestGradeModal from "../onboarding/AssignTestGradeModal";
 
 type StoryTestGradingPageProps = {
   storyIdParam: string | undefined;
@@ -54,11 +55,13 @@ const StoryTestGradingPage = () => {
 
   const [fontSize, setFontSize] = useState<string>("12px");
   const [title, setTitle] = useState<string>("");
+  const [level, setLevel] = useState<number>(0);
   const [language, setLanguage] = useState<string>("");
   const [stage, setStage] = useState<string>("");
   const [testFeedback] = useState<string>("");
 
   const [failUser, setFailUser] = useState(false);
+  const [assignGrade, setAssignGrade] = useState(false);
 
   useEffect(() => {
     calculateScore();
@@ -83,6 +86,13 @@ const StoryTestGradingPage = () => {
   };
   const openFailUserModal = () => {
     setFailUser(true);
+  };
+
+  const closeAssignGradeModal = () => {
+    setAssignGrade(false);
+  };
+  const openAssignGradeModal = () => {
+    setAssignGrade(true);
   };
 
   const handleFontSizeChange = (val: string) => {
@@ -147,6 +157,7 @@ const StoryTestGradingPage = () => {
 
         const storyContent = data.storyById.contents;
         const translatedContent = data.storyTranslationById.translationContents;
+        setLevel(data.storyTranslationById.level);
         setLanguage(data.storyTranslationById.language);
         setStage(data.storyTranslationById.stage);
         setTitle(data.storyById.title);
@@ -256,7 +267,7 @@ const StoryTestGradingPage = () => {
                   <Button
                     colorScheme="blue"
                     disabled={stage === "TRANSLATE"}
-                    onClick={() => {}}
+                    onClick={openAssignGradeModal}
                   >
                     Assign Level{" "}
                   </Button>
@@ -271,6 +282,14 @@ const StoryTestGradingPage = () => {
           onClose={closeFailUserModal}
           confirmationMessage={GRADING_PAGE_FAIL_USER_CONFIRMATION}
           buttonMessage={GRADING_PAGE_FAIL_USER_BUTTON}
+        />
+        <AssignTestGradeModal
+          isOpen={assignGrade}
+          onClose={closeAssignGradeModal}
+          testLevel={level}
+          language={convertLanguageTitleCase(language)}
+          score={score}
+          storyLength={translatedStoryLines.length}
         />
       </Flex>
     </Flex>
