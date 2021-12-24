@@ -10,6 +10,7 @@ import { CommentResponse } from "../../APIClients/queries/CommentQueries";
 import { StoryLine } from "../translation/Autosave";
 
 export type ExistingCommentProps = {
+  commentsStateIdx: number;
   userName: string;
   comment: CommentResponse;
   updateCommentsAsResolved: (index: number) => void;
@@ -18,9 +19,12 @@ export type ExistingCommentProps = {
   translatedStoryLines: StoryLine[];
   setTranslatedStoryLines: (storyLines: StoryLine[]) => void;
   WIPLineIndex: number;
+  threadHeadMap: boolean[];
+  updateThreadHeadMap: (cmts: CommentResponse[]) => void;
 };
 
 const ExistingComment = ({
+  commentsStateIdx,
   userName,
   comment,
   updateCommentsAsResolved,
@@ -28,6 +32,8 @@ const ExistingComment = ({
   setTranslatedStoryLines,
   comments,
   translatedStoryLines,
+  threadHeadMap,
+  updateThreadHeadMap,
 }: ExistingCommentProps) => {
   const {
     id,
@@ -87,18 +93,26 @@ const ExistingComment = ({
     newTime.getTime() - newTime.getTimezoneOffset() * 60000,
   );
 
+  const isThreadHead = commentIndex === 0 || threadHeadMap[commentsStateIdx];
+  const isFirstReply =
+    !threadHeadMap[commentsStateIdx] &&
+    threadHeadMap[commentsStateIdx - 1] &&
+    comments[commentsStateIdx - 1].storyTranslationContentId ===
+      storyTranslationContentId;
+  const isLive = !resolved && isThreadHead;
+
   return (
     <Flex
       backgroundColor="transparent"
       borderRadius="8"
       direction="column"
       padding="14px 14px"
-      width={`${commentIndex ? 300 : 320}px`}
-      margin={`${commentIndex ? 20 : 0}px`}
+      width={`${!isThreadHead ? 300 : 320}px`}
+      margin={`${!isThreadHead ? 20 : 0}px`}
     >
-      {commentIndex < 2 && (
+      {(isThreadHead || isFirstReply) && (
         <Text fontWeight="bold" marginBottom="15px">
-          {commentIndex === 1 && "Replies to "}
+          {isFirstReply && "Replies to "}
           Line {storyContentId + 1}
         </Text>
       )}
@@ -118,15 +132,15 @@ const ExistingComment = ({
         {content}
       </Text>
       <Flex>
-        {!resolved && !commentIndex && (
-          <Button onClick={() => handleReply()} variant="commentLabel">
-            Reply
-          </Button>
-        )}
-        {!resolved && !commentIndex && (
-          <Button onClick={resolveExistingComment} variant="commentLabel">
-            Resolve
-          </Button>
+        {isThreadHead && isLive && (
+          <>
+            <Button onClick={() => handleReply()} variant="commentLabel">
+              Reply
+            </Button>
+            <Button onClick={resolveExistingComment} variant="commentLabel">
+              Resolve
+            </Button>
+          </>
         )}
       </Flex>
       {reply > -1 && (
@@ -138,6 +152,7 @@ const ExistingComment = ({
           setComments={setComments}
           setTranslatedStoryLines={setTranslatedStoryLines}
           translatedStoryLines={translatedStoryLines}
+          updateThreadHeadMap={updateThreadHeadMap}
         />
       )}
     </Flex>
