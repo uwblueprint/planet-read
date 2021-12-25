@@ -1,17 +1,21 @@
 import { DocumentNode, gql } from "@apollo/client";
 
 export const STORY_FIELDS = `
+    id
     title
     description
     youtubeLink
     level
+    dateUploaded
     `;
 
 export type Story = {
+  id: number;
   title: string;
   description: string;
   youtubeLink: string;
   level: number;
+  dateUploaded: Date;
 };
 
 export const GET_STORY = (id: number) =>
@@ -20,6 +24,15 @@ export const GET_STORY = (id: number) =>
         storyById(
           id: ${id}
         ) {
+          ${STORY_FIELDS}
+        }
+      }
+    `;
+
+export const GET_STORIES = () =>
+  gql`
+      query GetStories {
+        stories {
           ${STORY_FIELDS}
         }
       }
