@@ -12,7 +12,7 @@ class StoryTranslationAll(db.Model):
 
     __tablename__ = "story_translations_all"
     id = db.Column(db.Integer, primary_key=True, nullable=False)
-    story_id = db.Column(db.Integer, db.ForeignKey("stories.id"), nullable=False)
+    story_id = db.Column(db.Integer, db.ForeignKey("stories_all.id"), nullable=False)
     language = db.Column(TEXT, nullable=False)
     stage = db.Column(stages_enum, nullable=False)
     translator_id = db.Column(db.Integer, db.ForeignKey("users_all.id"), index=True)

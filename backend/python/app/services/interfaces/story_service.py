@@ -232,3 +232,10 @@ class IStoryService(ABC):
         :param story_translation_id: id of the story translation
         :param user_id: id of the user to be removed
         """
+
+    @abstractmethod
+    def soft_delete_story(self, id):
+        """
+        Soft delete a story by setting is_deleted=True
+        :param id: id of the story
+        """

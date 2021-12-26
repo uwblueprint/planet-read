@@ -13,7 +13,9 @@ def init_app(app):
     from .comment_all import CommentAll
     from .file import File
     from .story import Story
+    from .story_all import StoryAll
     from .story_content import StoryContent
+    from .story_content_all import StoryContentAll
     from .story_translation import StoryTranslation
     from .story_translation_all import StoryTranslationAll
     from .story_translation_content import StoryTranslationContent

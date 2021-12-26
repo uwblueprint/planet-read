@@ -21,6 +21,8 @@ import {
 import {
   UPDATE_STORY,
   UpdateStoryResponse,
+  SOFT_DELETE_STORY,
+  SoftDeleteStoryResponse,
 } from "../../APIClients/mutations/StoryMutations";
 import Header from "../navigation/Header";
 import ConfirmationModal from "../utils/ConfirmationModal";
@@ -81,6 +83,10 @@ const ManageStoryPage = () => {
     response: UpdateStoryResponse;
   }>(UPDATE_STORY);
 
+  const [softDeleteStory] = useMutation<{
+    softDeleteStory: SoftDeleteStoryResponse;
+  }>(SOFT_DELETE_STORY);
+
   const closeModal = () => {
     setConfirmDeleteStory(false);
   };
@@ -106,6 +112,20 @@ const ManageStoryPage = () => {
       setTitle(tempTitle);
       setDescription(tempDescription);
       setYoutubeLink(tempYoutubeLink);
+    }
+  };
+
+  const callSoftDeleteStoryMutation = async () => {
+    await softDeleteStory({
+      variables: {
+        id: parseInt(storyIdParam, 10),
+      },
+    });
+    try {
+      history.push("/");
+      window.location.reload();
+    } catch (error) {
+      window.alert(error ?? "Error occurred, please try again.");
     }
   };
 
@@ -238,7 +258,7 @@ const ManageStoryPage = () => {
         <ConfirmationModal
           confirmation={confirmDeleteStory}
           onClose={closeModal}
-          onConfirmationClick={() => {}} // TODO: implement story deletion
+          onConfirmationClick={() => callSoftDeleteStoryMutation()} // TODO: implement story deletion
           confirmationMessage={DELETE_STORY_CONFIRMATION}
           buttonMessage={DELETE_STORY_BUTTON}
         />

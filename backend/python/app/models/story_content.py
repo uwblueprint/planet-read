@@ -1,18 +1,19 @@
-from sqlalchemy import inspect
-from sqlalchemy.dialects.mysql import LONGTEXT
-from sqlalchemy.orm.properties import ColumnProperty
+from sqlalchemy import inspect, select
+from sqlalchemy_utils import create_view
 
 from . import db
+from .story_content_all import StoryContentAll
+
+stmt = select([StoryContentAll]).where(StoryContentAll.is_deleted == False)
+story_contents_active = create_view("story_contents", stmt, db.Model.metadata)
 
 
 class StoryContent(db.Model):
-    __tablename__ = "story_contents"
-    id = db.Column(db.Integer, primary_key=True, nullable=False)
-    story_id = db.Column(
-        db.Integer, db.ForeignKey("stories.id"), index=True, nullable=False
-    )
-    line_index = db.Column(db.Integer, nullable=False)
-    content = db.Column(LONGTEXT, nullable=False)
+    def __init__(self, **kwargs):
+        super(StoryContent, self).__init__(**kwargs)
+        self.is_deleted = False
+
+    __table__ = story_contents_active
 
     def to_dict(self, include_relationships=False):
         cls = type(self)

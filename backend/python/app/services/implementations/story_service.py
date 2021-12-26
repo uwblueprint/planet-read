@@ -12,7 +12,9 @@ from ...graphql.types.story_type import (
 from ...models import db
 from ...models.comment import Comment
 from ...models.story import Story
+from ...models.story_all import StoryAll
 from ...models.story_content import StoryContent
+from ...models.story_content_all import StoryContentAll
 from ...models.story_translation import StoryTranslation
 from ...models.story_translation_all import StoryTranslationAll
 from ...models.story_translation_content import StoryTranslationContent
@@ -216,7 +218,7 @@ class StoryService(IStoryService):
                 .order_by(Story.id)
                 .all()
             )
-
+            print("stories: ", stories)
             translator = aliased(User)
             reviewer = aliased(User)
 
@@ -342,6 +344,7 @@ class StoryService(IStoryService):
 
     def get_story_translation(self, id):
         try:
+            print("inside get_story_translation")
 
             translator = aliased(User)
             reviewer = aliased(User)
@@ -893,6 +896,30 @@ class StoryService(IStoryService):
             num_translations_in_review=num_translations_in_review,
             num_translations_completed=num_translations_completed,
         )
+
+    def soft_delete_story(self, id):
+        try:
+            story = StoryAll.query.get(id)
+            for content in story.contents:
+                content.is_deleted = True
+
+            story.is_deleted = True
+            story.translated_languages = None
+
+            # Remove story_translations for this story
+            story_translations = (
+                db.session.query(StoryTranslation)
+                .filter(StoryTranslation.story_id == id)
+                .all()
+            )
+
+            for translation in story_translations:
+                translation.is_deleted = True
+
+            db.session.commit()
+        except Exception as error:
+            self.logger.error(error)
+            raise error
 
     def _get_num_translated_lines(self, translation_contents):
         return len(translation_contents) - [
