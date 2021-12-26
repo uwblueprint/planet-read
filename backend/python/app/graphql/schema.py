@@ -47,7 +47,7 @@ from .queries.story_query import (
 )
 from .queries.user_query import resolve_user_by_email, resolve_user_by_id, resolve_users
 from .types.comment_type import CommentResponseDTO
-from .types.file_type import FileDTO
+from .types.file_type import DownloadFileDTO, FileDTO
 from .types.story_type import (
     StoryResponseDTO,
     StoryTranslationConnection,
@@ -97,7 +97,7 @@ class Query(graphene.ObjectType):
         story_translation_id=graphene.Int(required=True),
         resolved=graphene.Boolean(),
     )
-    file_by_id = graphene.Field(FileDTO, id=graphene.Int(required=True))
+    file_by_id = graphene.Field(DownloadFileDTO, id=graphene.Int(required=True))
     stories = graphene.Field(graphene.List(StoryResponseDTO))
     story_by_id = graphene.Field(StoryResponseDTO, id=graphene.Int(required=True))
     story_translations = graphene.relay.ConnectionField(
