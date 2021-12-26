@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import Header, { AdminPageOption } from "../navigation/Header";
 import ManageStoryTranslations from "../admin/ManageStoryTranslations";
+import ManageStories from "../admin/ManageStories";
 import ManageUsers from "../admin/ManageUsers";
 import ManageStoryTests from "../admin/ManageStoryTests";
 
@@ -12,6 +13,8 @@ const AdminPage = () => {
     switch (adminPgOption) {
       case AdminPageOption.StoryTranslations:
         return <ManageStoryTranslations />;
+      case AdminPageOption.Stories:
+        return <ManageStories />;
       case AdminPageOption.Translators:
         return <ManageUsers isTranslators />;
       case AdminPageOption.Reviewers:
