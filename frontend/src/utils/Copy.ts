@@ -94,3 +94,8 @@ export const GRADING_PAGE_FAIL_USER_CONFIRMATION =
   "By failing this user, they have to wait for 30 days before they can take this test again.";
 
 export const GRADING_PAGE_FAIL_USER_BUTTON = "I'm sure, fail user";
+
+export const ASSIGN_USER_LEVEL_CONFIRMATION =
+  "By assigning a level, the user will gain access to different stories based on their level. A change can only be made manually.";
+
+export const ASSIGN_USER_LEVEL_BUTTON = "I'm sure, assign level";

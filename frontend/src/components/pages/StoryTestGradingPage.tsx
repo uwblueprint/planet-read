@@ -290,6 +290,7 @@ const StoryTestGradingPage = () => {
           language={convertLanguageTitleCase(language)}
           score={score}
           storyLength={translatedStoryLines.length}
+          storyTranslationId={storyTranslationId}
         />
       </Flex>
     </Flex>

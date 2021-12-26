@@ -9,8 +9,8 @@ export type BlockProps = {
 
 const Block = ({ header, text }: BlockProps) => {
   return (
-    <Box flexGrow={1}>
-      <Box h={2} backgroundColor="blue.50" />
+    <Box flexGrow={1} paddingRight="20px">
+      <Box h={2} backgroundColor="blue.50" marginBottom="12px" />
       <Heading
         color="blue.500"
         marginBottom="5px"
