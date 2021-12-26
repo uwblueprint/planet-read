@@ -22,7 +22,10 @@ class FileService(IFileService):
             # encode file data as base64 string
             file_bytes = open(file.path, "rb").read()
             encoded = b64encode(file_bytes).decode("utf-8")
-            return DownloadFileDTO(id=id, file=encoded)
+
+            # extract extension and path
+            _, file_extension = os.path.splitext(file.path)
+            return DownloadFileDTO(id=id, file=encoded, ext=file_extension[1:])
         except Exception as e:
             reason = getattr(e, "message", None)
             self.logger.error(
