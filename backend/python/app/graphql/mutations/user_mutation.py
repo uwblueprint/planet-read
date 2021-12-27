@@ -27,7 +27,7 @@ class CreateUser(graphene.Mutation):
 class UpdateMe(graphene.Mutation):
     class Arguments:
         user = UpdateUserDTO(required=True)
-        resume = Upload(required=True)
+        resume = Upload(required=False)
 
     user = graphene.Field(lambda: UserDTO)
 
