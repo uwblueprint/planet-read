@@ -8,3 +8,9 @@ class FileDTO(graphene.ObjectType):
 
 class CreateFileDTO(graphene.InputObjectType):
     path = graphene.String(required=True)
+
+
+class DownloadFileDTO(graphene.ObjectType):
+    id = graphene.Int()
+    file = graphene.String(required=True)
+    ext = graphene.String(required=True)
