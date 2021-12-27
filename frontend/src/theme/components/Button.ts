@@ -88,6 +88,13 @@ const Button = {
       textTransform: "capitalize",
       width: "40px",
     },
+    link: {
+      fontSize: "16px",
+      textTransform: "lowercase",
+      textDecoration: "underline",
+      width: "fit-content",
+      fontWeight: "normal",
+    },
   },
 };
 export default Button;

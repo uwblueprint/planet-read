@@ -25,6 +25,7 @@
     "@types/react-table": "^7.0.29",
     "axios": "^0.21.2",
     "bootstrap": "^4.6.0",
+    "file-saver": "^2.0.5",
     "framer-motion": "^4",
     "graphql": "^15.5.0",
     "humps": "^2.0.1",
@@ -71,6 +72,7 @@
     ]
   },
   "devDependencies": {
+    "@types/file-saver": "^2.0.4",
     "@types/humps": "^2.0.0",
     "@types/jsonwebtoken": "^8.5.1",
     "@types/react-router-dom": "^5.1.7",
