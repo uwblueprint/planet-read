@@ -1,7 +1,9 @@
 import os
 from base64 import b64encode
 
-from ...graphql.types.file_type import DownloadFileDTO
+from werkzeug.utils import secure_filename
+
+from ...graphql.types.file_type import DownloadFileDTO, FileDTO
 from ...models import db
 from ...models.file import File
 from ..interfaces.file_service import IFileService
@@ -50,8 +52,17 @@ class FileService(IFileService):
 
     def create_file(self, file):
         try:
-            self.logger.info(file)
-            new_file = File(**file.__dict__)
+            upload_folder_path = os.getenv("UPLOAD_PATH")
+            upload_path = os.path.join(
+                upload_folder_path, secure_filename(file.filename)
+            )
+            if os.path.isfile(upload_path):
+                upload_path = self.generate_file_name(secure_filename(file.filename))
+            file.save(upload_path)
+            file_dto = FileDTO(path=upload_path)
+
+            self.logger.info(file_dto)
+            new_file = File(**file_dto.__dict__)
         except Exception as error:
             self.logger.error(str(error))
             raise error
