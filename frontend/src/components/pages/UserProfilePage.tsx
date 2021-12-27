@@ -298,6 +298,7 @@ const UserProfilePage = () => {
       {addNewLanguage && (
         <NewLanguageModal
           addNewTest={addNewTest}
+          approvedLanguagesTranslation={approvedLanguagesTranslation}
           isOpen={addNewLanguage}
           onClose={closeNewLanguageModal}
         />

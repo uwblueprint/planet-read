@@ -13,6 +13,7 @@ import {
   Text,
   Tooltip,
 } from "@chakra-ui/react";
+import { ApprovedLanguagesMap } from "../../utils/Utils";
 import { colourStyles } from "../../theme/components/Select";
 import { convertLanguageTitleCase } from "../../utils/LanguageUtils";
 import DropdownIndicator from "../utils/DropdownIndicator";
@@ -20,16 +21,27 @@ import { languageOptions } from "../../constants/Languages";
 
 export type NewLanguageModalProps = {
   addNewTest: (newLanguage: string) => void;
+  approvedLanguagesTranslation: ApprovedLanguagesMap | undefined;
   isOpen: boolean;
   onClose: () => void;
 };
 
 const NewLanguageModal = ({
   addNewTest,
+  approvedLanguagesTranslation,
   isOpen,
   onClose,
 }: NewLanguageModalProps) => {
   const [newLanguage, setNewLanguage] = useState<string>("");
+  const unapprovedLanguageOptions = languageOptions.filter(function (obj) {
+    return (
+      !approvedLanguagesTranslation ||
+      !Object.prototype.hasOwnProperty.call(
+        approvedLanguagesTranslation,
+        obj.value,
+      )
+    );
+  });
 
   return (
     <Modal isOpen={isOpen} onClose={onClose} size="3xl">
@@ -58,7 +70,7 @@ const NewLanguageModal = ({
                 convertLanguageTitleCase(option.value)
               }
               onChange={(option: any) => setNewLanguage(option?.value || "")}
-              options={languageOptions}
+              options={unapprovedLanguageOptions}
               placeholder="Select language"
               styles={colourStyles}
             />
