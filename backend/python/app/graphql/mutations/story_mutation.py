@@ -1,4 +1,5 @@
 import graphene
+from graphene_file_upload.scalars import Upload
 
 from ...middlewares.auth import (
     get_user_id_from_request,
@@ -271,6 +272,26 @@ class SoftDeleteStory(graphene.Mutation):
         try:
             services["story"].soft_delete_story(id)
             return SoftDeleteStory(ok=True)
+        except Exception as e:
+            error_message = getattr(e, "message", None)
+            raise Exception(error_message if error_message else str(e))
+
+
+class ImportStory(graphene.Mutation):
+    class Arguments:
+        story_details = StoryRequestDTO(required=True)
+        story_file = Upload(required=True)
+
+    story = graphene.Field(lambda: StoryResponseDTO)
+
+    def mutate(root, info, story_details, story_file):
+        try:
+            if not services["file"].validate_file(story_file.filename, "docx"):
+                raise Exception("File must be .docx")
+            resp = services["file"].create_file(story_file)
+            new_story = services["story"].import_story(story_details, resp)
+            services["file"].delete_file(resp["path"])
+            return ImportStory(story=new_story)
         except Exception as e:
             error_message = getattr(e, "message", None)
             raise Exception(error_message if error_message else str(e))

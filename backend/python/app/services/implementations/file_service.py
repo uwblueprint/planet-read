@@ -50,6 +50,10 @@ class FileService(IFileService):
             suffix += 1
         return file
 
+    def validate_file(self, filename, extension):
+        split_filename = filename.split(".", 1)
+        return split_filename[-1] == extension
+
     def create_file(self, file):
         try:
             upload_folder_path = os.getenv("UPLOAD_PATH")
@@ -71,3 +75,14 @@ class FileService(IFileService):
         db.session.commit()
 
         return new_file.to_dict()
+
+    def delete_file(self, file):
+        try:
+            os.remove(file)
+            f = File.query.filter(File.path == file).order_by(File.id.desc()).first()
+            db.session.delete(f)
+        except Exception as error:
+            self.logger.error(str(error))
+            raise error
+        db.session.commit()
+        return

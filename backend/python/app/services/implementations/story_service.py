@@ -1,5 +1,6 @@
 from datetime import datetime, timedelta
 
+import docx
 from flask import current_app
 from sqlalchemy.orm import aliased
 
@@ -73,6 +74,15 @@ class StoryService(IStoryService):
         db.session.refresh(new_story)
 
         return new_story
+
+    def import_story(self, details, file):
+        try:
+            story_contents = self._read_doc(file["path"])
+            return self.create_story(details, story_contents)
+
+        except Exception as error:
+            self.logger.error(str(error))
+            raise error
 
     def create_translation(self, translation):
         try:
@@ -988,3 +998,14 @@ class StoryService(IStoryService):
         except Exception as error:
             self.logger.error(error)
             raise error
+
+    def _read_doc(self, file):
+        try:
+            doc = docx.Document(file)
+            story_contents = []
+            for line in doc.paragraphs:
+                story_contents.append(line.text)
+            return story_contents
+        except Exception as e:
+            error_message = getattr(e, "message", None)
+            raise Exception(error_message if error_message else str(e))
