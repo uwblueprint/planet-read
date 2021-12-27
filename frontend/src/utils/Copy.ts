@@ -100,6 +100,11 @@ export const GRADING_PAGE_FAIL_USER_CONFIRMATION =
 
 export const GRADING_PAGE_FAIL_USER_BUTTON = "I'm sure, fail user";
 
+export const ASSIGN_USER_LEVEL_CONFIRMATION =
+  "By assigning a level, the user will gain access to different stories based on their level. A change can only be made manually.";
+
+export const ASSIGN_USER_LEVEL_BUTTON = "I'm sure, assign level";
+
 export const DEMOTE_LEVEL_CONFIRMATION =
   "By lowering the level at this language, the user will no longer be able to start translating or reviewing story translations at this level, in this language. The user will continue having access to any ongoing story translations at this level, in this langauge.";
 

@@ -91,6 +91,7 @@ export const GET_STORY_AND_TRANSLATION_CONTENTS = (
     }
     storyTranslationById(id: ${storyTranslationId}) {
       language
+      level
       stage
       translationContents {
         id
