@@ -84,9 +84,10 @@ const CommentsPanel = ({
     const newComments = [...comments];
     const commentsStateIdx = newComments.findIndex((c) => c.id === index);
     const updatedComment = { ...newComments[commentsStateIdx] };
+    // Resolving one comment resolves the entire thread
     if (filterOptions[filterIndex] === "Unresolved") {
+      // Remove all resolved comments
       setComments(
-        // Resolving one comment resolves the entire thread
         newComments.filter(
           (c) =>
             c.storyTranslationContentId !==
@@ -94,8 +95,22 @@ const CommentsPanel = ({
         ),
       );
     } else {
-      updatedComment.resolved = true;
-      newComments[commentsStateIdx] = updatedComment;
+      // Resolve entire thread
+      const updatedCommentIdxs: number[] = [];
+      newComments.forEach((c, i) => {
+        if (
+          c.storyTranslationContentId ===
+            updatedComment.storyTranslationContentId &&
+          !c.resolved
+        ) {
+          updatedCommentIdxs.push(i);
+        }
+      });
+      updatedCommentIdxs.forEach((i) => {
+        const updatedC = { ...newComments[i] };
+        updatedC.resolved = true;
+        newComments[i] = updatedC;
+      });
       setComments(newComments);
     }
     updateThreadHeadMap(newComments);
