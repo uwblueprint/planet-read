@@ -96,7 +96,7 @@ const StoriesTable = ({ stories, setStories }: StoriesTableProps) => {
       key={`${story.id}`}
     >
       <Td>
-        <Link isExternal href={`/story/${story.id}`}>
+        <Link isExternal href={`#/story/${story.id}`}>
           {story.title}
         </Link>
       </Td>

@@ -6,7 +6,6 @@ export const STORY_FIELDS = `
     description
     youtubeLink
     level
-    dateUploaded
     `;
 
 export type Story = {
@@ -34,6 +33,7 @@ export const GET_STORIES = () =>
       query GetStories {
         stories {
           ${STORY_FIELDS}
+          dateUploaded
         }
       }
     `;
