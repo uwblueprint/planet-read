@@ -31,7 +31,7 @@ class StoryService(IStoryService):
         # Story is a SQLAlchemy model, we can use convenient methods provided
         # by SQLAlchemy like query.all() to query the data
         return [
-            story.to_dict(include_relationships=True) for story in Story.query.all()
+            story.to_dict(include_relationships=True) for story in StoryAll.query.all()
         ]
 
     def get_story(self, id):
@@ -45,7 +45,7 @@ class StoryService(IStoryService):
     def create_story(self, story, content):
         # create story
         try:
-            new_story = Story(**story.__dict__)
+            new_story = StoryAll(**story.__dict__)
             new_story.date_uploaded = datetime.utcnow()
         except Exception as error:
             self.logger.error(str(error))
@@ -62,6 +62,7 @@ class StoryService(IStoryService):
                     "story_id": new_story.id,
                     "line_index": i,
                     "content": line,
+                    "is_deleted": False,
                 }
                 db.session.add(StoryContent(**new_content))
         except Exception as error:
@@ -218,7 +219,6 @@ class StoryService(IStoryService):
                 .order_by(Story.id)
                 .all()
             )
-            print("stories: ", stories)
             translator = aliased(User)
             reviewer = aliased(User)
 
@@ -344,8 +344,6 @@ class StoryService(IStoryService):
 
     def get_story_translation(self, id):
         try:
-            print("inside get_story_translation")
-
             translator = aliased(User)
             reviewer = aliased(User)
 
@@ -839,9 +837,10 @@ class StoryService(IStoryService):
             story_translation.is_deleted = True
 
             # Remove language from story.translated_languages
-            story = Story.query.filter_by(id=story_translation.story_id).first()
+            story = StoryAll.query.filter_by(id=story_translation.story_id).first()
             if (
-                story.translated_languages is not None
+                story is not None
+                and story.translated_languages is not None
                 and story_translation.language in story.translated_languages
             ):
                 story.translated_languages.remove(story_translation.language)
@@ -904,7 +903,6 @@ class StoryService(IStoryService):
                 content.is_deleted = True
 
             story.is_deleted = True
-            story.translated_languages = None
 
             # Remove story_translations for this story
             story_translations = (
@@ -914,7 +912,7 @@ class StoryService(IStoryService):
             )
 
             for translation in story_translations:
-                translation.is_deleted = True
+                self.soft_delete_story_translation(translation.id)
 
             db.session.commit()
         except Exception as error:

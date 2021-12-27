@@ -8,11 +8,7 @@ from app import create_app
 db = SQLAlchemy()
 
 from app.models.comment_all import CommentAll
-
-# from app.models.story import Story
 from app.models.story_all import StoryAll
-
-# from app.models.story_content import StoryContent
 from app.models.story_content_all import StoryContentAll
 from app.models.story_translation import StoryTranslation
 from app.models.story_translation_all import StoryTranslationAll

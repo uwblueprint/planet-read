@@ -1,3 +1,5 @@
+from datetime import datetime
+
 from sqlalchemy import inspect, select
 from sqlalchemy.orm.properties import ColumnProperty
 from sqlalchemy_utils import create_view
@@ -13,6 +15,10 @@ class Story(db.Model):
     def __init__(self, **kwargs):
         super(Story, self).__init__(**kwargs)
         self.is_deleted = False
+        if self.is_test is None:
+            self.is_test = False
+        if self.date_uploaded is None:
+            self.date_uploaded = datetime.utcnow()
 
     __table__ = stories_active
 

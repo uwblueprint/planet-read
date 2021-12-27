@@ -117,19 +117,19 @@ def downgrade():
 
     op.rename_table("story_contents_all", "story_contents")
 
+    op.create_index(
+        op.f("ix_story_contents_story_id"),
+        "story_contents",
+        ["story_id"],
+        unique=False,
+    )
+
     op.create_foreign_key(
         u"story_contents_ibfk_1",
         "story_contents",
         "stories",
         ["story_id"],
         ["id"],
-    )
-
-    op.create_index(
-        op.f("ix_story_contents_story_id"),
-        "story_contents",
-        ["story_id"],
-        unique=False,
     )
 
     op.drop_column("story_contents", "is_deleted")

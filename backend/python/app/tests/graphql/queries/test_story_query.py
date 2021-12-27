@@ -1,5 +1,7 @@
 from ....models.story import Story
+from ....models.story_all import StoryAll
 from ....models.story_content import StoryContent
+from ....models.story_content_all import StoryContentAll
 from ...helpers.story_helpers import (
     assert_story_equals_model,
     guarantee_story_table_not_empty,
@@ -31,8 +33,8 @@ def test_stories(app, db, client):
     result = client.execute(GET_STORIES)
     returned_arr = result["data"]["stories"]
 
-    stories_db = Story.query.all()
-    story_contents_db = StoryContent.query.all()
+    stories_db = StoryAll.query.all()
+    story_contents_db = StoryContentAll.query.all()
     story_contents_db_dict = {sc.id: sc for sc in story_contents_db}
     assert len(returned_arr) == len(stories_db)
 

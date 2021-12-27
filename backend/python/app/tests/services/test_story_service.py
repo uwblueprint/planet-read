@@ -1,7 +1,9 @@
 import pytest
 
 from ...models.story import Story
+from ...models.story_all import StoryAll
 from ...models.story_content import StoryContent
+from ...models.story_content_all import StoryContentAll
 from ...models.story_translation import StoryTranslation
 from ...models.story_translation_all import StoryTranslationAll
 from ...models.user import User
@@ -66,10 +68,10 @@ def test_create_story(app, db, services):
     content = ["line1", "line2", "line3"]
     resp = services["story"].create_story(story, content)
 
-    story_obj = Story.query.get(resp.id)
+    story_obj = StoryAll.query.get(resp.id)
     assert resp == story_obj
 
-    content_objs = StoryContent.query.filter_by(story_id=resp.id).all()
+    content_objs = StoryContentAll.query.filter_by(story_id=resp.id).all()
     assert len(content_objs) == len(resp.contents)
     for content_obj, resp_content in zip(content_objs, resp.contents):
         assert content_obj == resp_content

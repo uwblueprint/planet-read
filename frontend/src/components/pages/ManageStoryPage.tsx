@@ -116,14 +116,14 @@ const ManageStoryPage = () => {
   };
 
   const callSoftDeleteStoryMutation = async () => {
-    await softDeleteStory({
-      variables: {
-        id: parseInt(storyIdParam, 10),
-      },
-    });
     try {
       history.push("/");
       window.location.reload();
+      await softDeleteStory({
+        variables: {
+          id: parseInt(storyIdParam, 10),
+        },
+      });
     } catch (error) {
       window.alert(error ?? "Error occurred, please try again.");
     }
@@ -258,7 +258,7 @@ const ManageStoryPage = () => {
         <ConfirmationModal
           confirmation={confirmDeleteStory}
           onClose={closeModal}
-          onConfirmationClick={() => callSoftDeleteStoryMutation()} // TODO: implement story deletion
+          onConfirmationClick={() => callSoftDeleteStoryMutation()}
           confirmationMessage={DELETE_STORY_CONFIRMATION}
           buttonMessage={DELETE_STORY_BUTTON}
         />
