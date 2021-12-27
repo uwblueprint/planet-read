@@ -175,8 +175,10 @@ class Query(graphene.ObjectType):
     def resolve_file_by_id(root, info, id):
         return resolve_file_by_id(root, info, id)
 
-    def resolve_stories(root, info, **kwargs):
-        return resolve_stories(root, info, **kwargs)
+    def resolve_stories(
+        root, info, story_title=None, start_date=None, end_date=None, **kwargs
+    ):
+        return resolve_stories(root, info, story_title, start_date, end_date, **kwargs)
 
     def resolve_story_by_id(root, info, id):
         return resolve_story_by_id(root, info, id)

@@ -34,14 +34,27 @@ class StoryService(IStoryService):
     def __init__(self, logger=current_app.logger):
         self.logger = logger
 
-    def get_stories(self):
-        # Story is a SQLAlchemy model, we can use convenient methods provided
-        # by SQLAlchemy like query.all() to query the data
-        return [
-            story.to_dict(include_relationships=True)
-            for story in StoryAll.query.all()
-            if not story.is_deleted
-        ]
+    def get_stories(self, story_title=None, start_date=None, end_date=None):
+        try:
+            # Story is a SQLAlchemy model, we can use convenient methods provided
+            # by SQLAlchemy like query.all() to query the data
+            filters = []
+            if (end_date and start_date) and end_date < start_date:
+                raise Exception("Invalid filter: end_date cannot be before start_date.")
+            if story_title is not None:
+                filters.append(Story.title.like(f"%{story_title}%"))
+            if start_date is not None:
+                filter.append(Story.date_uploaded >= start_date)
+            if end_date is not None:
+                filter.append(Story.date_uploaded <= end_date)
+            return [
+                story.to_dict(include_relationships=True)
+                for story in StoryAll.query.filter(*filters).all()
+                if not story.is_deleted
+            ]
+        except Exception as error:
+            self.logger.error(error)
+            raise error
 
     def get_story(self, id):
         # get queries by the primary key, which is id for the Story table
