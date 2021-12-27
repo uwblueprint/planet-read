@@ -7,7 +7,7 @@
     "@apollo/client": "^3.3.16",
     "@chakra-ui/icon": "^1.1.11",
     "@chakra-ui/react": "^1.7.1",
-    "@chakra-ui/theme": "^1.9.2",
+    "@chakra-ui/theme": "^1.12.2",
     "@chakra-ui/theme-tools": "^1.1.8",
     "@emotion/react": "^11",
     "@emotion/styled": "^11",
