@@ -99,3 +99,8 @@ export const GRADING_PAGE_FAIL_USER_CONFIRMATION =
   "By failing this user, they have to wait for 30 days before they can take this test again.";
 
 export const GRADING_PAGE_FAIL_USER_BUTTON = "I'm sure, fail user";
+
+export const DEMOTE_LEVEL_CONFIRMATION =
+  "By lowering the level at this language, the user will no longer be able to start translating or reviewing story translations at this level, in this language. The user will continue having access to any ongoing story translations at this level, in this langauge.";
+
+export const DEMOTE_LEVEL_BUTTON = "I'm sure, lower level";
