@@ -43,11 +43,9 @@ def create_app(config_name):
     if os.getenv("IS_PREVIEW_DEPLOY", "False") == "True":
         app.config["CORS_ORIGINS"] = re.compile("https://planet-read-uwbp.*")
     else:
-        app.config["CORS_ORIGINS"] = [
-            "http://localhost:3000",
-            "https://planet-read-uwbp.web.app",
-            "https://planet-read-uwbp.firebaseapp.com",
-        ]
+        app.config["CORS_ORIGINS"] = os.getenv(
+            "CORS_ORIGINS", "http://localhost:3000"
+        ).split(",")
     app.config["CORS_SUPPORTS_CREDENTIALS"] = True
     CORS(app)
 

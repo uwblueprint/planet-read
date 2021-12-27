@@ -289,12 +289,12 @@ const AssignedStoryTranslationsTable = ({
   const generateStoryTranslationLink = (translation: StoryTranslation) => {
     const suffix = `${translation.storyId}/${translation.storyTranslationId}`;
     if (isAdmin) {
-      return `/story/${translation.storyId}`;
+      return `#/story/${translation.storyId}`;
     }
     if (getRole(translation) === "Translator") {
-      return `/translation/${suffix}`;
+      return `#/translation/${suffix}`;
     }
-    return `/review/${suffix}`;
+    return `#/review/${suffix}`;
   };
 
   const tableBody = storyTranslations.map((translation: StoryTranslation) => (
@@ -375,6 +375,7 @@ const AssignedStoryTranslationsTable = ({
       </Table>
       {assignStory && (
         <AssignStoryModal
+          userId={userId}
           isOpen={assignStory}
           onClose={closeAssignStoryModal}
           onAssignStory={(story) => {

@@ -34,10 +34,15 @@ export const FILTER_TOOL_TIP_COPY =
   "This category already has a filter applied.";
 
 export const MANAGE_STORY_TRANSLATIONS_TABLE_DELETE_TRANSLATION_CONFIRMATION =
-  "By removing this story translation, all data will be removed from the database. This action cannot be undone.";
+  "By removing this story translation, all its data will no longer be viewable on the platform. This action cannot be undone.";
 
 export const MANAGE_STORY_TRANSLATIONS_TABLE_DELETE_TRANSLATION_BUTTON =
   "I'm sure, delete story translation";
+
+export const MANAGE_STORY_TABLE_DELETE_STORY_CONFIRMATION =
+  "By removing this story, all its data and story translations will no longer be viewable on the platform. This action cannot be undone.";
+
+export const MANAGE_STORY_TABLE_DELETE_STORY_BUTTON = "I'm sure, delete story";
 
 export const USER_TABLE_FILTER_SEARCH_BAR_PLACEHOLDER =
   "Search by name or email";
@@ -99,3 +104,8 @@ export const ASSIGN_USER_LEVEL_CONFIRMATION =
   "By assigning a level, the user will gain access to different stories based on their level. A change can only be made manually.";
 
 export const ASSIGN_USER_LEVEL_BUTTON = "I'm sure, assign level";
+
+export const DEMOTE_LEVEL_CONFIRMATION =
+  "By lowering the level at this language, the user will no longer be able to start translating or reviewing story translations at this level, in this language. The user will continue having access to any ongoing story translations at this level, in this langauge.";
+
+export const DEMOTE_LEVEL_BUTTON = "I'm sure, lower level";

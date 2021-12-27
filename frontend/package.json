@@ -2,6 +2,7 @@
   "name": "frontend",
   "version": "0.1.0",
   "private": true,
+  "homepage": ".",
   "dependencies": {
     "@apollo/client": "^3.3.16",
     "@chakra-ui/icon": "^1.1.11",
@@ -27,7 +28,7 @@
     "framer-motion": "^4",
     "graphql": "^15.5.0",
     "humps": "^2.0.1",
-    "json-schema": "^0.3.0",
+    "json-schema": "^0.4.0",
     "jsonwebtoken": "^8.5.1",
     "react": "^17.0.1",
     "react-bootstrap": "^1.5.2",

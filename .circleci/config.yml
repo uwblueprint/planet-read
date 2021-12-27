@@ -62,6 +62,10 @@ jobs:
           name: Build frontend
           command: |
             cd frontend
+            echo "Write environment variables to .env.production"
+            touch .env.production
+            REACT_APP_BACKEND_URL=`echo ${REACT_APP_BACKEND_URL_BASE64} | base64 --decode`
+            echo "REACT_APP_BACKEND_URL=$REACT_APP_BACKEND_URL" > .env.production
             yarn install --frozen-lockfile
             yarn build
       - run:
