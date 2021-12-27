@@ -1,4 +1,5 @@
 import graphene
+from graphene_file_upload.scalars import Upload
 
 from ...middlewares.auth import (
     get_user_id_from_request,
@@ -26,16 +27,18 @@ class CreateUser(graphene.Mutation):
 class UpdateMe(graphene.Mutation):
     class Arguments:
         user = UpdateUserDTO(required=True)
+        resume = Upload(required=False)
 
     user = graphene.Field(lambda: UserDTO)
 
-    def mutate(root, info, user):
+    def mutate(root, info, user, resume=None):
         """
         Update the user that made the request
         """
         try:
             user_id = get_user_id_from_request()
-            updated_user = services["user"].update_me(user_id, user)
+            res = services["file"].create_file(resume)
+            updated_user = services["user"].update_me(user_id, user, res)
             return UpdateMe(user=updated_user)
         except Exception as e:
             error_message = getattr(e, "message", None)
