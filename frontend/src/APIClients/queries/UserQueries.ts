@@ -17,6 +17,7 @@ export type User = {
   firstName: string;
   lastName: string;
   email: string;
+  resume: number;
   approvedLanguagesTranslation: string;
   approvedLanguagesReview: string;
 } | null;
