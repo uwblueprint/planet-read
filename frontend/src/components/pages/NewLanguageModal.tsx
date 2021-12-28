@@ -55,13 +55,13 @@ const NewLanguageModal = ({
         </ModalHeader>
         <ModalBody margin="-10px 0 15px 0">
           <Text marginBottom="40px" fontSize="sm">
-            Before you can translate a new language, the book test for that
-            language must be completed first. This process may take more than
-            one week.
+            Before you can translate in a new language, you must pass a story
+            translation test in that language. Platform admins will mark your
+            test upon completion. This process may take more than one week.
           </Text>
           <Text marginBottom="20px">
-            Please select a new language that you would like to take the book
-            test in.
+            Please select a new language that you would like to take the story
+            translation test in.
           </Text>
           <Flex marginBottom="200px">
             <Select

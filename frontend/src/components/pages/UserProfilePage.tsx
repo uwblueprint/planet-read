@@ -21,6 +21,8 @@ import {
   MANAGE_USERS_TABLE_DELETE_USER_BUTTON,
   MANAGE_USERS_TABLE_DELETE_USER_CONFIRMATION,
   NEW_BOOK_TEST_ADDED_BUTTON,
+  NEW_BOOK_TEST_ADDED_HEADING,
+  NEW_BOOK_TEST_ADDED_MESSAGE,
 } from "../../utils/Copy";
 import ConfirmationModal from "../utils/ConfirmationModal";
 import { GET_USER, User } from "../../APIClients/queries/UserQueries";
@@ -307,8 +309,8 @@ const UserProfilePage = () => {
         confirmation={alertNewTest}
         onClose={closeNewTestModal}
         onConfirmationClick={() => history.push("/")}
-        confirmationHeading="New Book Test Added"
-        confirmationMessage="The book test to add a new language has been added to the homepage. Please take one of the two tests available."
+        confirmationHeading={NEW_BOOK_TEST_ADDED_HEADING}
+        confirmationMessage={NEW_BOOK_TEST_ADDED_MESSAGE}
         buttonMessage={NEW_BOOK_TEST_ADDED_BUTTON}
       />
     </Flex>
