@@ -1,13 +1,6 @@
 import React, { useContext, useState } from "react";
 import { useParams, useHistory, Redirect } from "react-router-dom";
-import {
-  Box,
-  Button,
-  Flex,
-  Heading,
-  Text,
-  useStyleConfig,
-} from "@chakra-ui/react";
+import { Button, Flex, Heading, Text, useStyleConfig } from "@chakra-ui/react";
 import { useQuery, useMutation } from "@apollo/client";
 
 import AuthContext from "../../contexts/AuthContext";
@@ -286,23 +279,6 @@ const UserProfilePage = () => {
             </>
           )}
         </Flex>
-      </Flex>
-      <Flex
-        alignItems="center"
-        boxShadow="0 0 12px -9px rgba(0, 0, 0, 0.7)"
-        direction="row"
-        height="90px"
-        justify="flex-end"
-        padding="20px 30px"
-      >
-        <Box>
-          <Button colorScheme="blue" variant="blueOutline">
-            Cancel
-          </Button>
-          <Button colorScheme="blue" marginLeft="24px" marginRight="48px">
-            Save Changes
-          </Button>
-        </Box>
       </Flex>
       {confirmDeleteUser && (
         <ConfirmationModal
