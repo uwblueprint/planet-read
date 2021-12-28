@@ -191,3 +191,12 @@ export type FinishGradingStoryTranslationResponse = {
     id: number;
   };
 };
+
+export const SOFT_DELETE_STORY = gql`
+  mutation SoftDeleteStory($id: Int!) {
+    softDeleteStory(id: $id) {
+      ok
+    }
+  }
+`;
+export type SoftDeleteStoryResponse = { ok: boolean };

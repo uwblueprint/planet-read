@@ -1,27 +1,26 @@
 from datetime import datetime
 
-from sqlalchemy import Boolean, DateTime, inspect
-from sqlalchemy.dialects.mysql import LONGTEXT, TEXT
+from sqlalchemy import inspect, select
 from sqlalchemy.orm.properties import ColumnProperty
+from sqlalchemy_utils import create_view
 
 from . import db
-from .story_content import StoryContent
+from .story_all import StoryAll
+
+stmt = select([StoryAll]).where(StoryAll.is_deleted == False)
+stories_active = create_view("stories", stmt, db.Model.metadata)
 
 
 class Story(db.Model):
-    __tablename__ = "stories"
-    id = db.Column(db.Integer, primary_key=True, nullable=False)
-    title = db.Column(TEXT, nullable=False)
-    description = db.Column(LONGTEXT, nullable=False)
-    youtube_link = db.Column(TEXT, nullable=False)
-    level = db.Column(db.Integer, nullable=False)
-    # Note: translated_languages should be an enum array, but postgres
-    # has a weird relationship with enums and we're going to switch to
-    # mysql anyways.
-    translated_languages = db.Column(db.JSON)
-    contents = db.relationship(StoryContent)
-    is_test = db.Column(Boolean, default=False, nullable=False)
-    date_uploaded = db.Column(DateTime, default=datetime.utcnow(), nullable=False)
+    def __init__(self, **kwargs):
+        super(Story, self).__init__(**kwargs)
+        self.is_deleted = False
+        if self.is_test is None:
+            self.is_test = False
+        if self.date_uploaded is None:
+            self.date_uploaded = datetime.utcnow()
+
+    __table__ = stories_active
 
     def to_dict(self, include_relationships=False):
         cls = type(self)

@@ -9,7 +9,9 @@ db = SQLAlchemy()
 
 from app.models.comment_all import CommentAll
 from app.models.story import Story
+from app.models.story_all import StoryAll
 from app.models.story_content import StoryContent
+from app.models.story_content_all import StoryContentAll
 from app.models.story_translation import StoryTranslation
 from app.models.story_translation_all import StoryTranslationAll
 from app.models.story_translation_content import StoryTranslationContent
@@ -36,7 +38,7 @@ def insert_test_data():
     )
 
     # stories
-    db.engine.execute("ALTER TABLE stories AUTO_INCREMENT = 1;")
+    db.engine.execute("ALTER TABLE stories_all AUTO_INCREMENT = 1;")
     db.engine.execute(
         "INSERT IGNORE INTO stories \
                 (id, title, description, youtube_link, level, translated_languages, is_test, date_uploaded) \
@@ -98,7 +100,7 @@ def insert_test_data():
     ]
 
     # story contents
-    db.engine.execute("ALTER TABLE story_contents AUTO_INCREMENT = 1;")
+    db.engine.execute("ALTER TABLE story_contents_all AUTO_INCREMENT = 1;")
     for story_id in range(1, 8):
         for i, content in enumerate(generic_content):
             id = (story_id - 1) * 10 + i + 1
@@ -223,11 +225,11 @@ def erase_db():
     db.session.commit()
     db.session.query(StoryTranslationContentAll).delete()
     db.session.commit()
-    db.session.query(StoryContent).delete()
+    db.session.query(StoryContentAll).delete()
     db.session.commit()
     db.session.query(StoryTranslationAll).delete()
     db.session.commit()
-    db.session.query(Story).delete()
+    db.session.query(StoryAll).delete()
     db.session.commit()
     db.session.query(UserAll).delete()
     db.session.commit()

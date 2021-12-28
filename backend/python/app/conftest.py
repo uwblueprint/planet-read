@@ -31,8 +31,8 @@ def db(app):
     """
     from .models import db
     from .models.comment_all import CommentAll
-    from .models.story import Story
-    from .models.story_content import StoryContent
+    from .models.story_all import StoryAll
+    from .models.story_content_all import StoryContentAll
     from .models.story_translation_all import StoryTranslationAll
     from .models.story_translation_content_all import StoryTranslationContentAll
     from .models.user_all import UserAll
@@ -43,11 +43,11 @@ def db(app):
     db.session.commit()
     db.session.query(StoryTranslationContentAll).delete()
     db.session.commit()
-    db.session.query(StoryContent).delete()
+    db.session.query(StoryContentAll).delete()
     db.session.commit()
     db.session.query(StoryTranslationAll).delete()
     db.session.commit()
-    db.session.query(Story).delete()
+    db.session.query(StoryAll).delete()
     db.session.commit()
     db.session.query(UserAll).delete()
     db.session.commit()

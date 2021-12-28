@@ -12,7 +12,9 @@ from ...graphql.types.story_type import (
 from ...models import db
 from ...models.comment import Comment
 from ...models.story import Story
+from ...models.story_all import StoryAll
 from ...models.story_content import StoryContent
+from ...models.story_content_all import StoryContentAll
 from ...models.story_translation import StoryTranslation
 from ...models.story_translation_all import StoryTranslationAll
 from ...models.story_translation_content import StoryTranslationContent
@@ -29,7 +31,7 @@ class StoryService(IStoryService):
         # Story is a SQLAlchemy model, we can use convenient methods provided
         # by SQLAlchemy like query.all() to query the data
         return [
-            story.to_dict(include_relationships=True) for story in Story.query.all()
+            story.to_dict(include_relationships=True) for story in StoryAll.query.all()
         ]
 
     def get_story(self, id):
@@ -43,7 +45,7 @@ class StoryService(IStoryService):
     def create_story(self, story, content):
         # create story
         try:
-            new_story = Story(**story.__dict__)
+            new_story = StoryAll(**story.__dict__)
             new_story.date_uploaded = datetime.utcnow()
         except Exception as error:
             self.logger.error(str(error))
@@ -60,6 +62,7 @@ class StoryService(IStoryService):
                     "story_id": new_story.id,
                     "line_index": i,
                     "content": line,
+                    "is_deleted": False,
                 }
                 db.session.add(StoryContent(**new_content))
         except Exception as error:
@@ -216,7 +219,6 @@ class StoryService(IStoryService):
                 .order_by(Story.id)
                 .all()
             )
-
             translator = aliased(User)
             reviewer = aliased(User)
 
@@ -342,7 +344,6 @@ class StoryService(IStoryService):
 
     def get_story_translation(self, id):
         try:
-
             translator = aliased(User)
             reviewer = aliased(User)
 
@@ -838,7 +839,8 @@ class StoryService(IStoryService):
             # Remove language from story.translated_languages
             story = Story.query.filter_by(id=story_translation.story_id).first()
             if (
-                story.translated_languages is not None
+                story is not None
+                and story.translated_languages is not None
                 and story_translation.language in story.translated_languages
             ):
                 story.translated_languages.remove(story_translation.language)
@@ -893,6 +895,29 @@ class StoryService(IStoryService):
             num_translations_in_review=num_translations_in_review,
             num_translations_completed=num_translations_completed,
         )
+
+    def soft_delete_story(self, id):
+        try:
+            story = StoryAll.query.get(id)
+            for content in story.contents:
+                content.is_deleted = True
+
+            story.is_deleted = True
+
+            # Remove story_translations for this story
+            story_translations = (
+                db.session.query(StoryTranslation)
+                .filter(StoryTranslation.story_id == id)
+                .all()
+            )
+
+            for translation in story_translations:
+                self.soft_delete_story_translation(translation.id)
+
+            db.session.commit()
+        except Exception as error:
+            self.logger.error(error)
+            raise error
 
     def _get_num_translated_lines(self, translation_contents):
         return len(translation_contents) - [
