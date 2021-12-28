@@ -34,3 +34,19 @@ export type UpdateUserApprovedLanguagesResponse = {
     id: number;
   };
 };
+
+export const UPDATE_ME = gql`
+  mutation UpdateMe($userData: UpdateUserDTO!) {
+    updateMe(user: $userData) {
+      user {
+        id
+      }
+    }
+  }
+`;
+
+export type UpdateMeResponse = {
+  user: {
+    id: number;
+  };
+};
