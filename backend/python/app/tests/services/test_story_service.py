@@ -32,7 +32,7 @@ def test_get_story(app, db, services):
 def test_get_story_invalid_id(app, db, services):
     with pytest.raises(Exception) as e:
         _ = services["story"].get_story(-1)
-        assert "Invalid id" in str(e.value)
+    assert "Invalid id" in str(e.value)
 
     obj = db_session_add_commit_obj(
         db, Story(title="title", description="description", youtube_link="", level=1)
@@ -40,7 +40,7 @@ def test_get_story_invalid_id(app, db, services):
 
     with pytest.raises(Exception) as e:
         _ = services["story"].get_story(obj.id + 1)
-        assert "Invalid id" in str(e.value)
+    assert "Invalid id" in str(e.value)
 
 
 def test_get_stories(app, db, services):
@@ -77,8 +77,132 @@ def test_create_story(app, db, services):
         assert content_obj == resp_content
 
 
-def test_get_stories_available_for_translation():
-    pass
+def test_get_stories_available_for_translation(app, db, services):
+    translator_obj = create_translator(db)
+    translation_language = "ENGLISH_US"
+    translation_level = 3
+
+    # create story 1
+    story_1 = StoryRequestDTO(
+        title="Title",
+        description="Description",
+        youtube_link="",
+        level=translation_level,
+        translated_languages=[],
+    )
+    content = ["Story content 1.", "Story content 2.", "Story content 3."]
+    story_resp_1 = services["story"].create_story(story_1, content)
+    story_obj_1 = Story.query.get(story_resp_1.id)
+
+    # create story 2
+    story_2 = StoryRequestDTO(
+        title="Title",
+        description="Description",
+        youtube_link="",
+        level=translation_level,
+        translated_languages=[],
+    )
+    content = ["Story content 1.", "Story content 2.", "Story content 3."]
+    story_resp_2 = services["story"].create_story(story_2, content)
+    story_obj_2 = Story.query.get(story_resp_2.id)
+
+    # test service method
+    all_resp = services["story"].get_stories_available_for_translation(
+        translation_language, translation_level, translator_obj.id
+    )
+    assert len(all_resp) == 2
+    assert all_resp[0] == story_obj_1.to_dict(include_relationships=True)
+    assert all_resp[1] == story_obj_2.to_dict(include_relationships=True)
+
+    # update translated languages for story 2
+    story_obj_2.translated_languages = [translation_language]
+    db.session.commit()
+
+    # test service method
+    partial_resp = services["story"].get_stories_available_for_translation(
+        translation_language, translation_level, translator_obj.id
+    )
+    assert len(partial_resp) == 1
+    assert partial_resp[0] == story_obj_1.to_dict(include_relationships=True)
+
+    # assign story translation to translator
+    story_translation = StoryTranslationRequestDTO(
+        story_id=story_obj_1.id,
+        language=translation_language,
+        stage="TRANSLATE",
+        translator_id=translator_obj.id,
+        reviewer_id=None,
+    )
+    services["story"].create_translation(story_translation)
+
+    # test service method
+    empty_resp = services["story"].get_stories_available_for_translation(
+        translation_language, translation_level, translator_obj.id
+    )
+    assert len(empty_resp) == 0
+
+
+def test_get_stories_available_for_translation_2(app, db, services):
+    translator_obj = create_translator(db)
+    translation_language = "ENGLISH_US"
+    translation_level = 3
+
+    # create stories
+    story_obj_1 = db_session_add_commit_obj(
+        db,
+        Story(
+            title="Title",
+            description="Description",
+            youtube_link="",
+            level=translation_level,
+            translated_languages=[],
+        ),
+    )
+    story_obj_2 = db_session_add_commit_obj(
+        db,
+        Story(
+            title="Title",
+            description="Description",
+            youtube_link="",
+            level=translation_level,
+            translated_languages=[],
+        ),
+    )
+
+    # test service method
+    all_resp = services["story"].get_stories_available_for_translation(
+        translation_language, translation_level, translator_obj.id
+    )
+    assert len(all_resp) == 2
+    assert all_resp[0] == story_obj_1.to_dict(include_relationships=True)
+    assert all_resp[1] == story_obj_2.to_dict(include_relationships=True)
+
+    # update translated languages for story 2
+    story_obj_2.translated_languages = [translation_language]
+    db.session.commit()
+
+    # test service method
+    partial_resp = services["story"].get_stories_available_for_translation(
+        translation_language, translation_level, translator_obj.id
+    )
+    assert len(partial_resp) == 1
+    assert partial_resp[0] == story_obj_1.to_dict(include_relationships=True)
+
+    # assign story translation to translator
+    story_translation = StoryTranslationRequestDTO(
+        story_id=story_obj_1.id,
+        language=translation_language,
+        stage="TRANSLATE",
+        translator_id=translator_obj.id,
+        reviewer_id=None,
+    )
+    services["story"].create_translation(story_translation)
+
+    # test service method
+    empty_resp = services["story"].get_stories_available_for_translation(
+        translation_language, translation_level, translator_obj.id
+    )
+    assert len(empty_resp) == 0
 
 
 def test_create_translation(app, db, services):
@@ -310,7 +434,7 @@ def test_remove_user_from_invalid_story_translation(app, db, services):
         services["story"].remove_user_from_story_translation(
             story_translation_id=st_id, user_id=1
         )
-        assert "Error. Story translation does not exist." in str(e.value)
+    assert "Error. Story translation does not exist." in str(e.value)
 
 
 def test_remove_invalid_user_from_story_translation(app, db, services):
@@ -321,7 +445,7 @@ def test_remove_invalid_user_from_story_translation(app, db, services):
         services["story"].remove_user_from_story_translation(
             story_translation_id=story_translation.id, user_id=user_id
         )
-        assert (
-            "Error. User is not a translator or reviewer of this story translation."
-            in str(e.value)
-        )
+    assert (
+        "Error. User is not a translator or reviewer of this story translation."
+        in str(e.value)
+    )
