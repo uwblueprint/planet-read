@@ -34,6 +34,7 @@ const CommentsPanel = ({
 }: CommentPanelProps) => {
   const [comments, setComments] = useState<CommentResponse[]>([]);
   const [filterIndex, setFilterIndex] = useState(2);
+  const [threadHeadMap, setThreadHeadMap] = useState<boolean[]>([]);
 
   const filterOptions = ["All", "Resolved", "Unresolved"];
   const filterToResolved = [null, true, false];
@@ -41,10 +42,35 @@ const CommentsPanel = ({
     storyTranslationId,
     filterToResolved[filterIndex],
   );
+
+  const updateThreadHeadMap = (cmts: CommentResponse[]) => {
+    /* A comment is a thread head if
+     * * It has the smallest lineIndex of all present comments for a story line
+     * * It's thread predecessor is resolved
+     */
+    const newThreadHeadMap = cmts.map((c: CommentResponse, i: number) => {
+      if (
+        i ===
+        cmts.findIndex(
+          (_c) => _c.storyTranslationContentId === c.storyTranslationContentId,
+        )
+      )
+        return true;
+      const lastC = cmts[i - 1];
+      return (
+        !c?.resolved &&
+        lastC?.resolved &&
+        lastC?.storyTranslationContentId === c?.storyTranslationContentId
+      );
+    });
+    setThreadHeadMap(newThreadHeadMap);
+  };
+
   useQuery(commentsQuery.string, {
     fetchPolicy: "cache-and-network",
     onCompleted: (data) => {
       setComments(data.commentsByStoryTranslation);
+      updateThreadHeadMap(data.commentsByStoryTranslation);
     },
   });
 
@@ -56,10 +82,38 @@ const CommentsPanel = ({
 
   const updateCommentsAsResolved = (index: number) => {
     const newComments = [...comments];
-    const updatedComment = { ...newComments[index - 1] };
-    updatedComment.resolved = true;
-    newComments[index - 1] = updatedComment;
-    setComments(newComments);
+    const commentsStateIdx = newComments.findIndex((c) => c.id === index);
+    const updatedComment = { ...newComments[commentsStateIdx] };
+    // Resolving one comment resolves the entire thread
+    if (filterOptions[filterIndex] === "Unresolved") {
+      // Remove all resolved comments
+      setComments(
+        newComments.filter(
+          (c) =>
+            c.storyTranslationContentId !==
+            updatedComment.storyTranslationContentId,
+        ),
+      );
+    } else {
+      // Resolve entire thread
+      const updatedCommentIdxs: number[] = [];
+      newComments.forEach((c, i) => {
+        if (
+          c.storyTranslationContentId ===
+            updatedComment.storyTranslationContentId &&
+          !c.resolved
+        ) {
+          updatedCommentIdxs.push(i);
+        }
+      });
+      updatedCommentIdxs.forEach((i) => {
+        const updatedC = { ...newComments[i] };
+        updatedC.resolved = true;
+        newComments[i] = updatedC;
+      });
+      setComments(newComments);
+    }
+    updateThreadHeadMap(newComments);
   };
 
   const CommentsList = () => {
@@ -67,9 +121,10 @@ const CommentsPanel = ({
       return (
         <Box>
           {/* TODO: show correct placement of the WIPComment component once existing comment is displayed */}
-          {comments.map((comment: CommentResponse) => (
+          {comments.map((comment: CommentResponse, i: number) => (
             <ExistingComment
               key={comment.id}
+              commentsStateIdx={i}
               userName={
                 translatorId === comment.userId ? translatorName : reviewerName
               }
@@ -80,6 +135,8 @@ const CommentsPanel = ({
               setComments={setComments}
               setTranslatedStoryLines={setTranslatedStoryLines}
               translatedStoryLines={translatedStoryLines}
+              threadHeadMap={threadHeadMap}
+              updateThreadHeadMap={updateThreadHeadMap}
             />
           ))}
         </Box>
@@ -143,6 +200,7 @@ const CommentsPanel = ({
           setComments={setComments}
           setTranslatedStoryLines={setTranslatedStoryLines}
           translatedStoryLines={translatedStoryLines}
+          updateThreadHeadMap={updateThreadHeadMap}
         />
       )}
       <CommentsList />

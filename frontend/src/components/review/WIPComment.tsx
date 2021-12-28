@@ -19,6 +19,7 @@ export type WIPCommentProps = {
   setComments: (comments: CommentResponse[]) => void;
   translatedStoryLines: StoryLine[];
   setTranslatedStoryLines: (storyLines: StoryLine[]) => void;
+  updateThreadHeadMap: (cmts: CommentResponse[]) => void;
 };
 
 const WIPComment = ({
@@ -29,6 +30,7 @@ const WIPComment = ({
   setTranslatedStoryLines,
   comments,
   translatedStoryLines,
+  updateThreadHeadMap,
 }: WIPCommentProps) => {
   const handleError = (errorMessage: string) => {
     // eslint-disable-next-line no-alert
@@ -54,13 +56,16 @@ const WIPComment = ({
       if (result.data?.createComment.ok) {
         setText("");
         setCommentLine(-1);
-        setComments(
-          insertSortedComments(comments, result.data.createComment.comment),
+        const newComments = insertSortedComments(
+          comments,
+          result.data.createComment.comment,
         );
+        setComments(newComments);
         const updatedStoryLines = [...translatedStoryLines];
         updatedStoryLines[WIPLineIndex - 1].status =
           convertStatusTitleCase("ACTION_REQUIRED");
         setTranslatedStoryLines(updatedStoryLines);
+        updateThreadHeadMap(newComments);
       }
     } catch (err) {
       if (typeof err === "string") {
