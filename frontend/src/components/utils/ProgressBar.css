@@ -1,5 +1,5 @@
 .progress-bar-container {
-    max-width: 150px;
+    max-width: 230px;
 }
 
 .progress {
@@ -11,11 +11,4 @@
 
 .progress-bar {
     background-color: var(--dark-blue);
-}
-
-.progress-label {
-    color: var(--interactive-grey);
-    font-size: 10px;
-    line-height: 14px;
-    margin-bottom: 8px;
 }
