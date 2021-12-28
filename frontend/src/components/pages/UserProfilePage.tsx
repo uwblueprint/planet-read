@@ -20,6 +20,9 @@ import {
 import {
   MANAGE_USERS_TABLE_DELETE_USER_BUTTON,
   MANAGE_USERS_TABLE_DELETE_USER_CONFIRMATION,
+  NEW_BOOK_TEST_ADDED_BUTTON,
+  NEW_BOOK_TEST_ADDED_HEADING,
+  NEW_BOOK_TEST_ADDED_MESSAGE,
 } from "../../utils/Copy";
 import ConfirmationModal from "../utils/ConfirmationModal";
 import { GET_USER, User } from "../../APIClients/queries/UserQueries";
@@ -33,8 +36,13 @@ import {
 } from "../../utils/Utils";
 import ApprovedLanguagesTable from "../admin/ApprovedLanguagesTable";
 import AssignedStoryTranslationsTable from "../userProfile/AssignedStoryTranslationsTable";
+import NewLanguageModal from "./NewLanguageModal";
 import { StoryAssignStage } from "../../constants/Enums";
 import InfoAlert from "../utils/InfoAlert";
+import {
+  CREATE_TRANSLATION_TEST,
+  CreateTranslationTestResponse,
+} from "../../APIClients/mutations/StoryMutations";
 import { useFileDownload } from "../../utils/FileUtils";
 
 type UserProfilePageProps = {
@@ -69,6 +77,9 @@ const UserProfilePage = () => {
   const [storyAssignStage, setStoryAssignStage] = useState<StoryAssignStage>(
     StoryAssignStage.INITIAL,
   );
+
+  const [addNewLanguage, setAddNewLanguage] = useState(false);
+  const [alertNewTest, setAlertNewTest] = useState(false);
 
   const history = useHistory();
 
@@ -128,6 +139,40 @@ const UserProfilePage = () => {
 
   const filterStyle = useStyleConfig("Filter");
 
+  const [createTranslationTest] = useMutation<{
+    response: CreateTranslationTestResponse;
+  }>(CREATE_TRANSLATION_TEST);
+
+  const openNewLanguageModal = () => {
+    setAddNewLanguage(true);
+  };
+
+  const closeNewLanguageModal = () => {
+    setAddNewLanguage(false);
+  };
+
+  const closeNewTestModal = () => {
+    setAlertNewTest(false);
+  };
+
+  const addNewTest = async (newLanguage: string) => {
+    try {
+      await createTranslationTest({
+        variables: {
+          userId,
+          level: 2,
+          language: newLanguage,
+        },
+      });
+      closeNewLanguageModal();
+      setAlertNewTest(true);
+    } catch (err) {
+      window.alert(err);
+      closeNewLanguageModal();
+      closeNewTestModal();
+    }
+  };
+
   if (loading) return <div />;
   if (error) return <Redirect to="/404" />;
 
@@ -167,9 +212,17 @@ const UserProfilePage = () => {
         </Flex>
         <Flex direction="column" margin="40px" flex={1}>
           {!isAdmin && <UserProfileForm isSignup={false} />}
-          <Heading size="lg" marginTop="40px" marginBottom="10px">
-            Approved Languages & Levels
-          </Heading>
+          <Flex justifyContent="space-between" margin="40px 0 10px 0">
+            <Heading size="lg"> Approved Languages & Levels </Heading>
+            <Button
+              colorScheme="blue"
+              onClick={() => openNewLanguageModal()}
+              variant="blueOutline"
+              width="250px"
+            >
+              ADD NEW LANGUAGE +
+            </Button>
+          </Flex>
           {isAdmin &&
             (alert ? (
               <InfoAlert message={alertText} colour="orange.50" />
@@ -260,6 +313,22 @@ const UserProfilePage = () => {
           buttonMessage={MANAGE_USERS_TABLE_DELETE_USER_BUTTON}
         />
       )}
+      {addNewLanguage && (
+        <NewLanguageModal
+          addNewTest={addNewTest}
+          approvedLanguagesTranslation={approvedLanguagesTranslation}
+          isOpen={addNewLanguage}
+          onClose={closeNewLanguageModal}
+        />
+      )}
+      <ConfirmationModal
+        confirmation={alertNewTest}
+        onClose={closeNewTestModal}
+        onConfirmationClick={() => history.push("/")}
+        confirmationHeading={NEW_BOOK_TEST_ADDED_HEADING}
+        confirmationMessage={NEW_BOOK_TEST_ADDED_MESSAGE}
+        buttonMessage={NEW_BOOK_TEST_ADDED_BUTTON}
+      />
     </Flex>
   );
 };
