@@ -8,7 +8,9 @@ from app import create_app
 db = SQLAlchemy()
 
 from app.models.comment_all import CommentAll
+from app.models.story import Story
 from app.models.story_all import StoryAll
+from app.models.story_content import StoryContent
 from app.models.story_content_all import StoryContentAll
 from app.models.story_translation import StoryTranslation
 from app.models.story_translation_all import StoryTranslationAll
@@ -38,7 +40,7 @@ def insert_test_data():
     # stories
     db.engine.execute("ALTER TABLE stories_all AUTO_INCREMENT = 1;")
     db.engine.execute(
-        "INSERT IGNORE INTO stories_all \
+        "INSERT IGNORE INTO stories \
                 (id, title, description, youtube_link, level, translated_languages, is_test, date_uploaded) \
             VALUES \
                 (1, 'East of Eden', 'Follow the intertwined destinies of two families whose generations reenact the poisonous rivalry of Cain and Abel.', 'https://www.youtube.com/watch?v=redECmF7wh8', 4, '[\"GERMAN\", \"ENGLISH_UK\"]', false, '1997-10-31 06:48:42'), \
@@ -103,7 +105,7 @@ def insert_test_data():
         for i, content in enumerate(generic_content):
             id = (story_id - 1) * 10 + i + 1
             db.engine.execute(
-                f'INSERT IGNORE INTO story_contents_all \
+                f'INSERT IGNORE INTO story_contents \
                         (id, story_id, line_index, content) \
                     VALUES \
                         ({id}, {story_id}, {i}, "{content}") \
@@ -121,7 +123,7 @@ def insert_test_data():
         for i, content in enumerate(story_content):
             id = (story_id - 1) * 10 + i + 1
             db.engine.execute(
-                f'INSERT IGNORE INTO story_contents_all \
+                f'INSERT IGNORE INTO story_contents \
                         (id, story_id, line_index, content) \
                     VALUES \
                         ({id}, {story_id}, {i}, "{content}") \
@@ -184,7 +186,7 @@ def insert_test_data():
     # Carl (id: 1) and Dwight (id: 4)"
     carl = User.query.filter_by(first_name="Carl").first()
     dwight = User.query.filter_by(first_name="Dwight").first()
-    the_gg = StoryAll.query.filter_by(title="The Great Gatsby").first()
+    the_gg = Story.query.filter_by(title="The Great Gatsby").first()
     st = (
         db.session.query(StoryTranslation)
         .filter_by(story_id=the_gg.id)

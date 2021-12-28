@@ -125,7 +125,7 @@ const ManageStoryPage = () => {
         },
       });
     } catch (error) {
-      window.alert(error ?? "Error occurred, please try again.");
+      window.alert(`Error occurred, please try again. Error: ${error}`);
     }
   };
 

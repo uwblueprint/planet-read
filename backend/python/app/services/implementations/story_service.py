@@ -837,7 +837,7 @@ class StoryService(IStoryService):
             story_translation.is_deleted = True
 
             # Remove language from story.translated_languages
-            story = StoryAll.query.filter_by(id=story_translation.story_id).first()
+            story = Story.query.filter_by(id=story_translation.story_id).first()
             if (
                 story is not None
                 and story.translated_languages is not None
