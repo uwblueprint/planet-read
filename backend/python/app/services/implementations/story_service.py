@@ -38,7 +38,7 @@ class StoryService(IStoryService):
     def get_story(self, id):
         # get queries by the primary key, which is id for the Story table
         # note: include_relationships=True will only include StoryContents if StoryAll is called
-        # There are no security/permission issues by allowing users to view a deleted story, 
+        # There are no security/permission issues by allowing users to view a deleted story,
         # so StoryAll can be safely used here
         story = StoryAll.query.get(id)
         if story is None:
