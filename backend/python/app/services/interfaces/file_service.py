@@ -3,17 +3,17 @@ from abc import ABC, abstractmethod
 
 class IFileService(ABC):
     """
-    A class to handle CRUD functionality for entities
+    A class to handle CRUD functionality for file entities
     """
 
     @abstractmethod
     def get_file(self, id):
-        """Return a dictionary from the File object based on id
+        """Return a File and its contents based on id
 
         :param id: File id
-        :return: dictionary of File object
-        :rtype: dictionary
-        :raises Exception: id retrieval fails
+        :return: DownloadFileDTO containing file data
+        :rtype: DownloadFileDTO
+        :raises Exception: id retrieval fails or base64 encoding fails
         """
         pass
 

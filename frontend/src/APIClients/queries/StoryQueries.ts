@@ -1,6 +1,7 @@
 import { DocumentNode, gql } from "@apollo/client";
 
 export const STORY_FIELDS = `
+    id
     title
     description
     youtubeLink
@@ -8,10 +9,12 @@ export const STORY_FIELDS = `
     `;
 
 export type Story = {
+  id: number;
   title: string;
   description: string;
   youtubeLink: string;
   level: number;
+  dateUploaded: Date;
 };
 
 export const GET_STORY = (id: number) =>
@@ -21,6 +24,16 @@ export const GET_STORY = (id: number) =>
           id: ${id}
         ) {
           ${STORY_FIELDS}
+        }
+      }
+    `;
+
+export const GET_STORIES = () =>
+  gql`
+      query GetStories {
+        stories {
+          ${STORY_FIELDS}
+          dateUploaded
         }
       }
     `;
@@ -78,6 +91,7 @@ export const GET_STORY_AND_TRANSLATION_CONTENTS = (
     }
     storyTranslationById(id: ${storyTranslationId}) {
       language
+      level
       stage
       translationContents {
         id

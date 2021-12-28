@@ -25,6 +25,8 @@ import {
   NEW_BOOK_TEST_ADDED_BUTTON,
   REMOVE_LANGUAGE_CONFIRMATION,
   REMOVE_LANGUAGE_BUTTON,
+  DEMOTE_LEVEL_CONFIRMATION,
+  DEMOTE_LEVEL_BUTTON,
 } from "../../utils/Copy";
 
 export type ApprovedLanguagesTableProps = {
@@ -42,6 +44,13 @@ export type ApprovedLanguagesTableProps = {
   isAdmin?: boolean;
 };
 
+export type UpdateApprovedLanguageArgs = {
+  isTranslate: boolean;
+  language: string;
+  oldLevel: number;
+  newLevel: number;
+};
+
 const ApprovedLanguagesTable = ({
   approvedLanguagesTranslation,
   approvedLanguagesReview,
@@ -56,6 +65,7 @@ const ApprovedLanguagesTable = ({
 }: ApprovedLanguagesTableProps) => {
   const history = useHistory();
 
+  const [confirmDemoteLevel, setConfirmDemoteLevel] = useState(false);
   const [confirmLevelUp, setConfirmLevelUp] = useState(false);
   const [alertNewTest, setAlertNewTest] = useState(false);
   const [testLevel, setTestLevel] = useState(0);
@@ -66,6 +76,9 @@ const ApprovedLanguagesTable = ({
 
   const [approveNewLanguage, setApproveNewLanguage] = useState(false);
   const [removeLanguage, setRemoveLanguage] = useState(false);
+
+  const [updateApprovedLanguageArgs, setUpdateApprovedLanguageArgs] =
+    useState<UpdateApprovedLanguageArgs>();
 
   const resetAlertTimeout = () => {
     window.clearTimeout(alertTimeout);
@@ -134,23 +147,21 @@ const ApprovedLanguagesTable = ({
     });
 
     if (result.data !== undefined) {
-      if (isNewLanguage || isRemoveLanguage) {
-        const approvedLanguagesMap = isTranslate
-          ? approvedLanguagesTranslation
-          : approvedLanguagesReview;
-        const setApprovedLanguagesMap = isTranslate
-          ? setApprovedLanguagesTranslation
-          : setApprovedLanguagesReview;
+      const approvedLanguagesMap = isTranslate
+        ? approvedLanguagesTranslation
+        : approvedLanguagesReview;
+      const setApprovedLanguagesMap = isTranslate
+        ? setApprovedLanguagesTranslation
+        : setApprovedLanguagesReview;
 
-        // update local state
-        const newApprovedLanguages = { ...approvedLanguagesMap };
-        if (isNewLanguage) {
-          newApprovedLanguages[language] = level;
-        } else {
-          delete newApprovedLanguages[language];
-        }
-        setApprovedLanguagesMap(newApprovedLanguages);
+      // update local state
+      const newApprovedLanguages = { ...approvedLanguagesMap };
+      if (isRemoveLanguage) {
+        delete newApprovedLanguages[language];
+      } else {
+        newApprovedLanguages[language] = level;
       }
+      setApprovedLanguagesMap(newApprovedLanguages);
 
       setAlert(true);
       setAlertText(
@@ -167,18 +178,38 @@ const ApprovedLanguagesTable = ({
     }
   };
 
+  const demoteUserLevel = () => {
+    callUpdateUserApprovedLanguagesMutation(
+      updateApprovedLanguageArgs!!.isTranslate,
+      updateApprovedLanguageArgs!!.language,
+      updateApprovedLanguageArgs!!.newLevel,
+      updateApprovedLanguageArgs!!.oldLevel,
+    );
+    setConfirmDemoteLevel(false);
+  };
+
   const onSliderValueChange = (
     isTranslate: boolean,
     language: string,
     newLevel: number,
     oldLevel: number,
   ) => {
-    callUpdateUserApprovedLanguagesMutation(
-      isTranslate,
-      language,
-      newLevel,
-      oldLevel,
-    );
+    if (newLevel < oldLevel) {
+      setUpdateApprovedLanguageArgs({
+        isTranslate,
+        language,
+        newLevel,
+        oldLevel,
+      });
+      setConfirmDemoteLevel(true);
+    } else {
+      callUpdateUserApprovedLanguagesMutation(
+        isTranslate,
+        language,
+        newLevel,
+        oldLevel,
+      );
+    }
   };
 
   const onApproveLanguage = (newLanguage: NewApprovedLanguage) => {
@@ -287,6 +318,13 @@ const ApprovedLanguagesTable = ({
         confirmationHeading={NEW_BOOK_TEST_ADDED_HEADING}
         confirmationMessage={NEW_BOOK_TEST_ADDED_MESSAGE}
         buttonMessage={NEW_BOOK_TEST_ADDED_BUTTON}
+      />
+      <ConfirmationModal
+        confirmation={confirmDemoteLevel}
+        onClose={() => setConfirmDemoteLevel(false)}
+        onConfirmationClick={demoteUserLevel}
+        confirmationMessage={DEMOTE_LEVEL_CONFIRMATION}
+        buttonMessage={DEMOTE_LEVEL_BUTTON}
       />
     </>
   );

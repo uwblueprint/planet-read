@@ -119,7 +119,7 @@ const ApprovedLanguagesTableComponent = ({
         <Td colSpan={4} align="center">
           <Slider
             isDisabled={!isAdmin}
-            defaultValue={approvedLanguage.level}
+            value={approvedLanguage.level}
             min={1}
             max={4}
             step={1}

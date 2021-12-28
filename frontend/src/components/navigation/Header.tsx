@@ -15,10 +15,24 @@ import AuthContext from "../../contexts/AuthContext";
 
 export enum AdminPageOption {
   StoryTranslations = 1,
+  Stories,
   Translators,
   Reviewers,
   Tests,
 }
+
+type AdminPageOptionPair = {
+  op: AdminPageOption;
+  str: String;
+};
+
+const AdminPageOptionToStr = [
+  { op: AdminPageOption.StoryTranslations, str: "Story Translations" },
+  { op: AdminPageOption.Stories, str: "Stories" },
+  { op: AdminPageOption.Translators, str: "Translators" },
+  { op: AdminPageOption.Reviewers, str: "Reviewers" },
+  { op: AdminPageOption.Tests, str: "Tests" },
+];
 
 export type HeaderProps = {
   title?: string;
@@ -48,6 +62,20 @@ const Header = ({
     setShowUser(false);
   };
 
+  const adminTabs =
+    adminPageOption &&
+    setAdminPageOption &&
+    AdminPageOptionToStr.map((adminPageOp: AdminPageOptionPair) => (
+      <Button
+        onClick={() => {
+          setAdminPageOption(adminPageOp.op);
+        }}
+        variant={adminPageOption === adminPageOp.op ? "headerSelect" : "header"}
+      >
+        Manage {adminPageOp.str}
+      </Button>
+    ));
+
   return (
     <Flex
       alignItems="stretch"
@@ -56,7 +84,7 @@ const Header = ({
     >
       <Flex margin="0px 30px">
         <Link
-          href="/"
+          href="#/"
           textDecoration="none"
           _hover={{ textDecoration: "none", color: "black" }}
         >
@@ -73,50 +101,7 @@ const Header = ({
         </Heading>
       )}
       {adminPageOption && setAdminPageOption && (
-        <Flex alignItems="flex-end">
-          <Button
-            onClick={() => {
-              setAdminPageOption(AdminPageOption.StoryTranslations);
-            }}
-            variant={
-              adminPageOption === AdminPageOption.StoryTranslations
-                ? "headerSelect"
-                : "header"
-            }
-          >
-            Manage Story Translations
-          </Button>
-          <Button
-            onClick={() => setAdminPageOption(AdminPageOption.Translators)}
-            variant={
-              adminPageOption === AdminPageOption.Translators
-                ? "headerSelect"
-                : "header"
-            }
-          >
-            Manage Translators
-          </Button>
-          <Button
-            onClick={() => setAdminPageOption(AdminPageOption.Reviewers)}
-            variant={
-              adminPageOption === AdminPageOption.Reviewers
-                ? "headerSelect"
-                : "header"
-            }
-          >
-            Manage Reviewers
-          </Button>
-          <Button
-            onClick={() => setAdminPageOption(AdminPageOption.Tests)}
-            variant={
-              adminPageOption === AdminPageOption.Tests
-                ? "headerSelect"
-                : "header"
-            }
-          >
-            Manage Tests
-          </Button>
-        </Flex>
+        <Flex alignItems="flex-end">{adminTabs}</Flex>
       )}
       <Flex
         alignItems="center"

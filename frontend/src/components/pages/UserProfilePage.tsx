@@ -43,6 +43,7 @@ import {
   CREATE_TRANSLATION_TEST,
   CreateTranslationTestResponse,
 } from "../../APIClients/mutations/StoryMutations";
+import { useFileDownload } from "../../utils/FileUtils";
 
 type UserProfilePageProps = {
   userId: string;
@@ -59,6 +60,7 @@ const UserProfilePage = () => {
   const [fullName, setFullName] = useState<string>("");
   const [email, setEmail] = useState<string>("");
   const [role, setRole] = useState<string>("");
+  const [resumeId, setResumeId] = useState<number | null>(null);
   const [confirmDeleteUser, setConfirmDeleteUser] = useState(false);
   const [alertText, setAlertText] = useState<string>("");
   const [alert, setAlert] = useState(false);
@@ -81,6 +83,8 @@ const UserProfilePage = () => {
 
   const history = useHistory();
 
+  const [downloadFile] = useFileDownload(resumeId, "resume");
+
   const { loading, error } = useQuery(GET_USER(parseInt(userId, 10)), {
     fetchPolicy: "cache-and-network",
     onCompleted: (data: { userById: User }) => {
@@ -93,6 +97,7 @@ const UserProfilePage = () => {
       );
       setFullName(`${user?.firstName} ${user?.lastName}`);
       setEmail(user?.email!);
+      setResumeId(user?.resume!);
       setApprovedLanguagesTranslation(translationLanguages);
       setApprovedLanguagesReview(reviewLanguages);
       setRole(
@@ -193,6 +198,17 @@ const UserProfilePage = () => {
             Last active on
           </Heading>
           <Text>TODO</Text>
+          {isAdmin && (
+            <>
+              <Heading size="sm" marginTop="36px">
+                User Files
+              </Heading>
+              {/* TODO: replace file name */}
+              <Button variant="link" onClick={() => downloadFile()}>
+                resume.pdf
+              </Button>
+            </>
+          )}
         </Flex>
         <Flex direction="column" margin="40px" flex={1}>
           {!isAdmin && <UserProfileForm isSignup={false} />}

@@ -109,7 +109,7 @@ const UsersTable = ({
       key={`${userObj?.id}`}
     >
       <Td>
-        <Link isExternal href={`/user/${userObj?.id}`}>
+        <Link isExternal href={`#/user/${userObj?.id}`}>
           {getFullName(userObj)}
         </Link>
       </Td>
