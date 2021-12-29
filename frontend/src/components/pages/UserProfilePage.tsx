@@ -133,7 +133,7 @@ const UserProfilePage = () => {
       },
     });
     closeModal();
-    history.push("/");
+    history.push("/?tab=2");
   };
 
   const filterStyle = useStyleConfig("Filter");
