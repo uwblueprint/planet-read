@@ -9,7 +9,6 @@ export type File = {
 export const GET_FILE = gql`
   query GetFile($id: Int!) {
     fileById(id: $id) {
-      id
       ext
       file
     }

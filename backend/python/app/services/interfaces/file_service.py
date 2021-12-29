@@ -7,12 +7,12 @@ class IFileService(ABC):
     """
 
     @abstractmethod
-    def get_file(self, id):
+    def get_file_path(self, id):
         """Return a File and its contents based on id
 
         :param id: File id
-        :return: DownloadFileDTO containing file data
-        :rtype: DownloadFileDTO
+        :return: FileDTO, contains path and id of file
+        :rtype: FileDTO
         :raises Exception: id retrieval fails or base64 encoding fails
         """
         pass

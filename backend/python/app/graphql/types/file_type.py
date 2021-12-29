@@ -11,6 +11,5 @@ class CreateFileDTO(graphene.InputObjectType):
 
 
 class DownloadFileDTO(graphene.ObjectType):
-    id = graphene.Int()
     file = graphene.String(required=True)
     ext = graphene.String(required=True)

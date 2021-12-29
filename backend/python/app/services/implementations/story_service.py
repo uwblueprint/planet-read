@@ -111,8 +111,6 @@ class StoryService(IStoryService):
             file_dto = FileDTO(path=upload_path)
             self.logger.info(file_dto)
             new_file = File(**file_dto.__dict__)
-            db.session.add(new_file)
-            db.session.commit()
             return new_file.to_dict()
         except Exception as error:
             self.logger.error(str(error))

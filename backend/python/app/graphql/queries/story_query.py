@@ -49,7 +49,7 @@ def resolve_story_translation_statistics(root, info):
 
 def resolve_export_story_translation(root, info, id):
     res = services["story"].export_story_translation(id)
-    file = services["file"].get_file(res["id"])
+    file = services["file"].download_file(res["path"])
     services["file"].delete_file(res["path"])
     return file
 

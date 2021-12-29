@@ -13,7 +13,7 @@ class FileService(IFileService):
     def __init__(self, logger):
         self.logger = logger
 
-    def get_file(self, id):
+    def get_file_path(self, id):
         try:
             file = File.query.get(id)
 
@@ -21,13 +21,24 @@ class FileService(IFileService):
                 self.logger.error(f"Invalid file id: {id}")
                 raise Exception(f"Invalid file id: {id}")
 
-            # encode file data as base64 string
-            file_bytes = open(file.path, "rb").read()
+            return file
+        except Exception as e:
+            reason = getattr(e, "message", None)
+            self.logger.error(
+                "Failed to get file. Reason = {reason}".format(
+                    reason=(reason if reason else str(e))
+                )
+            )
+            raise e
+
+    def download_file(self, file_path):
+        try:  # encode file data as base64 string
+            file_bytes = open(file_path, "rb").read()
             encoded = b64encode(file_bytes).decode("utf-8")
 
             # extract extension and path
-            _, file_extension = os.path.splitext(file.path)
-            return DownloadFileDTO(id=id, file=encoded, ext=file_extension[1:])
+            _, file_extension = os.path.splitext(file_path)
+            return DownloadFileDTO(file=encoded, ext=file_extension[1:])
         except Exception as e:
             reason = getattr(e, "message", None)
             self.logger.error(
