@@ -37,7 +37,7 @@ import {
   UNASSIGN_TRANSLATOR_FROM_STORY_TRANSLATION_CONFIRMATION,
   UNASSIGN_USER_FROM_STORY_TRANSLATION_BUTTON,
 } from "../../utils/Copy";
-import AssignStoryModal, { StoryToAssign } from "../utils/AssignStoryModal";
+import AssignStoryModal, { StoryToAssign } from "./AssignStoryModal";
 import { StoryAssignStage } from "../../constants/Enums";
 
 interface AssignedStoryTranslationsFieldSortDict {

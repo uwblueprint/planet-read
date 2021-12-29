@@ -19,19 +19,19 @@ import { convertLanguageTitleCase } from "../../utils/LanguageUtils";
 import DropdownIndicator from "../utils/DropdownIndicator";
 import { languageOptions } from "../../constants/Languages";
 
-export type NewLanguageModalProps = {
-  addNewTest: (newLanguage: string) => void;
+export type UserNewLanguageModalProps = {
+  onSubmit: (newLanguage: string) => void;
   approvedLanguagesTranslation: ApprovedLanguagesMap | undefined;
   isOpen: boolean;
   onClose: () => void;
 };
 
-const NewLanguageModal = ({
-  addNewTest,
+const UserNewLanguageModal = ({
+  onSubmit,
   approvedLanguagesTranslation,
   isOpen,
   onClose,
-}: NewLanguageModalProps) => {
+}: UserNewLanguageModalProps) => {
   const [newLanguage, setNewLanguage] = useState<string>("");
   const unapprovedLanguageOptions = languageOptions.filter(function (obj) {
     return (
@@ -85,7 +85,7 @@ const NewLanguageModal = ({
               <Button
                 colorScheme="blue"
                 disabled={newLanguage === ""}
-                onClick={() => addNewTest(newLanguage)}
+                onClick={() => onSubmit(newLanguage)}
               >
                 ADD TEST
               </Button>
@@ -97,4 +97,4 @@ const NewLanguageModal = ({
   );
 };
 
-export default NewLanguageModal;
+export default UserNewLanguageModal;
