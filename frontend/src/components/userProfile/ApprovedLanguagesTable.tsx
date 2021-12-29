@@ -7,9 +7,10 @@ import {
   UPDATE_USER_APPROVED_LANGUAGES,
   UpdateUserApprovedLanguagesResponse,
 } from "../../APIClients/mutations/UserMutations";
-import ApproveLanguageModal, {
+import AdminNewLanguageModal, {
   NewApprovedLanguage,
-} from "../utils/ApproveLanguageModal";
+} from "./AdminNewLanguageModal";
+import UserNewLanguageModal from "./UserNewLanguageModal";
 import {
   CREATE_TRANSLATION_TEST,
   CreateTranslationTestResponse,
@@ -65,6 +66,7 @@ const ApprovedLanguagesTable = ({
 }: ApprovedLanguagesTableProps) => {
   const history = useHistory();
 
+  /* State */
   const [confirmDemoteLevel, setConfirmDemoteLevel] = useState(false);
   const [confirmLevelUp, setConfirmLevelUp] = useState(false);
   const [alertNewTest, setAlertNewTest] = useState(false);
@@ -86,26 +88,7 @@ const ApprovedLanguagesTable = ({
     setAlertTimeout(timeout);
   };
 
-  const openApproveLanguageModal = () => {
-    setApproveNewLanguage(true);
-  };
-
-  const closeApproveLanguageModal = (cancelled = true) => {
-    setApproveNewLanguage(false);
-    if (cancelled) {
-      setAlert(true);
-      setAlertText("No new language was assigned to the user.");
-      resetAlertTimeout();
-    }
-  };
-
-  const [updateUserApprovedLanguages] = useMutation<{
-    response: UpdateUserApprovedLanguagesResponse;
-  }>(UPDATE_USER_APPROVED_LANGUAGES);
-  const [createTranslationTest] = useMutation<{
-    response: CreateTranslationTestResponse;
-  }>(CREATE_TRANSLATION_TEST);
-
+  /* UI Logic */
   const getAlertText = (
     isTranslate: boolean,
     language: string,
@@ -128,6 +111,15 @@ const ApprovedLanguagesTable = ({
       language,
     )} has been updated: Level ${oldLevel} → Level ${level}.`;
   };
+
+  /* GQL Requests */
+  const [updateUserApprovedLanguages] = useMutation<{
+    response: UpdateUserApprovedLanguagesResponse;
+  }>(UPDATE_USER_APPROVED_LANGUAGES);
+
+  const [createTranslationTest] = useMutation<{
+    response: CreateTranslationTestResponse;
+  }>(CREATE_TRANSLATION_TEST);
 
   const callUpdateUserApprovedLanguagesMutation = async (
     isTranslate: boolean,
@@ -178,7 +170,104 @@ const ApprovedLanguagesTable = ({
     }
   };
 
-  const demoteUserLevel = () => {
+  // Opening and Closing Modals
+  const openAddNewLanguageModal = () => {
+    setApproveNewLanguage(true);
+  };
+
+  const closeAddNewLanguageModal = (cancelled = true) => {
+    setApproveNewLanguage(false);
+    if (cancelled) {
+      setAlert(true);
+      setAlertText("No new language was assigned to the user.");
+      resetAlertTimeout();
+    }
+  };
+
+  const closeNewTestModal = () => {
+    setAlertNewTest(false);
+  };
+
+  const openRemoveLanguageModal = (isTranslate: boolean, language: string) => {
+    setLanguageToRemove(language);
+    setIsRemoveTranslatorLanguage(isTranslate);
+    setRemoveLanguage(true);
+  };
+
+  const closeRemoveLanguageModal = () => {
+    setRemoveLanguage(false);
+  };
+
+  const openLevelUpModal = (level: number, language: string) => {
+    setTestLevel(level);
+    setTestLanguage(language);
+    setConfirmLevelUp(true);
+  };
+
+  const closeLevelUpModal = () => {
+    setTestLevel(0);
+    setTestLanguage("");
+    setConfirmLevelUp(false);
+  };
+
+  /* Confirm Modal Logic */
+  const onAdminAddNewLanguage = (newLanguage: NewApprovedLanguage) => {
+    callUpdateUserApprovedLanguagesMutation(
+      newLanguage.role === "Translator",
+      newLanguage.language,
+      newLanguage.level,
+      0,
+      true,
+    );
+    closeAddNewLanguageModal(false);
+  };
+
+  const onUserAddNewLanguage = async (newLanguage: string) => {
+    try {
+      await createTranslationTest({
+        variables: {
+          userId,
+          level: 2,
+          language: newLanguage,
+        },
+      });
+      closeAddNewLanguageModal(false);
+      setAlertNewTest(true);
+    } catch (err) {
+      window.alert(err);
+      closeAddNewLanguageModal(false);
+    }
+  };
+
+  const onRemoveLanguage = () => {
+    callUpdateUserApprovedLanguagesMutation(
+      isRemoveTranslatorLanguage,
+      languageToRemove,
+      -1,
+      0,
+    );
+    closeRemoveLanguageModal();
+  };
+
+  const onLevelUp = async () => {
+    try {
+      await createTranslationTest({
+        variables: {
+          userId,
+          level: testLevel,
+          language: testLanguage,
+        },
+      });
+      closeLevelUpModal();
+      setAlertNewTest(true);
+    } catch (err) {
+      window.alert(err);
+      closeLevelUpModal();
+      closeNewTestModal();
+    }
+  };
+
+  const onDemoteUserLevel = () => {
     callUpdateUserApprovedLanguagesMutation(
       updateApprovedLanguageArgs!!.isTranslate,
       updateApprovedLanguageArgs!!.language,
@@ -188,6 +277,7 @@ const ApprovedLanguagesTable = ({
     setConfirmDemoteLevel(false);
   };
 
+  /* Other Logic */
   const onSliderValueChange = (
     isTranslate: boolean,
     language: string,
@@ -212,75 +302,10 @@ const ApprovedLanguagesTable = ({
     }
   };
 
-  const onApproveLanguage = (newLanguage: NewApprovedLanguage) => {
-    callUpdateUserApprovedLanguagesMutation(
-      newLanguage.role === "Translator",
-      newLanguage.language,
-      newLanguage.level,
-      0,
-      true,
-    );
-    closeApproveLanguageModal(false);
-  };
-
-  const closeNewTestModal = () => {
-    setAlertNewTest(false);
-  };
-
-  const closeLevelUpModal = () => {
-    setTestLevel(0);
-    setTestLanguage("");
-    setConfirmLevelUp(false);
-  };
-
-  const openLevelUpModal = (level: number, language: string) => {
-    setTestLevel(level);
-    setTestLanguage(language);
-    setConfirmLevelUp(true);
-  };
-
-  const openRemoveLanguageModal = (isTranslate: boolean, language: string) => {
-    setLanguageToRemove(language);
-    setIsRemoveTranslatorLanguage(isTranslate);
-    setRemoveLanguage(true);
-  };
-
-  const closeRemoveLanguageModal = () => {
-    setRemoveLanguage(false);
-  };
-
-  const onRemoveLanguage = () => {
-    callUpdateUserApprovedLanguagesMutation(
-      isRemoveTranslatorLanguage,
-      languageToRemove,
-      -1,
-      0,
-    );
-    closeRemoveLanguageModal();
-  };
-
-  const callCreateTranslationTestMutation = async () => {
-    try {
-      await createTranslationTest({
-        variables: {
-          userId,
-          level: testLevel,
-          language: testLanguage,
-        },
-      });
-      closeLevelUpModal();
-      setAlertNewTest(true);
-    } catch (err) {
-      window.alert(err);
-      closeLevelUpModal();
-      closeNewTestModal();
-    }
-  };
-
   return (
     <>
       <ApprovedLanguagesTableComponent
-        addNewLanguage={isAdmin ? openApproveLanguageModal : () => undefined}
+        addNewLanguage={openAddNewLanguageModal}
         levelUpOnClick={openLevelUpModal}
         removeLanguageOnClick={openRemoveLanguageModal}
         onSliderValueChange={onSliderValueChange}
@@ -288,15 +313,31 @@ const ApprovedLanguagesTable = ({
         approvedLanguagesReview={approvedLanguagesReview}
         isAdmin={isAdmin}
       />
-      {approveNewLanguage && (
-        <ApproveLanguageModal
-          isOpen={approveNewLanguage}
-          onClose={closeApproveLanguageModal}
-          onAssign={onApproveLanguage}
-          approvedLanguagesTranslation={approvedLanguagesTranslation!}
-          approvedLanguagesReview={approvedLanguagesReview!}
-        />
-      )}
+      {approveNewLanguage &&
+        (isAdmin ? (
+          <AdminNewLanguageModal
+            isOpen={approveNewLanguage}
+            onClose={closeAddNewLanguageModal}
+            onAssign={onAdminAddNewLanguage}
+            approvedLanguagesTranslation={approvedLanguagesTranslation!}
+            approvedLanguagesReview={approvedLanguagesReview!}
+          />
+        ) : (
+          <UserNewLanguageModal
+            isOpen={approveNewLanguage}
+            onClose={closeAddNewLanguageModal}
+            onSubmit={onUserAddNewLanguage}
+            approvedLanguagesTranslation={approvedLanguagesTranslation}
+          />
+        ))}
+      <ConfirmationModal
+        confirmation={alertNewTest}
+        onClose={closeNewTestModal}
+        onConfirmationClick={() => history.push("/")}
+        confirmationHeading={NEW_BOOK_TEST_ADDED_HEADING}
+        confirmationMessage={NEW_BOOK_TEST_ADDED_MESSAGE}
+        buttonMessage={NEW_BOOK_TEST_ADDED_BUTTON}
+      />
       <ConfirmationModal
         confirmation={removeLanguage}
         onClose={closeRemoveLanguageModal}
@@ -307,22 +348,14 @@ const ApprovedLanguagesTable = ({
       <ConfirmationModal
         confirmation={confirmLevelUp}
         onClose={closeLevelUpModal}
-        onConfirmationClick={callCreateTranslationTestMutation}
+        onConfirmationClick={onLevelUp}
         confirmationMessage={LEVEL_UP_LANGUAGE_CONFIRMATION}
         buttonMessage={LEVEL_UP_LANGUAGE_BUTTON}
       />
       <ConfirmationModal
-        confirmation={alertNewTest}
-        onClose={closeNewTestModal}
-        onConfirmationClick={() => history.push("/")}
-        confirmationHeading={NEW_BOOK_TEST_ADDED_HEADING}
-        confirmationMessage={NEW_BOOK_TEST_ADDED_MESSAGE}
-        buttonMessage={NEW_BOOK_TEST_ADDED_BUTTON}
-      />
-      <ConfirmationModal
         confirmation={confirmDemoteLevel}
         onClose={() => setConfirmDemoteLevel(false)}
-        onConfirmationClick={demoteUserLevel}
+        onConfirmationClick={onDemoteUserLevel}
         confirmationMessage={DEMOTE_LEVEL_CONFIRMATION}
         buttonMessage={DEMOTE_LEVEL_BUTTON}
       />
