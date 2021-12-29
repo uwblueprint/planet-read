@@ -48,6 +48,7 @@ export type ButtonRadioGroupProps = {
   options: string[];
   onChange: (newState: string) => void;
   dependentValue?: string;
+  value?: string;
 };
 
 function ButtonRadioGroup({
@@ -60,6 +61,7 @@ function ButtonRadioGroup({
   options,
   dependentValue,
   onChange,
+  value,
 }: ButtonRadioGroupProps) {
   const { getRootProps, getRadioProps, setValue } = useRadioGroup({
     name,
@@ -76,19 +78,25 @@ function ButtonRadioGroup({
     }
   }, [dependentValue]);
 
+  useEffect(() => {
+    if (value) {
+      setValue(value);
+    }
+  }, [value]);
+
   return (
     <Flex direction={stacked ? "column" : "row"} {...group}>
-      {options.map((value) => {
-        const radio = getRadioProps({ value });
+      {options.map((val) => {
+        const radio = getRadioProps({ value: val });
         return (
           <RadioCard
-            key={value}
+            key={val}
             size={size}
             unselectedVariant={unselectedVariant}
             {...radio}
             isDisabled={isDisabled}
           >
-            {value}
+            {val}
           </RadioCard>
         );
       })}
