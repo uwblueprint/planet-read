@@ -316,8 +316,6 @@ const TranslationPage = () => {
             translatorName={translatorName}
             reviewerName={reviewerName}
             setCommentLine={setCommentLine}
-            setTranslatedStoryLines={setTranslatedStoryLines}
-            translatedStoryLines={translatedStoryLines}
           />
         )}
       </Flex>

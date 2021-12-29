@@ -6,7 +6,6 @@ import {
   buildCommentsQuery,
 } from "../../APIClients/queries/CommentQueries";
 import WIPComment from "./WIPComment";
-import { StoryLine } from "../translation/Autosave";
 import ExistingComment from "./ExistingComment";
 
 export type CommentPanelProps = {
@@ -17,8 +16,6 @@ export type CommentPanelProps = {
   commentLine: number;
   setCommentLine: (line: number) => void;
   storyTranslationContentId: number;
-  setTranslatedStoryLines: (storyLines: StoryLine[]) => void;
-  translatedStoryLines: StoryLine[];
 };
 
 const CommentsPanel = ({
@@ -29,8 +26,6 @@ const CommentsPanel = ({
   commentLine,
   storyTranslationContentId,
   setCommentLine,
-  setTranslatedStoryLines,
-  translatedStoryLines,
 }: CommentPanelProps) => {
   const [comments, setComments] = useState<CommentResponse[]>([]);
   const [filterIndex, setFilterIndex] = useState(2);
@@ -133,8 +128,6 @@ const CommentsPanel = ({
               updateCommentsAsResolved={updateCommentsAsResolved}
               comments={comments}
               setComments={setComments}
-              setTranslatedStoryLines={setTranslatedStoryLines}
-              translatedStoryLines={translatedStoryLines}
               threadHeadMap={threadHeadMap}
               updateThreadHeadMap={updateThreadHeadMap}
             />
@@ -198,8 +191,6 @@ const CommentsPanel = ({
           setCommentLine={setCommentLine}
           comments={comments}
           setComments={setComments}
-          setTranslatedStoryLines={setTranslatedStoryLines}
-          translatedStoryLines={translatedStoryLines}
           updateThreadHeadMap={updateThreadHeadMap}
         />
       )}

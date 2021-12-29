@@ -7,8 +7,6 @@ import {
   CREATE_COMMMENT,
 } from "../../APIClients/mutations/CommentMutations";
 import { CommentResponse } from "../../APIClients/queries/CommentQueries";
-import { StoryLine } from "../translation/Autosave";
-import { convertStatusTitleCase } from "../../utils/StatusUtils";
 import { insertSortedComments } from "../../utils/Utils";
 
 export type WIPCommentProps = {
@@ -17,8 +15,6 @@ export type WIPCommentProps = {
   setCommentLine: (line: number) => void;
   comments: CommentResponse[];
   setComments: (comments: CommentResponse[]) => void;
-  translatedStoryLines: StoryLine[];
-  setTranslatedStoryLines: (storyLines: StoryLine[]) => void;
   updateThreadHeadMap: (cmts: CommentResponse[]) => void;
 };
 
@@ -27,9 +23,7 @@ const WIPComment = ({
   WIPLineIndex,
   setCommentLine,
   setComments,
-  setTranslatedStoryLines,
   comments,
-  translatedStoryLines,
   updateThreadHeadMap,
 }: WIPCommentProps) => {
   const handleError = (errorMessage: string) => {
@@ -61,10 +55,6 @@ const WIPComment = ({
           result.data.createComment.comment,
         );
         setComments(newComments);
-        const updatedStoryLines = [...translatedStoryLines];
-        updatedStoryLines[WIPLineIndex - 1].status =
-          convertStatusTitleCase("ACTION_REQUIRED");
-        setTranslatedStoryLines(updatedStoryLines);
         updateThreadHeadMap(newComments);
       }
     } catch (err) {

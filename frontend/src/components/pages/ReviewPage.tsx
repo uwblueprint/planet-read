@@ -248,8 +248,6 @@ const ReviewPage = () => {
           translatorName={translatorName}
           reviewerName={reviewerName}
           setCommentLine={setCommentLine}
-          setTranslatedStoryLines={setTranslatedStoryLines}
-          translatedStoryLines={translatedStoryLines}
         />
         {returnToTranslator && (
           <ConfirmationModal

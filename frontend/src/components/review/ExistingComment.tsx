@@ -7,7 +7,6 @@ import {
   UpdateCommentResponse,
 } from "../../APIClients/mutations/CommentMutations";
 import { CommentResponse } from "../../APIClients/queries/CommentQueries";
-import { StoryLine } from "../translation/Autosave";
 
 export type ExistingCommentProps = {
   commentsStateIdx: number;
@@ -16,8 +15,6 @@ export type ExistingCommentProps = {
   updateCommentsAsResolved: (index: number) => void;
   comments: CommentResponse[];
   setComments: (comments: CommentResponse[]) => void;
-  translatedStoryLines: StoryLine[];
-  setTranslatedStoryLines: (storyLines: StoryLine[]) => void;
   WIPLineIndex: number;
   threadHeadMap: boolean[];
   updateThreadHeadMap: (cmts: CommentResponse[]) => void;
@@ -29,9 +26,7 @@ const ExistingComment = ({
   comment,
   updateCommentsAsResolved,
   setComments,
-  setTranslatedStoryLines,
   comments,
-  translatedStoryLines,
   threadHeadMap,
   updateThreadHeadMap,
 }: ExistingCommentProps) => {
@@ -150,8 +145,6 @@ const ExistingComment = ({
           setCommentLine={setReply}
           comments={comments}
           setComments={setComments}
-          setTranslatedStoryLines={setTranslatedStoryLines}
-          translatedStoryLines={translatedStoryLines}
           updateThreadHeadMap={updateThreadHeadMap}
         />
       )}
