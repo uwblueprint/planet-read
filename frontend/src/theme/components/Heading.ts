@@ -14,6 +14,10 @@ const Heading = {
     light: {
       fontWeight: "400",
     },
+    subtitle: {
+      fontWeight: "500",
+      color: "gray.400",
+    },
   },
 };
 export default Heading;

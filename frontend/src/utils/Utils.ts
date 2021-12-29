@@ -1,4 +1,5 @@
 import { CommentResponse } from "../APIClients/queries/CommentQueries";
+import { AdditionalExperiences } from "../APIClients/queries/UserQueries";
 
 export const convertStringTitleCase = (s: string) =>
   s[0] + s.substring(1).toLowerCase();
@@ -9,6 +10,19 @@ export const parseApprovedLanguages = (
   input: string | undefined,
 ): ApprovedLanguagesMap => {
   return input ? JSON.parse(input.trim().replace(/'/g, '"')) : {};
+};
+
+export const parseUserBackground = (
+  input: string | undefined | null,
+): AdditionalExperiences => {
+  const additionalExperiences = input
+    ? JSON.parse(input.trim().replace(/'/g, '"'))
+    : {};
+  return {
+    languageExperience: additionalExperiences.languageExperience ?? "",
+    educationalQualification:
+      additionalExperiences.educationalQualification ?? "",
+  };
 };
 
 export const embedLink = (originalYoutubeLink: string): string => {
