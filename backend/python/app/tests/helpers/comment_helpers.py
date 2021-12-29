@@ -17,6 +17,7 @@ class UpdateCommentRequestDTO(Mapping):
         self.content = comment.content
         self._dict = dict(id=comment.id, content=comment.content)
 
+    # These functions are necessary for bulk_update_mappings to work
     def __getitem__(self, key):
         return self._dict[key]
 

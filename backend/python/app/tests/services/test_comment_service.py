@@ -75,7 +75,7 @@ def test_update_comment(app, db, services):
     assert comment_obj_2.content == "Big Brother is watching you"
 
 
-def test_resolve_comment(app, db, services):
+def test_update_comment_resolve(app, db, services):
     # Create Story and Story Translation
     (
         translator,
