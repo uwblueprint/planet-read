@@ -1,14 +1,31 @@
-import React, { useState } from "react";
+import React from "react";
 import Header, { AdminPageOption } from "../navigation/Header";
 import ManageStoryTranslations from "../admin/ManageStoryTranslations";
 import ManageStories from "../admin/ManageStories";
 import ManageUsers from "../admin/ManageUsers";
 import ManageStoryTests from "../admin/ManageStoryTests";
+import useQueryParams from "../../utils/hooks/useQueryParams";
 
 const AdminPage = () => {
-  const [adminPageOption, setAdminPageOption] = useState(
-    AdminPageOption.StoryTranslations,
-  );
+  const queryParams = useQueryParams();
+
+  const getPageOptionFromURL = () => {
+    const tab: string | null = queryParams.get("tab");
+    if (!tab || Number.isNaN(parseInt(tab, 10))) {
+      return AdminPageOption.StoryTranslations;
+    }
+
+    const index = parseInt(tab, 10);
+    return index >= AdminPageOption.StoryTranslations &&
+      index <= AdminPageOption.Tests
+      ? index
+      : -1;
+  };
+
+  const adminPageOption = getPageOptionFromURL();
+  if (adminPageOption === -1) {
+    window.location.href = "/";
+  }
   const bodyComponent = (adminPgOption: AdminPageOption) => {
     switch (adminPgOption) {
       case AdminPageOption.StoryTranslations:
@@ -27,10 +44,7 @@ const AdminPage = () => {
   };
   return (
     <>
-      <Header
-        adminPageOption={adminPageOption}
-        setAdminPageOption={setAdminPageOption}
-      />
+      <Header adminPageOption={adminPageOption} />
       {bodyComponent(adminPageOption)}
     </>
   );
