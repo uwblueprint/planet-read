@@ -47,6 +47,13 @@ def resolve_story_translation_statistics(root, info):
     return services["story"].get_story_translation_statistics()
 
 
+def resolve_export_story_translation(root, info, id):
+    res = services["story"].export_story_translation(id)
+    file = services["file"].get_file(res["id"])
+    services["file"].delete_file(res["path"])
+    return file
+
+
 @require_authorization_by_role_gql({"Admin"})
 def resolve_story_translations(
     root, info, language, level, stage, story_title, story_id

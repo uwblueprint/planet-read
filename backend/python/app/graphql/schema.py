@@ -37,6 +37,7 @@ from .mutations.user_mutation import (
 from .queries.comment_query import resolve_comments_by_story_translation
 from .queries.file_query import resolve_file_by_id
 from .queries.story_query import (
+    resolve_export_story_translation,
     resolve_stories,
     resolve_stories_available_for_translation,
     resolve_story_by_id,
@@ -154,6 +155,9 @@ class Query(graphene.ObjectType):
     story_translation_statistics = graphene.Field(
         StoryTranslationStatisticsResponseDTO,
     )
+    export_story_translation = graphene.Field(
+        DownloadFileDTO, id=graphene.Int(required=True)
+    )
 
     def resolve_comments_by_story_translation(
         root, info, story_translation_id, resolved=None
@@ -229,6 +233,9 @@ class Query(graphene.ObjectType):
 
     def resolve_story_translation_statistics(root, info):
         return resolve_story_translation_statistics(root, info)
+
+    def resolve_export_story_translation(root, info, id):
+        return resolve_export_story_translation(root, info, id)
 
 
 schema = graphene.Schema(query=Query, mutation=Mutation)
