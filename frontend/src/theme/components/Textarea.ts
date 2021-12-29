@@ -15,6 +15,11 @@ const Textarea = {
       margin: "12px",
       padding: "10px",
     },
+    disabled: {
+      opacity: "100%",
+      backgroundColor: "white",
+      cursor: "not-allowed",
+    },
   },
 };
 export default Textarea;

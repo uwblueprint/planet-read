@@ -20,7 +20,13 @@ export type User = {
   resume: number;
   approvedLanguagesTranslation: string;
   approvedLanguagesReview: string;
+  additionalExperiences: string;
 } | null;
+
+export type AdditionalExperiences = {
+  languageExperience: string;
+  educationalQualification: string;
+};
 
 export const GET_USER = (id: number) =>
   gql`
@@ -29,6 +35,7 @@ export const GET_USER = (id: number) =>
           id: ${id}
         ) {
           ${USER_FIELDS}
+          additionalExperiences
         }
       }
   `;

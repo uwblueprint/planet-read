@@ -1,6 +1,13 @@
 import React, { useContext, useState } from "react";
 import { useParams, useHistory, Redirect } from "react-router-dom";
-import { Button, Flex, Heading, Text, useStyleConfig } from "@chakra-ui/react";
+import {
+  Button,
+  Flex,
+  Heading,
+  Text,
+  Textarea,
+  useStyleConfig,
+} from "@chakra-ui/react";
 import { useQuery, useMutation } from "@apollo/client";
 
 import AuthContext from "../../contexts/AuthContext";
@@ -18,7 +25,11 @@ import {
   NEW_BOOK_TEST_ADDED_MESSAGE,
 } from "../../utils/Copy";
 import ConfirmationModal from "../utils/ConfirmationModal";
-import { GET_USER, User } from "../../APIClients/queries/UserQueries";
+import {
+  AdditionalExperiences,
+  GET_USER,
+  User,
+} from "../../APIClients/queries/UserQueries";
 import {
   GET_STORY_TRANSLATIONS_BY_USER,
   StoryTranslation,
@@ -26,6 +37,7 @@ import {
 import {
   ApprovedLanguagesMap,
   parseApprovedLanguages,
+  parseUserBackground,
 } from "../../utils/Utils";
 import ApprovedLanguagesTable from "../admin/ApprovedLanguagesTable";
 import AssignedStoryTranslationsTable from "../userProfile/AssignedStoryTranslationsTable";
@@ -61,6 +73,8 @@ const UserProfilePage = () => {
   const [storyTranslations, setStoryTranslations] = useState<
     StoryTranslation[]
   >([]);
+  const [additionalExperiences, setAdditionalExperiences] =
+    useState<AdditionalExperiences | null>(null);
 
   const [approvedLanguagesTranslation, setApprovedLanguagesTranslation] =
     useState<ApprovedLanguagesMap>();
@@ -97,6 +111,9 @@ const UserProfilePage = () => {
         `Translator ${
           Object.keys(reviewLanguages).length > 0 ? "& Reviewer" : ""
         }`,
+      );
+      setAdditionalExperiences(
+        parseUserBackground(user?.additionalExperiences),
       );
     },
   });
@@ -257,8 +274,42 @@ const UserProfilePage = () => {
           />
           {isAdmin && (
             <>
-              <Heading size="sm" marginTop="56px">
-                Delete user
+              <Heading size="lg" marginTop="56px" marginBottom="20px">
+                User Background
+              </Heading>
+              <Heading size="md" variant="subtitle" marginBottom="10px">
+                Educational Qualifications
+              </Heading>
+              <Textarea
+                isDisabled
+                variant="disabled"
+                height="150px"
+                borderWidth="3px"
+                resize="none"
+                value={additionalExperiences?.educationalQualification ?? ""}
+              />
+              <Heading
+                size="md"
+                variant="subtitle"
+                marginTop="26px"
+                marginBottom="10px"
+              >
+                Language Experience
+              </Heading>
+              <Textarea
+                isDisabled
+                variant="disabled"
+                height="150px"
+                borderWidth="3px"
+                resize="none"
+                value={additionalExperiences?.languageExperience ?? ""}
+              />
+            </>
+          )}
+          {isAdmin && (
+            <>
+              <Heading size="md" fontWeight="500" marginTop="56px">
+                Delete User
               </Heading>
               <Text>
                 Permanently delete this user and all data associated with them.
