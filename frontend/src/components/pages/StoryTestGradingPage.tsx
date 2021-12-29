@@ -238,6 +238,7 @@ const StoryTestGradingPage = () => {
                   (numApprovedLines / translatedStoryLines.length) * 100
                 }
                 type="Review"
+                fontSize={fontSize}
               />
             </Flex>
 

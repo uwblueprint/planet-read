@@ -204,12 +204,14 @@ const ReviewPage = () => {
                   (numTranslatedLines / translatedStoryLines.length) * 100
                 }
                 type="Translation"
+                fontSize={fontSize}
               />
               <ProgressBar
                 percentageComplete={
                   (numApprovedLines / translatedStoryLines.length) * 100
                 }
                 type="Review"
+                fontSize={fontSize}
               />
             </Flex>
             <Tooltip

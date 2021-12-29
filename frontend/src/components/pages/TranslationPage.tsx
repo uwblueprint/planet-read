@@ -286,6 +286,7 @@ const TranslationPage = () => {
                 (numTranslatedLines / translatedStoryLines.length) * 100
               }
               type="Translation"
+              fontSize={fontSize}
             />
             <Tooltip
               hasArrow
