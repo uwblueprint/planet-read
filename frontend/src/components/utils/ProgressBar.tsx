@@ -1,6 +1,5 @@
 import React from "react";
-import { Progress, Text } from "@chakra-ui/react";
-import "./ProgressBar.css";
+import { Box, Progress, Text } from "@chakra-ui/react";
 import { truncate } from "../../utils/Utils";
 
 type ProgressBarProps = {
@@ -38,19 +37,19 @@ const ProgressBar = ({
   }
 
   return (
-    <div className="progress-bar-container">
+    <Box maxWidth="230px">
       <Text color="gray.400" fontSize={progressFontSize} marginBottom="8px">
         {type} Progress: {truncate(percentageComplete, 2)}%
       </Text>
-      <div>
+      <Box>
         <Progress
           value={percentageComplete}
           size="xs"
           width={progressWidth}
           marginRight={progressMargin}
         />
-      </div>
-    </div>
+      </Box>
+    </Box>
   );
 };
 
