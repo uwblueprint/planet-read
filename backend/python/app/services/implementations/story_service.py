@@ -1,9 +1,13 @@
+import os
+from base64 import b64encode
 from datetime import datetime, timedelta
 
 import docx
 from flask import current_app
 from sqlalchemy.orm import aliased
+from werkzeug.utils import secure_filename
 
+from ...graphql.types.file_type import FileDTO
 from ...graphql.types.story_type import (
     StageEnum,
     StoryTranslationContentResponseDTO,
@@ -12,6 +16,7 @@ from ...graphql.types.story_type import (
 )
 from ...models import db
 from ...models.comment import Comment
+from ...models.file import File
 from ...models.story import Story
 from ...models.story_all import StoryAll
 from ...models.story_content import StoryContent
@@ -83,6 +88,30 @@ class StoryService(IStoryService):
             story_contents = self._read_doc(file["path"])
             return self.create_story(details, story_contents)
 
+        except Exception as error:
+            self.logger.error(str(error))
+            raise error
+
+    def export_story_translation(self, id):
+        try:
+            story_details = self.get_story_translation(id=id)
+            doc = docx.Document()
+            doc.add_heading(story_details["title"])
+
+            for line in story_details["translation_contents"]:
+                doc.add_paragraph(line["translation_content"])
+
+            upload_folder_path = os.getenv("UPLOAD_PATH")
+
+            upload_path = os.path.join(
+                upload_folder_path,
+                secure_filename("downloadable-story-translation.docx"),
+            )
+            doc.save(upload_path)
+            file_dto = FileDTO(path=upload_path)
+            self.logger.info(file_dto)
+            new_file = File(**file_dto.__dict__)
+            return new_file.to_dict()
         except Exception as error:
             self.logger.error(str(error))
             raise error
