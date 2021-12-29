@@ -38,14 +38,3 @@ class ICommentService(ABC):
         :raises Exception: if id of comment to be updated does not exist
         """
         pass
-
-    @abstractmethod
-    def update_comments(self, updated_comments):
-        """Bulk update existing Comment objects
-
-        :param updated_comments: list of UpdateCommentRequestDTO's
-        :return: list of UpdateCommentResponseDTO's
-        :rtype: [UpdateCommentResponseDTO]
-        :raises Exception: if id of comment to be updated does not exist
-        """
-        pass
