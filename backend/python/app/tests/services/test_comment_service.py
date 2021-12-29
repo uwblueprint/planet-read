@@ -75,6 +75,47 @@ def test_update_comment(app, db, services):
     assert comment_obj_2.content == "Big Brother is watching you"
 
 
+def test_resolve_comment(app, db, services):
+    # Create Story and Story Translation
+    (
+        translator,
+        reviewer,
+        story_obj,
+        story_translation_obj,
+    ) = create_story_translation(db)
+    story_translation_contents = create_story_translation_contents(
+        db, story_translation_obj
+    )
+
+    comment = CreateCommentDTO(
+        story_translation_content_id=story_translation_contents[0]["id"],
+        content="Orwellian State-Mandated Unit Tests",
+    )
+    resp = services["comment"].create_comment(comment.__dict__, translator.id)
+    comment_obj = CommentAll.query.get(resp.id)
+
+    # Multiple comments
+    comment_2 = CreateCommentDTO(
+        story_translation_content_id=story_translation_contents[0]["id"],
+        content="Orwellian State-Mandated Unit Tests",
+    )
+    resp_2 = services["comment"].create_comment(comment_2.__dict__, reviewer.id)
+    comment_obj_2 = CommentAll.query.get(resp_2.id)
+
+    assert comment_obj.resolved == False
+    assert comment_obj_2.resolved == False
+
+    resolved_comment = UpdateCommentRequestDTO(resp)
+    resolved_comment.resolved = True
+
+    resp_resolved = services["comment"].update_comment(resolved_comment, translator.id)
+
+    comment_obj_resolved = CommentAll.query.get(resp_resolved.id)
+    comment_obj_2_resolved = CommentAll.query.get(resp_2.id)
+
+    assert comment_obj_2_resolved.resolved and comment_obj_resolved.resolved
+
+
 def test_update_comment_invalid_id(app, db, services):
     # Create Story and Story Translation
     (
