@@ -122,8 +122,7 @@ const ManageStoryPage = () => {
           id: parseInt(storyIdParam, 10),
         },
       });
-      history.push("/");
-      window.location.reload();
+      window.location.href = "/#/?tab=1";
     } catch (error) {
       window.alert(`Error occurred, please try again. Error: ${error}`);
     }
