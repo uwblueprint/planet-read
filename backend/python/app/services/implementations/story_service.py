@@ -458,7 +458,6 @@ class StoryService(IStoryService):
         ):
             story_translation = StoryTranslation.query.get(story_translation["id"])
             story_translation.reviewer_id = user.id
-            story_translation.stage = "REVIEW"
             db.session.commit()
         else:
             self.logger.error("User can't be assigned as a reviewer")
