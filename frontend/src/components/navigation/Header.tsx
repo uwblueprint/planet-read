@@ -14,7 +14,7 @@ import UserModal from "./UserModal";
 import AuthContext from "../../contexts/AuthContext";
 
 export enum AdminPageOption {
-  StoryTranslations = 1,
+  StoryTranslations = 0,
   Stories,
   Translators,
   Reviewers,
@@ -37,14 +37,9 @@ const AdminPageOptionToStr = [
 export type HeaderProps = {
   title?: string;
   adminPageOption?: AdminPageOption;
-  setAdminPageOption?: (val: AdminPageOption) => void;
 };
 
-const Header = ({
-  title,
-  adminPageOption,
-  setAdminPageOption,
-}: HeaderProps) => {
+const Header = ({ title, adminPageOption }: HeaderProps) => {
   const { authenticatedUser } = useContext(AuthContext);
 
   const { id, firstName, lastName, role, approvedLanguagesReview } =
@@ -63,12 +58,11 @@ const Header = ({
   };
 
   const adminTabs =
-    adminPageOption &&
-    setAdminPageOption &&
+    adminPageOption !== undefined &&
     AdminPageOptionToStr.map((adminPageOp: AdminPageOptionPair) => (
       <Button
         onClick={() => {
-          setAdminPageOption(adminPageOp.op);
+          window.location.href = `/#/?tab=${adminPageOp.op}`;
         }}
         variant={adminPageOption === adminPageOp.op ? "headerSelect" : "header"}
       >
@@ -100,7 +94,7 @@ const Header = ({
           {title}
         </Heading>
       )}
-      {adminPageOption && setAdminPageOption && (
+      {adminPageOption !== undefined && (
         <Flex alignItems="flex-end">{adminTabs}</Flex>
       )}
       <Flex
