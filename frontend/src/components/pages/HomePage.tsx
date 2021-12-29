@@ -12,9 +12,19 @@ import ButtonRadioGroup from "../utils/ButtonRadioGroup";
 import Header from "../navigation/Header";
 import { buildHomePageStoriesQuery } from "../../APIClients/queries/StoryQueries";
 import { parseApprovedLanguages } from "../../utils/Utils";
+import useQueryParams from "../../utils/hooks/useQueryParams";
+
+enum HomepageOption {
+  MyStories = 0,
+  BrowseStories,
+  MyTests,
+}
+
+const tabHeaderOptions = ["My Work", "Browse Stories", "My Tests"];
 
 const HomePage = () => {
   const { authenticatedUser } = useContext(AuthContext);
+  const queryParams = useQueryParams();
 
   const approvedLanguagesTranslation = parseApprovedLanguages(
     authenticatedUser!!.approvedLanguagesTranslation,
@@ -24,8 +34,19 @@ const HomePage = () => {
     authenticatedUser!!.approvedLanguagesReview,
   );
 
-  const [displayMyStories, setDisplayMyStories] = useState<boolean>(true);
-  const [displayMyTests, setDisplayMyTests] = useState<boolean>(false);
+  const getPageOptionFromURL = () => {
+    const tab: string | null = queryParams.get("tab");
+    if (!tab || Number.isNaN(parseInt(tab, 10))) {
+      return HomepageOption.MyStories;
+    }
+
+    const index = parseInt(tab, 10);
+    return index >= 0 && index <= 2 ? index : -1;
+  };
+
+  const [pageOption, setPageOption] = useState<HomepageOption>(
+    getPageOptionFromURL(),
+  );
   const [language, setLanguage] = useState<string>(
     Object.keys(approvedLanguagesTranslation)[0],
   );
@@ -34,6 +55,15 @@ const HomePage = () => {
   const [stories, setStories] = useState<StoryCardProps[] | null>(null);
 
   const [showScrollToTop, setShowScrollToTop] = useState(false);
+
+  useEffect(() => {
+    const index = getPageOptionFromURL();
+    if (index === -1) {
+      window.location.href = "/";
+    } else {
+      setPageOption(index);
+    }
+  }, [queryParams.get("tab")]);
 
   useEffect(() => {
     window.addEventListener("scroll", () => {
@@ -55,13 +85,20 @@ const HomePage = () => {
 
   const handleDisplayMyStoriesChange = (nextOption: string) => {
     setStories(null);
-    setDisplayMyTests(nextOption === "My Tests");
-    setDisplayMyStories(nextOption === "My Work");
+    let newIndex;
+    if (nextOption === "My Work") {
+      newIndex = 0;
+    } else if (nextOption === "Browse Stories") {
+      newIndex = 1;
+    } else if (nextOption === "My Tests") {
+      newIndex = 2;
+    }
+    window.location.href = `/#/?tab=${newIndex}`;
   };
 
   const query = buildHomePageStoriesQuery(
-    displayMyStories,
-    displayMyTests,
+    pageOption === HomepageOption.MyStories,
+    pageOption === HomepageOption.MyTests,
     language,
     isTranslator,
     level,
@@ -75,7 +112,8 @@ const HomePage = () => {
       // Only the storyTranslationsByUser query returns the language in the gql
       // response; otherwise it must be added based on the user's language filter
       const storyData =
-        displayMyStories || displayMyTests
+        pageOption === HomepageOption.MyStories ||
+        pageOption === HomepageOption.MyTests
           ? data[query.fieldName]
           : data[query.fieldName].map((storyObj: any) => ({
               ...storyObj,
@@ -98,7 +136,7 @@ const HomePage = () => {
           setLanguage={setLanguage}
           role={isTranslator}
           setIsTranslator={setIsTranslator}
-          isDisabled={displayMyStories || displayMyTests}
+          isDisabled={pageOption !== HomepageOption.BrowseStories}
         />
         <Flex
           direction="column"
@@ -110,15 +148,16 @@ const HomePage = () => {
             size="tertiary"
             stacked={false}
             unselectedVariant="ghost"
-            options={["My Work", "Browse Stories", "My Tests"]}
+            options={tabHeaderOptions}
             name="My Work, Browse Stories, and My Tests toggle"
-            defaultValue="My Work"
+            defaultValue={tabHeaderOptions[pageOption]}
             onChange={handleDisplayMyStoriesChange}
+            value={tabHeaderOptions[pageOption]}
           />
           <StoryList
             stories={stories}
-            displayMyStories={displayMyStories}
-            displayMyTests={displayMyTests}
+            displayMyStories={pageOption === HomepageOption.MyStories}
+            displayMyTests={pageOption === HomepageOption.MyTests}
           />
         </Flex>
       </Flex>
