@@ -184,10 +184,6 @@ const UserProfilePage = () => {
           </Heading>
           <Text>{email}</Text>
           <Heading size="sm" marginTop="36px">
-            Date joined
-          </Heading>
-          <Text>TODO</Text>
-          <Heading size="sm" marginTop="36px">
             Last active on
           </Heading>
           <Text>TODO</Text>
