@@ -86,6 +86,10 @@ const Filter = ({
 
   const filterStyle = useStyleConfig("Filter");
   const disabledStyle = useStyleConfig("Disabled");
+
+  if (isDisabled) {
+    filterStyle.boxShadow = "none";
+  }
   return (
     <Flex sx={filterStyle}>
       {!isDisabled && (
