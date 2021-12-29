@@ -30,6 +30,8 @@ export type TranslationTableProps = {
   setStoryTranslationContentId?: (id: number) => void;
   numApprovedLines?: number;
   setNumApprovedLines?: (numLines: number) => void;
+  numGradedLines?: number;
+  setNumGradedLines?: (numLines: number) => void;
   changedStoryLines?: number;
   isReviewable?: boolean;
   reviewPage?: boolean;
@@ -53,6 +55,8 @@ const TranslationTable = ({
   translator,
   numApprovedLines,
   setNumApprovedLines,
+  numGradedLines,
+  setNumGradedLines,
   changedStoryLines,
   isReviewable = false,
   reviewPage = false,
@@ -127,6 +131,8 @@ const TranslationTable = ({
                 storyLine={storyLine}
                 numApprovedLines={numApprovedLines!!}
                 setNumApprovedLines={setNumApprovedLines!!}
+                numGradedLines={numGradedLines}
+                setNumGradedLines={setNumGradedLines}
                 isTest={isTest}
               />
             ) : (

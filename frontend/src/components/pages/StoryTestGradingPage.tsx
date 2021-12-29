@@ -1,5 +1,3 @@
-// TODO: remove when functional
-/* eslint-disable */
 import React, { useContext, useEffect, useState } from "react";
 import { useQuery, useMutation } from "@apollo/client";
 import { Box, Text, Divider, Flex, Button, Tooltip } from "@chakra-ui/react";
@@ -23,8 +21,6 @@ import {
 import {
   FINISH_GRADING_STORY_TRANSLATION,
   FinishGradingStoryTranslationResponse,
-  UPDATE_STORY_TRANSLATION_STAGE,
-  UpdateStoryTranslationStageResponse,
 } from "../../APIClients/mutations/StoryMutations";
 import AssignTestGradeModal from "../onboarding/AssignTestGradeModal";
 
@@ -40,6 +36,8 @@ type Content = {
   status: string;
 };
 
+const GRADED_STATUSES = new Set(["Correct", "Incorrect", "Partially Correct"]);
+
 const StoryTestGradingPage = () => {
   const { authenticatedUser } = useContext(AuthContext);
   const { storyIdParam, storyTranslationIdParam } =
@@ -51,6 +49,7 @@ const StoryTestGradingPage = () => {
     [],
   );
   const [numApprovedLines, setNumApprovedLines] = useState(0);
+  const [numGradedLines, setNumGradedLines] = useState(0);
   const [score, setScore] = useState(0);
 
   const [fontSize, setFontSize] = useState<string>("12px");
@@ -58,20 +57,18 @@ const StoryTestGradingPage = () => {
   const [level, setLevel] = useState<number>(0);
   const [language, setLanguage] = useState<string>("");
   const [stage, setStage] = useState<string>("");
+  // TODO: implement feedback flow for failing users
   const [testFeedback] = useState<string>("");
 
   const [failUser, setFailUser] = useState(false);
   const [assignGrade, setAssignGrade] = useState(false);
 
-  useEffect(() => {
-    calculateScore();
-  }, [translatedStoryLines]);
-
   const calculateScore = () => {
     const scoreReducer = (prev: number, cur: StoryLine) => {
-      const status = cur.status;
+      const { status } = cur;
       if (status === "Correct") {
         return prev + 1;
+        // eslint-disable-next-line no-else-return
       } else if (status === "Partially Correct") {
         return prev + 0.5;
       }
@@ -80,6 +77,10 @@ const StoryTestGradingPage = () => {
     const newScore = translatedStoryLines.reduce(scoreReducer, 0);
     setScore(newScore);
   };
+
+  useEffect(() => {
+    calculateScore();
+  }, [translatedStoryLines]);
 
   const closeFailUserModal = () => {
     setFailUser(false);
@@ -101,19 +102,15 @@ const StoryTestGradingPage = () => {
 
   const history = useHistory();
 
-  const [updateStoryTranslationStage] = useMutation<{
-    updateStoryTranslationStage: UpdateStoryTranslationStageResponse;
-  }>(UPDATE_STORY_TRANSLATION_STAGE);
-
   const [finishGradingStoryTranslation] = useMutation<{
     finishGradingStoryTranslation: FinishGradingStoryTranslationResponse;
   }>(FINISH_GRADING_STORY_TRANSLATION);
 
-  const failGrade = async (testFeedback: string | null) => {
+  const failGrade = async (feedback: string | null) => {
     const result = await finishGradingStoryTranslation({
       variables: {
         storyTranslationTestId: storyTranslationId,
-        testFeedback,
+        testFeedback: feedback,
         testResult: "{}",
       },
     });
@@ -122,28 +119,6 @@ const StoryTestGradingPage = () => {
     } else {
       window.alert("Could not mark story translation as failed.");
     }
-  };
-
-  const createUpdateStoryTranslationStageMutation = (newStage: string) => {
-    const updateStoryTranslationStageMutation = async () => {
-      try {
-        const storyTranslationData = {
-          id: storyTranslationId,
-          stage: newStage,
-        };
-        const result = await updateStoryTranslationStage({
-          variables: { storyTranslationData },
-        });
-        if (result.data?.updateStoryTranslationStage.ok) {
-          window.location.reload();
-        } else {
-          window.alert(`Unable to update story test stage to ${stage}.`);
-        }
-      } catch (error) {
-        window.alert(error ?? "Error occurred, please try again.");
-      }
-    };
-    return updateStoryTranslationStageMutation;
   };
 
   const { loading } = useQuery(
@@ -173,14 +148,20 @@ const StoryTestGradingPage = () => {
 
         contentArray.sort((a, b) => a.lineIndex - b.lineIndex);
 
+        let gradedLines = 0;
         translatedContent.forEach(
           ({ id, content, lineIndex, status }: Content) => {
             contentArray[lineIndex].translatedContent = content;
             contentArray[lineIndex].storyTranslationContentId = id;
             contentArray[lineIndex].status = convertStatusTitleCase(status);
+
+            if (GRADED_STATUSES.has(contentArray[lineIndex].status!)) {
+              gradedLines += 1;
+            }
           },
         );
         setTranslatedStoryLines(contentArray);
+        setNumGradedLines(gradedLines);
       },
     },
   );
@@ -226,6 +207,8 @@ const StoryTestGradingPage = () => {
               setTranslatedStoryLines={setTranslatedStoryLines}
               numApprovedLines={numApprovedLines}
               setNumApprovedLines={setNumApprovedLines}
+              numGradedLines={numGradedLines}
+              setNumGradedLines={setNumGradedLines}
               isReviewable={stage === "REVIEW"}
               isTest
               reviewPage
@@ -235,7 +218,7 @@ const StoryTestGradingPage = () => {
             <Flex justify="flex-start" alignItems="right">
               <ProgressBar
                 percentageComplete={
-                  (numApprovedLines / translatedStoryLines.length) * 100
+                  (numGradedLines / translatedStoryLines.length) * 100
                 }
                 type="Review"
                 fontSize={fontSize}
