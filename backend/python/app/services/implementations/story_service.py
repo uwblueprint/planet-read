@@ -93,25 +93,30 @@ class StoryService(IStoryService):
             raise error
 
     def export_story_translation(self, id):
-        story_details = self.get_story_translation(id=id)
-        doc = docx.Document()
-        doc.add_heading(story_details["title"])
+        try:
+            story_details = self.get_story_translation(id=id)
+            doc = docx.Document()
+            doc.add_heading(story_details["title"])
 
-        for line in story_details["translation_contents"]:
-            doc.add_paragraph(line["translation_content"])
+            for line in story_details["translation_contents"]:
+                doc.add_paragraph(line["translation_content"])
 
-        upload_folder_path = os.getenv("UPLOAD_PATH")
+            upload_folder_path = os.getenv("UPLOAD_PATH")
 
-        upload_path = os.path.join(
-            upload_folder_path, secure_filename("downloadable-story-translation.docx")
-        )
-        doc.save(upload_path)
-        file_dto = FileDTO(path=upload_path)
-        self.logger.info(file_dto)
-        new_file = File(**file_dto.__dict__)
-        db.session.add(new_file)
-        db.session.commit()
-        return new_file.to_dict()
+            upload_path = os.path.join(
+                upload_folder_path,
+                secure_filename("downloadable-story-translation.docx"),
+            )
+            doc.save(upload_path)
+            file_dto = FileDTO(path=upload_path)
+            self.logger.info(file_dto)
+            new_file = File(**file_dto.__dict__)
+            db.session.add(new_file)
+            db.session.commit()
+            return new_file.to_dict()
+        except Exception as error:
+            self.logger.error(str(error))
+            raise error
 
     def create_translation(self, translation):
         try:
