@@ -6,10 +6,13 @@ from ...models.story_content import StoryContent
 from ...models.story_content_all import StoryContentAll
 from ...models.story_translation import StoryTranslation
 from ...models.story_translation_all import StoryTranslationAll
+from ...models.story_translation_content import StoryTranslationContent
 from ...models.user import User
+from ...models.user_all import UserAll
 from ..helpers.db_helpers import db_session_add_commit_obj
 from ..helpers.story_helpers import StoryRequestDTO, assert_story_equals_model
 from ..helpers.story_translation_helpers import (
+    StoryTranslationContentRequestDTO,
     StoryTranslationRequestDTO,
     assert_story_translation_equals_model,
     create_admin,
@@ -78,71 +81,6 @@ def test_create_story(app, db, services):
 
 
 def test_get_stories_available_for_translation(app, db, services):
-    translator_obj = create_translator(db)
-    translation_language = "ENGLISH_US"
-    translation_level = 3
-
-    # create story 1
-    story_1 = StoryRequestDTO(
-        title="Title",
-        description="Description",
-        youtube_link="",
-        level=translation_level,
-        translated_languages=[],
-    )
-    content = ["Story content 1.", "Story content 2.", "Story content 3."]
-    story_resp_1 = services["story"].create_story(story_1, content)
-    story_obj_1 = Story.query.get(story_resp_1.id)
-
-    # create story 2
-    story_2 = StoryRequestDTO(
-        title="Title",
-        description="Description",
-        youtube_link="",
-        level=translation_level,
-        translated_languages=[],
-    )
-    content = ["Story content 1.", "Story content 2.", "Story content 3."]
-    story_resp_2 = services["story"].create_story(story_2, content)
-    story_obj_2 = Story.query.get(story_resp_2.id)
-
-    # test service method
-    all_resp = services["story"].get_stories_available_for_translation(
-        translation_language, translation_level, translator_obj.id
-    )
-    assert len(all_resp) == 2
-    assert all_resp[0] == story_obj_1.to_dict(include_relationships=True)
-    assert all_resp[1] == story_obj_2.to_dict(include_relationships=True)
-
-    # update translated languages for story 2
-    story_obj_2.translated_languages = [translation_language]
-    db.session.commit()
-
-    # test service method
-    partial_resp = services["story"].get_stories_available_for_translation(
-        translation_language, translation_level, translator_obj.id
-    )
-    assert len(partial_resp) == 1
-    assert partial_resp[0] == story_obj_1.to_dict(include_relationships=True)
-
-    # assign story translation to translator
-    story_translation = StoryTranslationRequestDTO(
-        story_id=story_obj_1.id,
-        language=translation_language,
-        stage="TRANSLATE",
-        translator_id=translator_obj.id,
-        reviewer_id=None,
-    )
-    services["story"].create_translation(story_translation)
-
-    # test service method
-    empty_resp = services["story"].get_stories_available_for_translation(
-        translation_language, translation_level, translator_obj.id
-    )
-    assert len(empty_resp) == 0
-
-
-def test_get_stories_available_for_translation_2(app, db, services):
     translator_obj = create_translator(db)
     translation_language = "ENGLISH_US"
     translation_level = 3
@@ -362,49 +300,369 @@ def test_get_story_translation_tests(app, db, services):
     )
 
 
-def test_assign_user_as_reviewer():
-    pass
+def test_assign_user_as_reviewer(app, db, services):
+    translator_obj = create_translator(db)
+    reviewer_obj = create_reviewer(db)
+    story_obj = db_session_add_commit_obj(
+        db,
+        Story(
+            title="Title",
+            description="Description",
+            youtube_link="",
+            level=4,
+        ),
+    )
+    story_translation_obj = db_session_add_commit_obj(
+        db,
+        StoryTranslationAll(
+            story_id=story_obj.id,
+            language="ENGLISH_US",
+            stage="TRANSLATE",
+            translator_id=translator_obj.id,
+            reviewer_id=None,
+        ),
+    )
+    create_story_translation_contents(db, story_translation_obj)
+    story_translation = services["story"].get_story_translation(
+        story_translation_obj.id
+    )
+
+    assert story_translation_obj.reviewer_id == None
+    resp = services["story"].assign_user_as_reviewer(
+        user=reviewer_obj, story_translation=story_translation
+    )
+    assert resp["reviewer_id"] == reviewer_obj.id
+    assert resp["level"] == story_translation["level"]
 
 
-def test_assign_user_as_reviewer_not_approved_for_language():
-    pass
+def test_assign_user_as_reviewer_not_approved_for_language(app, db, services):
+    translator_obj = create_translator(db)
+    reviewer_obj = db_session_add_commit_obj(
+        db,
+        UserAll(
+            first_name="Dwight",
+            last_name="D. Eisenhower",
+            email="dwight.d.eisenhower@uwblueprint.org",
+            auth_id="anothersecret",
+            role="User",
+            approved_languages_translation={"ENGLISH_US": 2},
+            approved_languages_review={"ENGLISH_US": 2},
+        ),
+    )
+    story_obj = db_session_add_commit_obj(
+        db,
+        Story(
+            title="Title",
+            description="Description",
+            youtube_link="",
+            level=4,
+        ),
+    )
+    story_translation_obj = db_session_add_commit_obj(
+        db,
+        StoryTranslationAll(
+            story_id=story_obj.id,
+            language="ENGLISH_US",
+            stage="TRANSLATE",
+            translator_id=translator_obj.id,
+            reviewer_id=None,
+        ),
+    )
+    create_story_translation_contents(db, story_translation_obj)
+    story_translation = services["story"].get_story_translation(
+        story_translation_obj.id
+    )
+
+    assert "GERMAN" not in reviewer_obj.approved_languages_review
+    with pytest.raises(Exception) as e:
+        services["story"].assign_user_as_reviewer(
+            user=reviewer_obj, story_translation=story_translation
+        )
+    assert "User can't be assigned as a reviewer" in str(e.value)
 
 
-def test_assign_user_as_reviewer_insufficient_level_for_language():
-    pass
+def test_assign_user_as_reviewer_insufficient_level_for_language(app, db, services):
+    translator_obj = create_translator(db)
+    reviewer_obj = db_session_add_commit_obj(
+        db,
+        UserAll(
+            first_name="Dwight",
+            last_name="D. Eisenhower",
+            email="dwight.d.eisenhower@uwblueprint.org",
+            auth_id="anothersecret",
+            role="User",
+            approved_languages_translation={"ENGLISH_US": 2},
+            approved_languages_review={"ENGLISH_US": 2},
+        ),
+    )
+    story_obj = db_session_add_commit_obj(
+        db,
+        Story(
+            title="Title",
+            description="Description",
+            youtube_link="",
+            level=4,
+        ),
+    )
+    story_translation_obj = db_session_add_commit_obj(
+        db,
+        StoryTranslationAll(
+            story_id=story_obj.id,
+            language="ENGLISH_US",
+            stage="TRANSLATE",
+            translator_id=translator_obj.id,
+            reviewer_id=None,
+        ),
+    )
+    create_story_translation_contents(db, story_translation_obj)
+    story_translation = services["story"].get_story_translation(
+        story_translation_obj.id
+    )
+
+    assert reviewer_obj.approved_languages_review["ENGLISH_US"] < story_obj.level
+    with pytest.raises(Exception) as e:
+        services["story"].assign_user_as_reviewer(
+            user=reviewer_obj, story_translation=story_translation
+        )
+    assert "User can't be assigned as a reviewer" in str(e.value)
 
 
-def test_assign_user_as_reviewer_story_translation_not_in_TRANSLATE_stage():
-    pass
+def test_assign_user_as_reviewer_reviewer_id_already_exists_on_translation(
+    app, db, services
+):
+    _trans, _reviewer_1, _story, story_translation_obj = create_story_translation(db)
+    reviewer_2 = db_session_add_commit_obj(
+        db,
+        UserAll(
+            first_name="first",
+            last_name="last",
+            email="test@gmail.com",
+            auth_id="anothersecret2",
+            role="User",
+            approved_languages_translation={"ENGLISH_US": 2},
+            approved_languages_review={"ENGLISH_US": 2},
+        ),
+    )
+    create_story_translation_contents(db, story_translation_obj)
+    story_translation = services["story"].get_story_translation(
+        story_translation_obj.id
+    )
+
+    assert story_translation_obj.reviewer_id != None
+    with pytest.raises(Exception) as e:
+        services["story"].assign_user_as_reviewer(
+            user=reviewer_2, story_translation=story_translation
+        )
+    assert "User can't be assigned as a reviewer" in str(e.value)
 
 
-def test_assign_user_as_reviewer_reviewer_id_already_exists_on_translation():
-    pass
+def test_update_story_translation_contents(app, db, services):
+    _trans, _rev, _story, story_translation = create_story_translation(db)
+    original_contents = create_story_translation_contents(db, story_translation)
+
+    assert len(original_contents) == 2
+    assert story_translation.stage == "TRANSLATE"
+
+    new_content_1 = StoryTranslationContentRequestDTO(
+        id=original_contents[0]["id"], translation_content="New content 1."
+    )
+    new_content_2 = StoryTranslationContentRequestDTO(
+        id=original_contents[1]["id"], translation_content="New content 2."
+    )
+
+    new_story_translation_contents = [new_content_1, new_content_2]
+    resp = services["story"].update_story_translation_contents(
+        story_translation_contents=new_story_translation_contents
+    )
+    assert resp == new_story_translation_contents
+
+    # verify that contents were updated
+    updated_story_translation = services["story"].get_story_translation(
+        story_translation.id
+    )
+    assert len(updated_story_translation["translation_contents"]) == 2
+    assert (
+        updated_story_translation["translation_contents"][0]["translation_content"]
+        == new_content_1.translation_content
+    )
 
 
-def test_update_story_translation_content():
-    pass
+def test_update_story_translation_contents_invalid_content_id(app, db, services):
+    _trans, _rev, _story, story_translation = create_story_translation(db)
+    original_contents = create_story_translation_contents(db, story_translation)
+
+    assert len(original_contents) == 2
+    assert story_translation.stage == "TRANSLATE"
+
+    st_content_id = -1234
+    assert StoryTranslationContent.query.get(st_content_id) == None
+
+    new_content_1 = StoryTranslationContentRequestDTO(
+        id=st_content_id, translation_content="New content 1."
+    )
+    new_content_2 = StoryTranslationContentRequestDTO(
+        id=original_contents[1]["id"], translation_content="New content 2."
+    )
+
+    new_story_translation_contents = [new_content_1, new_content_2]
+    with pytest.raises(Exception) as e:
+        services["story"].update_story_translation_contents(
+            story_translation_contents=new_story_translation_contents
+        )
+    assert e != None
 
 
-def test_update_story_translation_content_invalid_content_id():
-    # and saves nothing
-    pass
+def test_update_story_translation_contents_translation_not_in_translate(
+    app, db, services
+):
+    _trans, _rev, _story, story_translation = create_story_translation(db)
+    original_contents = create_story_translation_contents(db, story_translation)
+
+    story_translation.stage = "REVIEW"
+    db.session.commit()
+
+    updated_story_translation = services["story"].get_story_translation(
+        story_translation.id
+    )
+    assert len(original_contents) == 2
+    assert updated_story_translation["stage"] != "TRANSLATE"
+
+    new_content_1 = StoryTranslationContentRequestDTO(
+        id=original_contents[0]["id"], translation_content="New content 1."
+    )
+    new_content_2 = StoryTranslationContentRequestDTO(
+        id=original_contents[1]["id"], translation_content="New content 2."
+    )
+
+    new_story_translation_contents = [new_content_1, new_content_2]
+    with pytest.raises(Exception) as e:
+        services["story"].update_story_translation_contents(
+            story_translation_contents=new_story_translation_contents
+        )
+    assert "Story translation contents cannot be changed" in str(e.value)
 
 
-def test_update_story_translation_contents():
-    pass
+def test_get_story_translations_available_for_review(app, db, services):
+    translator_obj = create_translator(db)
+    reviewer_obj = create_reviewer(db)
+
+    translation_language = "ENGLISH_US"
+    translation_level = 3
+
+    # create stories
+    story_obj_1 = db_session_add_commit_obj(
+        db,
+        Story(
+            title="Title",
+            description="Description",
+            youtube_link="",
+            level=translation_level,
+            translated_languages=[],
+        ),
+    )
+    story_obj_2 = db_session_add_commit_obj(
+        db,
+        Story(
+            title="Title",
+            description="Description",
+            youtube_link="",
+            level=translation_level,
+            translated_languages=[],
+        ),
+    )
+
+    # create story translations
+    story_translation_1 = db_session_add_commit_obj(
+        db,
+        StoryTranslationAll(
+            story_id=story_obj_1.id,
+            language=translation_language,
+            stage="TRANSLATE",
+            translator_id=translator_obj.id,
+            reviewer_id=None,
+        ),
+    )
+    story_translation_2 = db_session_add_commit_obj(
+        db,
+        StoryTranslationAll(
+            story_id=story_obj_2.id,
+            language=translation_language,
+            stage="TRANSLATE",
+            translator_id=translator_obj.id,
+            reviewer_id=None,
+        ),
+    )
+
+    resp = services["story"].get_story_translations_available_for_review(
+        translation_language, translation_level, reviewer_obj.id
+    )
+
+    assert len(resp) == 2
+    assert_story_translation_equals_model(resp[0], story_obj_1, story_translation_1)
+    assert_story_translation_equals_model(resp[1], story_obj_2, story_translation_2)
 
 
-def test_update_story_translation_content_invalid_translation_id():
-    pass
+def test_get_story_translations_available_for_review_user_already_reviewing(
+    app, db, services
+):
+    translator, reviewer, story_1, story_translation_1 = create_story_translation(db)
+
+    story_2 = db_session_add_commit_obj(
+        db,
+        Story(
+            title="Title",
+            description="Description",
+            youtube_link="",
+            level=4,
+            translated_languages=[],
+        ),
+    )
+    story_translation_2 = db_session_add_commit_obj(
+        db,
+        StoryTranslationAll(
+            story_id=story_2.id,
+            language="ENGLISH_US",
+            stage="TRANSLATE",
+            translator_id=translator.id,
+            reviewer_id=None,
+        ),
+    )
+
+    assert story_translation_1.language == story_translation_2.language
+    assert story_1.level == story_2.level
+    assert story_translation_1.reviewer_id == reviewer.id
+    assert story_translation_2.reviewer_id == None
+
+    resp = services["story"].get_story_translations_available_for_review(
+        "ENGLISH_US", 4, reviewer.id
+    )
+    assert len(resp) == 0
 
 
-def test_update_story_translation_content_invalid_content_id():
-    pass
+def test_get_story_translations_available_for_review_translation_has_reviewer(
+    app, db, services
+):
+    _trans, _rev, story, story_translation = create_story_translation(db)
+    reviewer_2 = db_session_add_commit_obj(
+        db,
+        UserAll(
+            first_name="first",
+            last_name="last",
+            email="test@gmail.com",
+            auth_id="anothersecret2",
+            role="User",
+            approved_languages_translation={"ENGLISH_US": 4},
+            approved_languages_review={"ENGLISH_US": 4},
+        ),
+    )
 
-
-def test_get_story_translations_available_for_review():
-    pass
+    assert story_translation.reviewer_id != None
+    assert story_translation.language == "ENGLISH_US"
+    assert story.level == 4
+    resp = services["story"].get_story_translations_available_for_review(
+        "ENGLISH_US", 4, reviewer_2.id
+    )
+    assert len(resp) == 0
 
 
 def test_remove_reviewer_from_story_translation(app, db, services):
