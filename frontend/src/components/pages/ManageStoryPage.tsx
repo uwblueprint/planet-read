@@ -117,13 +117,13 @@ const ManageStoryPage = () => {
 
   const callSoftDeleteStoryMutation = async () => {
     try {
-      history.push("/");
-      window.location.reload();
       await softDeleteStory({
         variables: {
           id: parseInt(storyIdParam, 10),
         },
       });
+      history.push("/");
+      window.location.reload();
     } catch (error) {
       window.alert(`Error occurred, please try again. Error: ${error}`);
     }
