@@ -8,7 +8,7 @@ from .mutations.auth_mutation import (
     ResetPassword,
     SignUp,
 )
-from .mutations.comment_mutation import CreateComment, UpdateCommentById, UpdateComments
+from .mutations.comment_mutation import CreateComment, UpdateCommentById
 from .mutations.file_mutation import CreateFile
 from .mutations.story_mutation import (
     ApproveAllStoryTranslationContent,
@@ -78,7 +78,6 @@ class Mutation(graphene.ObjectType):
     assign_user_as_reviewer = AssignUserAsReviewer.Field()
     remove_reviewer_from_story_translation = RemoveReviewerFromStoryTranslation.Field()
     update_comment_by_id = UpdateCommentById.Field()
-    update_comments = UpdateComments.Field()
     update_story = UpdateStory.Field()
     update_story_translation_contents = UpdateStoryTranslationContents.Field()
     update_story_translation_content_status = (

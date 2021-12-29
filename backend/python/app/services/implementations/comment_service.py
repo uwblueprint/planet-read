@@ -134,7 +134,7 @@ class CommentService(ICommentService):
             for key, value in updated_comment.__dict__.items():
                 setattr(comment, key, value)
 
-            if updated_comment["resolved"] == True:
+            if updated_comment.resolved == True:
                 thread_comments = Comment.query.filter_by(
                     story_translation_content_id=comment.story_translation_content_id
                 ).all()
@@ -166,20 +166,3 @@ class CommentService(ICommentService):
             raise error
 
         return comment
-
-    def update_comments(self, updated_comments):
-        try:
-            db.session.bulk_update_mappings(Comment, updated_comments)
-            db.session.commit()
-
-        except Exception as error:
-            reason = getattr(error, "message", None)
-            self.logger.error(
-                "Failed to update comment. Reason = {reason}".format(
-                    reason=(reason if reason else str(error))
-                )
-            )
-            raise error
-
-        # TODO: return updated comments as list of CommentResponseDTO's
-        return updated_comments

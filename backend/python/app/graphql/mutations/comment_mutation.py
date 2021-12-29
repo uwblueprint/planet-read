@@ -49,23 +49,3 @@ class UpdateCommentById(graphene.Mutation):
         except Exception as e:
             error_message = getattr(e, "message", None)
             raise Exception(error_message if error_message else str(e))
-
-
-class UpdateComments(graphene.Mutation):
-    class Arguments:
-        comments_data = graphene.List(UpdateCommentRequestDTO)
-
-    ok = graphene.Boolean()
-    comments = graphene.Field(lambda: graphene.List(UpdateCommentResponseDTO))
-
-    @require_authorization_by_role_gql({"User", "Admin"})
-    def mutate(root, info, comments_data):
-        try:
-            comments_response = services["comment"].update_comments(
-                updated_comments=comments_data
-            )
-            ok = True
-            return UpdateComments(ok=ok, comments=comments_response)
-        except Exception as e:
-            error_message = getattr(e, "message", None)
-            raise Exception(error_message if error_message else str(e))
