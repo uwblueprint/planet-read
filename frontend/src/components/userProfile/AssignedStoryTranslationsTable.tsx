@@ -282,7 +282,13 @@ const AssignedStoryTranslationsTable = ({
     if (err !== null) {
       window.alert(err);
     } else {
-      window.location.reload();
+      setStoryAssignStage(StoryAssignStage.REMOVED);
+      setStoryTranslations(
+        storyTranslations!.filter(
+          (t) => t.storyTranslationId !== storyTranslation.storyTranslationId,
+        ),
+      );
+      resetAlertTimeout();
     }
   };
 

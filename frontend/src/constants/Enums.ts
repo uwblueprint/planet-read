@@ -9,4 +9,5 @@ export enum StoryAssignStage {
   INITIAL,
   SUCCESS,
   CANCELLED,
+  REMOVED,
 }
