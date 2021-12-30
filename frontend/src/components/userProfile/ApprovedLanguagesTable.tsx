@@ -333,7 +333,7 @@ const ApprovedLanguagesTable = ({
       <ConfirmationModal
         confirmation={alertNewTest}
         onClose={closeNewTestModal}
-        onConfirmationClick={() => history.push("/")}
+        onConfirmationClick={() => history.push("/?tab=2#/")}
         confirmationHeading={NEW_BOOK_TEST_ADDED_HEADING}
         confirmationMessage={NEW_BOOK_TEST_ADDED_MESSAGE}
         buttonMessage={NEW_BOOK_TEST_ADDED_BUTTON}
