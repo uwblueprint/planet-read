@@ -1,6 +1,6 @@
-import { useLazyQuery } from "@apollo/client";
+import { DocumentNode, useLazyQuery } from "@apollo/client";
 import { saveAs } from "file-saver";
-import { File, GET_FILE } from "../APIClients/queries/FileQueries";
+import { File } from "../APIClients/queries/FileQueries";
 
 // Retrieved from: https://stackoverflow.com/a/16245768
 const b64toBlob = (
@@ -54,19 +54,25 @@ const getMIMETypeFromExtension = (ext: string) => {
  * @param id - The file id
  * @param filename - The filename to save as
  *
- * @returns downloadFile - A function used to download the file
+ * @returns downloadFile - A function that triggers the file download
  */
 /* eslint-disable-next-line import/prefer-default-export */
-export const useFileDownload = (id: number | null, filename: string) => {
-  const [getFile] = useLazyQuery(GET_FILE, {
-    variables: { id },
-    onCompleted: (data: { fileById: File }) => {
-      const { ext, file } = data.fileById;
+export const useFileDownload = (
+  filename: string,
+  query: { fieldName: string; string: DocumentNode },
+) => {
+  const [download] = useLazyQuery(query.string, {
+    onCompleted: (data) => {
+      const { ext, file } = data[query.fieldName] as File;
       const blob = b64toBlob(file, getMIMETypeFromExtension(ext));
       saveAs(blob, `${filename}.${ext}`);
     },
   });
 
-  const downloadFile = id ? getFile : () => {};
+  const downloadFile = (id: number | null): void => {
+    if (id) {
+      download({ variables: { id } });
+    }
+  };
   return [downloadFile];
 };

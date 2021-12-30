@@ -109,3 +109,5 @@ export const DEMOTE_LEVEL_CONFIRMATION =
   "By lowering the level at this language, the user will no longer be able to start translating or reviewing story translations at this level, in this language. The user will continue having access to any ongoing story translations at this level, in this langauge.";
 
 export const DEMOTE_LEVEL_BUTTON = "I'm sure, lower level";
+
+export const EXPORT_TOOL_TIP_COPY = "Translation not complete";

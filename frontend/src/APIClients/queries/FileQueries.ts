@@ -1,7 +1,6 @@
 import { gql } from "@apollo/client";
 
 export type File = {
-  id: number;
   file: string;
   ext: string;
 };
@@ -14,3 +13,22 @@ export const GET_FILE = gql`
     }
   }
 `;
+
+export const getFileQuery = {
+  fieldName: "fileById",
+  string: GET_FILE,
+};
+
+export const EXPORT_STORY_TRANSLATION = gql`
+  query ExportStoryTranslation($id: Int!) {
+    exportStoryTranslation(id: $id) {
+      ext
+      file
+    }
+  }
+`;
+
+export const exportStoryTranslationQuery = {
+  fieldName: "exportStoryTranslation",
+  string: EXPORT_STORY_TRANSLATION,
+};
