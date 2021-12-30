@@ -31,6 +31,8 @@ export type StatusBadgeProps = {
   storyLine: StoryLine;
   numApprovedLines: number;
   setNumApprovedLines: (numLines: number) => void;
+  numGradedLines?: number;
+  setNumGradedLines?: (numLines: number) => void;
   isTest: boolean;
 };
 
@@ -63,6 +65,8 @@ const StatusBadge = ({
   storyLine,
   numApprovedLines,
   setNumApprovedLines,
+  numGradedLines,
+  setNumGradedLines,
   isTest,
 }: StatusBadgeProps) => {
   const [updateStatus] = useMutation<{
@@ -73,6 +77,40 @@ const StatusBadge = ({
 
   const closeModal = async () => {
     setSendAsApprovedLastLine(false);
+  };
+
+  const handleNumApprovedLinesChange = (
+    prevState: string | undefined,
+    newStatus: string,
+  ) => {
+    if (
+      prevState !== convertStatusTitleCase("APPROVED") &&
+      newStatus === "APPROVED"
+    ) {
+      setNumApprovedLines(numApprovedLines + 1);
+    } else if (
+      prevState === convertStatusTitleCase("APPROVED") &&
+      newStatus !== "APPROVED"
+    ) {
+      setNumApprovedLines(numApprovedLines - 1);
+    }
+  };
+
+  const handleNumGradedLinesChange = (
+    prevState: string | undefined,
+    newStatus: string,
+  ) => {
+    if (
+      prevState !== convertStatusTitleCase("DEFAULT") &&
+      newStatus === "DEFAULT"
+    ) {
+      setNumGradedLines!(numGradedLines! - 1);
+    } else if (
+      prevState === convertStatusTitleCase("DEFAULT") &&
+      newStatus !== "DEFAULT"
+    ) {
+      setNumGradedLines!(numGradedLines! + 1);
+    }
   };
 
   const changeStatus = async (newStatus: string) => {
@@ -90,16 +128,11 @@ const StatusBadge = ({
         convertStatusTitleCase(newStatus);
 
       setTranslatedStoryLines(updatedStatusArray);
-      if (
-        prevState !== convertStatusTitleCase("APPROVED") &&
-        newStatus === "APPROVED"
-      ) {
-        setNumApprovedLines(numApprovedLines + 1);
-      } else if (
-        prevState === convertStatusTitleCase("APPROVED") &&
-        newStatus !== "APPROVED"
-      ) {
-        setNumApprovedLines(numApprovedLines - 1);
+
+      if (isTest) {
+        handleNumGradedLinesChange(prevState, newStatus);
+      } else {
+        handleNumApprovedLinesChange(prevState, newStatus);
       }
     }
   };
