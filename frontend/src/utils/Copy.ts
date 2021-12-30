@@ -1,4 +1,13 @@
 /* eslint-disable import/prefer-default-export */
+export const WELCOME_MODAL_COPY = [
+  "Welcome to Add My Language (AML) Platform of PlanetRead.",
+  "Add My Language is a volunteer-driven activity where people help us in making stories in their native languages.",
+  "If you're able to help us complete a story and launch it on our YouTube channel, we'll give credit to the translators and narrators along with a complimentary copy of the AniBooks on our website.",
+  "PlanetRead will not pay for any work done under this activity.",
+  "PlanetRead will own complete and irrevocable copyright for any work done under Add My Language.",
+  "By using this AML platform and continuing to work on this activity, you hereby grant us full copyright permissions to PlanetRead.",
+];
+
 export const TRANSLATION_PAGE_TOOL_TIP_COPY =
   "Your story translation is pending review. You can edit your translation and leave comments once a reviewer has given feedback.";
 
