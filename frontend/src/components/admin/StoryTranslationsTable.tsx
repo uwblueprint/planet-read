@@ -1,7 +1,7 @@
 import React, { ReactNode, useState } from "react";
 import { useMutation } from "@apollo/client";
 import { Icon } from "@chakra-ui/icon";
-import { MdDelete } from "react-icons/md";
+import { MdDelete, MdOutlineFileDownload } from "react-icons/md";
 import {
   Badge,
   IconButton,
@@ -13,6 +13,8 @@ import {
   Th,
   Td,
   TableCaption,
+  Tooltip,
+  Box,
 } from "@chakra-ui/react";
 import { StoryTranslation } from "../../APIClients/queries/StoryQueries";
 import { convertLanguageTitleCase } from "../../utils/LanguageUtils";
@@ -24,10 +26,13 @@ import {
   SoftDeleteStoryTranslationResponse,
 } from "../../APIClients/mutations/StoryMutations";
 import {
+  EXPORT_TOOL_TIP_COPY,
   MANAGE_STORY_TRANSLATIONS_TABLE_DELETE_TRANSLATION_BUTTON,
   MANAGE_STORY_TRANSLATIONS_TABLE_DELETE_TRANSLATION_CONFIRMATION,
 } from "../../utils/Copy";
 import EmptyTable from "./EmptyTable";
+import { useFileDownload } from "../../utils/FileUtils";
+import { exportStoryTranslationQuery } from "../../APIClients/queries/FileQueries";
 
 export type StoryTranslationsTableProps = {
   storyTranslationSlice: StoryTranslation[];
@@ -53,6 +58,11 @@ const StoryTranslationsTable = ({
   const [deleteStoryTranslation] = useMutation<{
     response: SoftDeleteStoryTranslationResponse;
   }>(SOFT_DELETE_STORY_TRANSLATION);
+
+  const [downloadFile] = useFileDownload(
+    "story-translation",
+    exportStoryTranslationQuery,
+  );
 
   const closeModal = () => {
     setIdToDelete(0);
@@ -139,6 +149,27 @@ const StoryTranslationsTable = ({
         </Td>
         <Td>{lastEditedDate(storyTranslationObj)?.toLocaleDateString?.()}</Td>
         <Td>
+          <Tooltip
+            hasArrow
+            label={EXPORT_TOOL_TIP_COPY}
+            isDisabled={storyTranslationObj.stage === "PUBLISH"}
+            placement="top"
+          >
+            <Box width="fit-content">
+              <IconButton
+                aria-label={`Export story translation ${storyTranslationObj?.storyTranslationId}`}
+                background="transparent"
+                icon={<Icon as={MdOutlineFileDownload} />}
+                width="fit-content"
+                isDisabled={storyTranslationObj.stage !== "PUBLISH"}
+                onClick={() =>
+                  downloadFile(storyTranslationObj.storyTranslationId)
+                }
+              />
+            </Box>
+          </Tooltip>
+        </Td>
+        <Td>
           <IconButton
             aria-label={`Delete story translation ${storyTranslationObj?.storyTranslationId} for story ${storyTranslationObj?.title}`}
             background="transparent"
@@ -173,6 +204,7 @@ const StoryTranslationsTable = ({
           <Th>TRANSLATOR</Th>
           <Th>REVIEWER</Th>
           <Th>LAST EDITED</Th>
+          <Th>EXPORT</Th>
           <Th>ACTION</Th>
         </Tr>
       </Thead>

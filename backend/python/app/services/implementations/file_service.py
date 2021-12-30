@@ -91,7 +91,8 @@ class FileService(IFileService):
         try:
             os.remove(file)
             f = File.query.filter(File.path == file).order_by(File.id.desc()).first()
-            db.session.delete(f)
+            if f:
+                db.session.delete(f)
         except Exception as error:
             self.logger.error(str(error))
             raise error

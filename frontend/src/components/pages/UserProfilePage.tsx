@@ -41,6 +41,7 @@ import AssignedStoryTranslationsTable from "../userProfile/AssignedStoryTranslat
 import { StoryAssignStage } from "../../constants/Enums";
 import InfoAlert from "../utils/InfoAlert";
 import { useFileDownload } from "../../utils/FileUtils";
+import { getFileQuery } from "../../APIClients/queries/FileQueries";
 
 type UserProfilePageProps = {
   userId: string;
@@ -79,7 +80,7 @@ const UserProfilePage = () => {
 
   const history = useHistory();
 
-  const [downloadFile] = useFileDownload(resumeId, "resume");
+  const [downloadFile] = useFileDownload("resume", getFileQuery);
 
   const { loading, error } = useQuery(GET_USER(parseInt(userId, 10)), {
     fetchPolicy: "cache-and-network",
@@ -165,7 +166,7 @@ const UserProfilePage = () => {
                 User Files
               </Heading>
               {/* TODO: replace file name */}
-              <Button variant="link" onClick={() => downloadFile()}>
+              <Button variant="link" onClick={() => downloadFile(resumeId)}>
                 resume.pdf
               </Button>
             </>
