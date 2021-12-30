@@ -17,7 +17,6 @@ import {
   ModalHeader,
   ModalOverlay,
   Text,
-  Textarea,
 } from "@chakra-ui/react";
 
 import {
@@ -33,6 +32,7 @@ import {
 import ConfirmationModal from "../utils/ConfirmationModal";
 import DropdownIndicator from "../utils/DropdownIndicator";
 import Block from "./Block";
+import TestFeedbackModal from "./TestFeedbackModal";
 
 export type AssignTestGradeModalProps = {
   isOpen: boolean;
@@ -92,14 +92,14 @@ const AssignTestGradeModal = ({
   };
 
   return (
-    <Modal
-      isOpen={isOpen}
-      motionPreset="slideInBottom"
-      onClose={onClose}
-      size="4xl"
-    >
-      <ModalOverlay />
-      {!enterFeedback && (
+    <>
+      <Modal
+        isOpen={isOpen && !enterFeedback}
+        motionPreset="slideInBottom"
+        onClose={onClose}
+        size="4xl"
+      >
+        <ModalOverlay />
         <ModalContent paddingLeft="32px">
           <ModalCloseButton
             marginLeft="auto"
@@ -216,59 +216,16 @@ const AssignTestGradeModal = ({
             </Flex>
           </ModalBody>
         </ModalContent>
-      )}
-      {enterFeedback && (
-        <ModalContent paddingLeft="32px">
-          <ModalCloseButton
-            marginLeft="auto"
-            marginRight="8px"
-            marginTop="8px"
-            position="static"
-          />
-          <ModalHeader paddingTop="20px">
-            <Heading as="h3" size="lg">
-              Feedback to User
-            </Heading>
-          </ModalHeader>
-          <ModalBody paddingBottom="36px">
-            <Grid width="100%" marginBottom="24px">
-              <GridItem marginBottom="24px" paddingRight="32px" rowStart={1}>
-                <Text>
-                  Provide any feedback or comments to the user in the box below
-                  (Optional)
-                </Text>
-                <Textarea
-                  height="285px"
-                  margin="8px 0"
-                  onChange={(e) => setTestFeedback(e.target.value)}
-                  placeholder="Enter your feedback here..."
-                  value={testFeedback}
-                />
-              </GridItem>
-            </Grid>
-            <Flex marginRight="28px" justifyContent="flex-end">
-              <Button
-                colorScheme="blue"
-                fontSize="14px"
-                marginRight="20px"
-                onClick={() => setEnterFeedback(false)}
-                variant="blueOutline"
-                width="120px"
-              >
-                Back
-              </Button>
-              <Button
-                colorScheme="blue"
-                fontSize="14px"
-                onClick={() => setSendAssignGrade(true)}
-                width="120px"
-              >
-                Continue
-              </Button>
-            </Flex>
-          </ModalBody>
-        </ModalContent>
-      )}
+      </Modal>
+      <TestFeedbackModal
+        isOpen={isOpen && enterFeedback}
+        isCentered={false}
+        testFeedback={testFeedback}
+        setTestFeedback={setTestFeedback}
+        onBack={() => setEnterFeedback(false)}
+        onConfirm={() => setSendAssignGrade(true)}
+        confirmString="Continue"
+      />
       <ConfirmationModal
         buttonMessage={ASSIGN_USER_LEVEL_BUTTON}
         confirmation={sendAssignGrade}
@@ -276,7 +233,7 @@ const AssignTestGradeModal = ({
         onClose={() => setSendAssignGrade(false)}
         onConfirmationClick={assignTestLevel}
       />
-    </Modal>
+    </>
   );
 };
 
