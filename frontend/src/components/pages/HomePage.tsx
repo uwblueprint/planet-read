@@ -6,6 +6,7 @@ import { MdKeyboardArrowUp } from "react-icons/md";
 
 import Filter from "../homepage/Filter";
 import StoryList from "../homepage/StoryList";
+import WelcomeModal from "../homepage/WelcomeModal";
 import { StoryCardProps } from "../homepage/StoryCard";
 import AuthContext from "../../contexts/AuthContext";
 import ButtonRadioGroup from "../utils/ButtonRadioGroup";
@@ -44,8 +45,16 @@ const HomePage = () => {
     return index >= 0 && index <= 2 ? index : -1;
   };
 
+  const getWelcomeToggleFromURL = () => {
+    const welcome: string | null = queryParams.get("welcome");
+    return welcome === "true";
+  };
+
   const [pageOption, setPageOption] = useState<HomepageOption>(
     getPageOptionFromURL(),
+  );
+  const [welcomeModalToggle, setWelcomeModalToggle] = useState<boolean>(
+    getWelcomeToggleFromURL(),
   );
   const [language, setLanguage] = useState<string>(
     Object.keys(approvedLanguagesTranslation)[0],
@@ -64,6 +73,10 @@ const HomePage = () => {
       setPageOption(index);
     }
   }, [queryParams.get("tab")]);
+
+  useEffect(() => {
+    setWelcomeModalToggle(getWelcomeToggleFromURL());
+  }, [queryParams.get("welcome")]);
 
   useEffect(() => {
     window.addEventListener("scroll", () => {
@@ -166,6 +179,13 @@ const HomePage = () => {
           <Icon as={MdKeyboardArrowUp} height={8} width={8} />
         </Button>
       )}
+      <WelcomeModal
+        isOpen={welcomeModalToggle}
+        onClose={() => {
+          setWelcomeModalToggle(false);
+          window.location.href = "/";
+        }}
+      />
     </Box>
   );
 };

@@ -5,7 +5,7 @@ import UserProfileForm from "../userProfile/UserProfileForm";
 
 const CompleteProfilePage = () => {
   const onSubmitClick = () => {
-    window.location.href = `#/`;
+    window.location.href = `#/?welcome=true`;
   };
 
   return (
