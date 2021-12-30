@@ -1,5 +1,6 @@
 import { CommentResponse } from "../APIClients/queries/CommentQueries";
 import { AdditionalExperiences } from "../APIClients/queries/UserQueries";
+import { StoryAssignStage } from "../constants/Enums";
 
 export const convertStringTitleCase = (s: string) =>
   s[0] + s.substring(1).toLowerCase();
@@ -81,4 +82,19 @@ export const truncate = (num: number, decimals: number): string => {
   }
   const re = new RegExp(`^-?\\d+(?:.\\d{0,${decimals || -1}})?`);
   return num.toString().match(re)![0];
+};
+
+export const getMessageFromStoryAssignStage = (
+  stage: StoryAssignStage,
+): string => {
+  switch (stage) {
+    case StoryAssignStage.SUCCESS:
+      return "A new story was assigned to the user.";
+    case StoryAssignStage.CANCELLED:
+      return "No stories were assigned to the user.";
+    case StoryAssignStage.REMOVED:
+      return "The user has been removed from the story translation.";
+    default:
+      return "";
+  }
 };

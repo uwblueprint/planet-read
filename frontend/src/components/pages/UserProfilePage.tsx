@@ -33,6 +33,7 @@ import {
 } from "../../APIClients/queries/StoryQueries";
 import {
   ApprovedLanguagesMap,
+  getMessageFromStoryAssignStage,
   parseApprovedLanguages,
   parseUserBackground,
 } from "../../utils/Utils";
@@ -201,11 +202,7 @@ const UserProfilePage = () => {
             (storyAssignStage !== StoryAssignStage.INITIAL ? (
               <InfoAlert
                 colour="orange.50"
-                message={
-                  storyAssignStage === StoryAssignStage.SUCCESS
-                    ? "A new story was assigned to the user."
-                    : "No stories were assigned to the user."
-                }
+                message={getMessageFromStoryAssignStage(storyAssignStage)}
               />
             ) : (
               <Flex height="50px" />
