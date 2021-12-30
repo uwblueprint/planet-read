@@ -6,6 +6,7 @@ import {
   Divider,
   Flex,
   Heading,
+  Image,
   Modal,
   ModalOverlay,
   ModalContent,
@@ -14,6 +15,7 @@ import {
   Text,
 } from "@chakra-ui/react";
 import { WELCOME_MODAL_COPY } from "../../utils/Copy";
+import Logo from "../../assets/planet-read-logo.svg";
 
 export type WelcomeModalProps = {
   isOpen: boolean;
@@ -21,31 +23,40 @@ export type WelcomeModalProps = {
 };
 
 const modalBodyText = WELCOME_MODAL_COPY.map((text: string) => (
-  <Text margin="10px">{text}</Text>
+  <Text paddingTop="10px" paddingBottom="10px">
+    {text}
+  </Text>
 ));
 
 const WelcomeModal = ({ isOpen, onClose }: WelcomeModalProps) => {
   const [isAgreed, setIsAgreed] = useState(false);
   return (
     <Modal
+      isCentered
       isOpen={isOpen}
-      onClose={() => undefined}
+      closeOnOverlayClick={false}
+      onClose={onClose}
       motionPreset="slideInBottom"
-      size="5xl"
+      size="4xl"
     >
       <ModalOverlay />
-      <ModalContent marginTop="30vh">
-        <ModalHeader paddingTop="30px" paddingLeft="35px" paddingRight="35px">
-          <Heading as="h3" size="lg" marginBottom="10px" width="75%">
-            Welcome to Add My Language
-          </Heading>
+      <ModalContent>
+        <ModalHeader padding="30px 35px 5px 35px">
+          <Flex direction="row" justifyContent="flex-start">
+            <Heading as="h3" size="lg" marginBottom="10px" marginRight="10px">
+              Welcome to Add My Language
+            </Heading>
+            <Image alt="Planet read logo" src={Logo} width="40px" />
+          </Flex>
         </ModalHeader>
         <Divider width="100%" />
-        <ModalBody paddingBottom="15px">
-          <Flex direction="column" padding="20px">
-            {modalBodyText}
-          </Flex>
-          <Flex justifyContent="space-between">
+        <ModalBody paddingBottom="15px" paddingLeft="35px">
+          <Flex direction="column">{modalBodyText}</Flex>
+          <Flex
+            justifyContent="space-between"
+            paddingTop="20px"
+            paddingBottom="10px"
+          >
             <Checkbox
               isChecked={isAgreed}
               onChange={(e) => setIsAgreed(e.target.checked)}
