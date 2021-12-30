@@ -44,6 +44,12 @@ If you don't need to rebuild packages between switching branches, you probably d
 To run the project:
 
 ```
+docker-compose up
+```
+
+If it's your first time running the project, or there's new packages since your last build:
+
+```
 docker-compose up --build
 ```
 
@@ -67,7 +73,24 @@ Frontend has on-save linting. To lint the backend:
 docker exec -it planet-read_py-backend_1 /bin/bash -c "black . && isort --profile black ."
 ```
 
-# Database Migrations
+# Database + Migrations
+
+## Access the Database
+
+To access the database:
+
+```
+docker exec -it planet-read_db_1 /bin/bash -c "mysql -u root -proot"
+use planet-read;
+```
+
+For specific db commands,
+
+```
+docker exec -it planet-read_db_1 mysql -u root -proot -e "USE planet-read; SELECT * FROM users;"
+```
+
+## Migrations
 
 We are currently using Flask-Migrate to handle our database migrations. To update your database, run:
 
@@ -91,7 +114,7 @@ Ensure that a new revision file is created in the directory [backend/python/migr
 
 # Test
 
-Backend test run using the `pytest` framework on a distinct test database. You may need to rebuild if this is your first time running pytest. The following utils are available for testing:
+Backend test run using the `pytest` framework on a distinct test database. The following utils are available for testing:
 
 ```
 # Run all tests
@@ -108,6 +131,26 @@ If you want to run any other pytest commands, run them manually with:
 
 ```
 docker exec -it planet-read_py-backend_1 /bin/bash <pytest command>
+```
+
+## Writing Tests
+
+If you're writing some test, make sure to apply migrations to your test db first! you can do this by temporarily hardcoding the DB host to `TEST_DB_HOST` in `app/__init__.py`, then run `flask db upgrade` in the backend container as usual.
+
+```
+app/__init__.py
+...
+ app.config[
+        "SQLALCHEMY_DATABASE_URI"
+    ] = "mysql://{username}:{password}@{host}:3306/{db}".format(
+        username=os.getenv("MYSQL_USER"),
+        password=os.getenv("MYSQL_PASSWORD"),
+        host=os.getenv("TEST_DB_HOST"),
+        # if config_name == "testing"
+        # else os.getenv("DB_HOST"),
+        db=os.getenv("MYSQL_DATABASE"),
+    )
+...
 ```
 
 # Staging Deployment
