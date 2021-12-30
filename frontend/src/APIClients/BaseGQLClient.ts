@@ -43,7 +43,7 @@ const injectAccessToken = async (operation: any) => {
   const decodedToken: any = jwt.decode(accessToken);
   if (
     decodedToken &&
-    decodedToken.exp <= Math.round(new Date().getTime() / 1000)
+    !(decodedToken.exp <= Math.round(new Date().getTime() / 1000))
   ) {
     /* eslint-disable  @typescript-eslint/no-use-before-define */
     const results = await client.mutate({
@@ -56,10 +56,12 @@ const injectAccessToken = async (operation: any) => {
       "accessToken",
       accessToken,
     );
+    operation.setContext({
+      headers: { Authorization: `Bearer ${accessToken}` },
+    });
+  } else {
+    localStorage.clear();
   }
-  operation.setContext({
-    headers: { Authorization: `Bearer ${accessToken}` },
-  });
 };
 
 // https://www.apollographql.com/blog/apollo-client/using-apollo-link-to-handle-dependent-queries/
