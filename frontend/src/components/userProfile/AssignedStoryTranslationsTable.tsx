@@ -297,6 +297,14 @@ const AssignedStoryTranslationsTable = ({
     return `#/review/${suffix}`;
   };
 
+  const lastEditedDate = (translation: StoryTranslation): Date | null => {
+    const lastEdited =
+      getRole(translation) === "Translator"
+        ? translation.translatorLastActivity
+        : translation.reviewerLastActivity;
+    return lastEdited ? new Date(lastEdited) : null;
+  };
+
   const tableBody = storyTranslations.map((translation: StoryTranslation) => (
     <Tr key={`${translation?.storyTranslationId}`}>
       <Td>
@@ -315,6 +323,7 @@ const AssignedStoryTranslationsTable = ({
         }`}</Badge>
       </Td>
       <Td>{convertStageTitleCase(translation.stage)}</Td>
+      <Td>{lastEditedDate(translation)?.toLocaleDateString?.()}</Td>
       {isAdmin && (
         <Td>
           <IconButton
@@ -356,6 +365,7 @@ const AssignedStoryTranslationsTable = ({
             <Th cursor="pointer" onClick={() => sort("stage")}>{`PROGRESS ${
               isAscendingStage ? "↑" : "↓"
             }`}</Th>
+            <Th>USER LAST EDITED</Th>
             {isAdmin && <Th width="7%">ACTION</Th>}
           </Tr>
         </Thead>
