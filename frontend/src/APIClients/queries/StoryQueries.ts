@@ -322,6 +322,8 @@ export const GET_STORY_TRANSLATIONS_BY_USER = (userId: number) => gql`
       language
       ${STORY_FIELDS}
       stage
+      translatorLastActivity
+      reviewerLastActivity
     }
   }
 `;
