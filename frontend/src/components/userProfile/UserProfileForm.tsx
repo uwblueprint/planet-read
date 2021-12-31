@@ -19,9 +19,23 @@ import { languageOptions } from "../../constants/Languages";
 
 export type UserProfileFormProps = {
   isSignup?: boolean;
+  fullName: string;
+  email: string;
+  setFullName: (name: string) => void;
+  setEmail: (email: string) => void;
+  setEducationalQualification: (email: string) => void;
+  setLanguageExperience: (email: string) => void;
 };
 
-const UserProfileForm = ({ isSignup = true }: UserProfileFormProps) => (
+const UserProfileForm = ({
+  isSignup = true,
+  fullName,
+  email,
+  setFullName,
+  setEmail,
+  setEducationalQualification,
+  setLanguageExperience,
+}: UserProfileFormProps) => (
   <Flex direction="row" flex={1}>
     <Flex direction="column" flex={1} maxWidth="50%">
       <Heading size="lg">
@@ -36,19 +50,35 @@ const UserProfileForm = ({ isSignup = true }: UserProfileFormProps) => (
         <Heading marginTop="24px" size="sm">
           Full name*
         </Heading>
-        <Input type="name" />
+        <Input
+          type="name"
+          value={fullName}
+          onChange={(e) => setFullName(e.target.value)}
+        />
         <Heading marginTop="24px" size="sm">
           Email*
         </Heading>
-        <Input type="email" />
+        <Input
+          type="email"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+        />
         <Heading marginTop="24px" size="sm">
           Educational qualifications*
         </Heading>
-        <Textarea height="150px" type="qualifications" />
+        <Textarea
+          height="150px"
+          type="qualifications"
+          onChange={(e) => setEducationalQualification(e.target.value)}
+        />
         <Heading marginTop="24px" size="sm">
           Language experience*
         </Heading>
-        <Textarea height="150px" type="experience" />
+        <Textarea
+          height="150px"
+          type="experience"
+          onChange={(e) => setLanguageExperience(e.target.value)}
+        />
       </FormControl>
       {isSignup && (
         <>

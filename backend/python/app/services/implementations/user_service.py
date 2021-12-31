@@ -234,7 +234,7 @@ class UserService(IUserService):
         new_user_dict["email"] = user.email
         return UserDTO(**new_user_dict)
 
-    def update_me(self, user_id, user, resume):
+    def update_me(self, user_id, user, resume=None):
         # TODO: start a new story test for given language when user wants to increase their level
         try:
             old_user = User.query.get(user_id)
@@ -242,16 +242,27 @@ class UserService(IUserService):
             if not old_user:
                 raise Exception("user_id {user_id} not found".format(user_id=user_id))
 
-            User.query.filter_by(id=user_id).update(
-                {
-                    User.first_name: user.first_name,
-                    User.last_name: user.last_name,
-                    User.email: user.email,
-                    User.resume: resume["id"],
-                    User.profile_pic: user.profile_pic,
-                    User.additional_experiences: user.additional_experiences,
-                }
-            )
+            if resume:
+                User.query.filter_by(id=user_id).update(
+                    {
+                        User.first_name: user.first_name,
+                        User.last_name: user.last_name,
+                        User.email: user.email,
+                        User.resume: resume["id"],
+                        User.profile_pic: user.profile_pic,
+                        User.additional_experiences: user.additional_experiences,
+                    }
+                )
+            else:
+                User.query.filter_by(id=user_id).update(
+                    {
+                        User.first_name: user.first_name,
+                        User.last_name: user.last_name,
+                        User.email: user.email,
+                        User.profile_pic: user.profile_pic,
+                        User.additional_experiences: user.additional_experiences,
+                    }
+                )
 
             db.session.commit()
 

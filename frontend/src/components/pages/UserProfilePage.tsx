@@ -60,6 +60,11 @@ const UserProfilePage = () => {
   const [email, setEmail] = useState<string>("");
   const [role, setRole] = useState<string>("");
   const [resumeId, setResumeId] = useState<number | null>(null);
+  /* eslint-disable */
+  const [educationalQualification, setEducationalQualification] =
+    useState<string>("");
+  const [languageExperience, setLanguageExperience] = useState<string>("");
+  /* eslint-enable */
   const [confirmDeleteUser, setConfirmDeleteUser] = useState(false);
   const [alertText, setAlertText] = useState<string>("");
   const [alert, setAlert] = useState(false);
@@ -174,7 +179,18 @@ const UserProfilePage = () => {
           )}
         </Flex>
         <Flex direction="column" margin="40px" flex={1}>
-          {!isAdmin && <UserProfileForm isSignup={false} />}
+          {/* TODO: use different state for email & fullname since currently the sidebar also gets modified */}
+          {!isAdmin && (
+            <UserProfileForm
+              isSignup={false}
+              fullName={fullName}
+              email={email}
+              setFullName={setFullName}
+              setEmail={setEmail}
+              setEducationalQualification={setEducationalQualification}
+              setLanguageExperience={setLanguageExperience}
+            />
+          )}
           <Flex justifyContent="space-between" margin="40px 0 10px 0">
             <Heading size="lg"> Approved Languages & Levels </Heading>
           </Flex>
