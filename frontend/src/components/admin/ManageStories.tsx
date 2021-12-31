@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { useHistory } from "react-router-dom";
 import { useQuery } from "@apollo/client";
 import { Box, Button, Icon, Flex, Heading } from "@chakra-ui/react";
 import { MdLogout } from "react-icons/md";
@@ -15,13 +16,23 @@ const ManageStories = () => {
     },
   });
 
+  const history = useHistory();
+  const routeChange = () => {
+    history.push("/import-story");
+  };
+
   return (
     <Box textAlign="center">
       <Flex margin="20px 30px">
         <Heading float="left" size="lg">
           Manage Stories
         </Heading>
-        <Button margin="5px 0px 5px 15px" width="180px" variant="blueOutline">
+        <Button
+          margin="5px 0px 5px 15px"
+          onClick={routeChange}
+          variant="blueOutline"
+          width="180px"
+        >
           <Icon
             as={MdLogout}
             height={5}
