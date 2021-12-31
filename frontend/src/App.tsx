@@ -14,6 +14,7 @@ import ReviewPage from "./components/pages/ReviewPage";
 import UserProfilePage from "./components/pages/UserProfilePage";
 import ManageStoryPage from "./components/pages/ManageStoryPage";
 import CompleteProfilePage from "./components/pages/CompleteProfilePage";
+import ImportStoryPage from "./components/pages/ImportStoryPage";
 import customTheme from "./theme/index";
 
 import AUTHENTICATED_USER_KEY from "./constants/AuthConstants";
@@ -95,6 +96,11 @@ const App = () => {
                   exact
                   path="/story/:storyIdParam"
                   component={ManageStoryPage}
+                />
+                <PrivateRoute
+                  exact
+                  path="/import-story"
+                  component={ImportStoryPage}
                 />
                 <Route exact path="/404" component={NotFound} />
                 <Route exact path="*" component={NotFound} />
