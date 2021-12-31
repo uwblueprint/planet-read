@@ -121,4 +121,4 @@ export const DEMOTE_LEVEL_BUTTON = "I'm sure, lower level";
 
 export const EXPORT_TOOL_TIP_COPY = "Translation not complete";
 
-export const DELETE_USER = "Delete user.";
+export const DELETE_USER = "Delete user";
