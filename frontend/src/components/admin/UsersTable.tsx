@@ -10,6 +10,7 @@ import {
   Tr,
   Th,
   Td,
+  Tooltip,
   IconButton,
 } from "@chakra-ui/react";
 import { useMutation } from "@apollo/client";
@@ -19,6 +20,7 @@ import { getLevelVariant } from "../../utils/StatusUtils";
 import {
   MANAGE_USERS_TABLE_DELETE_USER_BUTTON,
   MANAGE_USERS_TABLE_DELETE_USER_CONFIRMATION,
+  DELETE_USER,
 } from "../../utils/Copy";
 import ConfirmationModal from "../utils/ConfirmationModal";
 import {
@@ -118,13 +120,15 @@ const UsersTable = ({
       </Td>
       <Td>{generateBadges(approvedLanguages[index])}</Td>
       <Td>
-        <IconButton
-          aria-label={`Delete user ${userObj?.firstName} ${userObj?.lastName}`}
-          background="transparent"
-          icon={<Icon as={MdDelete} />}
-          width="fit-content"
-          onClick={() => openModal(parseInt(userObj?.id!, 10))}
-        />
+        <Tooltip hasArrow label={DELETE_USER} placement="top">
+          <IconButton
+            aria-label={`Delete user ${userObj?.firstName} ${userObj?.lastName}`}
+            background="transparent"
+            icon={<Icon as={MdDelete} />}
+            width="fit-content"
+            onClick={() => openModal(parseInt(userObj?.id!, 10))}
+          />
+        </Tooltip>
       </Td>
     </Tr>
   ));
