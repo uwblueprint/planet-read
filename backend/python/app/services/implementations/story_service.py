@@ -769,22 +769,23 @@ class StoryService(IStoryService):
 
     def approve_all_story_translation_content(self, story_translation_id):
         try:
+            story_translation = StoryTranslation.query.get(story_translation_id)
             story_translation_contents = (
-                db.session.query(StoryTranslation, StoryTranslationContent)
+                db.session.query(StoryTranslationContent)
+                .select_from(StoryTranslation)
+                .join(
+                    StoryTranslationContent,
+                    StoryTranslation.id == StoryTranslationContent.story_translation_id,
+                )
                 .filter(StoryTranslation.id == story_translation_id)
                 .all()
             )
-            # each element in story_translation_contents is a tuple of a
-            # StoryTranslation and StoryTranslationContent object
-            if story_translation_contents[0][0].stage == "REVIEW":
+
+            if story_translation.stage == "REVIEW":
                 for translation_content in story_translation_contents:
-                    translation_content[1].status = "APPROVED"
+                    translation_content.status = "APPROVED"
 
                 db.session.commit()
-
-                story_translation = StoryTranslation.query.filter_by(
-                    id=story_translation_id
-                ).first()
                 self._update_story_translation_last_activity(story_translation, False)
             else:
                 raise Exception(
