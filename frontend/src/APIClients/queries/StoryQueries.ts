@@ -38,6 +38,7 @@ export const GET_STORIES = (
   queryParams +=
     startDate != null ? `startDate: "${startDate.toISOString()}", ` : "";
   queryParams += endDate != null ? `endDate: "${endDate.toISOString()}", ` : "";
+  // eslint-disable-next-line no-console
   console.log(queryParams);
 
   return gql`

@@ -50,6 +50,7 @@ const LoginForm = ({
 
   // TODO: Display terms and conditions.
   const onTermsClick = () => {
+    // eslint-disable-next-line no-console
     console.log("Display terms and conditions.");
   };
 

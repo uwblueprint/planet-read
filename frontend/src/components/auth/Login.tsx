@@ -70,8 +70,10 @@ const Login = () => {
         );
         setAuthenticatedUser(user);
       } else if (!agreeToTerms) {
+        // eslint-disable-next-line no-alert
         alert("Please agree to the terms and conditions in order to sign up.");
       } else {
+        // eslint-disable-next-line no-alert
         alert("Please enter a valid email.");
       }
     } else {
@@ -91,8 +93,10 @@ const Login = () => {
   const onFailure = (response: GoogleErrorResponse) => {
     // https://stackoverflow.com/questions/63631849/google-sign-in-not-working-in-incognito-mode
     if (response.error === "idpiframe_initialization_failed") {
+      // eslint-disable-next-line no-console
       console.warn("Google SignIn does not work on incognito mode.");
     } else {
+      // eslint-disable-next-line no-alert
       alert(JSON.stringify(response));
     }
   };

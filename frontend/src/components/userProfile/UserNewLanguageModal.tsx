@@ -45,7 +45,7 @@ const UserNewLanguageModal = ({
     return { value: lang };
   });
 
-  const unapprovedLanguageOptions = options.filter(function (obj) {
+  const unapprovedLanguageOptions = options.filter((obj) => {
     return (
       !approvedLanguagesTranslation ||
       !Object.prototype.hasOwnProperty.call(

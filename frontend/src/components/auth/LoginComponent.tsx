@@ -113,6 +113,7 @@ const LoginComponent = ({
             if ("tokenId" in response) {
               onGoogleLoginSuccess(response.tokenId);
             } else {
+              // eslint-disable-next-line no-alert
               alert(JSON.stringify(response));
             }
           }}

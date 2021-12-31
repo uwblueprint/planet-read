@@ -97,6 +97,7 @@ const AssignTestGradeModal = ({
     if (result.data?.finishGradingStoryTranslation.ok) {
       history.push("/?tab=4");
     } else {
+      // eslint-disable-next-line no-alert
       window.alert("Could not assign level to user.");
     }
   };

@@ -260,6 +260,7 @@ const AssignedStoryTranslationsTable = ({
     closeConfirmAssignStoryModal();
 
     if (error) {
+      // eslint-disable-next-line no-alert
       window.alert(error);
     } else {
       setStoryAssignStage(StoryAssignStage.SUCCESS);
@@ -279,6 +280,7 @@ const AssignedStoryTranslationsTable = ({
     closeConfirmUnassignUserModal();
 
     if (err !== null) {
+      // eslint-disable-next-line no-alert
       window.alert(err);
     } else {
       setStoryAssignStage(StoryAssignStage.REMOVED);
