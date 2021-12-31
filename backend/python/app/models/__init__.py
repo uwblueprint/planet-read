@@ -12,6 +12,7 @@ def init_app(app):
     from .comment import Comment
     from .comment_all import CommentAll
     from .file import File
+    from .language import Language
     from .story import Story
     from .story_all import StoryAll
     from .story_content import StoryContent
