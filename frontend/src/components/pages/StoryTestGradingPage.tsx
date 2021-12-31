@@ -207,7 +207,7 @@ const StoryTestGradingPage = () => {
                   <Button
                     colorScheme="red"
                     variant="outline"
-                    disabled={stage === "TRANSLATE"}
+                    disabled={stage !== "REVIEW"}
                     onClick={openFailUserModal}
                   >
                     Fail User
@@ -222,7 +222,7 @@ const StoryTestGradingPage = () => {
                 <Box marginLeft="24px" marginRight="20px">
                   <Button
                     colorScheme="blue"
-                    disabled={stage === "TRANSLATE"}
+                    disabled={stage !== "REVIEW"}
                     onClick={openAssignGradeModal}
                   >
                     Assign Level{" "}

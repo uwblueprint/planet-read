@@ -225,7 +225,7 @@ const ReviewPage = () => {
                   size="secondary"
                   margin="0 10px 0"
                   width="250px"
-                  disabled={stage === "TRANSLATE"}
+                  disabled={stage !== "REVIEW"}
                   onClick={
                     numApprovedLines === translatedStoryLines.length
                       ? openSubmitTranslationModal
