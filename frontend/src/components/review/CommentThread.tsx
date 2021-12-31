@@ -9,24 +9,29 @@ import {
 } from "../../APIClients/mutations/CommentMutations";
 
 export type CommentThreadProps = {
-  comment: CommentResponse;
   comments: CommentResponse[];
+  commentsIdx: number;
+  reviewerName: string;
   setComments: (comments: CommentResponse[]) => void;
-  threadReplies: CommentResponse[];
   updateCommentsAsResolved: (index: number) => void;
   updateThreadHeadMap: (cmts: CommentResponse[]) => void;
-  userName: string;
+  threadHeadMap: boolean[];
+  translatorId: number;
+  translatorName: string;
 };
 
 const CommentThread = ({
-  comment,
   comments,
+  commentsIdx,
+  reviewerName,
   setComments,
-  threadReplies,
   updateCommentsAsResolved,
   updateThreadHeadMap,
-  userName,
+  threadHeadMap,
+  translatorId,
+  translatorName,
 }: CommentThreadProps) => {
+  const comment = comments[commentsIdx];
   const {
     content,
     id,
@@ -34,10 +39,15 @@ const CommentThread = ({
     resolved,
     storyTranslationContentId: stcId,
   } = comment;
-  const handleError = (errorMessage: string) => {
-    // eslint-disable-next-line no-alert
-    alert(errorMessage);
-  };
+
+  const threadReplies = [];
+  for (
+    let i = commentsIdx + 1;
+    i < comments.length && !threadHeadMap[i];
+    i += 1
+  ) {
+    threadReplies.push(comments[i]);
+  }
 
   const [reply, setReply] = useState(-1);
   const [storyTranslationContentId, setStoryTranslationContentId] =
@@ -46,6 +56,16 @@ const CommentThread = ({
   const [updateComment] = useMutation<{
     updateCommentById: UpdateCommentResponse;
   }>(UPDATE_COMMENT_BY_ID);
+
+  const handleReply = () => {
+    setStoryTranslationContentId(storyTranslationContentId);
+    setReply(storyContentId);
+  };
+
+  const handleError = (errorMessage: string) => {
+    // eslint-disable-next-line no-alert
+    alert(errorMessage);
+  };
 
   const resolveExistingComment = async () => {
     try {
@@ -67,15 +87,10 @@ const CommentThread = ({
       if (typeof err === "string") {
         handleError(err);
       } else {
-        console.log(err);
+        window.alert(err);
         handleError("Error occurred, please try again.");
       }
     }
-  };
-
-  const handleReply = () => {
-    setStoryTranslationContentId(storyTranslationContentId);
-    setReply(storyContentId);
   };
 
   return (
@@ -86,18 +101,22 @@ const CommentThread = ({
         isFirstReply={false}
         isThreadHead
         resolveExistingComment={resolveExistingComment}
-        userName={userName}
+        userName={
+          translatorId === comment.userId ? translatorName : reviewerName
+        }
       />
       {threadReplies.map(function (threadReply: CommentResponse, i: number) {
         return (
           <ExistingComment
             comment={threadReply}
-            handleReply={handleReply}
             isFirstReply={i === 0}
             isThreadHead={false}
             key={threadReply.id}
-            resolveExistingComment={resolveExistingComment}
-            userName={userName}
+            userName={
+              translatorId === threadReply.userId
+                ? translatorName
+                : reviewerName
+            }
           />
         );
       })}

@@ -113,39 +113,39 @@ const CommentsPanel = ({
 
   const CommentsList = () => {
     if (comments.length > 0) {
-      const commentThreads = [];
-      for (let i = 0; i < comments.length; i += 1) {
-        if (threadHeadMap[i]) {
-          const comment = comments[i];
-          const threadReplies = [];
-          while (i + 1 < comments.length && !threadHeadMap[i + 1]) {
-            i += 1;
-            threadReplies.push(comments[i]);
-          }
-          commentThreads.push(
-            <CommentThread
-              comment={comment}
-              comments={comments}
-              key={comment.id}
-              setComments={setComments}
-              threadReplies={threadReplies}
-              updateCommentsAsResolved={updateCommentsAsResolved}
-              updateThreadHeadMap={updateThreadHeadMap}
-              userName={
-                translatorId === comment.userId ? translatorName : reviewerName
-              }
-            />,
-          );
-        }
-      }
-      return <Box>{commentThreads}</Box>;
+      return (
+        <Box>
+          {comments.map(function (comment: CommentResponse, i: number) {
+            if (threadHeadMap[i]) {
+              return (
+                <CommentThread
+                  comments={comments}
+                  commentsIdx={i}
+                  key={comment.id}
+                  reviewerName={reviewerName}
+                  setComments={setComments}
+                  updateCommentsAsResolved={updateCommentsAsResolved}
+                  updateThreadHeadMap={updateThreadHeadMap}
+                  threadHeadMap={threadHeadMap}
+                  translatorId={translatorId}
+                  translatorName={translatorName}
+                />
+              );
+            }
+            return null;
+          })}
+        </Box>
+      );
     }
-    return (
-      <Text variant="comment">
-        Looks like there aren&apos;t any comments yet! Select the Comment button
-        above to begin leaving comments.
-      </Text>
-    );
+    if (commentLine <= 0) {
+      return (
+        <Text variant="comment">
+          Looks like there aren&apos;t any comments yet! Select the Comment
+          button above to begin leaving comments.
+        </Text>
+      );
+    }
+    return null;
   };
 
   const filterOptionsComponent = filterOptions.map((op) => (

@@ -4,10 +4,10 @@ import { CommentResponse } from "../../APIClients/queries/CommentQueries";
 
 export type ExistingCommentProps = {
   comment: CommentResponse;
-  handleReply: () => void;
+  handleReply?: () => void;
   isFirstReply: boolean;
   isThreadHead: boolean;
-  resolveExistingComment: () => void;
+  resolveExistingComment?: () => void;
   userName: string;
 };
 
@@ -59,7 +59,10 @@ const ExistingComment = ({
       <Flex>
         {!resolved && isThreadHead && (
           <>
-            <Button onClick={() => handleReply()} variant="commentLabel">
+            <Button
+              onClick={handleReply ? () => handleReply() : undefined}
+              variant="commentLabel"
+            >
               Reply
             </Button>
             <Button onClick={resolveExistingComment} variant="commentLabel">
