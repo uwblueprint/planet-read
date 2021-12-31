@@ -84,8 +84,8 @@ const StoryTestsTable = ({
    * ascending/descending order
    */
   const dateSort = (t1: StoryTranslationTest, t2: StoryTranslationTest) => {
-    const dateT1 = t1.dateSubmitted;
-    const dateT2 = t2.dateSubmitted;
+    const dateT1 = t1.translatorLastActivity;
+    const dateT2 = t2.translatorLastActivity;
     const forwardCompare = +(dateT2 > dateT1); // 1 if dateT2 > dateT1
     const reverseCompare = +(dateT1 > dateT2); // 1 if dateT1 > dateT2
     return isAscendingDate
@@ -143,7 +143,9 @@ const StoryTestsTable = ({
             }`}
           </Badge>
         </Td>
-        <Td>{storyTest.dateSubmitted?.toLocaleDateString()}</Td>
+        <Td>
+          {new Date(storyTest.translatorLastActivity).toLocaleDateString()}
+        </Td>
         <Td>
           <Button
             borderRadius="8px"
