@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from "react";
-import { useQuery, useMutation } from "@apollo/client";
+import { useQuery } from "@apollo/client";
 import { Box, Text, Divider, Flex, Button, Tooltip } from "@chakra-ui/react";
 import { useParams, Redirect, useHistory } from "react-router-dom";
 
@@ -12,17 +12,10 @@ import { GET_STORY_AND_TRANSLATION_CONTENTS } from "../../APIClients/queries/Sto
 import FontSizeSlider from "../translation/FontSizeSlider";
 import { convertLanguageTitleCase } from "../../utils/LanguageUtils";
 import Header from "../navigation/Header";
-import ConfirmationModal from "../utils/ConfirmationModal";
-import {
-  REVIEW_PAGE_TOOL_TIP_COPY,
-  GRADING_PAGE_FAIL_USER_CONFIRMATION,
-  GRADING_PAGE_FAIL_USER_BUTTON,
-} from "../../utils/Copy";
-import {
-  FINISH_GRADING_STORY_TRANSLATION,
-  FinishGradingStoryTranslationResponse,
-} from "../../APIClients/mutations/StoryMutations";
+import { REVIEW_PAGE_TOOL_TIP_COPY } from "../../utils/Copy";
+
 import AssignTestGradeModal from "../onboarding/AssignTestGradeModal";
+import FailUserModal from "../onboarding/FailUserModal";
 
 type StoryTestGradingPageProps = {
   storyIdParam: string | undefined;
@@ -57,8 +50,6 @@ const StoryTestGradingPage = () => {
   const [level, setLevel] = useState<number>(0);
   const [language, setLanguage] = useState<string>("");
   const [stage, setStage] = useState<string>("");
-  // TODO: implement feedback flow for failing users
-  const [testFeedback] = useState<string>("");
 
   const [failUser, setFailUser] = useState(false);
   const [assignGrade, setAssignGrade] = useState(false);
@@ -101,25 +92,6 @@ const StoryTestGradingPage = () => {
   };
 
   const history = useHistory();
-
-  const [finishGradingStoryTranslation] = useMutation<{
-    finishGradingStoryTranslation: FinishGradingStoryTranslationResponse;
-  }>(FINISH_GRADING_STORY_TRANSLATION);
-
-  const failGrade = async (feedback: string | null) => {
-    const result = await finishGradingStoryTranslation({
-      variables: {
-        storyTranslationTestId: storyTranslationId,
-        testFeedback: feedback,
-        testResult: "{}",
-      },
-    });
-    if (result.data?.finishGradingStoryTranslation.ok) {
-      history.push("/");
-    } else {
-      window.alert("Could not mark story translation as failed.");
-    }
-  };
 
   const { loading } = useQuery(
     GET_STORY_AND_TRANSLATION_CONTENTS(storyId, storyTranslationId),
@@ -260,12 +232,10 @@ const StoryTestGradingPage = () => {
             </Flex>
           </Flex>
         </Flex>
-        <ConfirmationModal
-          confirmation={failUser}
-          onConfirmationClick={() => failGrade(testFeedback)}
+        <FailUserModal
+          isOpen={failUser}
           onClose={closeFailUserModal}
-          confirmationMessage={GRADING_PAGE_FAIL_USER_CONFIRMATION}
-          buttonMessage={GRADING_PAGE_FAIL_USER_BUTTON}
+          storyTranslationId={storyTranslationId}
         />
         <AssignTestGradeModal
           isOpen={assignGrade}
