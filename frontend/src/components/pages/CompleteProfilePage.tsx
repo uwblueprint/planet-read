@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import { useMutation } from "@apollo/client";
 import { Box, Button, Flex } from "@chakra-ui/react";
 import Header from "../navigation/Header";
@@ -7,13 +7,19 @@ import {
   UPDATE_ME,
   UpdateMeResponse,
 } from "../../APIClients/mutations/UserMutations";
+import AuthContext from "../../contexts/AuthContext";
 
 const CompleteProfilePage = () => {
-  const [name, setFullName] = useState("");
-  const [email, setEmail] = useState("");
+  const { authenticatedUser } = useContext(AuthContext);
+
+  const fullName = `${authenticatedUser!!.firstName} ${
+    authenticatedUser!!.lastName
+  }`;
+
+  const [name, setFullName] = useState(fullName);
+  const [email, setEmail] = useState(authenticatedUser!!.email);
   const [educationalQualification, setEducationalQualification] = useState("");
   const [languageExperience, setLanguageExperience] = useState("");
-
   const [updateMe] = useMutation<{
     response: UpdateMeResponse;
   }>(UPDATE_ME);
@@ -37,7 +43,7 @@ const CompleteProfilePage = () => {
       });
       window.location.href = `#/?welcome=true`;
     } catch (err) {
-      console.log(err);
+      window.alert(err);
     }
   };
 
@@ -46,6 +52,8 @@ const CompleteProfilePage = () => {
       <Header />
       <Flex direction="row" flex={1} margin="40px" marginLeft="90px">
         <UserProfileForm
+          fullName={name}
+          email={email}
           setFullName={setFullName}
           setEmail={setEmail}
           setEducationalQualification={setEducationalQualification}

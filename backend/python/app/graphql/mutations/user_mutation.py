@@ -37,7 +37,9 @@ class UpdateMe(graphene.Mutation):
         """
         try:
             user_id = get_user_id_from_request()
-            res = services["file"].create_file(resume)
+            res = None
+            if resume:
+                res = services["file"].create_file(resume)
             updated_user = services["user"].update_me(user_id, user, res)
             return UpdateMe(user=updated_user)
         except Exception as e:

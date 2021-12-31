@@ -19,6 +19,8 @@ import { languageOptions } from "../../constants/Languages";
 
 export type UserProfileFormProps = {
   isSignup?: boolean;
+  fullName: string;
+  email: string;
   setFullName: (name: string) => void;
   setEmail: (email: string) => void;
   setEducationalQualification: (email: string) => void;
@@ -27,6 +29,8 @@ export type UserProfileFormProps = {
 
 const UserProfileForm = ({
   isSignup = true,
+  fullName,
+  email,
   setFullName,
   setEmail,
   setEducationalQualification,
@@ -46,11 +50,19 @@ const UserProfileForm = ({
         <Heading marginTop="24px" size="sm">
           Full name*
         </Heading>
-        <Input type="name" onChange={(e) => setFullName(e.target.value)} />
+        <Input
+          type="name"
+          value={fullName}
+          onChange={(e) => setFullName(e.target.value)}
+        />
         <Heading marginTop="24px" size="sm">
           Email*
         </Heading>
-        <Input type="email" onChange={(e) => setEmail(e.target.value)} />
+        <Input
+          type="email"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+        />
         <Heading marginTop="24px" size="sm">
           Educational qualifications*
         </Heading>
