@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useQuery } from "@apollo/client";
-import { Box, Flex, Heading } from "@chakra-ui/react";
+import { Box, Flex, Heading, Link } from "@chakra-ui/react";
 import { Icon } from "@chakra-ui/icon";
 import { MdLogout } from "react-icons/md";
 import Statistic from "./Statistic";
@@ -63,27 +63,28 @@ const ManageStoryTranslations = () => {
         <Statistic header="IN TRANSLATION" num={numTranslationsInTranslation} />
         <Statistic header="IN REVIEW" num={numTranslationsInReview} />
         <Statistic header="COMPLETED" num={numTranslationsCompleted} />
-        <Box
+        <Link
           border="1px solid"
-          borderRadius="10px"
           borderColor="gray.200"
-          color="blue.500"
-          height="150px"
+          borderRadius="10px"
+          href="/#/import-story"
           margin="10px"
-          paddingTop="35px"
-          width="200px"
+          textDecoration="none"
+          _hover={{ textDecoration: "none" }}
         >
-          <Icon
-            as={MdLogout}
-            height={10}
-            marginBottom="10px"
-            transform="rotate(270deg)"
-            width={10}
-          />
-          <Heading size="sm" textTransform="uppercase">
-            IMPORT STORY
-          </Heading>
-        </Box>
+          <Box color="blue.500" height="150px" paddingTop="35px" width="200px">
+            <Icon
+              as={MdLogout}
+              height={10}
+              marginBottom="10px"
+              transform="rotate(270deg)"
+              width={10}
+            />
+            <Heading size="sm" textTransform="uppercase">
+              IMPORT STORY
+            </Heading>
+          </Box>
+        </Link>
       </Flex>
       <Flex>
         <Heading float="left" margin="20px 30px" size="lg">

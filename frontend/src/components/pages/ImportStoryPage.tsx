@@ -17,6 +17,8 @@ import { MdArrowBackIosNew, MdFolder } from "react-icons/md";
 import DropdownIndicator from "../utils/DropdownIndicator";
 import Header from "../navigation/Header";
 import { colourStyles } from "../../theme/components/Select";
+import { convertLanguageTitleCase } from "../../utils/LanguageUtils";
+import { languageOptions } from "../../constants/Languages";
 
 const ImportStoryPage = () => {
   return (
@@ -25,13 +27,13 @@ const ImportStoryPage = () => {
       <Flex
         direction="column"
         flex="1"
-        padding="40px 120px 40px 120px"
+        padding="40px 120px 60px 120px"
         overflow="auto"
       >
         <Link
           color="blue.100"
           fontWeight="bold"
-          href="#/"
+          href="#/?tab=1"
           textDecoration="none"
           _hover={{ textDecoration: "none", color: "blue.100" }}
         >
@@ -91,7 +93,11 @@ const ImportStoryPage = () => {
               <Box width="300px">
                 <Select
                   components={{ DropdownIndicator }}
+                  getOptionLabel={(option: any) => `
+                    ${convertLanguageTitleCase(option.value || "")}
+                  `}
                   id="languages"
+                  options={languageOptions}
                   placeholder="Select one or more languages"
                   styles={colourStyles}
                 />
@@ -147,7 +153,7 @@ const ImportStoryPage = () => {
               >
                 <Icon as={MdFolder} color="blue.100" height={16} width={16} />
                 <Text fontSize="sm" marginBottom="15px">
-                  Drag & drop your files here (.doc, .docx)
+                  Drag & drop your files here (.docx)
                 </Text>
                 <Button colorScheme="blue" textTransform="capitalize">
                   Browse Files
