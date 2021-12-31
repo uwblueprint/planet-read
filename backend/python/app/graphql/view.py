@@ -22,14 +22,15 @@ class ResponseCookieGraphQLView(FileUploadGraphQLView):
             # get refreshToken from response
             response_json = json.loads(response.response[0])["data"]
             mutation_name = data["operationName"].lower()
-            refresh_token = response_json[mutation_name]["refreshToken"]
+            if response_json[mutation_name]:
+                refresh_token = response_json[mutation_name]["refreshToken"]
 
-            # set response cookie
-            response.set_cookie(
-                "refreshToken",
-                value=refresh_token,
-                httponly=True,
-                secure=(os.getenv("FLASK_CONFIG") == "production"),
-            )
+                # set response cookie
+                response.set_cookie(
+                    "refreshToken",
+                    value=refresh_token,
+                    httponly=True,
+                    secure=(os.getenv("FLASK_CONFIG") == "production"),
+                )
 
         return response
