@@ -44,9 +44,9 @@ class StoryService(IStoryService):
             if story_title is not None:
                 filters.append(Story.title.like(f"%{story_title}%"))
             if start_date is not None:
-                filter.append(Story.date_uploaded >= start_date)
+                filters.append(Story.date_uploaded >= start_date)
             if end_date is not None:
-                filter.append(Story.date_uploaded <= end_date)
+                filters.append(Story.date_uploaded <= end_date)
             return [
                 story.to_dict(include_relationships=True)
                 for story in StoryAll.query.filter(*filters).all()

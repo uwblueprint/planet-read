@@ -5,11 +5,16 @@ import { Box, Button, Icon, Flex, Heading } from "@chakra-ui/react";
 import { MdLogout } from "react-icons/md";
 import StoriesTable from "./StoriesTable";
 import { Story, GET_STORIES } from "../../APIClients/queries/StoryQueries";
+import TableFilter from "./TableFilter";
+import { STORY_TRANSLATION_TABLE_FILTER_SEARCH_BAR_PLACEHOLDER } from "../../utils/Copy";
 
 const ManageStories = () => {
   const [stories, setStories] = useState<Story[]>([]);
+  const [searchText, setSearchText] = useState<string | null>(null);
+  const [startDate, setStartDate] = useState<Date | null>(null);
+  const [endDate, setEndDate] = useState<Date | null>(null);
 
-  useQuery(GET_STORIES(), {
+  const { loading } = useQuery(GET_STORIES(searchText, startDate, endDate), {
     fetchPolicy: "cache-and-network",
     onCompleted: (data) => {
       setStories(data.stories);
@@ -43,7 +48,28 @@ const ManageStories = () => {
           IMPORT STORY
         </Button>
       </Flex>
-      <StoriesTable stories={stories} setStories={setStories} />
+      <TableFilter
+        language={null}
+        level={null}
+        searchText={searchText}
+        setSearchText={setSearchText}
+        setStartDate={setStartDate}
+        setEndDate={setEndDate}
+        startDate={startDate}
+        endDate={endDate}
+        useLevel={false}
+        useLanguage={false}
+        useDate
+        searchBarPlaceholder={
+          STORY_TRANSLATION_TABLE_FILTER_SEARCH_BAR_PLACEHOLDER
+        }
+      />
+      <StoriesTable
+        stories={stories}
+        setStories={setStories}
+        filters={[setSearchText, setStartDate, setEndDate]}
+        loading={loading}
+      />
     </Box>
   );
 };

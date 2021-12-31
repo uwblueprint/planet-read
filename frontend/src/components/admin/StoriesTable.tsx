@@ -24,6 +24,7 @@ import {
   SOFT_DELETE_STORY,
   SoftDeleteStoryResponse,
 } from "../../APIClients/mutations/StoryMutations";
+import EmptyTable from "./EmptyTable";
 
 interface StoriesFieldSortDict {
   [field: string]: {
@@ -36,9 +37,16 @@ interface StoriesFieldSortDict {
 export type StoriesTableProps = {
   stories: Story[];
   setStories: (newState: Story[]) => void;
+  filters: { (data: any | null): void }[];
+  loading: boolean;
 };
 
-const StoriesTable = ({ stories, setStories }: StoriesTableProps) => {
+const StoriesTable = ({
+  stories,
+  setStories,
+  filters,
+  loading,
+}: StoriesTableProps) => {
   const [isAscendingName, setIsAscendingName] = useState(true);
   const [isAscendingDate, setIsAscendingDate] = useState(true);
 
@@ -154,7 +162,13 @@ const StoriesTable = ({ stories, setStories }: StoriesTableProps) => {
           <Th width="18%">ACTION</Th>
         </Tr>
       </Thead>
-      <Tbody>{tableBody}</Tbody>
+      <Tbody>
+        {stories.length === 0 && !loading ? (
+          <EmptyTable filters={filters} />
+        ) : (
+          tableBody
+        )}
+      </Tbody>
       {confirmDeleteStory && (
         <ConfirmationModal
           confirmation={confirmDeleteStory}

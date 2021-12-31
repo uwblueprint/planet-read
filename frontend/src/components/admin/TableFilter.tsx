@@ -14,6 +14,8 @@ import {
   Stack,
   Tooltip,
 } from "@chakra-ui/react";
+import DatePicker from "react-datepicker";
+import { languageOptions } from "../../constants/Languages";
 import { levelOptions } from "../../constants/Levels";
 import { stageOptions } from "../../constants/Stage";
 import { FILTER_TOOL_TIP_COPY } from "../../utils/Copy";
@@ -23,17 +25,22 @@ import { getLanguagesQuery } from "../../APIClients/queries/LanguageQueries";
 
 export type TableFilterProps = {
   language: string | null;
-  setLanguage: (newLang: string | null) => void;
+  setLanguage?: (newLang: string | null) => void;
   level: string | null;
-  setLevel: (newLevel: string | null) => void;
+  setLevel?: (newLevel: string | null) => void;
   stage?: string | null;
   setStage?: (newStage: string | null) => void;
   searchText: string | null;
   setSearchText: (newText: string | null) => void;
+  setStartDate?: (startDate: Date | null) => void;
+  setEndDate?: (startDate: Date | null) => void;
   useLevel?: boolean;
   useLanguage?: boolean;
   useStage?: boolean;
+  useDate?: boolean;
   searchBarPlaceholder?: string;
+  startDate?: Date | null;
+  endDate?: Date | null;
 };
 
 export type FilterBadgesProps = {
@@ -61,9 +68,14 @@ const TableFilter = ({
   setLevel,
   setStage,
   setSearchText,
+  setStartDate,
+  setEndDate,
+  startDate,
+  endDate,
   useLevel = false,
   useLanguage = false,
   useStage = false,
+  useDate = false,
   searchBarPlaceholder = "",
 }: TableFilterProps) => {
   const [languageOptions, setLanguageOptions] = useState<string[]>([]);
@@ -78,6 +90,15 @@ const TableFilter = ({
   const options = languageOptions.map((lang) => {
     return { value: lang };
   });
+  const onChangeDateRange = (
+    date: Date | null | [Date | null, Date | null],
+  ) => {
+    if (!Array.isArray(date)) return;
+    const [start, end] = date;
+    if (setStartDate) setStartDate(start);
+    if (setEndDate) setEndDate(end);
+  };
+
   return (
     <Flex direction="column">
       <Flex
@@ -86,7 +107,7 @@ const TableFilter = ({
         border="1px solid white"
         margin="20px auto 10px"
       >
-        {useLanguage && (
+        {useLanguage && setLanguage && (
           <Tooltip
             hasArrow
             label={FILTER_TOOL_TIP_COPY}
@@ -108,7 +129,7 @@ const TableFilter = ({
             </Box>
           </Tooltip>
         )}
-        {useLevel && (
+        {useLevel && setLevel && (
           <Tooltip
             hasArrow
             label={FILTER_TOOL_TIP_COPY}
@@ -148,6 +169,23 @@ const TableFilter = ({
             </Box>
           </Tooltip>
         )}
+        {useDate && setStartDate && setEndDate && (
+          <Box
+            marginRight="10px"
+            borderRadius="3px"
+            fontSize="14px"
+            borderColor="blue.100"
+          >
+            <DatePicker
+              selected={startDate}
+              onChange={onChangeDateRange}
+              startDate={startDate}
+              endDate={endDate}
+              selectsRange
+              placeholderText="Select a date"
+            />
+          </Box>
+        )}
         <Box flex={2} colorScheme="blue" size="secondary">
           <Stack spacing={4}>
             <InputGroup>
@@ -168,15 +206,19 @@ const TableFilter = ({
               language == null &&
               level == null &&
               searchText == null &&
-              (!useStage || stage == null)
+              (!useStage || stage == null) &&
+              startDate == null &&
+              endDate == null
             }
             colorScheme="blue"
             size="secondary"
             onClick={() => {
-              setLanguage(null);
-              setLevel(null);
+              setLanguage?.(null);
+              setLevel?.(null);
               setStage?.(null);
-              setSearchText(null);
+              setSearchText?.(null);
+              setStartDate?.(null);
+              setEndDate?.(null);
             }}
           >
             Clear filters
@@ -184,10 +226,10 @@ const TableFilter = ({
         </Box>
       </Flex>
       <Flex margin="10px auto 24px" width="95%">
-        {language && (
+        {language && setLanguage && (
           <FilterBadges filterValue={language} setFilterValue={setLanguage} />
         )}
-        {level && (
+        {level && setLevel && (
           <FilterBadges
             filterValue={`Level ${level}`}
             setFilterValue={setLevel}
@@ -196,7 +238,7 @@ const TableFilter = ({
         {stage && setStage && (
           <FilterBadges filterValue={`${stage}`} setFilterValue={setStage} />
         )}
-        {searchText && (
+        {searchText && setSearchText && (
           <FilterBadges
             filterValue={searchText}
             setFilterValue={setSearchText}
