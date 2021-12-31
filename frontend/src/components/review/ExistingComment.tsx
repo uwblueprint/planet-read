@@ -1,100 +1,30 @@
-import React, { useState } from "react";
-import { useMutation } from "@apollo/client";
+import React from "react";
 import { Text, Flex, Button } from "@chakra-ui/react";
-import WIPComment from "./WIPComment";
-import {
-  UPDATE_COMMENT_BY_ID,
-  UpdateCommentResponse,
-} from "../../APIClients/mutations/CommentMutations";
 import { CommentResponse } from "../../APIClients/queries/CommentQueries";
 
 export type ExistingCommentProps = {
-  commentsStateIdx: number;
-  userName: string;
   comment: CommentResponse;
-  updateCommentsAsResolved: (index: number) => void;
-  comments: CommentResponse[];
-  setComments: (comments: CommentResponse[]) => void;
-  WIPLineIndex: number;
-  threadHeadMap: boolean[];
-  updateThreadHeadMap: (cmts: CommentResponse[]) => void;
+  handleReply: () => void;
+  isFirstReply: boolean;
+  isThreadHead: boolean;
+  resolveExistingComment: () => void;
+  userName: string;
 };
 
 const ExistingComment = ({
-  commentsStateIdx,
-  userName,
   comment,
-  updateCommentsAsResolved,
-  setComments,
-  comments,
-  threadHeadMap,
-  updateThreadHeadMap,
+  handleReply,
+  isFirstReply,
+  isThreadHead,
+  resolveExistingComment,
+  userName,
 }: ExistingCommentProps) => {
-  const {
-    id,
-    resolved,
-    content,
-    time,
-    lineIndex: storyContentId,
-    commentIndex,
-    storyTranslationContentId: stcId,
-  } = comment;
-  const handleError = (errorMessage: string) => {
-    // eslint-disable-next-line no-alert
-    alert(errorMessage);
-  };
-
-  const [reply, setReply] = useState(-1);
-  const [storyTranslationContentId, setStoryTranslationContentId] =
-    useState(stcId);
-
-  const [updateComment] = useMutation<{
-    updateCommentById: UpdateCommentResponse;
-  }>(UPDATE_COMMENT_BY_ID);
-
-  const resolveExistingComment = async () => {
-    try {
-      if (!resolved) {
-        const commentData = {
-          id,
-          resolved: true,
-          content,
-        };
-
-        const result = await updateComment({
-          variables: { commentData },
-        });
-        if (result.data?.updateCommentById.ok) {
-          updateCommentsAsResolved(id);
-        }
-      }
-    } catch (err) {
-      if (typeof err === "string") {
-        handleError(err);
-      } else {
-        console.log(err);
-        handleError("Error occurred, please try again.");
-      }
-    }
-  };
-
-  const handleReply = () => {
-    setStoryTranslationContentId(storyTranslationContentId);
-    setReply(storyContentId);
-  };
+  const { content, lineIndex: storyContentId, resolved, time } = comment;
 
   const newTime = new Date(time);
   const displayTime = new Date(
     newTime.getTime() - newTime.getTimezoneOffset() * 60000,
   );
-
-  const isThreadHead = commentIndex === 0 || threadHeadMap[commentsStateIdx];
-  const isFirstReply =
-    !threadHeadMap[commentsStateIdx] &&
-    threadHeadMap[commentsStateIdx - 1] &&
-    comments[commentsStateIdx - 1].storyTranslationContentId ===
-      storyTranslationContentId;
-  const isLive = !resolved && isThreadHead;
 
   return (
     <Flex
@@ -127,7 +57,7 @@ const ExistingComment = ({
         {content}
       </Text>
       <Flex>
-        {isThreadHead && isLive && (
+        {!resolved && isThreadHead && (
           <>
             <Button onClick={() => handleReply()} variant="commentLabel">
               Reply
@@ -138,16 +68,6 @@ const ExistingComment = ({
           </>
         )}
       </Flex>
-      {reply > -1 && (
-        <WIPComment
-          WIPLineIndex={reply + 1}
-          storyTranslationContentId={storyTranslationContentId}
-          setCommentLine={setReply}
-          comments={comments}
-          setComments={setComments}
-          updateThreadHeadMap={updateThreadHeadMap}
-        />
-      )}
     </Flex>
   );
 };

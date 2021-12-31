@@ -1,6 +1,6 @@
 import React, { useContext, useState } from "react";
 import { useMutation } from "@apollo/client";
-import { Flex, Button, Textarea } from "@chakra-ui/react";
+import { Button, Flex, Text, Textarea } from "@chakra-ui/react";
 import AuthContext from "../../contexts/AuthContext";
 import {
   CreateCommentResponse,
@@ -10,20 +10,22 @@ import { CommentResponse } from "../../APIClients/queries/CommentQueries";
 import { insertSortedComments } from "../../utils/Utils";
 
 export type WIPCommentProps = {
-  storyTranslationContentId: number;
-  WIPLineIndex: number;
-  setCommentLine: (line: number) => void;
   comments: CommentResponse[];
+  isReply: boolean;
+  setCommentLine: (line: number) => void;
   setComments: (comments: CommentResponse[]) => void;
+  storyTranslationContentId: number;
   updateThreadHeadMap: (cmts: CommentResponse[]) => void;
+  WIPLineIndex: number;
 };
 
 const WIPComment = ({
-  storyTranslationContentId,
-  WIPLineIndex,
+  comments,
+  isReply,
   setCommentLine,
   setComments,
-  comments,
+  storyTranslationContentId,
+  WIPLineIndex,
   updateThreadHeadMap,
 }: WIPCommentProps) => {
   const handleError = (errorMessage: string) => {
@@ -78,27 +80,30 @@ const WIPComment = ({
       padding="14px 14px"
       width="300px"
     >
-      <b>Line {WIPLineIndex}</b>
-      <p>{name}</p>
+      <Text fontWeight="bold" marginBottom="10px">
+        {isReply && "Replying to"} Line {WIPLineIndex}
+      </Text>
+      <Text marginBottom="10px">{name}</Text>
       <Textarea
-        value={text}
+        margin="10px 0"
         onChange={(e) => setText(e.target.value)}
-        margin="8px 0"
-        placeholder="Comment or add others with @"
+        placeholder="Add a comment"
+        value={text}
       />
       <Flex direction="row">
         <Button
-          size="secondary"
           colorScheme="blue"
-          onClick={createNewComment}
           isDisabled={text.length < 1}
+          marginRight="10px"
+          onClick={createNewComment}
+          size="secondary"
         >
           Comment
         </Button>
         <Button
+          onClick={() => setCommentLine(-1)}
           size="secondary"
           variant="blueOutline"
-          onClick={() => setCommentLine(-1)}
         >
           Cancel
         </Button>

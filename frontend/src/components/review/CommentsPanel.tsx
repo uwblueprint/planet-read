@@ -5,8 +5,8 @@ import {
   CommentResponse,
   buildCommentsQuery,
 } from "../../APIClients/queries/CommentQueries";
+import CommentThread from "./CommentThread";
 import WIPComment from "./WIPComment";
-import ExistingComment from "./ExistingComment";
 
 export type CommentPanelProps = {
   storyTranslationId: number;
@@ -113,27 +113,32 @@ const CommentsPanel = ({
 
   const CommentsList = () => {
     if (comments.length > 0) {
-      return (
-        <Box>
-          {/* TODO: show correct placement of the WIPComment component once existing comment is displayed */}
-          {comments.map((comment: CommentResponse, i: number) => (
-            <ExistingComment
+      const commentThreads = [];
+      for (let i = 0; i < comments.length; i += 1) {
+        if (threadHeadMap[i]) {
+          const comment = comments[i];
+          const threadReplies = [];
+          while (i + 1 < comments.length && !threadHeadMap[i + 1]) {
+            i += 1;
+            threadReplies.push(comments[i]);
+          }
+          commentThreads.push(
+            <CommentThread
+              comment={comment}
+              comments={comments}
               key={comment.id}
-              commentsStateIdx={i}
+              setComments={setComments}
+              threadReplies={threadReplies}
+              updateCommentsAsResolved={updateCommentsAsResolved}
+              updateThreadHeadMap={updateThreadHeadMap}
               userName={
                 translatorId === comment.userId ? translatorName : reviewerName
               }
-              comment={comment}
-              WIPLineIndex={commentLine}
-              updateCommentsAsResolved={updateCommentsAsResolved}
-              comments={comments}
-              setComments={setComments}
-              threadHeadMap={threadHeadMap}
-              updateThreadHeadMap={updateThreadHeadMap}
-            />
-          ))}
-        </Box>
-      );
+            />,
+          );
+        }
+      }
+      return <Box>{commentThreads}</Box>;
     }
     return (
       <Text variant="comment">
@@ -186,12 +191,13 @@ const CommentsPanel = ({
       </Flex>
       {commentLine > 0 && (
         <WIPComment
-          WIPLineIndex={commentLine}
-          storyTranslationContentId={storyTranslationContentId}
-          setCommentLine={setCommentLine}
           comments={comments}
+          isReply={false}
+          setCommentLine={setCommentLine}
           setComments={setComments}
+          storyTranslationContentId={storyTranslationContentId}
           updateThreadHeadMap={updateThreadHeadMap}
+          WIPLineIndex={commentLine}
         />
       )}
       <CommentsList />
