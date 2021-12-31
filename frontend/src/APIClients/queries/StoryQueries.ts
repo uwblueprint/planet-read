@@ -347,7 +347,7 @@ export type StoryTranslationTest = {
   testGrade: number;
   testResult: StoryTestResult | null;
   testFeedback: string;
-  dateSubmitted: Date;
+  translatorLastActivity: Date;
 };
 
 export const buildStoryTranslationTestsQuery = (
@@ -380,7 +380,7 @@ export const buildStoryTranslationTestsQuery = (
           testGrade
           testResult
           testFeedback
-          dateSubmitted
+          translatorLastActivity
         }
       }
     `,
