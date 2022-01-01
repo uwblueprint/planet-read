@@ -106,6 +106,7 @@ class StoryTranslationTestResponseDTO(graphene.ObjectType):
     test_result = graphene.JSONString(required=False)
     test_feedback = graphene.String()
     translator_last_activity = graphene.DateTime()
+    reviewer_last_activity = graphene.DateTime()
 
 
 class StoryTranslationNode(graphene.ObjectType):

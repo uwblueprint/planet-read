@@ -22,7 +22,7 @@ import {
   MANAGE_TESTS_TABLE_DELETE_TEST_CONFIRMATION,
 } from "../../utils/Copy";
 import ConfirmationModal from "../utils/ConfirmationModal";
-import { generateSortFn } from "../../utils/Utils";
+import { generateSortFn, getStoryTestProgress } from "../../utils/Utils";
 import { StoryTranslationTest } from "../../APIClients/queries/StoryQueries";
 import {
   SoftDeleteStoryTranslationResponse,
@@ -48,6 +48,7 @@ const StoryTestsTable = ({
 }: StoryTestsTableProps) => {
   const [isAscendingName, setIsAscendingName] = useState(true);
   const [isAscendingDate, setIsAscendingDate] = useState(true);
+  const [isAscendingStage, setIsAscendingStage] = useState(true);
 
   const [confirmDeleteTranslation, setConfirmDeleteTranslation] =
     useState(false);
@@ -93,6 +94,14 @@ const StoryTestsTable = ({
       : reverseCompare - forwardCompare;
   };
 
+  const stageSort = (t1: StoryTranslationTest, t2: StoryTranslationTest) => {
+    const stageT1 = getStoryTestProgress(t1);
+    const stageT2 = getStoryTestProgress(t2);
+    return isAscendingStage
+      ? stageT1.localeCompare(stageT2)
+      : stageT2.localeCompare(stageT1);
+  };
+
   const sortDict: StoryTranslationTestsFieldSortDict = {
     name: {
       sortFn: generateSortFn<StoryTranslationTest>(
@@ -101,6 +110,11 @@ const StoryTestsTable = ({
       ),
       isAscending: isAscendingName,
       setIsAscending: setIsAscendingName,
+    },
+    stage: {
+      sortFn: stageSort,
+      isAscending: isAscendingStage,
+      setIsAscending: setIsAscendingStage,
     },
     date: {
       sortFn: dateSort,
@@ -143,22 +157,41 @@ const StoryTestsTable = ({
             }`}
           </Badge>
         </Td>
+        <Td>{getStoryTestProgress(storyTest)}</Td>
         <Td>
           {new Date(storyTest.translatorLastActivity).toLocaleDateString()}
         </Td>
         <Td>
-          <Button
-            borderRadius="8px"
-            colorScheme="blue"
-            size="secondary"
-            onClick={() =>
-              history.push(`/grade/${storyTest.storyId}/${storyTest.id}`)
-            }
-            width="110px"
-            marginRight="32px"
-          >
-            Grade
-          </Button>
+          {storyTest.stage === "PUBLISH" ? (
+            <Button
+              borderRadius="8px"
+              borderWidth="1px"
+              colorScheme="white"
+              size="secondary"
+              textColor="blue.100"
+              onClick={() =>
+                history.push(`/grade/${storyTest.storyId}/${storyTest.id}`)
+              }
+              width="110px"
+              marginRight="32px"
+            >
+              View Test
+            </Button>
+          ) : (
+            <Button
+              borderRadius="8px"
+              colorScheme="blue"
+              size="secondary"
+              onClick={() =>
+                history.push(`/grade/${storyTest.storyId}/${storyTest.id}`)
+              }
+              width="110px"
+              marginRight="32px"
+            >
+              Grade
+            </Button>
+          )}
+
           <IconButton
             aria-label={`Delete story test ${storyTest.id} for story ${storyTest.title}`}
             background="transparent"
@@ -190,6 +223,9 @@ const StoryTestsTable = ({
             isAscendingName ? "↑" : "↓"
           }`}</Th>
           <Th>LANGUAGE & LEVEL</Th>
+          <Th cursor="pointer" onClick={() => sort("stage")}>{`PROGRESS ${
+            isAscendingStage ? "↑" : "↓"
+          }`}</Th>
           <Th cursor="pointer" onClick={() => sort("date")}>{`DATE SUBMITTED ${
             isAscendingDate ? "↑" : "↓"
           }`}</Th>

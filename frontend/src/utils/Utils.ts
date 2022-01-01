@@ -1,4 +1,5 @@
 import { CommentResponse } from "../APIClients/queries/CommentQueries";
+import { StoryTranslationTest } from "../APIClients/queries/StoryQueries";
 import { AdditionalExperiences } from "../APIClients/queries/UserQueries";
 import { StoryAssignStage } from "../constants/Enums";
 
@@ -97,4 +98,14 @@ export const getMessageFromStoryAssignStage = (
     default:
       return "";
   }
+};
+
+export const getStoryTestProgress = (test: StoryTranslationTest): string => {
+  if (test.stage === "REVIEW") {
+    return test.reviewerLastActivity ? "In Review" : "Not Reviewed";
+    // eslint-disable-next-line no-else-return
+  } else if (test.stage === "PUBLISH") {
+    return "Reviewed";
+  }
+  return "Not Submitted";
 };

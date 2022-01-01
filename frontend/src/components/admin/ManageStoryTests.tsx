@@ -24,13 +24,14 @@ const ManageStoryTests = () => {
     parseInt(level || "", 10) || 0,
     convertTitleCaseToStage(stage || ""),
     searchText || "",
+    true,
   );
 
   const { data } = useQuery(query.string, {
     fetchPolicy: "cache-and-network",
     onCompleted: () => {
       const result = [...data[query.fieldName]];
-      setStoryTests(result.filter((test) => test.stage === "REVIEW"));
+      setStoryTests(result);
     },
   });
 
