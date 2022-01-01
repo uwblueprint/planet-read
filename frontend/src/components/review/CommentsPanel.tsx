@@ -5,8 +5,8 @@ import {
   CommentResponse,
   buildCommentsQuery,
 } from "../../APIClients/queries/CommentQueries";
+import CommentThread from "./CommentThread";
 import WIPComment from "./WIPComment";
-import ExistingComment from "./ExistingComment";
 
 export type CommentPanelProps = {
   storyTranslationId: number;
@@ -115,32 +115,37 @@ const CommentsPanel = ({
     if (comments.length > 0) {
       return (
         <Box>
-          {/* TODO: show correct placement of the WIPComment component once existing comment is displayed */}
-          {comments.map((comment: CommentResponse, i: number) => (
-            <ExistingComment
-              key={comment.id}
-              commentsStateIdx={i}
-              userName={
-                translatorId === comment.userId ? translatorName : reviewerName
-              }
-              comment={comment}
-              WIPLineIndex={commentLine}
-              updateCommentsAsResolved={updateCommentsAsResolved}
-              comments={comments}
-              setComments={setComments}
-              threadHeadMap={threadHeadMap}
-              updateThreadHeadMap={updateThreadHeadMap}
-            />
-          ))}
+          {comments.map(function (comment: CommentResponse, i: number) {
+            if (threadHeadMap[i]) {
+              return (
+                <CommentThread
+                  comments={comments}
+                  commentsIdx={i}
+                  key={comment.id}
+                  reviewerName={reviewerName}
+                  setComments={setComments}
+                  updateCommentsAsResolved={updateCommentsAsResolved}
+                  updateThreadHeadMap={updateThreadHeadMap}
+                  threadHeadMap={threadHeadMap}
+                  translatorId={translatorId}
+                  translatorName={translatorName}
+                />
+              );
+            }
+            return null;
+          })}
         </Box>
       );
     }
-    return (
-      <Text variant="comment">
-        Looks like there aren&apos;t any comments yet! Select the Comment button
-        above to begin leaving comments.
-      </Text>
-    );
+    if (commentLine <= 0) {
+      return (
+        <Text variant="comment">
+          Looks like there aren&apos;t any comments yet! Select the Comment
+          button above to begin leaving comments.
+        </Text>
+      );
+    }
+    return null;
   };
 
   const filterOptionsComponent = filterOptions.map((op) => (
@@ -186,12 +191,13 @@ const CommentsPanel = ({
       </Flex>
       {commentLine > 0 && (
         <WIPComment
-          WIPLineIndex={commentLine}
-          storyTranslationContentId={storyTranslationContentId}
-          setCommentLine={setCommentLine}
           comments={comments}
+          isReply={false}
+          setCommentLine={setCommentLine}
           setComments={setComments}
+          storyTranslationContentId={storyTranslationContentId}
           updateThreadHeadMap={updateThreadHeadMap}
+          WIPLineIndex={commentLine}
         />
       )}
       <CommentsList />
