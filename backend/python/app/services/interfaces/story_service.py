@@ -97,7 +97,9 @@ class IStoryService(ABC):
         pass
 
     @abstractmethod
-    def get_story_translation_tests(self, user, language, level, stage, story_title):
+    def get_story_translation_tests(
+        self, user, language, level, stage, story_title, submitted_only
+    ):
         """Return a list of story translation tests based on filters
 
         :param user: UserDTO
@@ -105,6 +107,7 @@ class IStoryService(ABC):
         :param level: level of story translation tests to filter by
         :param stage: stage of story translation tests to filter by
         :param story_title: story_title of story translation tests to filter by
+        :param submitted_only: indicates whether to return only tests that have been submitted
         :return: list of StoryTranslationTestResponseDTO's
         :rtype: list of StoryTranslationTestResponseDTO's
         """

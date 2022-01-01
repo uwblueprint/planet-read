@@ -118,6 +118,7 @@ class Query(graphene.ObjectType):
         level=graphene.Int(),
         stage=graphene.String(),
         story_title=graphene.String(),
+        submitted_only=graphene.Boolean(),
     )
     story_translations_by_user = graphene.Field(
         graphene.List(StoryTranslationResponseDTO),
@@ -214,10 +215,17 @@ class Query(graphene.ObjectType):
         )
 
     def resolve_story_translation_tests(
-        root, info, language=None, level=None, stage=None, story_title=None, **kwargs
+        root,
+        info,
+        language=None,
+        level=None,
+        stage=None,
+        story_title=None,
+        submitted_only=False,
+        **kwargs
     ):
         return resolve_story_translation_tests(
-            root, info, language, level, stage, story_title
+            root, info, language, level, stage, story_title, submitted_only
         )
 
     def resolve_story_translation_by_id(root, info, id):

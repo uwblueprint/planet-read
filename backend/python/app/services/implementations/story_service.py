@@ -4,6 +4,7 @@ from datetime import datetime, timedelta
 
 import docx
 from flask import current_app
+from sqlalchemy import or_
 from sqlalchemy.orm import aliased
 from werkzeug.utils import secure_filename
 
@@ -320,9 +321,17 @@ class StoryService(IStoryService):
         level=None,
         stage=None,
         story_title=None,
+        submitted_only=False,
     ):
         try:
             filters = [StoryTranslation.is_test]
+            if submitted_only:
+                filters.append(
+                    or_(
+                        StoryTranslation.stage == "REVIEW",
+                        StoryTranslation.stage == "PUBLISH",
+                    )
+                )
             if language is not None:
                 filters.append(StoryTranslation.language == language)
             if stage is not None:

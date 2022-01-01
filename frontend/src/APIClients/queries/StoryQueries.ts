@@ -348,6 +348,7 @@ export type StoryTranslationTest = {
   testResult: StoryTestResult | null;
   testFeedback: string;
   translatorLastActivity: Date;
+  reviewerLastActivity: Date | null;
 };
 
 export const buildStoryTranslationTestsQuery = (
@@ -355,11 +356,13 @@ export const buildStoryTranslationTestsQuery = (
   level?: number,
   stage?: string,
   storyTitle?: string,
+  submittedOnly?: boolean,
 ) => {
   let queryParams = language ? `language: "${language}", ` : "";
   queryParams += level ? `level: ${level}, ` : "";
   queryParams += stage ? `stage: "${stage}", ` : "";
   queryParams += storyTitle ? `storyTitle: "${storyTitle}", ` : "";
+  queryParams += submittedOnly ? `submittedOnly: true, ` : "";
   queryParams = queryParams ? `(${queryParams})` : "";
 
   return {
@@ -381,6 +384,7 @@ export const buildStoryTranslationTestsQuery = (
           testResult
           testFeedback
           translatorLastActivity
+          reviewerLastActivity
         }
       }
     `,
