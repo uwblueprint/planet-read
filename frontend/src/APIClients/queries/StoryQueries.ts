@@ -251,6 +251,7 @@ export type StoryTranslation = {
   reviewerName: string | null;
   numTranslatedLines: number;
   numApprovedLines: number;
+  numContentLines: number;
   translatorLastActivity: string | null;
   reviewerLastActivity: string | null;
 };
@@ -298,6 +299,9 @@ export const buildStoryTranslationsQuery = (
               reviewerName
               translatorLastActivity
               reviewerLastActivity
+              numTranslatedLines
+              numApprovedLines
+              numContentLines
             }
           }
           pageInfo {
@@ -324,6 +328,9 @@ export const GET_STORY_TRANSLATIONS_BY_USER = (userId: number) => gql`
       stage
       translatorLastActivity
       reviewerLastActivity
+      numTranslatedLines
+      numApprovedLines
+      numContentLines
     }
   }
 `;

@@ -26,7 +26,7 @@ import {
   UNASSIGN_REVIEWER,
 } from "../../APIClients/mutations/StoryMutations";
 import { getLevelVariant } from "../../utils/StatusUtils";
-import convertStageTitleCase from "../../utils/StageUtils";
+import { getStoryTranslationProgress } from "../../utils/StageUtils";
 import { convertLanguageTitleCase } from "../../utils/LanguageUtils";
 import { ApprovedLanguagesMap, generateSortFn } from "../../utils/Utils";
 import ConfirmationModal from "../utils/ConfirmationModal";
@@ -328,7 +328,7 @@ const AssignedStoryTranslationsTable = ({
           translation.level
         }`}</Badge>
       </Td>
-      <Td>{convertStageTitleCase(translation.stage)}</Td>
+      <Td>{getStoryTranslationProgress(translation)}</Td>
       <Td>{lastEditedDate(translation)?.toLocaleDateString?.()}</Td>
       {isAdmin && (
         <Td>

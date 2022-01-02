@@ -152,12 +152,18 @@ const TableFilter = ({
         </Box>
         <Box marginLeft="15px">
           <Button
-            disabled={language == null && level == null && searchText == null}
+            disabled={
+              language == null &&
+              level == null &&
+              searchText == null &&
+              (!useStage || stage == null)
+            }
             colorScheme="blue"
             size="secondary"
             onClick={() => {
               setLanguage(null);
               setLevel(null);
+              setStage?.(null);
               setSearchText(null);
             }}
           >

@@ -22,7 +22,7 @@ import {
   convertLanguageTitleCase,
 } from "../../utils/LanguageUtils";
 import { getLevelVariant } from "../../utils/StatusUtils";
-import convertStageTitleCase from "../../utils/StageUtils";
+import { convertStageTitleCase } from "../../utils/StageUtils";
 import {
   GET_STORY_CONTENTS,
   GET_STORY_AND_TRANSLATION_CONTENTS,

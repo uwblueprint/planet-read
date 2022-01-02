@@ -18,7 +18,7 @@ import {
 } from "@chakra-ui/react";
 import { StoryTranslation } from "../../APIClients/queries/StoryQueries";
 import { convertLanguageTitleCase } from "../../utils/LanguageUtils";
-import convertStageTitleCase from "../../utils/StageUtils";
+import { getStoryTranslationProgress } from "../../utils/StageUtils";
 import { getLevelVariant } from "../../utils/StatusUtils";
 import ConfirmationModal from "../utils/ConfirmationModal";
 import {
@@ -136,7 +136,7 @@ const StoryTranslationsTable = ({
             )} | Level ${storyTranslationObj?.level}`}
           </Badge>
         </Td>
-        <Td>{convertStageTitleCase(storyTranslationObj?.stage)}</Td>
+        <Td>{getStoryTranslationProgress(storyTranslationObj)}</Td>
         <Td>
           <Link isExternal href={`#/user/${storyTranslationObj?.translatorId}`}>
             {storyTranslationObj?.translatorName}
