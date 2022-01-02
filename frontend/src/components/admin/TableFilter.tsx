@@ -15,7 +15,6 @@ import {
   Tooltip,
 } from "@chakra-ui/react";
 import DatePicker from "react-datepicker";
-import { languageOptions } from "../../constants/Languages";
 import { levelOptions } from "../../constants/Levels";
 import { stageOptions } from "../../constants/Stage";
 import { FILTER_TOOL_TIP_COPY } from "../../utils/Copy";
@@ -182,7 +181,7 @@ const TableFilter = ({
               startDate={startDate}
               endDate={endDate}
               selectsRange
-              placeholderText="Select a date"
+              placeholderText="Select a date range"
             />
           </Box>
         )}

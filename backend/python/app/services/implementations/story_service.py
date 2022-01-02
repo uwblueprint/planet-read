@@ -42,11 +42,11 @@ class StoryService(IStoryService):
             if (end_date and start_date) and end_date < start_date:
                 raise Exception("Invalid filter: end_date cannot be before start_date.")
             if story_title is not None:
-                filters.append(Story.title.like(f"%{story_title}%"))
+                filters.append(StoryAll.title.like(f"%{story_title}%"))
             if start_date is not None:
-                filters.append(Story.date_uploaded >= start_date)
+                filters.append(StoryAll.date_uploaded >= start_date)
             if end_date is not None:
-                filters.append(Story.date_uploaded <= end_date)
+                filters.append(StoryAll.date_uploaded <= end_date)
             return [
                 story.to_dict(include_relationships=True)
                 for story in StoryAll.query.filter(*filters).all()
