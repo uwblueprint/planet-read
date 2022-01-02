@@ -35,6 +35,7 @@ export type StoryCardProps = {
   isMyTest: boolean;
   translatorId?: number;
   reviewerId?: number;
+  stage?: string;
 };
 
 const StoryCard = ({

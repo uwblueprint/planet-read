@@ -185,6 +185,7 @@ export const buildHomePageStoriesQuery = (
                 translatorId
                 reviewerId
                 language
+                stage
                 ${STORY_FIELDS}
               }
             }
