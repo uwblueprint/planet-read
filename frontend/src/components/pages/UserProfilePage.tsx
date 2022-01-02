@@ -161,7 +161,7 @@ const UserProfilePage = () => {
             Last active on
           </Heading>
           <Text>TODO</Text>
-          {isAdmin && (
+          {isAdmin && resumeId && (
             <>
               <Heading size="sm" marginTop="36px">
                 User Files
