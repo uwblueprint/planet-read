@@ -1,6 +1,7 @@
+import { StoryTranslation } from "../APIClients/queries/StoryQueries";
 import { convertStringTitleCase } from "./Utils";
 
-function convertStageTitleCase(stage: string) {
+export const convertStageTitleCase = (stage: string) => {
   switch (stage) {
     case "TRANSLATE":
       return "In Translation";
@@ -11,9 +12,9 @@ function convertStageTitleCase(stage: string) {
     default:
       return convertStringTitleCase(stage);
   }
-}
+};
 
-function convertTitleCaseToStage(stage: string) {
+export const convertTitleCaseToStage = (stage: string) => {
   switch (stage) {
     case "In Translation":
       return "TRANSLATE";
@@ -24,5 +25,20 @@ function convertTitleCaseToStage(stage: string) {
     default:
       return stage;
   }
-}
-export { convertStageTitleCase as default, convertTitleCaseToStage };
+};
+
+export const getStoryTranslationProgress = (translation: StoryTranslation) => {
+  const stage = convertStageTitleCase(translation.stage);
+  if (translation.stage === "PUBLISH") {
+    return stage;
+  }
+
+  const numProgressLines =
+    translation.stage === "TRANSLATE"
+      ? translation.numTranslatedLines
+      : translation.numApprovedLines;
+
+  const progress = (numProgressLines / translation.numContentLines) * 100;
+  const percentage = Math.round(Number.isNaN(progress) ? 0 : progress);
+  return `${stage} (${percentage}%)`;
+};

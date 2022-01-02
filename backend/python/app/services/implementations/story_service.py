@@ -21,7 +21,6 @@ from ...models.file import File
 from ...models.story import Story
 from ...models.story_all import StoryAll
 from ...models.story_content import StoryContent
-from ...models.story_content_all import StoryContentAll
 from ...models.story_translation import StoryTranslation
 from ...models.story_translation_all import StoryTranslationAll
 from ...models.story_translation_content import StoryTranslationContent
@@ -216,13 +215,13 @@ class StoryService(IStoryService):
         self, user_id, is_translator=None, language=None, level=None
     ):
         if is_translator is None:
-            role_filter = (StoryTranslation.translator_id == user_id) | (
-                StoryTranslation.reviewer_id == user_id
+            role_filter = (StoryTranslationAll.translator_id == user_id) | (
+                StoryTranslationAll.reviewer_id == user_id
             )
         elif is_translator:
-            role_filter = StoryTranslation.translator_id == user_id
+            role_filter = StoryTranslationAll.translator_id == user_id
         else:
-            role_filter = StoryTranslation.reviewer_id == user_id
+            role_filter = StoryTranslationAll.reviewer_id == user_id
         return self.get_story_translations(
             language=language, level=level, role_filter=role_filter
         )
@@ -237,11 +236,16 @@ class StoryService(IStoryService):
         role_filter=None,
     ):
         try:
-            filters = []
+            filters = [
+                StoryTranslation.is_test == False,
+                StoryTranslationAll.is_test == False,
+            ]
             if language is not None:
                 filters.append(StoryTranslation.language == language)
+                filters.append(StoryTranslationAll.language == language)
             if stage is not None:
                 filters.append(StoryTranslation.stage == stage)
+                filters.append(StoryTranslationAll.stage == stage)
             if level is not None:
                 filters.append(Story.level == level)
             if story_title is not None:
@@ -250,8 +254,7 @@ class StoryService(IStoryService):
                 filters.append(role_filter)
             if story_id is not None:
                 filters.append(StoryTranslation.story_id == story_id)
-
-            filters.append(StoryTranslation.is_test == False)
+                filters.append(StoryTranslationAll.story_id == story_id)
 
             stories = (
                 Story.query.join(
@@ -262,23 +265,30 @@ class StoryService(IStoryService):
                 .order_by(Story.id)
                 .all()
             )
+
             translator = aliased(User)
             reviewer = aliased(User)
 
             story_translation_data = (
-                db.session.query(StoryTranslation, translator, reviewer)
-                .join(Story, Story.id == StoryTranslation.story_id)
+                db.session.query(
+                    StoryTranslationAll,
+                    translator,
+                    reviewer,
+                )
+                .join(Story, Story.id == StoryTranslationAll.story_id)
                 .join(
                     translator,
-                    StoryTranslation.translator_id == translator.id,
+                    StoryTranslationAll.translator_id == translator.id,
                     isouter=True,
                 )
                 .join(
                     reviewer,
-                    StoryTranslation.reviewer_id == reviewer.id,
+                    StoryTranslationAll.reviewer_id == reviewer.id,
                     isouter=True,
                 )
+                .join("translation_contents")
                 .filter(*filters)
+                .filter(StoryTranslationAll.is_deleted == False)
                 .order_by(Story.id)
                 .all()
             )
@@ -289,6 +299,9 @@ class StoryService(IStoryService):
                 story_translation, translator, reviewer = story_translation_data[i]
                 story = next(
                     filter(lambda x: x.id == story_translation.story_id, stories)
+                )
+                translation_contents = list(
+                    map(lambda x: x.to_dict(), story_translation.translation_contents)
                 )
 
                 story_translations.append(
@@ -306,6 +319,13 @@ class StoryService(IStoryService):
                             if reviewer
                             else None
                         ),
+                        "num_translated_lines": self._get_num_translated_lines(
+                            translation_contents
+                        ),
+                        "num_approved_lines": self._get_num_approved_lines(
+                            translation_contents
+                        ),
+                        "num_content_lines": len(translation_contents),
                     }
                 )
             return story_translations

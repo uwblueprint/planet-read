@@ -124,6 +124,9 @@ class StoryTranslationNode(graphene.ObjectType):
     reviewer_name = graphene.String()
     translator_last_activity = graphene.DateTime()
     reviewer_last_activity = graphene.DateTime()
+    num_translated_lines = graphene.Int()
+    num_approved_lines = graphene.Int()
+    num_content_lines = graphene.Int()
 
     class Meta:
         interfaces = (graphene.relay.Node,)
