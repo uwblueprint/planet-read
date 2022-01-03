@@ -33,8 +33,8 @@ def test_stories(app, db, client):
     result = client.execute(GET_STORIES)
     returned_arr = result["data"]["stories"]
 
-    stories_db = StoryAll.query.all()
-    story_contents_db = StoryContentAll.query.all()
+    stories_db = Story.query.all()
+    story_contents_db = StoryContent.query.all()
     story_contents_db_dict = {sc.id: sc for sc in story_contents_db}
     assert len(returned_arr) == len(stories_db)
 
