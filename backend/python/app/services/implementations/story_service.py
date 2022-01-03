@@ -92,6 +92,15 @@ class StoryService(IStoryService):
             self.logger.error(str(error))
             raise error
 
+    def process_story(self, file):
+        try:
+            story_contents = self._read_doc(file["path"])
+            return story_contents
+
+        except Exception as error:
+            self.logger.error(str(error))
+            raise error
+
     def export_story_translation(self, id):
         try:
             story_details = self.get_story_translation(id=id)

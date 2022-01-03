@@ -242,3 +242,18 @@ class IStoryService(ABC):
         Soft delete a story by setting is_deleted=True
         :param id: id of the story
         """
+
+    @abstractmethod
+    def import_story(self, details, file):
+        """
+        Import story from word doc
+        :param detail: details of story
+        :param file: file information
+        """
+
+    @abstractmethod
+    def process_story(self, file):
+        """
+        Process story from word doc for preview
+        :param file: file information
+        """
