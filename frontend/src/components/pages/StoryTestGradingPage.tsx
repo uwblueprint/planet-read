@@ -1,6 +1,6 @@
 import React, { useContext, useEffect, useState } from "react";
 import { useQuery } from "@apollo/client";
-import { Box, Text, Divider, Flex, Button, Tooltip } from "@chakra-ui/react";
+import { Box, Text, Divider, Flex, Button } from "@chakra-ui/react";
 import { useParams, Redirect, useHistory } from "react-router-dom";
 
 import AuthContext from "../../contexts/AuthContext";
@@ -12,7 +12,6 @@ import { GET_STORY_AND_TRANSLATION_CONTENTS } from "../../APIClients/queries/Sto
 import FontSizeSlider from "../translation/FontSizeSlider";
 import { convertLanguageTitleCase } from "../../utils/LanguageUtils";
 import Header from "../navigation/Header";
-import { REVIEW_PAGE_TOOL_TIP_COPY } from "../../utils/Copy";
 
 import AssignTestGradeModal from "../onboarding/AssignTestGradeModal";
 import FailUserModal from "../onboarding/FailUserModal";
@@ -44,6 +43,13 @@ const StoryTestGradingPage = () => {
   const [numApprovedLines, setNumApprovedLines] = useState(0);
   const [numGradedLines, setNumGradedLines] = useState(0);
   const [score, setScore] = useState(0);
+  const [defaultTranslatorLevel, setDefaultTranslatorLevel] = useState<
+    number | null
+  >(null);
+  const [defaultReviewerLevel, setDefaultReviewerLevel] = useState<
+    number | null
+  >(null);
+  const [defaultTestFeedback, setDefaultTestFeedback] = useState<string>("");
 
   const [fontSize, setFontSize] = useState<string>("12px");
   const [title, setTitle] = useState<string>("");
@@ -101,7 +107,6 @@ const StoryTestGradingPage = () => {
         if (!data.storyTranslationById.isTest) {
           history.push("/404");
         }
-
         const storyContent = data.storyById.contents;
         const translatedContent = data.storyTranslationById.translationContents;
         setLevel(data.storyTranslationById.level);
@@ -109,6 +114,15 @@ const StoryTestGradingPage = () => {
         setStage(data.storyTranslationById.stage);
         setTitle(data.storyById.title);
         setNumApprovedLines(data.storyTranslationById.numApprovedLines);
+        if (JSON.parse(data.storyTranslationById.testResult)) {
+          setDefaultTranslatorLevel(
+            JSON.parse(data.storyTranslationById.testResult).translate,
+          );
+          setDefaultReviewerLevel(
+            JSON.parse(data.storyTranslationById.testResult).review,
+          );
+        }
+        setDefaultTestFeedback(data.storyTranslationById.testFeedback);
 
         const contentArray: StoryLine[] = [];
         storyContent.forEach(({ content, lineIndex }: Content) => {
@@ -196,39 +210,32 @@ const StoryTestGradingPage = () => {
                 fontSize={fontSize}
               />
             </Flex>
-
             <Flex marginBottom="10px">
-              <Tooltip
-                hasArrow
-                label={REVIEW_PAGE_TOOL_TIP_COPY}
-                isDisabled={stage === "REVIEW"}
-              >
-                <Box>
-                  <Button
-                    colorScheme="red"
-                    variant="outline"
-                    disabled={stage !== "REVIEW"}
-                    onClick={openFailUserModal}
-                  >
-                    Fail User
-                  </Button>
-                </Box>
-              </Tooltip>
-              <Tooltip
-                hasArrow
-                label={REVIEW_PAGE_TOOL_TIP_COPY}
-                isDisabled={stage === "REVIEW"}
-              >
+              {stage === "REVIEW" && (
+                <>
+                  <Box>
+                    <Button
+                      colorScheme="red"
+                      variant="outline"
+                      onClick={openFailUserModal}
+                    >
+                      Fail User
+                    </Button>
+                  </Box>
+                  <Box marginLeft="24px" marginRight="20px">
+                    <Button colorScheme="blue" onClick={openAssignGradeModal}>
+                      Assign Level{" "}
+                    </Button>
+                  </Box>
+                </>
+              )}
+              {stage === "PUBLISH" && (
                 <Box marginLeft="24px" marginRight="20px">
-                  <Button
-                    colorScheme="blue"
-                    disabled={stage !== "REVIEW"}
-                    onClick={openAssignGradeModal}
-                  >
-                    Assign Level{" "}
+                  <Button colorScheme="blue" onClick={openAssignGradeModal}>
+                    View Results
                   </Button>
                 </Box>
-              </Tooltip>
+              )}
             </Flex>
           </Flex>
         </Flex>
@@ -245,6 +252,10 @@ const StoryTestGradingPage = () => {
           score={score}
           storyLength={translatedStoryLines.length}
           storyTranslationId={storyTranslationId}
+          isDisabled={stage === "PUBLISH"}
+          defaultTranslatorLevel={defaultTranslatorLevel}
+          defaultReviewerLevel={defaultReviewerLevel}
+          defaultTestFeedback={defaultTestFeedback}
         />
       </Flex>
     </Flex>

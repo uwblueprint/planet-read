@@ -444,6 +444,8 @@ class StoryService(IStoryService):
                     StoryTranslation.stage.label("stage"),
                     StoryTranslation.translator_id.label("translator_id"),
                     StoryTranslation.reviewer_id.label("reviewer_id"),
+                    StoryTranslation.test_result.label("test_result"),
+                    StoryTranslation.test_feedback.label("test_feedback"),
                     StoryTranslationContent.id.label("content_id"),
                     StoryTranslationContent.line_index.label("line_index"),
                     StoryTranslationContent.status.label("status"),
