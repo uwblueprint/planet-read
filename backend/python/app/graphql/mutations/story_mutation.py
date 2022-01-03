@@ -10,6 +10,7 @@ from ..service import services
 from ..types.story_type import (
     CreateStoryTranslationRequestDTO,
     CreateStoryTranslationResponseDTO,
+    StoryContentsResponseDTO,
     StoryRequestDTO,
     StoryResponseDTO,
     StoryTranslationContentRequestDTO,
@@ -292,6 +293,25 @@ class ImportStory(graphene.Mutation):
             new_story = services["story"].import_story(story_details, resp)
             services["file"].delete_file(resp["path"])
             return ImportStory(story=new_story)
+        except Exception as e:
+            error_message = getattr(e, "message", None)
+            raise Exception(error_message if error_message else str(e))
+
+
+class ProcessStory(graphene.Mutation):
+    class Arguments:
+        story_file = Upload(required=True)
+
+    story_contents = graphene.Field(lambda: graphene.List(StoryContentsResponseDTO))
+
+    def mutate(root, info, story_file):
+        try:
+            if not services["file"].validate_file(story_file.filename, "docx"):
+                raise Exception("File must be .docx")
+            resp = services["file"].create_file(story_file)
+            new_story_contents = services["story"].process_story(resp)
+            services["file"].delete_file(resp["path"])
+            return ProcessStory(story_contents=new_story_contents)
         except Exception as e:
             error_message = getattr(e, "message", None)
             raise Exception(error_message if error_message else str(e))

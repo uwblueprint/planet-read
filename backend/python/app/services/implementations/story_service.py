@@ -96,6 +96,27 @@ class StoryService(IStoryService):
             self.logger.error(str(error))
             raise error
 
+    def process_story(self, story_file):
+        try:
+            story_contents = self._read_doc(story_file["path"])
+
+            new_contents = [
+                {
+                    "id": i,
+                    "story_id": 0,
+                    "line_index": i,
+                    "content": line,
+                    "is_deleted": False,
+                }
+                for i, line in enumerate(story_contents)
+            ]
+
+            return new_contents
+
+        except Exception as error:
+            self.logger.error(str(error))
+            raise error
+
     def export_story_translation(self, id):
         try:
             story_details = self.get_story_translation(id=id)
