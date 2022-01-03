@@ -35,18 +35,36 @@ export type UpdateUserApprovedLanguagesResponse = {
   };
 };
 
-export const UPDATE_ME = gql`
-  mutation UpdateMe($userData: UpdateUserDTO!) {
+export const COMPLETE_SIGN_UP = gql`
+  mutation CompleteSignUp(
+    $userData: UpdateUserDTO!
+    $userId: ID!
+    $level: Int!
+    $language: String!
+  ) {
     updateMe(user: $userData) {
       user {
+        id
+      }
+    }
+
+    createStoryTranslationTest(
+      userId: $userId
+      level: $level
+      language: $language
+    ) {
+      story {
         id
       }
     }
   }
 `;
 
-export type UpdateMeResponse = {
+export type CompleteSignUpResponse = {
   user: {
+    id: number;
+  };
+  story: {
     id: number;
   };
 };
