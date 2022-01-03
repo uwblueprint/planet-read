@@ -4,8 +4,8 @@ import { Box, Button, Flex } from "@chakra-ui/react";
 import Header from "../navigation/Header";
 import UserProfileForm from "../userProfile/UserProfileForm";
 import {
-  UPDATE_ME,
-  UpdateMeResponse,
+  COMPLETE_SIGN_UP,
+  CompleteSignUpResponse,
 } from "../../APIClients/mutations/UserMutations";
 import AuthContext from "../../contexts/AuthContext";
 
@@ -18,11 +18,12 @@ const CompleteProfilePage = () => {
 
   const [name, setFullName] = useState(fullName);
   const [email, setEmail] = useState(authenticatedUser!!.email);
+  const [language, setLanguage] = useState("");
   const [educationalQualification, setEducationalQualification] = useState("");
   const [languageExperience, setLanguageExperience] = useState("");
-  const [updateMe] = useMutation<{
-    response: UpdateMeResponse;
-  }>(UPDATE_ME);
+  const [completeSignUp] = useMutation<{
+    response: CompleteSignUpResponse;
+  }>(COMPLETE_SIGN_UP);
 
   const onSubmitClick = async () => {
     try {
@@ -38,8 +39,13 @@ const CompleteProfilePage = () => {
         email,
         additionalExperiences,
       };
-      await updateMe({
-        variables: { userData },
+      await completeSignUp({
+        variables: {
+          userData,
+          userId: authenticatedUser!!.id,
+          level: 2,
+          language,
+        },
       });
       window.location.href = `#/?welcome=true`;
     } catch (err) {
@@ -56,6 +62,7 @@ const CompleteProfilePage = () => {
           email={email}
           setFullName={setFullName}
           setEmail={setEmail}
+          setLanguage={setLanguage}
           setEducationalQualification={setEducationalQualification}
           setLanguageExperience={setLanguageExperience}
         />

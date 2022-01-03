@@ -61,6 +61,7 @@ const UserProfilePage = () => {
   const [role, setRole] = useState<string>("");
   const [resumeId, setResumeId] = useState<number | null>(null);
   /* eslint-disable */
+  const [language, setLanguage] = useState<string>("");
   const [educationalQualification, setEducationalQualification] =
     useState<string>("");
   const [languageExperience, setLanguageExperience] = useState<string>("");
@@ -187,6 +188,7 @@ const UserProfilePage = () => {
               email={email}
               setFullName={setFullName}
               setEmail={setEmail}
+              setLanguage={setLanguage}
               setEducationalQualification={setEducationalQualification}
               setLanguageExperience={setLanguageExperience}
             />

@@ -23,6 +23,7 @@ export type UserProfileFormProps = {
   email: string;
   setFullName: (name: string) => void;
   setEmail: (email: string) => void;
+  setLanguage: (language: string) => void;
   setEducationalQualification: (email: string) => void;
   setLanguageExperience: (email: string) => void;
 };
@@ -33,6 +34,7 @@ const UserProfileForm = ({
   email,
   setFullName,
   setEmail,
+  setLanguage,
   setEducationalQualification,
   setLanguageExperience,
 }: UserProfileFormProps) => (
@@ -93,6 +95,7 @@ const UserProfileForm = ({
             <Select
               placeholder="Select language"
               options={languageOptions}
+              onChange={(option: any) => setLanguage(option?.value || "")}
               getOptionLabel={(option: any) => `
                 ${convertLanguageTitleCase(option.value || "")}
               `}
