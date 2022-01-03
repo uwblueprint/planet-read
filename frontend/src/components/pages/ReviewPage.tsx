@@ -220,7 +220,7 @@ const ReviewPage = () => {
             <Tooltip
               hasArrow
               label={REVIEW_PAGE_TOOL_TIP_COPY}
-              isDisabled={isDisabled}
+              isDisabled={!isDisabled}
             >
               <Box>
                 <Button

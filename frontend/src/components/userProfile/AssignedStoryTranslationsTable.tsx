@@ -294,13 +294,10 @@ const AssignedStoryTranslationsTable = ({
 
   const generateStoryTranslationLink = (translation: StoryTranslation) => {
     const suffix = `${translation.storyId}/${translation.storyTranslationId}`;
-    if (isAdmin) {
-      return `#/story/${translation.storyId}`;
+    if (isAdmin || getRole(translation) === "Reviewer") {
+      return `#/review/${suffix}`;
     }
-    if (getRole(translation) === "Translator") {
-      return `#/translation/${suffix}`;
-    }
-    return `#/review/${suffix}`;
+    return `#/translation/${suffix}`;
   };
 
   const lastEditedDate = (translation: StoryTranslation): Date | null => {
