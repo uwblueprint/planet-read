@@ -3,6 +3,7 @@ from base64 import b64encode
 from datetime import datetime, timedelta
 
 import docx
+from docx.enum.style import WD_STYLE_TYPE
 from flask import current_app
 from sqlalchemy import or_
 from sqlalchemy.orm import aliased
@@ -97,7 +98,18 @@ class StoryService(IStoryService):
         try:
             story_details = self.get_story_translation(id=id)
             doc = docx.Document()
-            doc.add_heading(story_details["title"])
+            doc.add_heading(story_details["title"], 0)
+            styles = doc.styles
+            bold_style = styles.add_style("Bold", WD_STYLE_TYPE.PARAGRAPH)
+            bold_style.font.bold = True
+            doc.add_paragraph(
+                f"Translator: {story_details['translator_name']}", style="Bold"
+            )
+            doc.add_paragraph(
+                f"Reviewer: {story_details['reviewer_name']}", style="Bold"
+            )
+            doc.add_paragraph(f"Language: {story_details['language']}", style="Bold")
+            doc.add_paragraph(f"Level: {story_details['level']}", style="Bold")
 
             for line in story_details["translation_contents"]:
                 doc.add_paragraph(line["translation_content"])
