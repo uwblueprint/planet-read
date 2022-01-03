@@ -11,6 +11,8 @@ import {
   Td,
   IconButton,
 } from "@chakra-ui/react";
+import { useMutation } from "@apollo/client";
+
 import {
   MANAGE_STORY_TABLE_DELETE_STORY_BUTTON,
   MANAGE_STORY_TABLE_DELETE_STORY_CONFIRMATION,
@@ -18,6 +20,10 @@ import {
 import ConfirmationModal from "../utils/ConfirmationModal";
 import { generateSortFn } from "../../utils/Utils";
 import { Story } from "../../APIClients/queries/StoryQueries";
+import {
+  SOFT_DELETE_STORY,
+  SoftDeleteStoryResponse,
+} from "../../APIClients/mutations/StoryMutations";
 
 interface StoriesFieldSortDict {
   [field: string]: {
@@ -37,7 +43,11 @@ const StoriesTable = ({ stories, setStories }: StoriesTableProps) => {
   const [isAscendingDate, setIsAscendingDate] = useState(true);
 
   const [confirmDeleteStory, setConfirmDeleteStory] = useState(false);
-  const [idToDelete, setIdToDelete] = useState(0); // eslint-disable-line
+  const [idToDelete, setIdToDelete] = useState(0);
+
+  const [softDeleteStory] = useMutation<{
+    softDeleteStory: SoftDeleteStoryResponse;
+  }>(SOFT_DELETE_STORY);
 
   const closeModal = () => {
     setIdToDelete(0);
@@ -50,9 +60,16 @@ const StoriesTable = ({ stories, setStories }: StoriesTableProps) => {
   };
 
   const callSoftDeleteStoryMutation = async () => {
-    // TODO: call soft delete mutation once implemented
-    closeModal();
-    window.location.reload();
+    try {
+      await softDeleteStory({
+        variables: {
+          id: idToDelete,
+        },
+      });
+      window.location.reload();
+    } catch (error) {
+      window.alert(`Error occurred, please try again. Error: ${error}`);
+    }
   };
 
   /*
@@ -142,7 +159,7 @@ const StoriesTable = ({ stories, setStories }: StoriesTableProps) => {
         <ConfirmationModal
           confirmation={confirmDeleteStory}
           onClose={closeModal}
-          onConfirmationClick={callSoftDeleteStoryMutation}
+          onConfirmationClick={() => callSoftDeleteStoryMutation()}
           confirmationMessage={MANAGE_STORY_TABLE_DELETE_STORY_CONFIRMATION}
           buttonMessage={MANAGE_STORY_TABLE_DELETE_STORY_BUTTON}
         />

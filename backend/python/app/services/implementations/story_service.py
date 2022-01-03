@@ -39,7 +39,9 @@ class StoryService(IStoryService):
         # Story is a SQLAlchemy model, we can use convenient methods provided
         # by SQLAlchemy like query.all() to query the data
         return [
-            story.to_dict(include_relationships=True) for story in StoryAll.query.all()
+            story.to_dict(include_relationships=True)
+            for story in StoryAll.query.all()
+            if not story.is_deleted
         ]
 
     def get_story(self, id):
