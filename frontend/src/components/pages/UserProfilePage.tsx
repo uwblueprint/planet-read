@@ -60,6 +60,7 @@ const UserProfilePage = () => {
   const [email, setEmail] = useState<string>("");
   const [role, setRole] = useState<string>("");
   const [resumeId, setResumeId] = useState<number | null>(null);
+  // TODO: remove eslint-disable after page is functional
   /* eslint-disable */
   const [language, setLanguage] = useState<string>("");
   const [educationalQualification, setEducationalQualification] =
