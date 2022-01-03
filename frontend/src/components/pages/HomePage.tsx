@@ -14,6 +14,7 @@ import Header from "../navigation/Header";
 import { buildHomePageStoriesQuery } from "../../APIClients/queries/StoryQueries";
 import { parseApprovedLanguages } from "../../utils/Utils";
 import useQueryParams from "../../utils/hooks/useQueryParams";
+import MyWorkFilter, { StoriesFilterFn } from "../homepage/MyWorkFilter";
 
 enum HomepageOption {
   MyStories = 0,
@@ -62,8 +63,17 @@ const HomePage = () => {
   const [isTranslator, setIsTranslator] = useState<boolean>(true);
   const [level, setLevel] = useState<number>(1);
   const [stories, setStories] = useState<StoryCardProps[] | null>(null);
+  const [storiesFilter, setStoriesFilter] = useState<StoriesFilterFn | null>(
+    null,
+  );
 
   const [showScrollToTop, setShowScrollToTop] = useState(false);
+
+  useEffect(() => {
+    if (pageOption !== HomepageOption.MyStories) {
+      setStoriesFilter(null);
+    }
+  }, [pageOption]);
 
   useEffect(() => {
     const index = getPageOptionFromURL();
@@ -140,17 +150,21 @@ const HomePage = () => {
       <Header />
       <Divider />
       <Flex direction="row">
-        <Filter
-          approvedLanguagesTranslation={approvedLanguagesTranslation}
-          approvedLanguagesReview={approvedLanguagesReview}
-          level={level}
-          setLevel={setLevel}
-          language={language}
-          setLanguage={setLanguage}
-          role={isTranslator}
-          setIsTranslator={setIsTranslator}
-          isDisabled={pageOption !== HomepageOption.BrowseStories}
-        />
+        {pageOption === HomepageOption.MyStories ? (
+          <MyWorkFilter setFilter={setStoriesFilter} />
+        ) : (
+          <Filter
+            approvedLanguagesTranslation={approvedLanguagesTranslation}
+            approvedLanguagesReview={approvedLanguagesReview}
+            level={level}
+            setLevel={setLevel}
+            language={language}
+            setLanguage={setLanguage}
+            role={isTranslator}
+            setIsTranslator={setIsTranslator}
+            isDisabled={pageOption !== HomepageOption.BrowseStories}
+          />
+        )}
         <Flex
           direction="column"
           alignItems="center"
@@ -168,7 +182,9 @@ const HomePage = () => {
             value={tabHeaderOptions[pageOption]}
           />
           <StoryList
-            stories={stories}
+            stories={
+              storiesFilter ? stories?.filter(storiesFilter) ?? [] : stories
+            }
             displayMyStories={pageOption === HomepageOption.MyStories}
             displayMyTests={pageOption === HomepageOption.MyTests}
           />
