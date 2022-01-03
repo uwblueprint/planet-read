@@ -242,3 +242,10 @@ class IStoryService(ABC):
         Soft delete a story by setting is_deleted=True
         :param id: id of the story
         """
+
+    @abstractmethod
+    def get_languages(self):
+        """
+        Get a list of languages currently used in the platform
+        """
+        pass
