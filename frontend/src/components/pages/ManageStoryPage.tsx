@@ -198,7 +198,6 @@ const ManageStoryPage = () => {
             storyTranslationSlice={pageResults}
             paginator={paginator}
             filters={[() => {}]}
-            showStoryTitle={false}
             width="100%"
           />
 

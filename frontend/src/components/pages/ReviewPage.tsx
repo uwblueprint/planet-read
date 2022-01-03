@@ -152,8 +152,11 @@ const ReviewPage = () => {
     },
   );
 
+  const isAdmin = authenticatedUser!!.role === "Admin";
+  const isDisabled = stage !== "REVIEW" || isAdmin;
   if (loading || reviewerId === -1) return <div />;
-  if (+authenticatedUser!!.id !== reviewerId) return <Redirect to="/404" />;
+  if (+authenticatedUser!!.id !== reviewerId && !isAdmin)
+    return <Redirect to="/404" />;
   return (
     <Flex
       height="100vh"
@@ -217,7 +220,7 @@ const ReviewPage = () => {
             <Tooltip
               hasArrow
               label={REVIEW_PAGE_TOOL_TIP_COPY}
-              isDisabled={stage === "REVIEW"}
+              isDisabled={isDisabled}
             >
               <Box>
                 <Button
@@ -225,7 +228,7 @@ const ReviewPage = () => {
                   size="secondary"
                   margin="0 10px 0"
                   width="250px"
-                  disabled={stage !== "REVIEW"}
+                  disabled={isDisabled}
                   onClick={
                     numApprovedLines === translatedStoryLines.length
                       ? openSubmitTranslationModal
