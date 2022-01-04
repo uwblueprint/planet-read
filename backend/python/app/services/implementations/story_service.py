@@ -19,7 +19,6 @@ from ...graphql.types.story_type import (
 from ...models import db
 from ...models.comment import Comment
 from ...models.file import File
-from ...models.language import Language
 from ...models.story import Story
 from ...models.story_all import StoryAll
 from ...models.story_content import StoryContent
@@ -1001,14 +1000,6 @@ class StoryService(IStoryService):
                 self.soft_delete_story_translation(translation.id)
 
             db.session.commit()
-        except Exception as error:
-            self.logger.error(error)
-            raise error
-
-    def get_languages(self):
-        try:
-            languages = Language.query.all()
-            return [language.language for language in languages]
         except Exception as error:
             self.logger.error(error)
             raise error

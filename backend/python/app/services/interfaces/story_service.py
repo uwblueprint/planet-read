@@ -244,13 +244,6 @@ class IStoryService(ABC):
         """
 
     @abstractmethod
-    def get_languages(self):
-        """
-        Get a list of languages currently used in the platform
-        """
-        pass
-
-    @abstractmethod
     def import_story(self, details, file):
         """
         Import story from word doc and save as Story & StoryContents in db
