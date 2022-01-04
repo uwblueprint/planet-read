@@ -89,6 +89,8 @@ class StoryTranslationResponseDTO(graphene.ObjectType):
     reviewer_name = graphene.String()
     translator_last_activity = graphene.DateTime()
     reviewer_last_activity = graphene.DateTime()
+    test_result = graphene.JSONString()
+    test_feedback = graphene.String()
 
 
 class StoryTranslationTestResponseDTO(graphene.ObjectType):

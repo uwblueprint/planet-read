@@ -17,6 +17,7 @@ import {
 export type TestFeedbackModalProps = {
   isOpen: boolean;
   isCentered: boolean;
+  isDisabled?: boolean;
   testFeedback: string;
   setTestFeedback: (newFeedback: string) => void;
   onBack?: () => void;
@@ -27,6 +28,7 @@ export type TestFeedbackModalProps = {
 const TestFeedbackModal = ({
   isOpen,
   isCentered,
+  isDisabled = false,
   testFeedback,
   setTestFeedback,
   onBack,
@@ -51,11 +53,14 @@ const TestFeedbackModal = ({
         <ModalBody paddingBottom="36px">
           <Grid width="100%" marginBottom="24px">
             <GridItem marginBottom="24px" paddingRight="32px" rowStart={1}>
-              <Text>
-                Provide any feedback or comments to the user in the box below
-                (Optional)
-              </Text>
+              {!isDisabled && (
+                <Text>
+                  Provide any feedback or comments to the user in the box below
+                  (Optional)
+                </Text>
+              )}
               <Textarea
+                disabled={isDisabled}
                 height="285px"
                 margin="8px 0"
                 onChange={(e) => setTestFeedback(e.target.value)}
@@ -78,6 +83,7 @@ const TestFeedbackModal = ({
               </Button>
             )}
             <Button
+              isDisabled={isDisabled}
               colorScheme="blue"
               fontSize="14px"
               onClick={onConfirm}

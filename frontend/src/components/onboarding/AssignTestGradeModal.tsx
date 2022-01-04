@@ -19,6 +19,7 @@ import {
   Text,
 } from "@chakra-ui/react";
 
+import InfoAlert from "../utils/InfoAlert";
 import {
   FINISH_GRADING_STORY_TRANSLATION,
   FinishGradingStoryTranslationResponse,
@@ -28,6 +29,7 @@ import { colourStyles } from "../../theme/components/Select";
 import {
   ASSIGN_USER_LEVEL_CONFIRMATION,
   ASSIGN_USER_LEVEL_BUTTON,
+  VIEW_FAILED_GRADE_ALERT,
 } from "../../utils/Copy";
 import ConfirmationModal from "../utils/ConfirmationModal";
 import DropdownIndicator from "../utils/DropdownIndicator";
@@ -42,6 +44,10 @@ export type AssignTestGradeModalProps = {
   storyLength: number;
   storyTranslationId: number;
   testLevel: number;
+  isDisabled?: boolean;
+  defaultTranslatorLevel?: number | null;
+  defaultReviewerLevel?: number | null;
+  defaultTestFeedback?: string;
 };
 
 export type TestResult = {
@@ -57,14 +63,18 @@ const AssignTestGradeModal = ({
   storyLength,
   storyTranslationId,
   testLevel,
+  isDisabled = false,
+  defaultTranslatorLevel = null,
+  defaultReviewerLevel = null,
+  defaultTestFeedback = "",
 }: AssignTestGradeModalProps) => {
   const [assignReviewerLevel, setAssignReviewerLevel] =
     useState<boolean>(false);
-  const [enterFeedback, setEnterFeedback] = useState<boolean>(false);
-  const [reviewerLevel, setReviewerLevel] = useState<number | null>(null);
-  const [sendAssignGrade, setSendAssignGrade] = useState<boolean>(false);
-  const [testFeedback, setTestFeedback] = useState<string>("");
   const [translatorLevel, setTranslatorLevel] = useState<number | null>(null);
+  const [reviewerLevel, setReviewerLevel] = useState<number | null>(null);
+  const [enterFeedback, setEnterFeedback] = useState<boolean>(false);
+  const [testFeedback, setTestFeedback] = useState<string>("");
+  const [sendAssignGrade, setSendAssignGrade] = useState<boolean>(false);
 
   const [finishGradingStoryTranslation] = useMutation<{
     finishGradingStoryTranslation: FinishGradingStoryTranslationResponse;
@@ -85,12 +95,101 @@ const AssignTestGradeModal = ({
       },
     });
     if (result.data?.finishGradingStoryTranslation.ok) {
-      history.push("/");
+      history.push("/?tab=4");
     } else {
       window.alert("Could not assign level to user.");
     }
   };
 
+  const displayTranslatorLevel = isDisabled
+    ? defaultTranslatorLevel
+    : translatorLevel;
+  const displayReviewerLevel = isDisabled
+    ? defaultReviewerLevel
+    : reviewerLevel;
+
+  const interactiveComponent =
+    isDisabled && !defaultTranslatorLevel ? (
+      <GridItem colSpan={3} marginBottom="24px" paddingRight="32px">
+        <InfoAlert colour="orange.50" message={VIEW_FAILED_GRADE_ALERT} />
+      </GridItem>
+    ) : (
+      <>
+        <GridItem
+          colSpan={1}
+          marginBottom="36px"
+          paddingRight="32px"
+          rowStart={2}
+        >
+          <Heading size="sm">Assign Level</Heading>
+          <Box width="80%">
+            <Select
+              isDisabled={isDisabled}
+              placeholder="Assign level"
+              options={levelOptions}
+              onChange={(option: any) =>
+                setTranslatorLevel(parseInt(option.value, 10))
+              }
+              getOptionLabel={(option: any) => option.value}
+              value={
+                displayTranslatorLevel
+                  ? { value: `${displayTranslatorLevel}` }
+                  : null
+              }
+              styles={colourStyles}
+              components={{ DropdownIndicator }}
+            />
+          </Box>
+        </GridItem>
+        <GridItem
+          colSpan={3}
+          marginBottom="24px"
+          paddingRight="32px"
+          rowStart={3}
+        >
+          <Heading size="sm">Assign as Reviewer</Heading>
+          <Checkbox
+            isChecked={assignReviewerLevel || defaultReviewerLevel !== null}
+            isDisabled={isDisabled}
+            size="md"
+            width="100%"
+            onChange={() => setAssignReviewerLevel(!assignReviewerLevel)}
+          >
+            <Text>
+              I would like to grant the <strong>Reviewer</strong> role to this
+              user.
+            </Text>
+          </Checkbox>
+        </GridItem>
+        {(assignReviewerLevel || defaultReviewerLevel !== null) && (
+          <GridItem
+            colSpan={1}
+            marginBottom="36px"
+            paddingRight="32px"
+            rowStart={4}
+          >
+            <Box width="80%">
+              <Select
+                isDisabled={isDisabled}
+                placeholder="Assign level"
+                options={levelOptions}
+                onChange={(option: any) =>
+                  setReviewerLevel(parseInt(option.value, 10))
+                }
+                getOptionLabel={(option: any) => option.value}
+                value={
+                  displayReviewerLevel
+                    ? { value: `${displayReviewerLevel}` }
+                    : null
+                }
+                styles={colourStyles}
+                components={{ DropdownIndicator }}
+              />
+            </Box>
+          </GridItem>
+        )}
+      </>
+    );
   return (
     <>
       <Modal
@@ -134,79 +233,15 @@ const AssignTestGradeModal = ({
                   <Block header="Score" text={`${score}/${storyLength}`} />
                 </Flex>
               </GridItem>
-              <GridItem
-                colSpan={1}
-                marginBottom="36px"
-                paddingRight="32px"
-                rowStart={2}
-              >
-                <Heading size="sm">Assign Level</Heading>
-                <Box width="80%">
-                  <Select
-                    placeholder="Assign level"
-                    options={levelOptions}
-                    onChange={(option: any) =>
-                      setTranslatorLevel(parseInt(option.value, 10))
-                    }
-                    getOptionLabel={(option: any) => option.value}
-                    value={
-                      translatorLevel ? { value: `${translatorLevel}` } : null
-                    }
-                    styles={colourStyles}
-                    components={{ DropdownIndicator }}
-                  />
-                </Box>
-              </GridItem>
-              <GridItem
-                colSpan={3}
-                marginBottom="24px"
-                paddingRight="32px"
-                rowStart={3}
-              >
-                <Heading size="sm">Assign as Reviewer</Heading>
-                <Checkbox
-                  isChecked={assignReviewerLevel}
-                  size="md"
-                  width="100%"
-                  onChange={() => setAssignReviewerLevel(!assignReviewerLevel)}
-                >
-                  <Text>
-                    I would like to grant the <strong>Reviewer</strong> role to
-                    this user.
-                  </Text>
-                </Checkbox>
-              </GridItem>
-              {assignReviewerLevel && (
-                <GridItem
-                  colSpan={1}
-                  marginBottom="36px"
-                  paddingRight="32px"
-                  rowStart={4}
-                >
-                  <Box width="80%">
-                    <Select
-                      placeholder="Assign level"
-                      options={levelOptions}
-                      onChange={(option: any) =>
-                        setReviewerLevel(parseInt(option.value, 10))
-                      }
-                      getOptionLabel={(option: any) => option.value}
-                      value={
-                        reviewerLevel ? { value: `${reviewerLevel}` } : null
-                      }
-                      styles={colourStyles}
-                      components={{ DropdownIndicator }}
-                    />
-                  </Box>
-                </GridItem>
-              )}
+              {interactiveComponent}
             </Grid>
             <Flex marginRight="28px" justifyContent="flex-end">
               <Button
                 fontSize="14px"
                 colorScheme="blue"
                 isDisabled={
-                  !translatorLevel || (assignReviewerLevel && !reviewerLevel)
+                  !isDisabled &&
+                  (!translatorLevel || (assignReviewerLevel && !reviewerLevel))
                 }
                 onClick={() => setEnterFeedback(true)}
                 width="120px"
@@ -220,7 +255,8 @@ const AssignTestGradeModal = ({
       <TestFeedbackModal
         isOpen={isOpen && enterFeedback}
         isCentered={false}
-        testFeedback={testFeedback}
+        isDisabled={isDisabled}
+        testFeedback={isDisabled ? defaultTestFeedback : testFeedback}
         setTestFeedback={setTestFeedback}
         onBack={() => setEnterFeedback(false)}
         onConfirm={() => setSendAssignGrade(true)}
