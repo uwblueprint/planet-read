@@ -10,7 +10,6 @@ from ..service import services
 from ..types.story_type import (
     CreateStoryTranslationRequestDTO,
     CreateStoryTranslationResponseDTO,
-    StoryContentsResponseDTO,
     StoryRequestDTO,
     StoryResponseDTO,
     StoryTranslationContentRequestDTO,
@@ -309,7 +308,7 @@ class ProcessStory(graphene.Mutation):
             if not services["file"].validate_file(story_file.filename, "docx"):
                 raise Exception("File must be .docx")
             resp = services["file"].create_file(story_file)
-            new_story_contents = services["story"].process_story(resp)
+            new_story_contents = services["story"].process_story(resp["path"])
             services["file"].delete_file(resp["path"])
             return ProcessStory(story_contents=new_story_contents)
         except Exception as e:
