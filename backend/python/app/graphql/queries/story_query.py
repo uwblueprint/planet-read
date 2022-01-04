@@ -54,10 +54,6 @@ def resolve_export_story_translation(root, info, id):
     return file
 
 
-def resolve_languages(root, info):
-    return services["story"].get_languages()
-
-
 @require_authorization_by_role_gql({"Admin"})
 def resolve_story_translations(
     root, info, language, level, stage, story_title, story_id

@@ -10,6 +10,7 @@ from .mutations.auth_mutation import (
 )
 from .mutations.comment_mutation import CreateComment, UpdateCommentById
 from .mutations.file_mutation import CreateFile
+from .mutations.language_mutation import AddLanguage
 from .mutations.story_mutation import (
     ApproveAllStoryTranslationContent,
     AssignUserAsReviewer,
@@ -37,9 +38,9 @@ from .mutations.user_mutation import (
 )
 from .queries.comment_query import resolve_comments_by_story_translation
 from .queries.file_query import resolve_file_by_id
+from .queries.language_query import resolve_languages
 from .queries.story_query import (
     resolve_export_story_translation,
-    resolve_languages,
     resolve_stories,
     resolve_stories_available_for_translation,
     resolve_story_by_id,
@@ -96,6 +97,7 @@ class Mutation(graphene.ObjectType):
     soft_delete_story = SoftDeleteStory.Field()
     import_story = ImportStory.Field()
     process_story = ProcessStory.Field()
+    add_language = AddLanguage.Field()
 
 
 class Query(graphene.ObjectType):
