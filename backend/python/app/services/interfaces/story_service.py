@@ -249,3 +249,18 @@ class IStoryService(ABC):
         Get a list of languages currently used in the platform
         """
         pass
+
+    @abstractmethod
+    def import_story(self, details, file):
+        """
+        Import story from word doc and save as Story & StoryContents in db
+        :param detail: details of story
+        :param file: file information
+        """
+
+    @abstractmethod
+    def process_story(self, story_file):
+        """
+        Process story from word doc for preview
+        :param story_file: file information
+        """

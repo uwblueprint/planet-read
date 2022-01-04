@@ -89,7 +89,7 @@ class StoryService(IStoryService):
 
     def import_story(self, details, file):
         try:
-            story_contents = self._read_doc(file["path"])
+            story_contents = self.process_story(file["path"])
             return self.create_story(details, story_contents)
 
         except Exception as error:
@@ -1083,7 +1083,7 @@ class StoryService(IStoryService):
             self.logger.error(error)
             raise error
 
-    def _read_doc(self, file):
+    def process_story(self, file):
         try:
             doc = docx.Document(file)
             story_contents = []

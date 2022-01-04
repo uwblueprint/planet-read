@@ -199,4 +199,5 @@ export const SOFT_DELETE_STORY = gql`
     }
   }
 `;
+
 export type SoftDeleteStoryResponse = { ok: boolean };
