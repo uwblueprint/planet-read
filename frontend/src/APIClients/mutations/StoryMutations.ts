@@ -201,18 +201,3 @@ export const SOFT_DELETE_STORY = gql`
 `;
 
 export type SoftDeleteStoryResponse = { ok: boolean };
-
-export const PROCESS_STORY = gql`
-  mutation ProcessStory($storyFile: Upload!) {
-    processStory(storyFile: $storyFile) {
-      storyContents
-    }
-  }
-`;
-
-export type ProcessStoryResponse = {
-  storyContents: {
-    lineIndex: number;
-    content: string;
-  };
-};

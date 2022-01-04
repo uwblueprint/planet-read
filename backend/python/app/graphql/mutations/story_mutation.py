@@ -302,7 +302,7 @@ class ProcessStory(graphene.Mutation):
     class Arguments:
         story_file = Upload(required=True)
 
-    story_contents = graphene.Field(lambda: graphene.List(StoryContentsResponseDTO))
+    story_contents = graphene.Field(lambda: graphene.List(graphene.String))
 
     def mutate(root, info, story_file):
         try:

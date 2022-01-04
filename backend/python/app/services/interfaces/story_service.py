@@ -253,7 +253,7 @@ class IStoryService(ABC):
     @abstractmethod
     def import_story(self, details, file):
         """
-        Import story from word doc
+        Import story from word doc and save as Story & StoryContents in db
         :param detail: details of story
         :param file: file information
         """

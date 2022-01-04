@@ -100,18 +100,7 @@ class StoryService(IStoryService):
         try:
             story_contents = self._read_doc(story_file["path"])
 
-            new_contents = [
-                {
-                    "id": i,
-                    "story_id": 0,
-                    "line_index": i,
-                    "content": line,
-                    "is_deleted": False,
-                }
-                for i, line in enumerate(story_contents)
-            ]
-
-            return new_contents
+            return story_contents
 
         except Exception as error:
             self.logger.error(str(error))
