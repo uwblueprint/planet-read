@@ -76,6 +76,7 @@ const StoriesTable = ({
       });
       window.location.reload();
     } catch (error) {
+      // eslint-disable-next-line no-alert
       window.alert(`Error occurred, please try again. Error: ${error}`);
     }
   };

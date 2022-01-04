@@ -115,28 +115,25 @@ const CommentsPanel = ({
     if (comments.length > 0) {
       return (
         <Box>
-          {
-            // eslint-disable-next-line func-names
-            comments.map(function (comment: CommentResponse, i: number) {
-              if (threadHeadMap[i]) {
-                return (
-                  <CommentThread
-                    comments={comments}
-                    commentsIdx={i}
-                    key={comment.id}
-                    reviewerName={reviewerName}
-                    setComments={setComments}
-                    updateCommentsAsResolved={updateCommentsAsResolved}
-                    updateThreadHeadMap={updateThreadHeadMap}
-                    threadHeadMap={threadHeadMap}
-                    translatorId={translatorId}
-                    translatorName={translatorName}
-                  />
-                );
-              }
-              return null;
-            })
-          }
+          {comments.map((comment: CommentResponse, i: number) => {
+            if (threadHeadMap[i]) {
+              return (
+                <CommentThread
+                  comments={comments}
+                  commentsIdx={i}
+                  key={comment.id}
+                  reviewerName={reviewerName}
+                  setComments={setComments}
+                  updateCommentsAsResolved={updateCommentsAsResolved}
+                  updateThreadHeadMap={updateThreadHeadMap}
+                  threadHeadMap={threadHeadMap}
+                  translatorId={translatorId}
+                  translatorName={translatorName}
+                />
+              );
+            }
+            return null;
+          })}
         </Box>
       );
     }
