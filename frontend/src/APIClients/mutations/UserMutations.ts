@@ -41,8 +41,9 @@ export const COMPLETE_SIGN_UP = gql`
     $userId: ID!
     $level: Int!
     $language: String!
+    $resume: Upload
   ) {
-    updateMe(user: $userData) {
+    updateMe(user: $userData, resume: $resume) {
       user {
         id
       }

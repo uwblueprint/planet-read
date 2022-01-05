@@ -24,6 +24,11 @@ const CompleteProfilePage = () => {
   const [completeSignUp] = useMutation<{
     response: CompleteSignUpResponse;
   }>(COMPLETE_SIGN_UP);
+  const [resume, setResume] = useState<File | null>(null);
+
+  const updateResume = (updatedResume: File | null) => {
+    setResume(updatedResume);
+  };
 
   const onSubmitClick = async () => {
     try {
@@ -45,6 +50,7 @@ const CompleteProfilePage = () => {
           userId: authenticatedUser!!.id,
           level: 2,
           language,
+          resume,
         },
       });
       window.location.href = `#/?welcome=true`;
@@ -65,6 +71,7 @@ const CompleteProfilePage = () => {
           setLanguage={setLanguage}
           setEducationalQualification={setEducationalQualification}
           setLanguageExperience={setLanguageExperience}
+          updateResume={updateResume}
         />
       </Flex>
       <Flex

@@ -86,6 +86,10 @@ const UserProfilePage = () => {
     StoryAssignStage.INITIAL,
   );
 
+  // TODO: Send resume to backend when save changes button is implemented
+  const [resume, setResume] = useState<File | null>(null);
+  console.log(resume);
+
   const history = useHistory();
 
   const [downloadFile] = useFileDownload("resume", getFileQuery);
@@ -145,6 +149,10 @@ const UserProfilePage = () => {
     history.push("/?tab=2");
   };
 
+  const updateResume = (updatedResume: File | null) => {
+    setResume(updatedResume);
+  };
+
   const filterStyle = useStyleConfig("Filter");
 
   if (loading) return <div />;
@@ -192,6 +200,7 @@ const UserProfilePage = () => {
               setLanguage={setLanguage}
               setEducationalQualification={setEducationalQualification}
               setLanguageExperience={setLanguageExperience}
+              updateResume={updateResume}
             />
           )}
           <Flex justifyContent="space-between" margin="40px 0 10px 0">
