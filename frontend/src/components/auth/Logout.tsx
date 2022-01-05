@@ -1,31 +1,18 @@
-import React, { useContext, useEffect } from "react";
-import { useMutation } from "@apollo/client";
+import React, { useContext } from "react";
 import { Text } from "@chakra-ui/react";
 import { Icon } from "@chakra-ui/icon";
 import { MdIosShare } from "react-icons/md";
 import AuthContext from "../../contexts/AuthContext";
-import {
-  LOGOUT,
-  LogoutResponse,
-} from "../../APIClients/mutations/AuthMutations";
 import authAPIClient from "../../APIClients/AuthAPIClient";
 
 const Logout = () => {
+  /* eslint-disable-next-line @typescript-eslint/no-unused-vars */
   const { authenticatedUser, setAuthenticatedUser } = useContext(AuthContext);
-  const [logout, { error }] = useMutation<{ logout: LogoutResponse }>(LOGOUT);
 
-  const onLogOutClick = async () => {
-    await authAPIClient.logout(String(authenticatedUser?.id), logout);
+  const onLogOutClick = () => {
+    authAPIClient.logout();
     setAuthenticatedUser(null);
   };
-
-  useEffect(() => {
-    if (error) {
-      // TODO: Implement Error State
-      // eslint-disable-next-line no-alert
-      alert(error);
-    }
-  }, [error]);
 
   return (
     <Text color="black" onClick={onLogOutClick} variant="link">

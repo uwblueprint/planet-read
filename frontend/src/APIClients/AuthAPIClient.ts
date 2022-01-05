@@ -6,7 +6,6 @@ import {
 import AUTHENTICATED_USER_KEY from "../constants/AuthConstants";
 import { AuthenticatedUser } from "../contexts/AuthContext";
 import {
-  LogoutResponse,
   ResetPasswordResponse,
   RefreshResponse,
 } from "./mutations/AuthMutations";
@@ -93,25 +92,7 @@ const signup = async (
   return user;
 };
 
-type LogoutFunction = (
-  options: MutationFunctionOptions<
-    { logout: LogoutResponse },
-    OperationVariables
-  >,
-) => Promise<FetchResult<{ logout: LogoutResponse }>>;
-
-const logout = async (
-  userId: string | undefined,
-  logoutFunction: LogoutFunction,
-): Promise<boolean> => {
-  try {
-    await logoutFunction({ variables: { userId } });
-    localStorage.removeItem(AUTHENTICATED_USER_KEY);
-    return true;
-  } catch (error) {
-    return false;
-  }
-};
+const logout = () => localStorage.removeItem(AUTHENTICATED_USER_KEY);
 
 type ResetPasswordFunction = (
   options: MutationFunctionOptions<

@@ -3,7 +3,6 @@ import graphene
 from .mutations.auth_mutation import (
     Login,
     LoginWithGoogle,
-    Logout,
     Refresh,
     ResetPassword,
     SignUp,
@@ -74,7 +73,6 @@ class Mutation(graphene.ObjectType):
     update_user_by_id = UpdateUserByID.Field()
     login = Login.Field()
     login_with_google = LoginWithGoogle.Field()
-    logout = Logout.Field()
     signup = SignUp.Field()
     refresh = Refresh.Field()
     assign_user_as_reviewer = AssignUserAsReviewer.Field()
