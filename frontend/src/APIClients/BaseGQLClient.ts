@@ -11,11 +11,7 @@ import { RetryLink } from "@apollo/client/link/retry";
 import { relayStylePagination } from "@apollo/client/utilities";
 import jwt from "jsonwebtoken";
 import AUTHENTICATED_USER_KEY from "../constants/AuthConstants";
-import {
-  setLocalStorageObjProperty,
-  getLocalStorageObjProperty,
-} from "../utils/LocalStorageUtils";
-import { REFRESH } from "./mutations/AuthMutations";
+import { getLocalStorageObjProperty } from "../utils/LocalStorageUtils";
 
 const httpLink = createHttpLink({
   uri: `${process.env.REACT_APP_BACKEND_URL}/graphql`,
@@ -36,31 +32,19 @@ const authFromLocalLink = setContext(async (_, { headers }) => {
 });
 
 const injectAccessToken = async (operation: any) => {
-  let accessToken = getLocalStorageObjProperty(
+  const accessToken = getLocalStorageObjProperty(
     AUTHENTICATED_USER_KEY,
     "accessToken",
   );
+  operation.setContext({
+    headers: { Authorization: `Bearer ${accessToken}` },
+  });
   const decodedToken: any = jwt.decode(accessToken);
-  if (
-    decodedToken &&
-    !(decodedToken.exp <= Math.round(new Date().getTime() / 1000))
-  ) {
-    /* eslint-disable  @typescript-eslint/no-use-before-define */
-    const results = await client.mutate({
-      mutation: REFRESH,
-    });
-    /* eslint-disable  @typescript-eslint/no-use-before-define */
-    accessToken = results?.data?.refresh.accessToken;
-    setLocalStorageObjProperty(
-      AUTHENTICATED_USER_KEY,
-      "accessToken",
-      accessToken,
-    );
-    operation.setContext({
-      headers: { Authorization: `Bearer ${accessToken}` },
-    });
-  } else {
+  const currTime = Math.round(new Date().getTime() / 1000);
+  if (!decodedToken || decodedToken.exp <= currTime) {
     localStorage.clear();
+    window.location.reload();
+    throw Error("Token expired, sign out");
   }
 };
 
@@ -91,7 +75,6 @@ const refreshDirectionalLink = new RetryLink().split(
   accessTokenInjectionLink.concat(httpLink),
 );
 
-// TODO: Turn off on prod
 const errorLink = onError(({ graphQLErrors, networkError }) => {
   if (graphQLErrors)
     graphQLErrors.forEach(({ message, locations, path }) =>

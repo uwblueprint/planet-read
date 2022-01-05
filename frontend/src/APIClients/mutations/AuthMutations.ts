@@ -32,18 +32,6 @@ export const LOGIN_WITH_GOOGLE = gql`
   }
 `;
 
-export const LOGOUT = gql`
-  mutation Logout($userId: ID!) {
-    logout(userId: $userId) {
-      ok
-    }
-  }
-`;
-
-export interface LogoutResponse {
-  ok: boolean;
-}
-
 export const REFRESH = gql`
   mutation Refresh {
     refresh {
