@@ -84,9 +84,8 @@ const UserProfilePage = () => {
     StoryAssignStage.INITIAL,
   );
 
-  const [resume, setResume] = useState<File | null>(null);
-
   // TODO: Send resume to backend when save changes button is implemented
+  const [resume, setResume] = useState<File | null>(null);
   console.log(resume);
 
   const history = useHistory();

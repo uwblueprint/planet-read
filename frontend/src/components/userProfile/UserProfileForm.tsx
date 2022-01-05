@@ -40,8 +40,19 @@ const UserProfileForm = ({
   updateResume,
 }: UserProfileFormProps) => {
   const [file, setFile] = useState<File | null>(null);
+  const [dragOver, setDragOver] = useState(false);
 
-  const onPreventDefault = (e: any) => {
+  const onDragEnter = (e: any) => {
+    e.preventDefault();
+    setDragOver(true);
+  };
+
+  const onDragLeave = (e: any) => {
+    e.preventDefault();
+    setDragOver(false);
+  };
+
+  const onDragOver = (e: any) => {
     e.preventDefault();
     if (
       e.dataTransfer.items &&
@@ -54,6 +65,7 @@ const UserProfileForm = ({
 
   const onFileDrop = (e: any) => {
     e.preventDefault();
+    setDragOver(false);
     if (
       e.dataTransfer.items &&
       e.dataTransfer.items.length === 1 &&
@@ -162,30 +174,34 @@ const UserProfileForm = ({
         <Heading size="sm">Upload your CV (optional)</Heading>
         <Flex
           align="center"
-          background="#e8f0f6"
-          border="2px"
-          // this is blue.100 at 10% opacity
-          borderColor="rgba(29, 108, 165, 0.1)"
+          background="blue.50"
+          border={dragOver ? "2px dashed" : "2px solid"}
+          borderColor="blue.500"
           direction="column"
           height="250px"
           justify="center"
           maxWidth="80%"
-          onDragEnter={(e: any) => onPreventDefault(e)}
-          onDragLeave={(e: any) => onPreventDefault(e)}
-          onDragOver={(e: any) => onPreventDefault(e)}
+          onDragEnter={(e: any) => onDragEnter(e)}
+          onDragLeave={(e: any) => onDragLeave(e)}
+          onDragOver={(e: any) => onDragOver(e)}
           onDrop={(e: any) => onFileDrop(e)}
+          opacity={dragOver ? "50%" : "100%"}
           rounded="md"
         >
-          <IconButton
+          <Icon
             aria-label="Folder icon"
+            as={MdFolder}
             background="transparent"
             color="blue.100"
-            icon={<Icon as={MdFolder} width={16} height={16} />}
-            marginBottom="16px"
-            width="fit-content"
+            height={16}
+            marginBottom="8px"
+            pointerEvents="none"
+            width={16}
           />
-          <Text>Drag & drop your file here (.PDF, .docx)</Text>
-          <FormControl width="160px">
+          <Text pointerEvents="none">
+            Drag & drop your file here (.PDF, .docx)
+          </Text>
+          <FormControl pointerEvents={dragOver ? "none" : "auto"} width="160px">
             <FormLabel cursor="pointer" htmlFor="browse-files" marginTop="16px">
               <Button colorScheme="blue" pointerEvents="none">
                 Browse Files
