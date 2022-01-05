@@ -1,7 +1,6 @@
 import {
   ApolloClient,
   ApolloLink,
-  createHttpLink,
   InMemoryCache,
   Observable,
 } from "@apollo/client";
@@ -9,6 +8,7 @@ import { onError } from "@apollo/client/link/error";
 import { setContext } from "@apollo/client/link/context";
 import { RetryLink } from "@apollo/client/link/retry";
 import { relayStylePagination } from "@apollo/client/utilities";
+import { createUploadLink } from "apollo-upload-client";
 import jwt from "jsonwebtoken";
 import AUTHENTICATED_USER_KEY from "../constants/AuthConstants";
 import {
@@ -17,10 +17,10 @@ import {
 } from "../utils/LocalStorageUtils";
 import { REFRESH } from "./mutations/AuthMutations";
 
-const httpLink = createHttpLink({
+const httpLink = createUploadLink({
   uri: `${process.env.REACT_APP_BACKEND_URL}/graphql`,
   credentials: "include",
-});
+}) as unknown as ApolloLink;
 
 const authFromLocalLink = setContext(async (_, { headers }) => {
   const accessToken = getLocalStorageObjProperty(
@@ -102,7 +102,7 @@ const errorLink = onError(({ graphQLErrors, networkError }) => {
   if (networkError) console.log(`[Network error]: ${networkError}`);
 });
 
-/* 
+/*
 Link Tree
 errorLink -> refreshDirectionalLink
               -> authFromLocalLink

@@ -23,6 +23,11 @@ const CompleteProfilePage = () => {
   const [updateMe] = useMutation<{
     response: UpdateMeResponse;
   }>(UPDATE_ME);
+  const [resume, setResume] = useState<File | null>(null);
+
+  const updateResume = (updatedResume: File | null) => {
+    setResume(updatedResume);
+  };
 
   const onSubmitClick = async () => {
     try {
@@ -39,7 +44,7 @@ const CompleteProfilePage = () => {
         additionalExperiences,
       };
       await updateMe({
-        variables: { userData },
+        variables: { userData, resume },
       });
       window.location.href = `#/?welcome=true`;
     } catch (err) {
@@ -58,6 +63,7 @@ const CompleteProfilePage = () => {
           setEmail={setEmail}
           setEducationalQualification={setEducationalQualification}
           setLanguageExperience={setLanguageExperience}
+          updateResume={updateResume}
         />
       </Flex>
       <Flex
