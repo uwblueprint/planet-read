@@ -37,7 +37,7 @@ from .mutations.user_mutation import (
 )
 from .queries.comment_query import resolve_comments_by_story_translation
 from .queries.file_query import resolve_file_by_id
-from .queries.language_query import resolve_languages
+from .queries.language_query import resolve_is_rtl, resolve_languages
 from .queries.story_query import (
     resolve_export_story_translation,
     resolve_stories,
@@ -53,6 +53,7 @@ from .queries.story_query import (
 from .queries.user_query import resolve_user_by_email, resolve_user_by_id, resolve_users
 from .types.comment_type import CommentResponseDTO
 from .types.file_type import DownloadFileDTO, FileDTO
+from .types.language_type import LanguageIsRTLDTO
 from .types.story_type import (
     StoryResponseDTO,
     StoryTranslationConnection,
@@ -162,6 +163,7 @@ class Query(graphene.ObjectType):
         DownloadFileDTO, id=graphene.Int(required=True)
     )
     languages = graphene.Field(graphene.List(graphene.String))
+    is_rtl = graphene.Field(LanguageIsRTLDTO, language=graphene.String(required=True))
 
     def resolve_comments_by_story_translation(
         root, info, story_translation_id, resolved=None
@@ -181,6 +183,9 @@ class Query(graphene.ObjectType):
 
     def resolve_languages(root, info):
         return resolve_languages(root, info)
+
+    def resolve_is_rtl(root, info, language):
+        return resolve_is_rtl(root, info, language)
 
     def resolve_users(
         root, info, isTranslators, language=None, level=None, name_or_email=None
