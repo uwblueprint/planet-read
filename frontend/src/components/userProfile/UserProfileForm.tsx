@@ -54,6 +54,8 @@ const UserProfileForm = ({
     setDragOver(false);
   };
 
+  // Prevents the default drag and drop behaviour (i.e. opening the file in the browser)
+  // Shows a plus symbol next to the cursor if a file is being dragged over the drop zone
   const onDragOver = (e: any) => {
     e.preventDefault();
     if (

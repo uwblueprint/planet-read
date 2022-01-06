@@ -87,8 +87,8 @@ const UserProfilePage = () => {
   );
 
   // TODO: Send resume to backend when save changes button is implemented
+  /* eslint-disable-next-line @typescript-eslint/no-unused-vars */
   const [resume, setResume] = useState<File | null>(null);
-  console.log(resume);
 
   const history = useHistory();
 
