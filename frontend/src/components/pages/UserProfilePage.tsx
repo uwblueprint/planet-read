@@ -271,19 +271,38 @@ const UserProfilePage = () => {
         <Flex direction="column" margin="40px" flex={1}>
           {/* TODO: use different state for email & fullname since currently the sidebar also gets modified */}
           {!isAdmin && (
-            <UserProfileForm
-              email={tempEmail}
-              experience={tempLanguageExperience}
-              fullName={tempFullName}
-              isSignup={false}
-              qualifications={tempEducationalQualification}
-              setEducationalQualification={setTempEducationalQualification}
-              setEmail={setTempEmail}
-              setFullName={setTempFullName}
-              setLanguage={setLanguage}
-              setLanguageExperience={setTempLanguageExperience}
-              updateResume={updateResume}
-            />
+            <Box>
+              <UserProfileForm
+                email={tempEmail}
+                experience={tempLanguageExperience}
+                fullName={tempFullName}
+                isSignup={false}
+                qualifications={tempEducationalQualification}
+                setEducationalQualification={setTempEducationalQualification}
+                setEmail={setTempEmail}
+                setFullName={setTempFullName}
+                setLanguage={setLanguage}
+                setLanguageExperience={setTempLanguageExperience}
+                updateResume={updateResume}
+              />
+              <Flex marginTop="35px">
+                <Button
+                  colorScheme="blue"
+                  marginRight="20px"
+                  onClick={() => cancelChanges()}
+                  variant="blueOutline"
+                >
+                  Cancel
+                </Button>
+                <Button
+                  colorScheme="blue"
+                  onClick={() => openSaveChangesModal()}
+                  transform="rotate(180deg)"
+                >
+                  Save Changes
+                </Button>
+              </Flex>
+            </Box>
           )}
           <Flex justifyContent="space-between" margin="40px 0 10px 0">
             <Heading size="lg"> Approved Languages & Levels </Heading>
@@ -381,32 +400,6 @@ const UserProfilePage = () => {
             </>
           )}
         </Flex>
-      </Flex>
-      <Flex
-        alignItems="center"
-        boxShadow="0 0 12px -9px rgba(0, 0, 0, 0.7)"
-        direction="row"
-        height="90px"
-        justify="flex-end"
-        padding="20px 30px"
-      >
-        <Box>
-          <Button
-            colorScheme="blue"
-            marginRight="20px"
-            onClick={() => cancelChanges()}
-            variant="blueOutline"
-          >
-            Cancel
-          </Button>
-          <Button
-            colorScheme="blue"
-            marginRight="10px"
-            onClick={() => openSaveChangesModal()}
-          >
-            Save Changes
-          </Button>
-        </Box>
       </Flex>
       {confirmDeleteUser && (
         <ConfirmationModal
