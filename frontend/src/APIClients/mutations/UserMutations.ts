@@ -35,6 +35,22 @@ export type UpdateUserApprovedLanguagesResponse = {
   };
 };
 
+export const UPDATE_ME = gql`
+  mutation Updateme($userData: UpdateUserDTO!, $resume: Upload) {
+    updateMe(user: $userData, resume: $resume) {
+      user {
+        id
+      }
+    }
+  }
+`;
+
+export type UpdateMeResponse = {
+  user: {
+    id: number;
+  };
+};
+
 export const COMPLETE_SIGN_UP = gql`
   mutation CompleteSignUp(
     $userData: UpdateUserDTO!
