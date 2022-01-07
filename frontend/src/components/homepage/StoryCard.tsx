@@ -12,7 +12,6 @@ import {
 } from "@chakra-ui/react";
 import AuthContext from "../../contexts/AuthContext";
 import PreviewModal from "./PreviewModal";
-import { convertLanguageTitleCase } from "../../utils/LanguageUtils";
 import { getLevelVariant } from "../../utils/StatusUtils";
 import { embedLink } from "../../utils/Utils";
 
@@ -179,9 +178,7 @@ const StoryCard = ({
             <Badge
               background={getLevelVariant(level)}
             >{`Level ${level}`}</Badge>
-            <Badge variant="language">{`${convertLanguageTitleCase(
-              language,
-            )}`}</Badge>
+            <Badge variant="language">{`${language}`}</Badge>
             {isMyStory && (
               <Badge variant="role">
                 {isTranslator ? "Translator" : "Reviewer"}

@@ -4,7 +4,6 @@ import { Box, Flex, Heading } from "@chakra-ui/react";
 import UsersTable, { alphabeticalCompare } from "./UsersTable";
 import { buildUsersQuery, User } from "../../APIClients/queries/UserQueries";
 import TableFilter from "./TableFilter";
-import { convertTitleCaseToLanguage } from "../../utils/LanguageUtils";
 import { USER_TABLE_FILTER_SEARCH_BAR_PLACEHOLDER } from "../../utils/Copy";
 
 export type ManageUsersProps = {
@@ -18,7 +17,7 @@ const ManageUsers = ({ isTranslators }: ManageUsersProps) => {
   const [searchText, setSearchText] = useState<string | null>(null);
   const query = buildUsersQuery(
     isTranslators,
-    convertTitleCaseToLanguage(language || ""),
+    language || "",
     parseInt(level || "", 10) || 0,
     searchText || "",
   );

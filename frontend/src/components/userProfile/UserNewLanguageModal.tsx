@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { useQuery } from "@apollo/client";
 import Select from "react-select";
 import {
   Button,
@@ -15,9 +16,8 @@ import {
 } from "@chakra-ui/react";
 import { ApprovedLanguagesMap } from "../../utils/Utils";
 import { colourStyles } from "../../theme/components/Select";
-import { convertLanguageTitleCase } from "../../utils/LanguageUtils";
 import DropdownIndicator from "../utils/DropdownIndicator";
-import { languageOptions } from "../../constants/Languages";
+import { getLanguagesQuery } from "../../APIClients/queries/LanguageQueries";
 
 export type UserNewLanguageModalProps = {
   onSubmit: (newLanguage: string) => void;
@@ -33,7 +33,19 @@ const UserNewLanguageModal = ({
   onClose,
 }: UserNewLanguageModalProps) => {
   const [newLanguage, setNewLanguage] = useState<string>("");
-  const unapprovedLanguageOptions = languageOptions.filter(function (obj) {
+  const [languageOptions, setLanguageOptions] = useState<string[]>([]);
+  useQuery(getLanguagesQuery.string, {
+    fetchPolicy: "cache-and-network",
+    onCompleted: (data) => {
+      setLanguageOptions(data.languages);
+    },
+  });
+
+  const options = languageOptions.map((lang) => {
+    return { value: lang };
+  });
+
+  const unapprovedLanguageOptions = options.filter(function (obj) {
     return (
       !approvedLanguagesTranslation ||
       !Object.prototype.hasOwnProperty.call(
@@ -66,9 +78,7 @@ const UserNewLanguageModal = ({
           <Flex marginBottom="200px">
             <Select
               components={{ DropdownIndicator }}
-              getOptionLabel={(option: any) =>
-                convertLanguageTitleCase(option.value)
-              }
+              getOptionLabel={(option: any) => option.value}
               onChange={(option: any) => setNewLanguage(option?.value || "")}
               options={unapprovedLanguageOptions}
               placeholder="Select language"

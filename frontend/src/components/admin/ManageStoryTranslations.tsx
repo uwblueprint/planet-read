@@ -11,7 +11,6 @@ import {
   GET_STORY_TRANSLATION_STATISTICS,
   StoryTranslation,
 } from "../../APIClients/queries/StoryQueries";
-import { convertTitleCaseToLanguage } from "../../utils/LanguageUtils";
 import { convertTitleCaseToStage } from "../../utils/StageUtils";
 import { STORY_TRANSLATION_TABLE_FILTER_SEARCH_BAR_PLACEHOLDER } from "../../utils/Copy";
 import usePagination from "../../utils/hooks/usePagination";
@@ -30,7 +29,7 @@ const ManageStoryTranslations = () => {
 
   const query = buildStoryTranslationsQuery(
     0,
-    convertTitleCaseToLanguage(language || ""),
+    language || "",
     parseInt(level || "", 10) || 0,
     convertTitleCaseToStage(stage || ""),
     searchText || "",

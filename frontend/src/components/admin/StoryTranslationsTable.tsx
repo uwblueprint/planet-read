@@ -17,7 +17,6 @@ import {
   Box,
 } from "@chakra-ui/react";
 import { StoryTranslation } from "../../APIClients/queries/StoryQueries";
-import { convertLanguageTitleCase } from "../../utils/LanguageUtils";
 import { getStoryTranslationProgress } from "../../utils/StageUtils";
 import { getLevelVariant } from "../../utils/StatusUtils";
 import ConfirmationModal from "../utils/ConfirmationModal";
@@ -130,9 +129,7 @@ const StoryTranslationsTable = ({
             marginBottom="3px"
             marginTop="3px"
           >
-            {`${convertLanguageTitleCase(
-              storyTranslationObj?.language,
-            )} | Level ${storyTranslationObj?.level}`}
+            {`${storyTranslationObj?.language} | Level ${storyTranslationObj?.level}`}
           </Badge>
         </Td>
         <Td>{getStoryTranslationProgress(storyTranslationObj)}</Td>

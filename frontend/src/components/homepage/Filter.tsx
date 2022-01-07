@@ -9,7 +9,6 @@ import {
 } from "@chakra-ui/react";
 
 import ButtonRadioGroup from "../utils/ButtonRadioGroup";
-import { convertLanguageTitleCase } from "../../utils/LanguageUtils";
 
 export type FilterProps = {
   approvedLanguagesTranslation: { [name: string]: number };
@@ -70,7 +69,7 @@ const Filter = ({
   ) : (
     Object.keys(approvedLanguages).map((lang) => (
       <option key={lang} value={lang}>
-        {convertLanguageTitleCase(lang)}
+        {lang}
       </option>
     ))
   );

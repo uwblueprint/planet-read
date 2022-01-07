@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { useQuery } from "@apollo/client";
 import Select from "react-select";
 import {
   Button,
@@ -17,14 +18,12 @@ import {
   useStyleConfig,
 } from "@chakra-ui/react";
 
-import { languageOptions } from "../../constants/Languages";
 import { levelOptions } from "../../constants/Levels";
 import { roleOptions } from "../../constants/Roles";
-
-import { convertLanguageTitleCase } from "../../utils/LanguageUtils";
 import { ApprovedLanguagesMap } from "../../utils/Utils";
 import DropdownIndicator from "../utils/DropdownIndicator";
 import { colourStyles } from "../../theme/components/Select";
+import { getLanguagesQuery } from "../../APIClients/queries/LanguageQueries";
 
 export type NewApprovedLanguage = {
   language: string;
@@ -50,6 +49,7 @@ const AdminNewLanguageModal = ({
   const [role, setRole] = useState<string | null>(null);
   const [language, setLanguage] = useState<string | null>(null);
   const [level, setLevel] = useState<number | null>(null);
+  const [languageOptions, setLanguageOptions] = useState<string[]>([]);
 
   const currentApprovedLanguages = new Set(
     Object.keys(
@@ -59,10 +59,20 @@ const AdminNewLanguageModal = ({
     ),
   );
 
-  // don't show languages that the user is already approved for
-  const newLanguageOptions = languageOptions.filter(
-    (lang) => !currentApprovedLanguages.has(lang.value),
-  );
+  useQuery(getLanguagesQuery.string, {
+    fetchPolicy: "cache-and-network",
+    onCompleted: (data) => {
+      setLanguageOptions(
+        data.languages.filter(
+          (lang: string) => !currentApprovedLanguages.has(lang),
+        ),
+      );
+    },
+  });
+
+  const newLanguageOptions = languageOptions.map((lang) => {
+    return { value: lang };
+  });
 
   const disabledStyle = useStyleConfig("Disabled");
   const isLanguageSelectDisabled = role == null;
@@ -128,9 +138,7 @@ const AdminNewLanguageModal = ({
                   placeholder="Select language"
                   options={newLanguageOptions}
                   onChange={(option: any) => setLanguage(option.value)}
-                  getOptionLabel={(option: any) =>
-                    convertLanguageTitleCase(option.value)
-                  }
+                  getOptionLabel={(option: any) => option.value}
                   value={language ? { value: language } : null}
                   styles={colourStyles}
                   components={{ DropdownIndicator }}

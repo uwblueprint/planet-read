@@ -1,7 +1,5 @@
 import graphene
 
-from .language_enum import LanguageEnum
-
 
 class StageEnum(graphene.Enum):
     TRANSLATE = "TRANSLATE"
@@ -22,7 +20,7 @@ class StoryResponseDTO(graphene.ObjectType):
     description = graphene.String(required=True)
     youtube_link = graphene.String(required=True)
     level = graphene.Int(required=True)
-    translated_languages = graphene.List(LanguageEnum)
+    translated_languages = graphene.List(graphene.String)
     contents = graphene.List(StoryContentsResponseDTO)
     date_uploaded = graphene.DateTime()
 
@@ -32,7 +30,7 @@ class StoryRequestDTO(graphene.InputObjectType):
     description = graphene.String(required=True)
     youtube_link = graphene.String(required=True)
     level = graphene.Int(required=True)
-    translated_languages = graphene.List(LanguageEnum)
+    translated_languages = graphene.List(graphene.String)
 
 
 class CreateStoryTranslationResponseDTO(graphene.ObjectType):

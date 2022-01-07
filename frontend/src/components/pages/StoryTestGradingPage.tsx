@@ -10,7 +10,6 @@ import { StoryLine } from "../translation/Autosave";
 import { convertStatusTitleCase } from "../../utils/StatusUtils";
 import { GET_STORY_AND_TRANSLATION_CONTENTS } from "../../APIClients/queries/StoryQueries";
 import FontSizeSlider from "../translation/FontSizeSlider";
-import { convertLanguageTitleCase } from "../../utils/LanguageUtils";
 import Header from "../navigation/Header";
 
 import AssignTestGradeModal from "../onboarding/AssignTestGradeModal";
@@ -188,7 +187,7 @@ const StoryTestGradingPage = () => {
               translatedStoryLines={translatedStoryLines}
               fontSize={fontSize}
               originalLanguage="English"
-              translatedLanguage={convertLanguageTitleCase(language)}
+              translatedLanguage={language}
               translator={false}
               setTranslatedStoryLines={setTranslatedStoryLines}
               numApprovedLines={numApprovedLines}
@@ -248,7 +247,7 @@ const StoryTestGradingPage = () => {
           isOpen={assignGrade}
           onClose={closeAssignGradeModal}
           testLevel={level}
-          language={convertLanguageTitleCase(language)}
+          language={language}
           score={score}
           storyLength={translatedStoryLines.length}
           storyTranslationId={storyTranslationId}

@@ -1,4 +1,5 @@
-import React from "react";
+import React, { useState } from "react";
+import { useQuery } from "@apollo/client";
 import Select from "react-select";
 import { MdSearch } from "react-icons/md";
 import { Icon } from "@chakra-ui/icon";
@@ -13,13 +14,12 @@ import {
   Stack,
   Tooltip,
 } from "@chakra-ui/react";
-import { languageOptions } from "../../constants/Languages";
 import { levelOptions } from "../../constants/Levels";
 import { stageOptions } from "../../constants/Stage";
-import { convertLanguageTitleCase } from "../../utils/LanguageUtils";
 import { FILTER_TOOL_TIP_COPY } from "../../utils/Copy";
 import DropdownIndicator from "../utils/DropdownIndicator";
 import { colourStyles } from "../../theme/components/Select";
+import { getLanguagesQuery } from "../../APIClients/queries/LanguageQueries";
 
 export type TableFilterProps = {
   language: string | null;
@@ -66,6 +66,18 @@ const TableFilter = ({
   useStage = false,
   searchBarPlaceholder = "",
 }: TableFilterProps) => {
+  const [languageOptions, setLanguageOptions] = useState<string[]>([]);
+
+  useQuery(getLanguagesQuery.string, {
+    fetchPolicy: "cache-and-network",
+    onCompleted: (data) => {
+      setLanguageOptions(data.languages);
+    },
+  });
+
+  const options = languageOptions.map((lang) => {
+    return { value: lang };
+  });
   return (
     <Flex direction="column">
       <Flex
@@ -84,10 +96,10 @@ const TableFilter = ({
               <Select
                 isDisabled={language != null}
                 placeholder="Language"
-                options={languageOptions}
+                options={options}
                 onChange={(option: any) => setLanguage(option?.value || "")}
                 getOptionLabel={(option: any) => `
-                ${convertLanguageTitleCase(option.value || "")}
+                ${option.value || ""}
               `}
                 value={language ? { value: language } : null}
                 styles={colourStyles}
@@ -173,10 +185,7 @@ const TableFilter = ({
       </Flex>
       <Flex margin="10px auto 24px" width="95%">
         {language && (
-          <FilterBadges
-            filterValue={convertLanguageTitleCase(language)}
-            setFilterValue={setLanguage}
-          />
+          <FilterBadges filterValue={language} setFilterValue={setLanguage} />
         )}
         {level && (
           <FilterBadges

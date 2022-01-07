@@ -15,7 +15,6 @@ import {
 } from "@chakra-ui/react";
 import { useMutation } from "@apollo/client";
 import { User } from "../../APIClients/queries/UserQueries";
-import { convertLanguageTitleCase } from "../../utils/LanguageUtils";
 import { getLevelVariant } from "../../utils/StatusUtils";
 import {
   MANAGE_USERS_TABLE_DELETE_USER_BUTTON,
@@ -100,9 +99,7 @@ const UsersTable = ({
         background={getLevelVariant(appvdLanguages[apprLang])}
         marginBottom="3px"
         marginTop="3px"
-      >{`${convertLanguageTitleCase(apprLang)} | Level ${
-        appvdLanguages[apprLang]
-      }`}</Badge>
+      >{`${apprLang} | Level ${appvdLanguages[apprLang]}`}</Badge>
     ));
 
   const tableBody = users.map((userObj: User, index: number) => (

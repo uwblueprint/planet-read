@@ -27,7 +27,6 @@ import {
 } from "../../APIClients/mutations/StoryMutations";
 import { getLevelVariant } from "../../utils/StatusUtils";
 import { getStoryTranslationProgress } from "../../utils/StageUtils";
-import { convertLanguageTitleCase } from "../../utils/LanguageUtils";
 import { ApprovedLanguagesMap, generateSortFn } from "../../utils/Utils";
 import ConfirmationModal from "../utils/ConfirmationModal";
 import {
@@ -321,9 +320,7 @@ const AssignedStoryTranslationsTable = ({
           background={getLevelVariant(translation.level)}
           marginBottom="3px"
           marginTop="3px"
-        >{`${convertLanguageTitleCase(translation.language)} | Level ${
-          translation.level
-        }`}</Badge>
+        >{`${translation.language} | Level ${translation.level}`}</Badge>
       </Td>
       <Td>{getStoryTranslationProgress(translation)}</Td>
       <Td>{lastEditedDate(translation)?.toLocaleDateString?.()}</Td>

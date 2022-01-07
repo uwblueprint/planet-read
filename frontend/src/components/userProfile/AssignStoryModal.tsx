@@ -21,7 +21,6 @@ import {
 import { roleOptions } from "../../constants/Roles";
 
 import { buildAssignStoryQuery } from "../../APIClients/queries/StoryQueries";
-import { convertLanguageTitleCase } from "../../utils/LanguageUtils";
 import { ApprovedLanguagesMap, isObjEmpty } from "../../utils/Utils";
 import DropdownIndicator from "../utils/DropdownIndicator";
 import { colourStyles } from "../../theme/components/Select";
@@ -187,9 +186,7 @@ const AssignStoryModal = ({
                   placeholder="Select language"
                   options={languageOptions}
                   onChange={(option: any) => setLanguage(option.value)}
-                  getOptionLabel={(option: any) =>
-                    convertLanguageTitleCase(option.value)
-                  }
+                  getOptionLabel={(option: any) => option.value}
                   value={language ? { value: language } : null}
                   styles={colourStyles}
                   components={{ DropdownIndicator }}

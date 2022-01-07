@@ -27,13 +27,13 @@ def insert_test_data():
         f"INSERT IGNORE INTO users \
             (first_name, last_name, email, auth_id, role, approved_languages_translation, approved_languages_review) \
         VALUES \
-            ('Carl', 'Sagan', 'planetread+carlsagan@uwblueprint.org', '{os.getenv('AUTH_ID_1', '')}', 'User', '{{\"ENGLISH_US\":4, \"ENGLISH_UK\":3}}', NULL), \
-            ('Miroslav', 'Klose', 'planetread+miroslavklose@uwblueprint.org', '{os.getenv('AUTH_ID_2', '')}', 'User', '{{\"POLISH\":4, \"GERMAN\":4}}', '{{\"POLISH\":3}}'), \
-            ('Kevin', 'De Bruyne', 'planetread+kevindebruyne@uwblueprint.org', '{os.getenv('AUTH_ID_3', '')}', 'User', '{{\"DUTCH\":4, \"FRENCH\":4}}', '{{\"DUTCH\":2, \"FRENCH\":4}}'), \
-            ('Dwight', 'D. Eisenhower', 'planetread+dwightdeisenhower@uwblueprint.org', '{os.getenv('AUTH_ID_4', '')}', 'User', '{{\"ENGLISH_UK\":4, \"ENGLISH_US\":4, \"GERMAN\":3}}', '{{\"ENGLISH_UK\":3, \"ENGLISH_US\":4}}'), \
-            ('Alexander', 'Hamilton', 'planetread+alexanderhamilton@uwblueprint.org', '{os.getenv('AUTH_ID_5', '')}', 'User', '{{\"MANDARIN\":4, \"ENGLISH_UK\":3}}', '{{\"MANDARIN\":2}}'), \
-            ('Angela', 'Merkel', 'planetread+angelamerkel@uwblueprint.org', '{os.getenv('AUTH_ID_6', '')}', 'Admin', '{{\"GERMAN\":4}}', '{{\"GERMAN\":4}}'), \
-            ('Richard', 'Feynman', 'planetread+richardfeynman@uwblueprint.org', '{os.getenv('AUTH_ID_7', '')}', 'User', '{{\"ARABIC\":4, \"ENGLISH_UK\":4, \"GERMAN\":1}}', '{{\"ARABIC\":1}}'); \
+            ('Carl', 'Sagan', 'planetread+carlsagan@uwblueprint.org', '{os.getenv('AUTH_ID_1', '')}', 'User', '{{\"English (US)\":4, \"English (UK)\":3}}', NULL), \
+            ('Miroslav', 'Klose', 'planetread+miroslavklose@uwblueprint.org', '{os.getenv('AUTH_ID_2', '')}', 'User', '{{\"Polish\":4, \"German\":4}}', '{{\"Polish\":3}}'), \
+            ('Kevin', 'De Bruyne', 'planetread+kevindebruyne@uwblueprint.org', '{os.getenv('AUTH_ID_3', '')}', 'User', '{{\"Dutch\":4, \"French\":4}}', '{{\"Dutch\":2, \"French\":4}}'), \
+            ('Dwight', 'D. Eisenhower', 'planetread+dwightdeisenhower@uwblueprint.org', '{os.getenv('AUTH_ID_4', '')}', 'User', '{{\"English (UK)\":4, \"English (US)\":4, \"German\":3}}', '{{\"English (UK)\":3, \"English (US)\":4}}'), \
+            ('Alexander', 'Hamilton', 'planetread+alexanderhamilton@uwblueprint.org', '{os.getenv('AUTH_ID_5', '')}', 'User', '{{\"Mandarin\":4, \"English (UK)\":3}}', '{{\"Mandarin\":2}}'), \
+            ('Angela', 'Merkel', 'planetread+angelamerkel@uwblueprint.org', '{os.getenv('AUTH_ID_6', '')}', 'Admin', '{{\"German\":4}}', '{{\"German\":4}}'), \
+            ('Richard', 'Feynman', 'planetread+richardfeynman@uwblueprint.org', '{os.getenv('AUTH_ID_7', '')}', 'User', '{{\"Arabic\":4, \"English (UK)\":4, \"German\":1}}', '{{\"Arabic\":1}}'); \
     "
     )
 
@@ -43,12 +43,12 @@ def insert_test_data():
         "INSERT IGNORE INTO stories \
                 (id, title, description, youtube_link, level, translated_languages, is_test, date_uploaded) \
             VALUES \
-                (1, 'East of Eden', 'Follow the intertwined destinies of two families whose generations reenact the poisonous rivalry of Cain and Abel.', 'https://www.youtube.com/watch?v=redECmF7wh8', 4, '[\"GERMAN\", \"ENGLISH_UK\"]', false, '1997-10-31 06:48:42'), \
-                (2, 'War and Peace', 'War and Peace is a literary work mixed with chapters on history and philosophy by the Russian author Leo Tolstoy.', 'https://www.youtube.com/watch?v=4dn7TEjnbPY', 1, '[\"GERMAN\", \"POLISH\"]', false, '1999-12-01 01:48:42'), \
-                (3, 'A Tale of Two Cities', 'An 1859 historical novel by Charles Dickens, set in London and Paris before and during the French Revolution.', 'https://www.youtube.com/watch?v=5czA_L_eOp4', 3, '[\"MANDARIN\", \"ENGLISH_UK\"]', false,'2000-05-14 01:48:42'), \
-                (4, 'Pride and Prejudice', 'Pride and Prejudice preaches the difference between superficial goodness and actual goodness.', 'https://www.youtube.com/watch?v=5xTh44G6RYs', 4, '[\"GERMAN\", \"ENGLISH_UK\"]', false, '2008-08-03 19:27:26'), \
-                (5, 'To Kill a Mockingbird', 'To Kill a Mockingbird is a novel by the American author Harper Lee. A sentence cannot do this novel justice.', 'https://www.youtube.com/watch?v=3xM8hvEE2dI', 3, '[\"GERMAN\", \"ENGLISH_UK\", \"ARABIC\", \"DUTCH\"]', false, '2010-10-21 19:27:26'), \
-                (6, 'The Great Gatsby', 'Set in the Jazz Age on Long Island, near New York City, the novel depicts mysterious millionaire Jay Gatsby and Gatsby and Daisy Buchanan.', 'https://www.youtube.com/watch?v=e6Iu29TNfkM', 4, '[\"ENGLISH_US\"]', false, '2012-12-25 19:27:26'), \
+                (1, 'East of Eden', 'Follow the intertwined destinies of two families whose generations reenact the poisonous rivalry of Cain and Abel.', 'https://www.youtube.com/watch?v=redECmF7wh8', 4, '[\"German\", \"English (UK)\"]', false, '1997-10-31 06:48:42'), \
+                (2, 'War and Peace', 'War and Peace is a literary work mixed with chapters on history and philosophy by the Russian author Leo Tolstoy.', 'https://www.youtube.com/watch?v=4dn7TEjnbPY', 1, '[\"German\", \"Polish\"]', false, '1999-12-01 01:48:42'), \
+                (3, 'A Tale of Two Cities', 'An 1859 historical novel by Charles Dickens, set in London and Paris before and during the French Revolution.', 'https://www.youtube.com/watch?v=5czA_L_eOp4', 3, '[\"Mandarin\", \"English (UK)\"]', false,'2000-05-14 01:48:42'), \
+                (4, 'Pride and Prejudice', 'Pride and Prejudice preaches the difference between superficial goodness and actual goodness.', 'https://www.youtube.com/watch?v=5xTh44G6RYs', 4, '[\"German\", \"English (UK)\"]', false, '2008-08-03 19:27:26'), \
+                (5, 'To Kill a Mockingbird', 'To Kill a Mockingbird is a novel by the American author Harper Lee. A sentence cannot do this novel justice.', 'https://www.youtube.com/watch?v=3xM8hvEE2dI', 3, '[\"German\", \"English (UK)\", \"Arabic\", \"Dutch\"]', false, '2010-10-21 19:27:26'), \
+                (6, 'The Great Gatsby', 'Set in the Jazz Age on Long Island, near New York City, the novel depicts mysterious millionaire Jay Gatsby and Gatsby and Daisy Buchanan.', 'https://www.youtube.com/watch?v=e6Iu29TNfkM', 4, '[\"English (US)\"]', false, '2012-12-25 19:27:26'), \
                 (7, 'Nineteen Eighty-Four', 'Nineteen Eighty-Four, often referred to as 1984, is a dystopian social science fiction novel by the English novelist George Orwell.', 'https://www.youtube.com/watch?v=h9JIKngJnCU', 2, '[]', false, '1984-01-01 19:27:26'), \
                 (8, 'The Musical Donkey', 'There was a donkey who felt so happy that he sang through the night in the cucumber field. The problem was that the cucumbers couldn\"t bear it. What did they do?', 'https://www.youtube.com/watch?v=QfcttsaHTIY', 2, '[]', true, '2000-09-06 19:27:26'), \
                 (9, 'The Little Pianist', 'Azul loves to play the piano and he wants to become not just a good pianist but a great pianist. See how he learns the secret!', 'https://www.youtube.com/watch?v=4GsjEPRMzdw', 3, '[]', true, '2000-12-21 19:27:26'), \
@@ -136,19 +136,19 @@ def insert_test_data():
         "INSERT IGNORE INTO story_translations \
             (id, story_id, language, stage, translator_id) \
         VALUES \
-            (1, 1, 'GERMAN', 'TRANSLATE', 6), \
-            (2, 1, 'ENGLISH_UK', 'TRANSLATE', 7), \
-            (3, 2, 'GERMAN', 'TRANSLATE', 7), \
-            (4, 2, 'POLISH', 'TRANSLATE', 2), \
-            (5, 3, 'MANDARIN', 'TRANSLATE', 5), \
-            (6, 3, 'ENGLISH_UK', 'TRANSLATE', 5), \
-            (7, 4, 'GERMAN', 'TRANSLATE', 2), \
-            (8, 4, 'ENGLISH_UK', 'TRANSLATE', 4), \
-            (9, 5, 'GERMAN', 'TRANSLATE', 4), \
-            (10, 5, 'ENGLISH_UK', 'TRANSLATE', 1), \
-            (11, 5, 'ARABIC', 'TRANSLATE', 7), \
-            (12, 5, 'DUTCH', 'TRANSLATE', 3), \
-            (13, 6, 'ENGLISH_US', 'TRANSLATE', 1);"
+            (1, 1, 'German', 'TRANSLATE', 6), \
+            (2, 1, 'English (UK)', 'TRANSLATE', 7), \
+            (3, 2, 'German', 'TRANSLATE', 7), \
+            (4, 2, 'Polish', 'TRANSLATE', 2), \
+            (5, 3, 'Mandarin', 'TRANSLATE', 5), \
+            (6, 3, 'English (UK)', 'TRANSLATE', 5), \
+            (7, 4, 'German', 'TRANSLATE', 2), \
+            (8, 4, 'English (UK)', 'TRANSLATE', 4), \
+            (9, 5, 'German', 'TRANSLATE', 4), \
+            (10, 5, 'English (UK)', 'TRANSLATE', 1), \
+            (11, 5, 'Arabic', 'TRANSLATE', 7), \
+            (12, 5, 'Dutch', 'TRANSLATE', 3), \
+            (13, 6, 'English (US)', 'TRANSLATE', 1);"
     )
 
     # story translation contents
@@ -190,7 +190,7 @@ def insert_test_data():
     st = (
         db.session.query(StoryTranslation)
         .filter_by(story_id=the_gg.id)
-        .filter_by(language="ENGLISH_US")
+        .filter_by(language="English (US)")
         .first()
     )
     st.translator_id = carl.id

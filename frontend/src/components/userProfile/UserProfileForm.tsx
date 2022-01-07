@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { useQuery } from "@apollo/client";
 import Select from "react-select";
 import {
   Box,
@@ -15,8 +16,7 @@ import {
 import { Icon } from "@chakra-ui/icon";
 import { MdDelete, MdFolder } from "react-icons/md";
 import DropdownIndicator from "../utils/DropdownIndicator";
-import { convertLanguageTitleCase } from "../../utils/LanguageUtils";
-import { languageOptions } from "../../constants/Languages";
+import { getLanguagesQuery } from "../../APIClients/queries/LanguageQueries";
 
 export type UserProfileFormProps = {
   isSignup?: boolean;
@@ -43,7 +43,18 @@ const UserProfileForm = ({
 }: UserProfileFormProps) => {
   const [file, setFile] = useState<File | null>(null);
   const [dragOver, setDragOver] = useState(false);
+  const [languageOptions, setLanguageOptions] = useState<string[]>([]);
 
+  useQuery(getLanguagesQuery.string, {
+    fetchPolicy: "cache-and-network",
+    onCompleted: (data) => {
+      setLanguageOptions(data.languages);
+    },
+  });
+
+  const options = languageOptions.map((lang) => {
+    return { value: lang };
+  });
   const onDragEnter = (e: any) => {
     e.preventDefault();
     setDragOver(true);
@@ -164,11 +175,11 @@ const UserProfileForm = ({
             <Box width="60%" marginBottom="200px">
               <Select
                 placeholder="Select language"
-                options={languageOptions}
+                options={options}
                 onChange={(option: any) => setLanguage(option?.value || "")}
                 getOptionLabel={(option: any) => `
-                  ${convertLanguageTitleCase(option.value || "")}
-                `}
+                ${option.value || ""}
+              `}
                 components={{ DropdownIndicator }}
               />
             </Box>

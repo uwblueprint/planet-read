@@ -1,4 +1,5 @@
-import React from "react";
+import React, { useState } from "react";
+import { useQuery } from "@apollo/client";
 import Select from "react-select";
 import {
   Box,
@@ -17,10 +18,22 @@ import { MdArrowBackIosNew, MdFolder } from "react-icons/md";
 import DropdownIndicator from "../utils/DropdownIndicator";
 import Header from "../navigation/Header";
 import { colourStyles } from "../../theme/components/Select";
-import { convertLanguageTitleCase } from "../../utils/LanguageUtils";
-import { languageOptions } from "../../constants/Languages";
+import { getLanguagesQuery } from "../../APIClients/queries/LanguageQueries";
 
 const ImportStoryPage = () => {
+  const [languageOptions, setLanguageOptions] = useState<string[]>([]);
+
+  useQuery(getLanguagesQuery.string, {
+    fetchPolicy: "cache-and-network",
+    onCompleted: (data) => {
+      setLanguageOptions(data.languages);
+    },
+  });
+
+  const options = languageOptions.map((lang) => {
+    return { value: lang };
+  });
+
   return (
     <Flex direction="column" height="100vh" justifyContent="space-between">
       <Header />
@@ -94,10 +107,10 @@ const ImportStoryPage = () => {
                 <Select
                   components={{ DropdownIndicator }}
                   getOptionLabel={(option: any) => `
-                    ${convertLanguageTitleCase(option.value || "")}
+                    ${option.value || ""}
                   `}
                   id="languages"
-                  options={languageOptions}
+                  options={options}
                   placeholder="Select one or more languages"
                   styles={colourStyles}
                 />

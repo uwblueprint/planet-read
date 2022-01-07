@@ -16,11 +16,7 @@ import {
 } from "@chakra-ui/react";
 import { Icon } from "@chakra-ui/icon";
 import { MdTrendingFlat } from "react-icons/md";
-
-import {
-  isRtlLanguage,
-  convertLanguageTitleCase,
-} from "../../utils/LanguageUtils";
+import { isRtlLanguage } from "../../utils/LanguageUtils";
 import { getLevelVariant } from "../../utils/StatusUtils";
 import { convertStageTitleCase } from "../../utils/StageUtils";
 import {
@@ -95,9 +91,7 @@ const PreviewModal = ({
       </Text>
       {storyTranslationId && (
         <Text
-          textAlign={
-            isRtlLanguage(convertLanguageTitleCase(language)) ? "right" : "left"
-          }
+          textAlign={isRtlLanguage(language) ? "right" : "left"}
           variant="previewModalTranslationContent"
         >
           {translationContent[index]}
@@ -120,9 +114,7 @@ const PreviewModal = ({
           <Heading as="h3" size="lg" marginBottom="10px" width="75%">
             {title}
           </Heading>
-          <Badge variant="language" size="s">{`${convertLanguageTitleCase(
-            language,
-          )}`}</Badge>
+          <Badge variant="language" size="s">{`${language}`}</Badge>
           <Badge
             backgroundColor={getLevelVariant(level)}
             size="s"

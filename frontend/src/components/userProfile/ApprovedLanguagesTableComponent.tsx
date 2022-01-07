@@ -19,7 +19,6 @@ import {
 } from "@chakra-ui/react";
 import { MdDelete } from "react-icons/md";
 import { ApprovedLanguagesMap, generateSortFn } from "../../utils/Utils";
-import { convertLanguageTitleCase } from "../../utils/LanguageUtils";
 
 interface ApprovedLanguageFieldSortDict {
   [field: string]: {
@@ -114,7 +113,7 @@ const ApprovedLanguagesTableComponent = ({
         }
         key={`${approvedLanguage.language}/${approvedLanguage.role}`}
       >
-        <Td>{convertLanguageTitleCase(approvedLanguage.language)}</Td>
+        <Td>{approvedLanguage.language}</Td>
         <Td>{approvedLanguage.role}</Td>
         <Td colSpan={4} align="center">
           <Slider

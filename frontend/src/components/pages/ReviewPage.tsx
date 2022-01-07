@@ -11,7 +11,6 @@ import { convertStatusTitleCase } from "../../utils/StatusUtils";
 import { GET_STORY_AND_TRANSLATION_CONTENTS } from "../../APIClients/queries/StoryQueries";
 import CommentsPanel from "../review/CommentsPanel";
 import FontSizeSlider from "../translation/FontSizeSlider";
-import { convertLanguageTitleCase } from "../../utils/LanguageUtils";
 import Header from "../navigation/Header";
 import ConfirmationModal from "../utils/ConfirmationModal";
 import {
@@ -188,7 +187,7 @@ const ReviewPage = () => {
               translatedStoryLines={translatedStoryLines}
               fontSize={fontSize}
               originalLanguage="English"
-              translatedLanguage={convertLanguageTitleCase(language)}
+              translatedLanguage={language}
               commentLine={commentLine}
               setCommentLine={setCommentLine}
               setStoryTranslationContentId={setStoryTranslationContentId}
