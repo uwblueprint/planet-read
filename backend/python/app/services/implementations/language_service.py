@@ -26,3 +26,17 @@ class LanguageService(ILanguageService):
         except Exception as error:
             self.logger.error(str(error))
             raise error
+
+    def get_is_rtl(self, language):
+        try:
+            to_check = Language.query.filter_by(language=language).first()
+
+            if not to_check:
+                raise Exception(
+                    "Language {language} not found".format(language=language)
+                )
+            else:
+                return {"is_rtl": to_check.is_rtl}
+        except Exception as error:
+            self.logger.error(str(error))
+            raise error

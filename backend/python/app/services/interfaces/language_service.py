@@ -23,3 +23,11 @@ class ILanguageService(ABC):
         :raises Exception: if language fails to save
         """
         pass
+
+    @abstractmethod
+    def get_is_rtl(self, language):
+        """
+        Return bool indicating if language is from right to left
+        :param language: language to be checked
+        :rtype: bool
+        """
