@@ -12,3 +12,13 @@ export const getLanguagesQuery = {
   fieldName: "getLanguages",
   string: GET_LANGUAGES,
 };
+
+export const IS_RTL = (language: string) => gql`
+  query IsRtl {
+    isRtl (
+      language: "${language}"
+    ) {
+      isRtl
+    }
+  }
+`;

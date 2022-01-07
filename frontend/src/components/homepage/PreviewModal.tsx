@@ -16,13 +16,13 @@ import {
 } from "@chakra-ui/react";
 import { Icon } from "@chakra-ui/icon";
 import { MdTrendingFlat } from "react-icons/md";
-import { isRtlLanguage } from "../../utils/LanguageUtils";
 import { getLevelVariant } from "../../utils/StatusUtils";
 import { convertStageTitleCase } from "../../utils/StageUtils";
 import {
   GET_STORY_CONTENTS,
   GET_STORY_AND_TRANSLATION_CONTENTS,
 } from "../../APIClients/queries/StoryQueries";
+import { IS_RTL } from "../../APIClients/queries/LanguageQueries";
 
 export type PreviewModalProps = {
   storyId: number;
@@ -52,6 +52,14 @@ const PreviewModal = ({
   const [content, setContent] = useState<string[]>([]);
   const [translationContent, setTranslationContent] = useState<string[]>([]);
   const [stage, setStage] = useState<string>("");
+  const [isRTL, setIsRTL] = useState<boolean>(false);
+
+  useQuery(IS_RTL(language), {
+    fetchPolicy: "cache-and-network",
+    onCompleted: (data) => {
+      setIsRTL(data.isRtl.isRtl);
+    },
+  });
 
   if (storyTranslationId) {
     useQuery(GET_STORY_AND_TRANSLATION_CONTENTS(storyId, storyTranslationId), {
@@ -91,7 +99,7 @@ const PreviewModal = ({
       </Text>
       {storyTranslationId && (
         <Text
-          textAlign={isRtlLanguage(language) ? "right" : "left"}
+          textAlign={isRTL ? "right" : "left"}
           variant="previewModalTranslationContent"
         >
           {translationContent[index]}
