@@ -12,6 +12,7 @@ class LanguageService(ILanguageService):
     def get_languages(self):
         try:
             languages = Language.query.all()
+            languages.sort(key=lambda language: language.language)
             return [language.language for language in languages]
         except Exception as error:
             self.logger.error(error)

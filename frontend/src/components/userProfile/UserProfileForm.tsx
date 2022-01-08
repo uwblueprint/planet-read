@@ -14,9 +14,11 @@ import {
 } from "@chakra-ui/react";
 import { Icon } from "@chakra-ui/icon";
 import { MdDelete, MdFolder } from "react-icons/md";
+import { useQuery } from "@apollo/client";
+
 import DropdownIndicator from "../utils/DropdownIndicator";
 import { convertLanguageTitleCase } from "../../utils/LanguageUtils";
-import { languageOptions } from "../../constants/Languages";
+import GET_LANGUAGES from "../../APIClients/queries/LanguageQueries";
 
 export type UserProfileFormProps = {
   isSignup?: boolean;
@@ -43,6 +45,16 @@ const UserProfileForm = ({
 }: UserProfileFormProps) => {
   const [file, setFile] = useState<File | null>(null);
   const [dragOver, setDragOver] = useState(false);
+  const [languageOptions, setLanguageOptions] = useState<any[]>([]);
+  useQuery(GET_LANGUAGES(), {
+    fetchPolicy: "cache-and-network",
+    onCompleted: (data) => {
+      const languageArray = data.languages.map((val: string) => ({
+        value: val,
+      }));
+      setLanguageOptions(languageArray);
+    },
+  });
 
   const onDragEnter = (e: any) => {
     e.preventDefault();

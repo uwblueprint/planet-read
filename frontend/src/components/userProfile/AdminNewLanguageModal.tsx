@@ -16,12 +16,13 @@ import {
   GridItem,
   useStyleConfig,
 } from "@chakra-ui/react";
+import { useQuery } from "@apollo/client";
 
-import { languageOptions } from "../../constants/Languages";
 import { levelOptions } from "../../constants/Levels";
 import { roleOptions } from "../../constants/Roles";
 
 import { convertLanguageTitleCase } from "../../utils/LanguageUtils";
+import GET_LANGUAGES from "../../APIClients/queries/LanguageQueries";
 import { ApprovedLanguagesMap } from "../../utils/Utils";
 import DropdownIndicator from "../utils/DropdownIndicator";
 import { colourStyles } from "../../theme/components/Select";
@@ -50,6 +51,17 @@ const AdminNewLanguageModal = ({
   const [role, setRole] = useState<string | null>(null);
   const [language, setLanguage] = useState<string | null>(null);
   const [level, setLevel] = useState<number | null>(null);
+  const [languageOptions, setLanguageOptions] = useState<any[]>([]);
+
+  useQuery(GET_LANGUAGES(), {
+    fetchPolicy: "cache-and-network",
+    onCompleted: (data) => {
+      const languageArray = data.languages.map((val: string) => ({
+        value: val,
+      }));
+      setLanguageOptions(languageArray);
+    },
+  });
 
   const currentApprovedLanguages = new Set(
     Object.keys(

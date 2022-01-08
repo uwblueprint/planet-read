@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import Select from "react-select";
 import {
   Box,
@@ -14,13 +14,26 @@ import {
 } from "@chakra-ui/react";
 import { Icon } from "@chakra-ui/icon";
 import { MdArrowBackIosNew, MdFolder } from "react-icons/md";
+import { useQuery } from "@apollo/client";
+
 import DropdownIndicator from "../utils/DropdownIndicator";
 import Header from "../navigation/Header";
 import { colourStyles } from "../../theme/components/Select";
 import { convertLanguageTitleCase } from "../../utils/LanguageUtils";
-import { languageOptions } from "../../constants/Languages";
+import GET_LANGUAGES from "../../APIClients/queries/LanguageQueries";
 
 const ImportStoryPage = () => {
+  const [languageOptions, setLanguageOptions] = useState<any[]>([]);
+  useQuery(GET_LANGUAGES(), {
+    fetchPolicy: "cache-and-network",
+    onCompleted: (data) => {
+      const languageArray = data.languages.map((val: string) => ({
+        value: val,
+      }));
+      setLanguageOptions(languageArray);
+    },
+  });
+
   return (
     <Flex direction="column" height="100vh" justifyContent="space-between">
       <Header />

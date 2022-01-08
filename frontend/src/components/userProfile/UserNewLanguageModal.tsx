@@ -13,11 +13,13 @@ import {
   Text,
   Tooltip,
 } from "@chakra-ui/react";
+import { useQuery } from "@apollo/client";
+
 import { ApprovedLanguagesMap } from "../../utils/Utils";
 import { colourStyles } from "../../theme/components/Select";
 import { convertLanguageTitleCase } from "../../utils/LanguageUtils";
 import DropdownIndicator from "../utils/DropdownIndicator";
-import { languageOptions } from "../../constants/Languages";
+import GET_LANGUAGES from "../../APIClients/queries/LanguageQueries";
 
 export type UserNewLanguageModalProps = {
   onSubmit: (newLanguage: string) => void;
@@ -32,6 +34,17 @@ const UserNewLanguageModal = ({
   isOpen,
   onClose,
 }: UserNewLanguageModalProps) => {
+  const [languageOptions, setLanguageOptions] = useState<any[]>([]);
+  useQuery(GET_LANGUAGES(), {
+    fetchPolicy: "cache-and-network",
+    onCompleted: (data) => {
+      const languageArray = data.languages.map((val: string) => ({
+        value: val,
+      }));
+      setLanguageOptions(languageArray);
+    },
+  });
+
   const [newLanguage, setNewLanguage] = useState<string>("");
   const unapprovedLanguageOptions = languageOptions.filter(function (obj) {
     return (

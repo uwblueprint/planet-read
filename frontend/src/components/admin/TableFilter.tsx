@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import Select from "react-select";
 import { MdSearch } from "react-icons/md";
 import { Icon } from "@chakra-ui/icon";
@@ -13,13 +13,15 @@ import {
   Stack,
   Tooltip,
 } from "@chakra-ui/react";
-import { languageOptions } from "../../constants/Languages";
+import { useQuery } from "@apollo/client";
+
 import { levelOptions } from "../../constants/Levels";
 import { stageOptions } from "../../constants/Stage";
 import { convertLanguageTitleCase } from "../../utils/LanguageUtils";
 import { FILTER_TOOL_TIP_COPY } from "../../utils/Copy";
 import DropdownIndicator from "../utils/DropdownIndicator";
 import { colourStyles } from "../../theme/components/Select";
+import GET_LANGUAGES from "../../APIClients/queries/LanguageQueries";
 
 export type TableFilterProps = {
   language: string | null;
@@ -66,6 +68,18 @@ const TableFilter = ({
   useStage = false,
   searchBarPlaceholder = "",
 }: TableFilterProps) => {
+  const [languageOptions, setLanguageOptions] = useState<any[]>([]);
+
+  useQuery(GET_LANGUAGES(), {
+    fetchPolicy: "cache-and-network",
+    onCompleted: (data) => {
+      const languageArray = data.languages.map((val: string) => ({
+        value: val,
+      }));
+      setLanguageOptions(languageArray);
+    },
+  });
+
   return (
     <Flex direction="column">
       <Flex
