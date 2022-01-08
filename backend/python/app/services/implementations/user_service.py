@@ -4,12 +4,14 @@ from flask.globals import current_app
 
 from ...models import db
 from ...models.comment import Comment
-from ...models.language_enum import LanguageEnum
 from ...models.story_translation import StoryTranslation
 from ...models.user import User
 from ...models.user_all import UserAll
 from ...resources.user_dto import UserDTO
 from ..interfaces.user_service import IUserService
+from .language_service import LanguageService
+
+language_service = LanguageService(current_app.logger)
 
 
 class UserService(IUserService):
@@ -547,7 +549,7 @@ class UserService(IUserService):
 
     def update_approved_language(self, user_id, is_translate, language, level):
         try:
-            if not language in LanguageEnum._member_names_:
+            if not language in language_service.get_languages():
                 raise Exception(f"Invalid language provided: {language}")
             if level > 4:
                 raise Exception(f"Invalid language level provided: {level}")

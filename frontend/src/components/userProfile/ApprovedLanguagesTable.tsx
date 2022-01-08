@@ -2,7 +2,6 @@ import React, { useState } from "react";
 import { useMutation } from "@apollo/client";
 import { useHistory } from "react-router-dom";
 import { ApprovedLanguagesMap } from "../../utils/Utils";
-import { convertLanguageTitleCase } from "../../utils/LanguageUtils";
 import {
   UPDATE_USER_APPROVED_LANGUAGES,
   UpdateUserApprovedLanguagesResponse,
@@ -101,15 +100,11 @@ const ApprovedLanguagesTable = ({
       return `Language has been removed for the user`;
     }
     if (isNewLanguage) {
-      return `A new language was approved for the user: ${convertLanguageTitleCase(
-        language,
-      )}`;
+      return `A new language was approved for the user: ${language}`;
     }
     return `${
       isTranslate ? "Translator" : "Reviewer"
-    }'s approval for ${convertLanguageTitleCase(
-      language,
-    )} has been updated: Level ${oldLevel} → Level ${level}.`;
+    }'s approval for ${language} has been updated: Level ${oldLevel} → Level ${level}.`;
   };
 
   /* GQL Requests */

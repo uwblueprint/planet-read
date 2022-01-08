@@ -15,7 +15,6 @@ import {
   IconButton,
   Button,
 } from "@chakra-ui/react";
-import { convertLanguageTitleCase } from "../../utils/LanguageUtils";
 import { getLevelVariant } from "../../utils/StatusUtils";
 import {
   MANAGE_TESTS_TABLE_DELETE_TEST_BUTTON,
@@ -152,9 +151,7 @@ const StoryTestsTable = ({
             marginBottom="3px"
             marginTop="3px"
           >
-            {`${convertLanguageTitleCase(storyTest.language)} | Level ${
-              storyTest.level
-            }`}
+            {`${storyTest.language} | Level ${storyTest.level}`}
           </Badge>
         </Td>
         <Td>{getStoryTestProgress(storyTest)}</Td>

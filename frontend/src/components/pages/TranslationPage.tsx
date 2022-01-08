@@ -15,7 +15,6 @@ import {
   UpdateStoryTranslationStageResponse,
 } from "../../APIClients/mutations/StoryMutations";
 import FontSizeSlider from "../translation/FontSizeSlider";
-import { convertLanguageTitleCase } from "../../utils/LanguageUtils";
 import deepCopy from "../../utils/DeepCopyUtils";
 import Header from "../navigation/Header";
 import CommentsPanel from "../review/CommentsPanel";
@@ -270,7 +269,7 @@ const TranslationPage = () => {
               editable={editable}
               fontSize={fontSize}
               originalLanguage="English"
-              translatedLanguage={convertLanguageTitleCase(language)}
+              translatedLanguage={language}
               commentLine={commentLine}
               setCommentLine={setCommentLine}
               setStoryTranslationContentId={setStoryTranslationContentId}

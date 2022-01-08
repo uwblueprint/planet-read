@@ -5,7 +5,6 @@ import {
   buildStoryTranslationTestsQuery,
   StoryTranslationTest,
 } from "../../APIClients/queries/StoryQueries";
-import { convertTitleCaseToLanguage } from "../../utils/LanguageUtils";
 import { convertTitleCaseToStage } from "../../utils/StageUtils";
 import StoryTestsTable from "./StoryTestsTable";
 
@@ -20,7 +19,7 @@ const ManageStoryTests = () => {
   /* eslint-enable */
 
   const query = buildStoryTranslationTestsQuery(
-    convertTitleCaseToLanguage(language || ""),
+    language || "",
     parseInt(level || "", 10) || 0,
     convertTitleCaseToStage(stage || ""),
     searchText || "",

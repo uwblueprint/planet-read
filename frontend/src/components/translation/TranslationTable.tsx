@@ -1,11 +1,13 @@
-import React from "react";
+import React, { useState } from "react";
+import { useQuery } from "@apollo/client";
 import { Badge, Button, Flex, Text, Tooltip } from "@chakra-ui/react";
 import EditableCell from "./EditableCell";
 import { StoryLine } from "./Autosave";
 import StatusBadge from "../review/StatusBadge";
 import ApproveAll from "../review/ApproveAll";
 import { getStatusVariant } from "../../utils/StatusUtils";
-import { isRtlLanguage } from "../../utils/LanguageUtils";
+import { IS_RTL } from "../../APIClients/queries/LanguageQueries";
+
 import {
   TRANSLATION_PAGE_TOOL_TIP_COPY,
   REVIEW_PAGE_TOOL_TIP_COPY,
@@ -71,6 +73,14 @@ const TranslationTable = ({
   };
 
   const showStatusColumn = !isTest || isReviewable;
+  const [isRTL, setIsRTL] = useState<boolean>(true);
+
+  useQuery(IS_RTL(translatedLanguage), {
+    fetchPolicy: "cache-and-network",
+    onCompleted: (data) => {
+      setIsRTL(data.isRtl.isRtl);
+    },
+  });
 
   const storyCells = translatedStoryLines.map((storyLine: StoryLine) => {
     const displayLineNumber = storyLine.lineIndex + 1;
@@ -95,7 +105,7 @@ const TranslationTable = ({
               maxChars={storyLine.originalContent.length * 2}
               onChange={onUserInput!!}
               fontSize={fontSize}
-              isRtl={isRtlLanguage(translatedLanguage)}
+              isRtl={isRTL}
             />
           </Flex>
         ) : (
@@ -106,7 +116,7 @@ const TranslationTable = ({
           >
             <Flex flex={1} height="100%">
               <Text
-                textAlign={isRtlLanguage(translatedLanguage) ? "right" : "left"}
+                textAlign={isRTL ? "right" : "left"}
                 flexGrow={1}
                 fontSize={fontSize}
                 variant="cell"
