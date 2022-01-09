@@ -229,8 +229,16 @@ const UserProfilePage = () => {
   const cancelChanges = () => {
     setTempFullName(fullName);
     setTempEmail(email);
-    setTempEducationalQualification(educationalQualification);
-    setTempLanguageExperience(languageExperience);
+    setTempEducationalQualification(
+      additionalExperiences?.educationalQualification
+        ? additionalExperiences?.educationalQualification
+        : "",
+    );
+    setTempLanguageExperience(
+      additionalExperiences?.languageExperience
+        ? additionalExperiences?.languageExperience
+        : "",
+    );
   };
 
   const filterStyle = useStyleConfig("Filter");
@@ -289,16 +297,12 @@ const UserProfilePage = () => {
                 <Button
                   colorScheme="blue"
                   marginRight="20px"
-                  onClick={() => cancelChanges()}
+                  onClick={cancelChanges}
                   variant="blueOutline"
                 >
                   Cancel
                 </Button>
-                <Button
-                  colorScheme="blue"
-                  onClick={() => openSaveChangesModal()}
-                  transform="rotate(180deg)"
-                >
+                <Button colorScheme="blue" onClick={openSaveChangesModal}>
                   Save Changes
                 </Button>
               </Flex>
@@ -393,7 +397,7 @@ const UserProfilePage = () => {
                 margin="10px 0px"
                 width="250px"
                 variant="outline"
-                onClick={() => openModal()}
+                onClick={openModal}
               >
                 Delete User
               </Button>
@@ -416,7 +420,7 @@ const UserProfilePage = () => {
           confirmation={confirmSaveChanges}
           confirmationMessage={USER_PROFILE_PAGE_SAVE_CHANGES_CONFIRMATION}
           onClose={closeSaveChangesModal}
-          onConfirmationClick={() => saveChanges()}
+          onConfirmationClick={saveChanges}
         />
       )}
     </Flex>
