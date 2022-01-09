@@ -14,6 +14,7 @@ import Textarea from "./components/Textarea";
 
 const customTheme = extendTheme({
   fonts: {
+    heading: `"Noto Sans"`,
     body: `"Noto Sans"`,
   },
   config: {
