@@ -125,3 +125,8 @@ export const DELETE_USER = "Delete user";
 
 export const VIEW_FAILED_GRADE_ALERT =
   "User failed this test. No changes to approved languages were applied.";
+
+export const USER_PROFILE_PAGE_SAVE_CHANGES_CONFIRMATION =
+  "If you entered a new email, you will be automatically signed out and your profile will be associated with the new email you have entered.";
+
+export const USER_PROFILE_PAGE_SAVE_CHANGES_BUTTON = "I'm sure, save changes";

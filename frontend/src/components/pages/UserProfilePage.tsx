@@ -1,6 +1,7 @@
 import React, { useContext, useState } from "react";
 import { useParams, useHistory, Redirect } from "react-router-dom";
 import {
+  Box,
   Button,
   Flex,
   Heading,
@@ -16,10 +17,14 @@ import UserProfileForm from "../userProfile/UserProfileForm";
 import {
   SoftDeleteUserResponse,
   SOFT_DELETE_USER,
+  UpdateMeResponse,
+  UPDATE_ME,
 } from "../../APIClients/mutations/UserMutations";
 import {
   MANAGE_USERS_TABLE_DELETE_USER_BUTTON,
   MANAGE_USERS_TABLE_DELETE_USER_CONFIRMATION,
+  USER_PROFILE_PAGE_SAVE_CHANGES_BUTTON,
+  USER_PROFILE_PAGE_SAVE_CHANGES_CONFIRMATION,
 } from "../../utils/Copy";
 import ConfirmationModal from "../utils/ConfirmationModal";
 import {
@@ -43,13 +48,14 @@ import { StoryAssignStage } from "../../constants/Enums";
 import InfoAlert from "../utils/InfoAlert";
 import { useFileDownload } from "../../utils/FileUtils";
 import { getFileQuery } from "../../APIClients/queries/FileQueries";
+import authAPIClient from "../../APIClients/AuthAPIClient";
 
 type UserProfilePageProps = {
   userId: string;
 };
 
 const UserProfilePage = () => {
-  const { authenticatedUser } = useContext(AuthContext);
+  const { authenticatedUser, setAuthenticatedUser } = useContext(AuthContext);
   const { userId } = useParams<UserProfilePageProps>();
   const isAdmin = authenticatedUser!!.role === "Admin";
 
@@ -90,6 +96,15 @@ const UserProfilePage = () => {
   /* eslint-disable-next-line @typescript-eslint/no-unused-vars */
   const [resume, setResume] = useState<File | null>(null);
 
+  const [tempFullName, setTempFullName] = useState<string>("");
+  const [tempEmail, setTempEmail] = useState<string>("");
+  const [tempEducationalQualification, setTempEducationalQualification] =
+    useState<string>("");
+  const [tempLanguageExperience, setTempLanguageExperience] =
+    useState<string>("");
+
+  const [confirmSaveChanges, setConfirmSaveChanges] = useState(false);
+
   const history = useHistory();
 
   const [downloadFile] = useFileDownload("resume", getFileQuery);
@@ -117,6 +132,21 @@ const UserProfilePage = () => {
       setAdditionalExperiences(
         parseUserBackground(user?.additionalExperiences),
       );
+      setTempFullName(`${user?.firstName} ${user?.lastName}`);
+      setTempEmail(user?.email!);
+      const tempAdditionalExperiences = parseUserBackground(
+        user?.additionalExperiences,
+      );
+      setTempEducationalQualification(
+        tempAdditionalExperiences?.educationalQualification
+          ? tempAdditionalExperiences?.educationalQualification
+          : "",
+      );
+      setTempLanguageExperience(
+        tempAdditionalExperiences?.languageExperience
+          ? tempAdditionalExperiences?.languageExperience
+          : "",
+      );
     },
   });
 
@@ -131,12 +161,24 @@ const UserProfilePage = () => {
     response: SoftDeleteUserResponse;
   }>(SOFT_DELETE_USER);
 
+  const [updateMe] = useMutation<{
+    response: UpdateMeResponse;
+  }>(UPDATE_ME);
+
   const closeModal = () => {
     setConfirmDeleteUser(false);
   };
 
   const openModal = () => {
     setConfirmDeleteUser(true);
+  };
+
+  const closeSaveChangesModal = () => {
+    setConfirmSaveChanges(false);
+  };
+
+  const openSaveChangesModal = () => {
+    setConfirmSaveChanges(true);
   };
 
   const callSoftDeleteUserMutation = async () => {
@@ -151,6 +193,52 @@ const UserProfilePage = () => {
 
   const updateResume = (updatedResume: File | null) => {
     setResume(updatedResume);
+  };
+
+  const saveChanges = async () => {
+    try {
+      const [firstName, lastName] = tempFullName.split(" ");
+      const tempAdditionalExperiences = {
+        educationalQualification: tempEducationalQualification,
+        languageExperience: tempLanguageExperience,
+      };
+      const stringTempAddExp = JSON.stringify(tempAdditionalExperiences);
+      const userData = {
+        firstName,
+        lastName,
+        email: tempEmail,
+        additionalExperiences: stringTempAddExp,
+      };
+      await updateMe({
+        variables: {
+          userData,
+          resume,
+        },
+      });
+      if (email === tempEmail) {
+        window.location.reload();
+      } else {
+        authAPIClient.logout();
+        setAuthenticatedUser(null);
+      }
+    } catch (err) {
+      window.alert(err);
+    }
+  };
+
+  const cancelChanges = () => {
+    setTempFullName(fullName);
+    setTempEmail(email);
+    setTempEducationalQualification(
+      additionalExperiences?.educationalQualification
+        ? additionalExperiences?.educationalQualification
+        : "",
+    );
+    setTempLanguageExperience(
+      additionalExperiences?.languageExperience
+        ? additionalExperiences?.languageExperience
+        : "",
+    );
   };
 
   const filterStyle = useStyleConfig("Filter");
@@ -191,17 +279,34 @@ const UserProfilePage = () => {
         <Flex direction="column" margin="40px" flex={1}>
           {/* TODO: use different state for email & fullname since currently the sidebar also gets modified */}
           {!isAdmin && (
-            <UserProfileForm
-              isSignup={false}
-              fullName={fullName}
-              email={email}
-              setFullName={setFullName}
-              setEmail={setEmail}
-              setLanguage={setLanguage}
-              setEducationalQualification={setEducationalQualification}
-              setLanguageExperience={setLanguageExperience}
-              updateResume={updateResume}
-            />
+            <Box>
+              <UserProfileForm
+                email={tempEmail}
+                experience={tempLanguageExperience}
+                fullName={tempFullName}
+                isSignup={false}
+                qualifications={tempEducationalQualification}
+                setEducationalQualification={setTempEducationalQualification}
+                setEmail={setTempEmail}
+                setFullName={setTempFullName}
+                setLanguage={setLanguage}
+                setLanguageExperience={setTempLanguageExperience}
+                updateResume={updateResume}
+              />
+              <Flex marginTop="35px">
+                <Button
+                  colorScheme="blue"
+                  marginRight="20px"
+                  onClick={cancelChanges}
+                  variant="blueOutline"
+                >
+                  Cancel
+                </Button>
+                <Button colorScheme="blue" onClick={openSaveChangesModal}>
+                  Save Changes
+                </Button>
+              </Flex>
+            </Box>
           )}
           <Flex justifyContent="space-between" margin="40px 0 10px 0">
             <Heading size="lg"> Approved Languages & Levels </Heading>
@@ -292,7 +397,7 @@ const UserProfilePage = () => {
                 margin="10px 0px"
                 width="250px"
                 variant="outline"
-                onClick={() => openModal()}
+                onClick={openModal}
               >
                 Delete User
               </Button>
@@ -307,6 +412,15 @@ const UserProfilePage = () => {
           onConfirmationClick={callSoftDeleteUserMutation}
           confirmationMessage={MANAGE_USERS_TABLE_DELETE_USER_CONFIRMATION}
           buttonMessage={MANAGE_USERS_TABLE_DELETE_USER_BUTTON}
+        />
+      )}
+      {confirmSaveChanges && (
+        <ConfirmationModal
+          buttonMessage={USER_PROFILE_PAGE_SAVE_CHANGES_BUTTON}
+          confirmation={confirmSaveChanges}
+          confirmationMessage={USER_PROFILE_PAGE_SAVE_CHANGES_CONFIRMATION}
+          onClose={closeSaveChangesModal}
+          onConfirmationClick={saveChanges}
         />
       )}
     </Flex>

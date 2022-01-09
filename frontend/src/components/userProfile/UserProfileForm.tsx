@@ -19,25 +19,29 @@ import DropdownIndicator from "../utils/DropdownIndicator";
 import { getLanguagesQuery } from "../../APIClients/queries/LanguageQueries";
 
 export type UserProfileFormProps = {
-  isSignup?: boolean;
-  fullName: string;
   email: string;
-  setFullName: (name: string) => void;
-  setEmail: (email: string) => void;
-  setLanguage: (language: string) => void;
+  experience?: string;
+  fullName: string;
+  isSignup?: boolean;
+  qualifications?: string;
   setEducationalQualification: (email: string) => void;
+  setEmail: (email: string) => void;
+  setFullName: (name: string) => void;
+  setLanguage: (language: string) => void;
   setLanguageExperience: (email: string) => void;
   updateResume: (resume: File | null) => void;
 };
 
 const UserProfileForm = ({
-  isSignup = true,
-  fullName,
   email,
-  setFullName,
-  setEmail,
-  setLanguage,
+  experience,
+  fullName,
+  isSignup = true,
+  qualifications,
   setEducationalQualification,
+  setEmail,
+  setFullName,
+  setLanguage,
   setLanguageExperience,
   updateResume,
 }: UserProfileFormProps) => {
@@ -152,6 +156,7 @@ const UserProfileForm = ({
           <Textarea
             height="150px"
             type="qualifications"
+            value={qualifications}
             onChange={(e) => setEducationalQualification(e.target.value)}
           />
           <Heading marginTop="24px" size="sm">
@@ -160,6 +165,7 @@ const UserProfileForm = ({
           <Textarea
             height="150px"
             type="experience"
+            value={experience}
             onChange={(e) => setLanguageExperience(e.target.value)}
           />
         </FormControl>
