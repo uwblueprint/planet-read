@@ -12,7 +12,10 @@ import {
   ModalOverlay,
   Text,
   Textarea,
+  Tooltip,
 } from "@chakra-ui/react";
+
+import { GRADED_TEST_ASSIGN_LEVEL_TOOL_TIP_COPY } from "../../utils/Copy";
 
 export type TestFeedbackModalProps = {
   isOpen: boolean;
@@ -52,22 +55,28 @@ const TestFeedbackModal = ({
         </ModalHeader>
         <ModalBody paddingBottom="36px">
           <Grid width="100%" marginBottom="24px">
-            <GridItem marginBottom="24px" paddingRight="32px" rowStart={1}>
-              {!isDisabled && (
-                <Text>
-                  Provide any feedback or comments to the user in the box below
-                  (Optional)
-                </Text>
-              )}
-              <Textarea
-                disabled={isDisabled}
-                height="285px"
-                margin="8px 0"
-                onChange={(e) => setTestFeedback(e.target.value)}
-                placeholder="Enter your feedback here..."
-                value={testFeedback}
-              />
-            </GridItem>
+            <Tooltip
+              hasArrow
+              label={GRADED_TEST_ASSIGN_LEVEL_TOOL_TIP_COPY}
+              isDisabled={!isDisabled}
+            >
+              <GridItem marginBottom="24px" paddingRight="32px" rowStart={1}>
+                {!isDisabled && (
+                  <Text>
+                    Provide any feedback or comments to the user in the box
+                    below (Optional)
+                  </Text>
+                )}
+                <Textarea
+                  disabled={isDisabled}
+                  height="285px"
+                  margin="8px 0"
+                  onChange={(e) => setTestFeedback(e.target.value)}
+                  placeholder="Enter your feedback here..."
+                  value={testFeedback}
+                />
+              </GridItem>
+            </Tooltip>
           </Grid>
           <Flex marginRight="28px" justifyContent="flex-end">
             {onBack && (
