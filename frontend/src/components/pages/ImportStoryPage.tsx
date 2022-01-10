@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { useQuery } from "@apollo/client";
 import Select from "react-select";
 import {
+  Badge,
   Box,
   Button,
   Flex,
@@ -21,6 +22,7 @@ import { colourStyles } from "../../theme/components/Select";
 import { getLanguagesQuery } from "../../APIClients/queries/LanguageQueries";
 
 const ImportStoryPage = () => {
+  const [excludedLanguages, setExcludedLanguages] = useState<string[]>([]);
   const [languageOptions, setLanguageOptions] = useState<string[]>([]);
 
   useQuery(getLanguagesQuery.string, {
@@ -33,6 +35,23 @@ const ImportStoryPage = () => {
   const options = languageOptions.map((lang) => {
     return { value: lang };
   });
+
+  const excludedLanguageBadges = excludedLanguages.map((lang: string) => (
+    <Badge key={lang} textTransform="none" marginBottom="15px">
+      {lang}
+      <Button
+        variant="clear"
+        size="clear"
+        onClick={() => {
+          const excludedLanguagesCopy = [...excludedLanguages];
+          excludedLanguagesCopy.splice(excludedLanguages.indexOf(lang), 1);
+          setExcludedLanguages(excludedLanguagesCopy);
+        }}
+      >
+        ✕
+      </Button>
+    </Badge>
+  ));
 
   return (
     <Flex direction="column" height="100vh" justifyContent="space-between">
@@ -103,6 +122,7 @@ const ImportStoryPage = () => {
               >
                 Languages to Exclude
               </FormLabel>
+              {excludedLanguageBadges}
               <Box width="300px">
                 <Select
                   components={{ DropdownIndicator }}
@@ -111,6 +131,10 @@ const ImportStoryPage = () => {
                   `}
                   id="languages"
                   options={options}
+                  onChange={(option: any) =>
+                    excludedLanguages.indexOf(option?.value) === -1 &&
+                    setExcludedLanguages([...excludedLanguages, option?.value])
+                  }
                   placeholder="Select one or more languages"
                   styles={colourStyles}
                 />
