@@ -134,36 +134,33 @@ const PreviewModal = ({
       <ModalOverlay />
       <ModalContent paddingLeft="20px">
         <ModalCloseButton position="static" marginLeft="auto" />
-        {title &&
-          language &&
-          level &&
-          storyTranslationId &&
-          primaryBtnOnClick &&
-          primaryBtnText && (
-            <ModalHeader paddingTop="-10px">
-              <Heading as="h3" size="lg" marginBottom="10px" width="75%">
-                {title}
-              </Heading>
-              <Badge variant="language" size="s">{`${language}`}</Badge>
-              <Badge
-                backgroundColor={getLevelVariant(level)}
-                size="s"
-              >{`Level ${level}`}</Badge>
+        {title && language && level && primaryBtnOnClick && primaryBtnText && (
+          <ModalHeader paddingTop="-10px">
+            <Heading as="h3" size="lg" marginBottom="10px" width="75%">
+              {title}
+            </Heading>
+            <Badge variant="language" size="s">{`${language}`}</Badge>
+            <Badge
+              backgroundColor={getLevelVariant(level)}
+              size="s"
+            >{`Level ${level}`}</Badge>
+            {storyTranslationId && (
               <Badge variant="stage" size="s">
                 {convertStageTitleCase(stage)}
               </Badge>
-              <Button
-                float="right"
-                width="20%"
-                colorScheme="blue"
-                size="secondary"
-                marginRight="15px"
-                onClick={primaryBtnOnClick()}
-              >
-                {primaryBtnText}
-              </Button>
-            </ModalHeader>
-          )}
+            )}
+            <Button
+              float="right"
+              width="20%"
+              colorScheme="blue"
+              size="secondary"
+              marginRight="15px"
+              onClick={primaryBtnOnClick()}
+            >
+              {primaryBtnText}
+            </Button>
+          </ModalHeader>
+        )}
         {youtubeLink && (
           <ModalBody marginBottom="30px" marginTop="-10px" as="u">
             <Link href={youtubeLink} isExternal color="gray">
