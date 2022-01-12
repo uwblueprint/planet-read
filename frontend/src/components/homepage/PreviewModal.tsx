@@ -29,7 +29,7 @@ export type PreviewModalProps = {
   storyTranslationId?: number;
   title: string;
   youtubeLink: string;
-  level: number;
+  level?: number;
   language?: string;
   previewBook: () => void;
   preview: boolean;
@@ -141,7 +141,7 @@ const PreviewModal = ({
           {language && (
             <Badge variant="language" size="s">{`${language}`}</Badge>
           )}
-          {level !== 0 && (
+          {level && (
             <Badge
               backgroundColor={getLevelVariant(level)}
               size="s"
