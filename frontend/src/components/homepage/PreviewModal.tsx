@@ -25,10 +25,10 @@ import {
 import { IS_RTL } from "../../APIClients/queries/LanguageQueries";
 
 export type PreviewModalProps = {
-  storyId: number;
+  storyId?: number;
   storyTranslationId?: number;
-  title: string;
-  youtubeLink: string;
+  title?: string;
+  youtubeLink?: string;
   level?: number;
   language?: string;
   previewBook: () => void;
@@ -65,7 +65,7 @@ const PreviewModal = ({
     });
   }
 
-  if (storyTranslationId) {
+  if (storyId && storyTranslationId) {
     useQuery(GET_STORY_AND_TRANSLATION_CONTENTS(storyId, storyTranslationId), {
       fetchPolicy: "cache-and-network",
       onCompleted: (data: any) => {
@@ -134,38 +134,37 @@ const PreviewModal = ({
       <ModalOverlay />
       <ModalContent paddingLeft="20px">
         <ModalCloseButton position="static" marginLeft="auto" />
-        <ModalHeader paddingTop="-10px">
-          <Heading as="h3" size="lg" marginBottom="10px" width="75%">
-            {title}
-          </Heading>
-          {language && (
-            <Badge variant="language" size="s">{`${language}`}</Badge>
+        {title &&
+          language &&
+          level &&
+          storyTranslationId &&
+          primaryBtnOnClick &&
+          primaryBtnText && (
+            <ModalHeader paddingTop="-10px">
+              <Heading as="h3" size="lg" marginBottom="10px" width="75%">
+                {title}
+              </Heading>
+              <Badge variant="language" size="s">{`${language}`}</Badge>
+              <Badge
+                backgroundColor={getLevelVariant(level)}
+                size="s"
+              >{`Level ${level}`}</Badge>
+              <Badge variant="stage" size="s">
+                {convertStageTitleCase(stage)}
+              </Badge>
+              <Button
+                float="right"
+                width="20%"
+                colorScheme="blue"
+                size="secondary"
+                marginRight="15px"
+                onClick={primaryBtnOnClick()}
+              >
+                {primaryBtnText}
+              </Button>
+            </ModalHeader>
           )}
-          {level && (
-            <Badge
-              backgroundColor={getLevelVariant(level)}
-              size="s"
-            >{`Level ${level}`}</Badge>
-          )}
-          {storyTranslationId && (
-            <Badge variant="stage" size="s">
-              {convertStageTitleCase(stage)}
-            </Badge>
-          )}
-          {primaryBtnOnClick && primaryBtnText && (
-            <Button
-              float="right"
-              width="20%"
-              colorScheme="blue"
-              size="secondary"
-              marginRight="15px"
-              onClick={primaryBtnOnClick()}
-            >
-              {primaryBtnText}
-            </Button>
-          )}
-        </ModalHeader>
-        {youtubeLink !== "" && (
+        {youtubeLink && (
           <ModalBody marginBottom="30px" marginTop="-10px" as="u">
             <Link href={youtubeLink} isExternal color="gray">
               <Icon

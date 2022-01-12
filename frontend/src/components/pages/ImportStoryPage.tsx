@@ -431,10 +431,6 @@ const ImportStoryPage = () => {
       </Flex>
       {preview && (
         <PreviewModal
-          storyId={0}
-          title={title}
-          youtubeLink={youtubeLink}
-          level={level || 0}
           previewBook={onClosePreview}
           preview={preview}
           previewStoryContents={storyContents}
