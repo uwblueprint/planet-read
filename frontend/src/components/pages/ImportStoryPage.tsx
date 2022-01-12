@@ -130,6 +130,7 @@ const ImportStoryPage = () => {
           description,
           youtubeLink,
           level,
+          translatedLanguages: excludedLanguages,
         },
       },
     });
