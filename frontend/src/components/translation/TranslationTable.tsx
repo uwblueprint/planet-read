@@ -11,6 +11,7 @@ import { IS_RTL } from "../../APIClients/queries/LanguageQueries";
 import {
   TRANSLATION_PAGE_TOOL_TIP_COPY,
   REVIEW_PAGE_TOOL_TIP_COPY,
+  REVIEW_TEST_TOOL_TIP_COPY,
 } from "../../utils/Copy";
 
 export type TranslationTableProps = {
@@ -72,7 +73,6 @@ const TranslationTable = ({
     setStoryTranslationContentId!!(storyTranslationContentId);
   };
 
-  const showStatusColumn = !isTest || isReviewable;
   const [isRTL, setIsRTL] = useState<boolean>(true);
 
   useQuery(IS_RTL(translatedLanguage), {
@@ -126,55 +126,55 @@ const TranslationTable = ({
             </Flex>
           </Tooltip>
         )}
-        {showStatusColumn && (
-          <Flex
-            direction="column"
-            width="160px"
-            marginLeft="12px"
-            marginTop="10px"
-            marginRight={isTest ? `${STATUS_COLUMN_MARGIN_OFFSET}px` : "8px"}
-          >
-            {isReviewable ? (
-              <StatusBadge
-                translatedStoryLines={translatedStoryLines}
-                setTranslatedStoryLines={setTranslatedStoryLines}
-                storyLine={storyLine}
-                numApprovedLines={numApprovedLines!!}
-                setNumApprovedLines={setNumApprovedLines!!}
-                numGradedLines={numGradedLines}
-                setNumGradedLines={setNumGradedLines}
-                isTest={isTest}
-              />
-            ) : (
-              <Tooltip
-                hasArrow
-                label={REVIEW_PAGE_TOOL_TIP_COPY}
-                isDisabled={editable || !reviewPage}
+        <Flex
+          direction="column"
+          width="160px"
+          marginLeft="12px"
+          marginTop="10px"
+          marginRight={isTest ? `${STATUS_COLUMN_MARGIN_OFFSET}px` : "8px"}
+        >
+          {isReviewable ? (
+            <StatusBadge
+              translatedStoryLines={translatedStoryLines}
+              setTranslatedStoryLines={setTranslatedStoryLines}
+              storyLine={storyLine}
+              numApprovedLines={numApprovedLines!!}
+              setNumApprovedLines={setNumApprovedLines!!}
+              numGradedLines={numGradedLines}
+              setNumGradedLines={setNumGradedLines}
+              isTest={isTest}
+            />
+          ) : (
+            <Tooltip
+              hasArrow
+              label={
+                isTest ? REVIEW_TEST_TOOL_TIP_COPY : REVIEW_PAGE_TOOL_TIP_COPY
+              }
+              isDisabled={editable || !reviewPage}
+            >
+              <Badge
+                textTransform="capitalize"
+                variant={getStatusVariant(storyLine.status)}
+                marginBottom="10px"
               >
-                <Badge
-                  textTransform="capitalize"
-                  variant={getStatusVariant(storyLine.status)}
-                  marginBottom="10px"
-                >
-                  {storyLine.status}
-                </Badge>
-              </Tooltip>
-            )}
-            {commentLine! > -1 && (
-              <Button
-                variant="addComment"
-                onClick={() =>
-                  handleCommentButton(
-                    displayLineNumber,
-                    storyLine.storyTranslationContentId!!,
-                  )
-                }
-              >
-                Comment
-              </Button>
-            )}
-          </Flex>
-        )}
+                {storyLine.status}
+              </Badge>
+            </Tooltip>
+          )}
+          {commentLine! > -1 && (
+            <Button
+              variant="addComment"
+              onClick={() =>
+                handleCommentButton(
+                  displayLineNumber,
+                  storyLine.storyTranslationContentId!!,
+                )
+              }
+            >
+              Comment
+            </Button>
+          )}
+        </Flex>
       </Flex>
     );
   });
@@ -218,7 +218,7 @@ const TranslationTable = ({
             )}
           </Text>
         </Flex>
-        {showStatusColumn && <StatusHeader />}
+        <StatusHeader />
       </Flex>
       {storyCells}
     </Flex>
