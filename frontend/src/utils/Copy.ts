@@ -132,3 +132,6 @@ export const USER_PROFILE_PAGE_SAVE_CHANGES_CONFIRMATION =
 export const USER_PROFILE_PAGE_SAVE_CHANGES_BUTTON = "I'm sure, save changes";
 
 export const REVIEW_TEST_TOOL_TIP_COPY = "This test has already been graded.";
+
+export const GRADED_TEST_ASSIGN_LEVEL_TOOL_TIP_COPY =
+  "The results of the test cannot be altered.";

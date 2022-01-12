@@ -161,6 +161,7 @@ const StoryTestsTable = ({
         <Td>
           {storyTest.stage === "PUBLISH" ? (
             <Button
+              backgroundColor="white"
               borderRadius="8px"
               borderWidth="1px"
               colorScheme="white"

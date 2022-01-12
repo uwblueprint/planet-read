@@ -17,6 +17,7 @@ import {
   ModalHeader,
   ModalOverlay,
   Text,
+  Tooltip,
 } from "@chakra-ui/react";
 
 import InfoAlert from "../utils/InfoAlert";
@@ -30,6 +31,7 @@ import {
   ASSIGN_USER_LEVEL_CONFIRMATION,
   ASSIGN_USER_LEVEL_BUTTON,
   VIEW_FAILED_GRADE_ALERT,
+  GRADED_TEST_ASSIGN_LEVEL_TOOL_TIP_COPY,
 } from "../../utils/Copy";
 import ConfirmationModal from "../utils/ConfirmationModal";
 import DropdownIndicator from "../utils/DropdownIndicator";
@@ -122,25 +124,32 @@ const AssignTestGradeModal = ({
           rowStart={2}
         >
           <Heading size="sm">Assign Level</Heading>
-          <Box width="80%">
-            <Select
-              isDisabled={isDisabled}
-              placeholder="Assign level"
-              options={levelOptions}
-              onChange={(option: any) =>
-                setTranslatorLevel(parseInt(option.value, 10))
-              }
-              getOptionLabel={(option: any) => option.value}
-              value={
-                displayTranslatorLevel
-                  ? { value: `${displayTranslatorLevel}` }
-                  : null
-              }
-              styles={colourStyles}
-              components={{ DropdownIndicator }}
-            />
-          </Box>
+          <Tooltip
+            hasArrow
+            label={GRADED_TEST_ASSIGN_LEVEL_TOOL_TIP_COPY}
+            isDisabled={!isDisabled}
+          >
+            <Box width="80%">
+              <Select
+                isDisabled={isDisabled}
+                placeholder="Assign level"
+                options={levelOptions}
+                onChange={(option: any) =>
+                  setTranslatorLevel(parseInt(option.value, 10))
+                }
+                getOptionLabel={(option: any) => option.value}
+                value={
+                  displayTranslatorLevel
+                    ? { value: `${displayTranslatorLevel}` }
+                    : null
+                }
+                styles={colourStyles}
+                components={{ DropdownIndicator }}
+              />
+            </Box>
+          </Tooltip>
         </GridItem>
+
         <GridItem
           colSpan={3}
           marginBottom="24px"
@@ -155,10 +164,16 @@ const AssignTestGradeModal = ({
             width="100%"
             onChange={() => setAssignReviewerLevel(!assignReviewerLevel)}
           >
-            <Text>
-              I would like to grant the <strong>Reviewer</strong> role to this
-              user.
-            </Text>
+            <Tooltip
+              hasArrow
+              label={GRADED_TEST_ASSIGN_LEVEL_TOOL_TIP_COPY}
+              isDisabled={!isDisabled}
+            >
+              <Text>
+                I would like to grant the <strong>Reviewer</strong> role to this
+                user.
+              </Text>
+            </Tooltip>
           </Checkbox>
         </GridItem>
         {(assignReviewerLevel || defaultReviewerLevel !== null) && (
