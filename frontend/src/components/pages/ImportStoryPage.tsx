@@ -1,5 +1,6 @@
 import React, { useState } from "react";
-import { useQuery } from "@apollo/client";
+import { useHistory } from "react-router-dom";
+import { useQuery, useMutation } from "@apollo/client";
 import Select from "react-select";
 import {
   Badge,
@@ -9,21 +10,38 @@ import {
   FormControl,
   FormLabel,
   Heading,
+  IconButton,
   Input,
   Link,
   Text,
   Textarea,
 } from "@chakra-ui/react";
 import { Icon } from "@chakra-ui/icon";
-import { MdArrowBackIosNew, MdFolder } from "react-icons/md";
+import { MdArrowBackIosNew, MdDelete, MdFolder } from "react-icons/md";
 import DropdownIndicator from "../utils/DropdownIndicator";
 import Header from "../navigation/Header";
 import { colourStyles } from "../../theme/components/Select";
 import { getLanguagesQuery } from "../../APIClients/queries/LanguageQueries";
+import {
+  IMPORT_STORY,
+  ImportStoryResponse,
+} from "../../APIClients/mutations/StoryMutations";
+import { levelOptions } from "../../constants/Levels";
 
 const ImportStoryPage = () => {
+  const [dragOver, setDragOver] = useState(false);
   const [excludedLanguages, setExcludedLanguages] = useState<string[]>([]);
   const [languageOptions, setLanguageOptions] = useState<string[]>([]);
+  const [storyFile, setStoryFile] = useState<File | null>(null);
+  const [title, setTitle] = useState<string>("");
+  const [description, setDescription] = useState<string>("");
+  const [level, setLevel] = useState<number | null>(null);
+  const [youtubeLink, setYoutubeLink] = useState<string>("");
+
+  const history = useHistory();
+  const [importStory] = useMutation<{
+    importStory: ImportStoryResponse;
+  }>(IMPORT_STORY);
 
   useQuery(getLanguagesQuery.string, {
     fetchPolicy: "cache-and-network",
@@ -31,6 +49,86 @@ const ImportStoryPage = () => {
       setLanguageOptions(data.languages);
     },
   });
+
+  const onFileUpload = (e: any) => {
+    setStoryFile(e.target.files[0]);
+  };
+
+  const onFileDelete = () => {
+    setStoryFile(null);
+  };
+
+  const onDragEnter = (e: any) => {
+    e.preventDefault();
+    setDragOver(true);
+  };
+
+  const onDragLeave = (e: any) => {
+    e.preventDefault();
+    setDragOver(false);
+  };
+
+  const onDragOver = (e: any) => {
+    e.preventDefault();
+    if (
+      e.dataTransfer.items &&
+      e.dataTransfer.items.length === 1 &&
+      e.dataTransfer.items[0].kind === "file"
+    ) {
+      e.dataTransfer.dropEffect = "copy";
+    }
+  };
+
+  const onFileDrop = (e: any) => {
+    e.preventDefault();
+    setDragOver(false);
+    if (
+      e.dataTransfer.items &&
+      e.dataTransfer.items.length === 1 &&
+      e.dataTransfer.items[0].kind === "file"
+    ) {
+      const newStoryFile = e.dataTransfer.items[0].getAsFile();
+      if (
+        newStoryFile.type ===
+        "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+      ) {
+        setStoryFile(newStoryFile);
+      } else {
+        console.log("Incorrect file type");
+      }
+    } else if (e.dataTransfer.files && e.dataTransfer.files.length === 1) {
+      const newStoryFile = e.dataTransfer.files[0];
+      if (
+        newStoryFile.type ===
+        "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+      ) {
+        setStoryFile(newStoryFile);
+      }
+    }
+  };
+  const submitForm = async () => {
+    if (!(storyFile && title && description && level && youtubeLink)) {
+      window.alert("Please fill out all required fields.");
+      return;
+    }
+
+    const result = await importStory({
+      variables: {
+        storyFile,
+        storyDetails: {
+          title,
+          description,
+          youtubeLink,
+          level,
+          translatedLanguages: excludedLanguages,
+        },
+      },
+    });
+    if (result.data) {
+      const storyId = result.data.importStory.story.id;
+      history.push(`/story/${storyId}`);
+    }
+  };
 
   const options = languageOptions.map((lang) => {
     return { value: lang };
@@ -79,7 +177,13 @@ const ImportStoryPage = () => {
               <FormLabel fontWeight="bold" htmlFor="title" marginBottom="15px">
                 Title
               </FormLabel>
-              <Input id="title" size="md" type="text" />
+              <Input
+                id="title"
+                size="md"
+                type="text"
+                value={title}
+                onChange={(e) => setTitle(e.target.value)}
+              />
             </FormControl>
             <FormControl isRequired marginTop="40px">
               <FormLabel
@@ -89,9 +193,15 @@ const ImportStoryPage = () => {
               >
                 Description
               </FormLabel>
-              <Textarea id="description" height="150px" type="text" />
+              <Textarea
+                id="description"
+                height="150px"
+                type="text"
+                value={description}
+                onChange={(e) => setDescription(e.target.value)}
+              />
             </FormControl>
-            <FormControl marginTop="40px">
+            <FormControl marginTop="40px" isRequired>
               <FormLabel fontWeight="bold" htmlFor="level" marginBottom="15px">
                 Level
               </FormLabel>
@@ -101,6 +211,10 @@ const ImportStoryPage = () => {
                   id="level"
                   placeholder="Select level"
                   styles={colourStyles}
+                  options={levelOptions}
+                  onChange={(option: any) => setLevel(option?.value || "")}
+                  getOptionLabel={(option: any) => `Level ${option.value}`}
+                  value={level ? { value: level } : null}
                 />
               </Box>
             </FormControl>
@@ -112,7 +226,13 @@ const ImportStoryPage = () => {
               >
                 Youtube Link
               </FormLabel>
-              <Input id="youtube-link" size="md" type="text" />
+              <Input
+                id="youtube-link"
+                size="md"
+                type="text"
+                value={youtubeLink}
+                onChange={(e) => setYoutubeLink(e.target.value)}
+              />
             </FormControl>
             <FormControl marginTop="40px">
               <FormLabel
@@ -172,34 +292,87 @@ const ImportStoryPage = () => {
                 internationally important languages.
               </Text>
             </Box>
-            <FormControl isRequired marginTop="40px">
-              <FormLabel
-                fontWeight="bold"
-                htmlFor="upload-file"
-                marginBottom="15px"
-              >
+            <Flex direction="column" flex={1} marginTop="40px">
+              <Heading size="sm">
                 Upload file
-              </FormLabel>
-              <Box
-                backgroundColor="blue.50"
-                border="1px solid"
-                borderColor="blue.100"
-                borderRadius="10px"
-                padding="60px 120px"
-                textAlign="center"
+                <span
+                  role="presentation"
+                  className="chakra-form__required-indicator css-1ssjhh"
+                >
+                  *
+                </span>
+              </Heading>{" "}
+              <Flex
+                align="center"
+                background="blue.50"
+                border={dragOver ? "2px dashed" : "2px solid"}
+                // this is blue.100 at 50% opacity
+                borderColor="rgba(29, 108, 165, 0.5)"
+                direction="column"
+                height="250px"
+                justify="center"
+                onDragEnter={(e: any) => onDragEnter(e)}
+                onDragLeave={(e: any) => onDragLeave(e)}
+                onDragOver={(e: any) => onDragOver(e)}
+                onDrop={(e: any) => onFileDrop(e)}
+                opacity={dragOver ? "50%" : "100%"}
+                rounded="md"
               >
-                <Icon as={MdFolder} color="blue.100" height={16} width={16} />
-                <Text fontSize="sm" marginBottom="15px">
-                  Drag & drop your files here (.docx)
+                <Icon
+                  aria-label="Folder icon"
+                  as={MdFolder}
+                  background="transparent"
+                  color="blue.100"
+                  height={16}
+                  marginBottom="8px"
+                  pointerEvents="none"
+                  width={16}
+                />
+                <Text pointerEvents="none">
+                  Drag & drop your file here (.docx)
                 </Text>
-                <Button colorScheme="blue" textTransform="capitalize">
-                  Browse Files
-                </Button>
-              </Box>
-            </FormControl>
-            <Text fontWeight="bold" marginTop="40px">
-              Uploaded files
-            </Text>
+                <FormControl
+                  pointerEvents={dragOver ? "none" : "auto"}
+                  width="160px"
+                >
+                  <FormLabel
+                    cursor="pointer"
+                    htmlFor="browse-files"
+                    marginTop="16px"
+                  >
+                    <Button colorScheme="blue" pointerEvents="none">
+                      Browse Files
+                    </Button>
+                  </FormLabel>
+                  <Input
+                    accept=".docx,.pdf"
+                    hidden
+                    id="browse-files"
+                    onChange={(e) => onFileUpload(e)}
+                    type="file"
+                  />
+                </FormControl>
+              </Flex>
+              <Heading marginTop="40px" size="sm">
+                Uploaded file
+              </Heading>
+              <Text marginBottom="10px">
+                Drag & drop a file or browse files to upload a story.
+              </Text>
+              {storyFile && (
+                <Flex key={storyFile.name}>
+                  <Text marginTop="10px">{storyFile.name}</Text>
+                  <IconButton
+                    aria-label="Delete icon"
+                    background="transparent"
+                    icon={<Icon as={MdDelete} height={5} width={5} />}
+                    marginTop="3px"
+                    onClick={() => onFileDelete()}
+                    width="fit-content"
+                  />
+                </Flex>
+              )}
+            </Flex>
           </Flex>
         </Flex>
       </Flex>
@@ -215,7 +388,11 @@ const ImportStoryPage = () => {
           <Button colorScheme="blue" marginRight="20px" variant="blueOutline">
             PREVIEW STORY
           </Button>
-          <Button colorScheme="blue" marginRight="90px">
+          <Button
+            colorScheme="blue"
+            marginRight="90px"
+            onClick={() => submitForm()}
+          >
             IMPORT STORY
           </Button>
         </Box>

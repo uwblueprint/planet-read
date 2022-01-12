@@ -201,3 +201,19 @@ export const SOFT_DELETE_STORY = gql`
 `;
 
 export type SoftDeleteStoryResponse = { ok: boolean };
+
+export const IMPORT_STORY = gql`
+  mutation ImportStory($storyFile: Upload!, $storyDetails: StoryRequestDTO!) {
+    importStory(storyFile: $storyFile, storyDetails: $storyDetails) {
+      story {
+        id
+      }
+    }
+  }
+`;
+
+export type ImportStoryResponse = {
+  story: {
+    id: number;
+  };
+};
