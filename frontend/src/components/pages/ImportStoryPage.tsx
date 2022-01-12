@@ -25,8 +25,11 @@ import { getLanguagesQuery } from "../../APIClients/queries/LanguageQueries";
 import {
   IMPORT_STORY,
   ImportStoryResponse,
+  PROCESS_STORY,
+  ProcessStoryResponse,
 } from "../../APIClients/mutations/StoryMutations";
 import { levelOptions } from "../../constants/Levels";
+import PreviewModal from "../homepage/PreviewModal";
 
 const ImportStoryPage = () => {
   const [dragOver, setDragOver] = useState(false);
@@ -37,11 +40,17 @@ const ImportStoryPage = () => {
   const [description, setDescription] = useState<string>("");
   const [level, setLevel] = useState<number | null>(null);
   const [youtubeLink, setYoutubeLink] = useState<string>("");
+  const [preview, setPreview] = useState(false);
+  const [storyContents, setStoryContents] = useState<string[]>([]);
 
   const history = useHistory();
   const [importStory] = useMutation<{
     importStory: ImportStoryResponse;
   }>(IMPORT_STORY);
+
+  const [processStory] = useMutation<{
+    processStory: ProcessStoryResponse;
+  }>(PROCESS_STORY);
 
   useQuery(getLanguagesQuery.string, {
     fetchPolicy: "cache-and-network",
@@ -106,6 +115,7 @@ const ImportStoryPage = () => {
       }
     }
   };
+
   const submitForm = async () => {
     if (!(storyFile && title && description && level && youtubeLink)) {
       window.alert("Please fill out all required fields.");
@@ -150,6 +160,22 @@ const ImportStoryPage = () => {
       </Button>
     </Badge>
   ));
+
+  const onPreviewStory = async () => {
+    const result = await processStory({
+      variables: {
+        storyFile,
+      },
+    });
+    if (result.data) {
+      setStoryContents(result.data.processStory.storyContents);
+      setPreview(true);
+    }
+  };
+
+  const onClosePreview = () => {
+    setPreview(false);
+  };
 
   return (
     <Flex direction="column" height="100vh" justifyContent="space-between">
@@ -345,7 +371,7 @@ const ImportStoryPage = () => {
                     </Button>
                   </FormLabel>
                   <Input
-                    accept=".docx,.pdf"
+                    accept=".docx"
                     hidden
                     id="browse-files"
                     onChange={(e) => onFileUpload(e)}
@@ -385,7 +411,13 @@ const ImportStoryPage = () => {
         padding="20px 30px"
       >
         <Box>
-          <Button colorScheme="blue" marginRight="20px" variant="blueOutline">
+          <Button
+            colorScheme="blue"
+            disabled={storyFile === null}
+            marginRight="20px"
+            onClick={onPreviewStory}
+            variant="blueOutline"
+          >
             PREVIEW STORY
           </Button>
           <Button
@@ -397,6 +429,13 @@ const ImportStoryPage = () => {
           </Button>
         </Box>
       </Flex>
+      {preview && (
+        <PreviewModal
+          previewBook={onClosePreview}
+          preview={preview}
+          previewStoryContents={storyContents}
+        />
+      )}
     </Flex>
   );
 };

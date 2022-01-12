@@ -217,3 +217,15 @@ export type ImportStoryResponse = {
     id: number;
   };
 };
+
+export const PROCESS_STORY = gql`
+  mutation ProcessStory($storyFile: Upload!) {
+    processStory(storyFile: $storyFile) {
+      storyContents
+    }
+  }
+`;
+
+export type ProcessStoryResponse = {
+  storyContents: string[];
+};

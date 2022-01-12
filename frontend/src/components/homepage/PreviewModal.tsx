@@ -25,16 +25,17 @@ import {
 import { IS_RTL } from "../../APIClients/queries/LanguageQueries";
 
 export type PreviewModalProps = {
-  storyId: number;
+  storyId?: number;
   storyTranslationId?: number;
-  title: string;
-  youtubeLink: string;
-  level: number;
-  language: string;
+  title?: string;
+  youtubeLink?: string;
+  level?: number;
+  language?: string;
   previewBook: () => void;
   preview: boolean;
-  primaryBtnText: string;
-  primaryBtnOnClick: () => any;
+  primaryBtnText?: string;
+  primaryBtnOnClick?: () => any;
+  previewStoryContents?: string[];
 };
 
 const PreviewModal = ({
@@ -48,20 +49,23 @@ const PreviewModal = ({
   preview,
   primaryBtnText,
   primaryBtnOnClick,
+  previewStoryContents,
 }: PreviewModalProps) => {
   const [content, setContent] = useState<string[]>([]);
   const [translationContent, setTranslationContent] = useState<string[]>([]);
   const [stage, setStage] = useState<string>("");
   const [isRTL, setIsRTL] = useState<boolean>(false);
 
-  useQuery(IS_RTL(language), {
-    fetchPolicy: "cache-and-network",
-    onCompleted: (data) => {
-      setIsRTL(data.isRtl.isRtl);
-    },
-  });
+  if (language) {
+    useQuery(IS_RTL(language), {
+      fetchPolicy: "cache-and-network",
+      onCompleted: (data) => {
+        setIsRTL(data.isRtl.isRtl);
+      },
+    });
+  }
 
-  if (storyTranslationId) {
+  if (storyId && storyTranslationId) {
     useQuery(GET_STORY_AND_TRANSLATION_CONTENTS(storyId, storyTranslationId), {
       fetchPolicy: "cache-and-network",
       onCompleted: (data: any) => {
@@ -79,7 +83,7 @@ const PreviewModal = ({
         setStage(data.storyTranslationById.stage);
       },
     });
-  } else {
+  } else if (storyId) {
     useQuery(GET_STORY_CONTENTS(storyId), {
       fetchPolicy: "cache-and-network",
       onCompleted: (data: any) => {
@@ -91,22 +95,34 @@ const PreviewModal = ({
     });
   }
 
-  const storyContents = content.map((c: string, index: number) => (
-    <Flex>
-      <Text variant="previewModalLineIndex">{index + 1}</Text>
-      <Text variant="cell" fontSize="16px">
-        {c}
-      </Text>
-      {storyTranslationId && (
-        <Text
-          textAlign={isRTL ? "right" : "left"}
-          variant="previewModalTranslationContent"
-        >
-          {translationContent[index]}
+  let storyContents = null;
+  if (previewStoryContents) {
+    storyContents = previewStoryContents.map((c: string, index: number) => (
+      <Flex>
+        <Text variant="previewModalLineIndex">{index + 1}</Text>
+        <Text variant="cell" fontSize="16px">
+          {c}
         </Text>
-      )}
-    </Flex>
-  ));
+      </Flex>
+    ));
+  } else {
+    storyContents = content.map((c: string, index: number) => (
+      <Flex>
+        <Text variant="previewModalLineIndex">{index + 1}</Text>
+        <Text variant="cell" fontSize="16px">
+          {c}
+        </Text>
+        {storyTranslationId && (
+          <Text
+            textAlign={isRTL ? "right" : "left"}
+            variant="previewModalTranslationContent"
+          >
+            {translationContent[index]}
+          </Text>
+        )}
+      </Flex>
+    ));
+  }
 
   return (
     <Modal
@@ -118,37 +134,46 @@ const PreviewModal = ({
       <ModalOverlay />
       <ModalContent paddingLeft="20px">
         <ModalCloseButton position="static" marginLeft="auto" />
-        <ModalHeader paddingTop="-10px">
-          <Heading as="h3" size="lg" marginBottom="10px" width="75%">
-            {title}
-          </Heading>
-          <Badge variant="language" size="s">{`${language}`}</Badge>
-          <Badge
-            backgroundColor={getLevelVariant(level)}
-            size="s"
-          >{`Level ${level}`}</Badge>
-          {storyTranslationId && (
-            <Badge variant="stage" size="s">
-              {convertStageTitleCase(stage)}
-            </Badge>
-          )}
-          <Button
-            float="right"
-            width="20%"
-            colorScheme="blue"
-            size="secondary"
-            marginRight="15px"
-            onClick={primaryBtnOnClick()}
-          >
-            {primaryBtnText}
-          </Button>
-        </ModalHeader>
-        <ModalBody marginBottom="30px" marginTop="-10px" as="u">
-          <Link href={youtubeLink} isExternal color="gray">
-            <Icon as={MdTrendingFlat} height={6} width={6} marginRight="10px" />
-            Watch the English AniBook
-          </Link>
-        </ModalBody>
+        {title && language && level && primaryBtnOnClick && primaryBtnText && (
+          <ModalHeader paddingTop="-10px">
+            <Heading as="h3" size="lg" marginBottom="10px" width="75%">
+              {title}
+            </Heading>
+            <Badge variant="language" size="s">{`${language}`}</Badge>
+            <Badge
+              backgroundColor={getLevelVariant(level)}
+              size="s"
+            >{`Level ${level}`}</Badge>
+            {storyTranslationId && (
+              <Badge variant="stage" size="s">
+                {convertStageTitleCase(stage)}
+              </Badge>
+            )}
+            <Button
+              float="right"
+              width="20%"
+              colorScheme="blue"
+              size="secondary"
+              marginRight="15px"
+              onClick={primaryBtnOnClick()}
+            >
+              {primaryBtnText}
+            </Button>
+          </ModalHeader>
+        )}
+        {youtubeLink && (
+          <ModalBody marginBottom="30px" marginTop="-10px" as="u">
+            <Link href={youtubeLink} isExternal color="gray">
+              <Icon
+                as={MdTrendingFlat}
+                height={6}
+                width={6}
+                marginRight="10px"
+              />
+              Watch the English AniBook
+            </Link>
+          </ModalBody>
+        )}
         <ModalBody>{storyContents}</ModalBody>
       </ModalContent>
     </Modal>
