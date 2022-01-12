@@ -133,3 +133,10 @@ export const USER_PROFILE_PAGE_SAVE_CHANGES_BUTTON = "I'm sure, save changes";
 
 export const GRADED_TEST_ASSIGN_LEVEL_TOOL_TIP_COPY =
   "The results of the test cannot be altered.";
+
+export const ADD_LANGUAGE_SUCCESS_HEADING = "New Language Added";
+
+export const ADD_LANGUAGE_SUCCESS_CONFIRMATION =
+  "The new language was successfully added.";
+
+export const CONFIRM_OK = "Okay";
