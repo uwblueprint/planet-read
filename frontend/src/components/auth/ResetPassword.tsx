@@ -49,6 +49,7 @@ const ResetPassword = ({ email }: ResetPasswordProps) => {
       if (typeof err === "string") {
         handleErrorOnReset(err);
       } else {
+        // eslint-disable-next-line no-console
         console.log(err);
         handleErrorOnReset("Error occurred, please try again.");
       }

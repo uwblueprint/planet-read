@@ -103,9 +103,11 @@ const ReviewPage = () => {
         if (result.data?.updateStoryTranslationStage.ok) {
           history.push("/");
         } else {
+          // eslint-disable-next-line no-alert
           window.alert(`Unable to update story stage to ${stage}.`);
         }
       } catch (error) {
+        // eslint-disable-next-line no-alert
         window.alert(error ?? "Error occurred, please try again.");
       }
     };

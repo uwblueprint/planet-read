@@ -124,6 +124,7 @@ const ManageStoryPage = () => {
       });
       window.location.href = "/#/?tab=1";
     } catch (error) {
+      // eslint-disable-next-line no-alert
       window.alert(`Error occurred, please try again. Error: ${error}`);
     }
   };

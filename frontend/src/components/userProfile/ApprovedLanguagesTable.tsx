@@ -229,6 +229,7 @@ const ApprovedLanguagesTable = ({
       closeAddNewLanguageModal(false);
       setAlertNewTest(true);
     } catch (err) {
+      // eslint-disable-next-line no-alert
       window.alert(err);
       closeAddNewLanguageModal(false);
     }
@@ -256,6 +257,7 @@ const ApprovedLanguagesTable = ({
       closeLevelUpModal();
       setAlertNewTest(true);
     } catch (err) {
+      // eslint-disable-next-line no-alert
       window.alert(err);
       closeLevelUpModal();
       closeNewTestModal();

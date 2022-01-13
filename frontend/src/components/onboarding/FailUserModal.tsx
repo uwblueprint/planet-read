@@ -43,6 +43,7 @@ const FailUserModal = ({
     if (result.data?.finishGradingStoryTranslation.ok) {
       history.push("/?tab=4");
     } else {
+      // eslint-disable-next-line no-alert
       window.alert("Could not mark story translation as failed.");
     }
   };

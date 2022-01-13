@@ -28,15 +28,28 @@ export const GET_STORY = (id: number) =>
       }
     `;
 
-export const GET_STORIES = () =>
-  gql`
+export const GET_STORIES = (
+  searchText?: string | null,
+  startDate?: Date | null,
+  endDate?: Date | null,
+) => {
+  let queryParams =
+    searchText != null ? `storyTitle: "${searchText}", ` : `storyTitle:"",`;
+  queryParams +=
+    startDate != null ? `startDate: "${startDate.toISOString()}", ` : "";
+  queryParams += endDate != null ? `endDate: "${endDate.toISOString()}", ` : "";
+  // eslint-disable-next-line no-console
+  console.log(queryParams);
+
+  return gql`
       query GetStories {
-        stories {
+        stories (${queryParams}) {
           ${STORY_FIELDS}
           dateUploaded
         }
       }
     `;
+};
 
 export const GET_STORY_TRANSLATION = (id: number) =>
   gql`

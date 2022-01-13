@@ -115,7 +115,7 @@ const CommentsPanel = ({
     if (comments.length > 0) {
       return (
         <Box>
-          {comments.map(function (comment: CommentResponse, i: number) {
+          {comments.map((comment: CommentResponse, i: number) => {
             if (threadHeadMap[i]) {
               return (
                 <CommentThread
