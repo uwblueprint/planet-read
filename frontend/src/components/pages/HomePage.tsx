@@ -1,6 +1,6 @@
 import React, { useContext, useEffect, useState } from "react";
 import { useQuery } from "@apollo/client";
-import { Box, Button, Divider, Flex } from "@chakra-ui/react";
+import { Box, Button, Divider, Flex, Text } from "@chakra-ui/react";
 import { Icon } from "@chakra-ui/icon";
 import { MdKeyboardArrowUp } from "react-icons/md";
 
@@ -145,6 +145,7 @@ const HomePage = () => {
       setStories(storyData);
     },
   });
+
   return (
     <Box>
       <Header />
@@ -162,7 +163,11 @@ const HomePage = () => {
             setLanguage={setLanguage}
             role={isTranslator}
             setIsTranslator={setIsTranslator}
-            isDisabled={pageOption !== HomepageOption.BrowseStories}
+            isDisabled={
+              pageOption !== HomepageOption.BrowseStories ||
+              (Object.keys(approvedLanguagesTranslation).length === 0 &&
+                Object.keys(approvedLanguagesReview).length === 0)
+            }
           />
         )}
         <Flex
@@ -181,13 +186,28 @@ const HomePage = () => {
             onChange={handleDisplayMyStoriesChange}
             value={tabHeaderOptions[pageOption]}
           />
-          <StoryList
-            stories={
-              storiesFilter ? stories?.filter(storiesFilter) ?? [] : stories
-            }
-            displayMyStories={pageOption === HomepageOption.MyStories}
-            displayMyTests={pageOption === HomepageOption.MyTests}
-          />
+          {pageOption === HomepageOption.BrowseStories &&
+          Object.keys(approvedLanguagesTranslation).length === 0 &&
+          Object.keys(approvedLanguagesReview).length === 0 ? (
+            <Flex
+              alignItems="center"
+              border="2px solid black"
+              flexDirection="column"
+              margin="10px 0px 10px 0px"
+              padding="20px"
+            >
+              <Text>No Stories Found</Text>
+              <Text>Please check access permissions.</Text>
+            </Flex>
+          ) : (
+            <StoryList
+              stories={
+                storiesFilter ? stories?.filter(storiesFilter) ?? [] : stories
+              }
+              displayMyStories={pageOption === HomepageOption.MyStories}
+              displayMyTests={pageOption === HomepageOption.MyTests}
+            />
+          )}
         </Flex>
       </Flex>
       {showScrollToTop && (
