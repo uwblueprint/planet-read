@@ -69,7 +69,7 @@ class AuthService(IAuthService):
                 CreateUserWithGoogleDTO(
                     first_name=google_user["firstName"],
                     last_name=google_user["lastName"],
-                    role_id="User",
+                    role="User",
                     email=google_user["email"],
                     auth_id=auth_id,
                     on_firebase=on_firebase,
