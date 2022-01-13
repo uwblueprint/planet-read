@@ -107,6 +107,11 @@ const AddLanguageModal = ({ isOpen, onClose }: AddLanguageModalProps) => {
     return { value: "Left-to-right" };
   };
 
+  const languageAlreadyExists =
+    languageOptions
+      .map((lang) => lang.toLowerCase())
+      .indexOf(language.toLowerCase()) !== -1;
+
   return (
     <>
       <Modal
@@ -137,8 +142,16 @@ const AddLanguageModal = ({ isOpen, onClose }: AddLanguageModalProps) => {
                 <Text marginBottom="3px">
                   Please enter the name of the new language.
                 </Text>
+                {languageAlreadyExists && (
+                  <Text marginBottom="3px" color="red.100">
+                    This language already exists.
+                  </Text>
+                )}
                 <Input
                   id="new-language"
+                  isInvalid={languageAlreadyExists}
+                  errorBorderColor="red.100"
+                  focusBorderColor={languageAlreadyExists ? "red.100" : ""}
                   type="text"
                   value={language}
                   onChange={(event) => setLanguage(event.target.value)}
@@ -154,7 +167,11 @@ const AddLanguageModal = ({ isOpen, onClose }: AddLanguageModalProps) => {
                 </Text>
                 <Box
                   width="80%"
-                  sx={language === "" ? disabledStyle : undefined}
+                  sx={
+                    languageAlreadyExists || language === ""
+                      ? disabledStyle
+                      : undefined
+                  }
                 >
                   <Select
                     placeholder="Select Script Direction"
@@ -166,7 +183,7 @@ const AddLanguageModal = ({ isOpen, onClose }: AddLanguageModalProps) => {
                     value={getScriptDirectionSelectValue()}
                     styles={colourStyles}
                     components={{ DropdownIndicator }}
-                    isDisabled={language === ""}
+                    isDisabled={languageAlreadyExists || language === ""}
                   />
                 </Box>
               </Flex>
@@ -174,11 +191,14 @@ const AddLanguageModal = ({ isOpen, onClose }: AddLanguageModalProps) => {
                 <Heading as="h4" size="sm">
                   Existing Languages
                 </Heading>
-                <Box overflow="auto" height="300px" padding="10px">
+                <Box
+                  borderRadius="10px"
+                  boxShadow="0px 0px 2px grey"
+                  height="300px"
+                  overflow="auto"
+                >
                   <Table
-                    borderRadius="12px"
-                    boxShadow="0px 0px 2px grey"
-                    margin="auto"
+                    marginTop="-10px"
                     size="sm"
                     theme="gray"
                     variant="striped"
@@ -194,7 +214,9 @@ const AddLanguageModal = ({ isOpen, onClose }: AddLanguageModalProps) => {
                 fontSize="14px"
                 colorScheme="blue"
                 width="120px"
-                isDisabled={language === "" || isRtl === null}
+                isDisabled={
+                  languageAlreadyExists || language === "" || isRtl === null
+                }
                 onClick={useAddLanguage}
               >
                 Confirm
