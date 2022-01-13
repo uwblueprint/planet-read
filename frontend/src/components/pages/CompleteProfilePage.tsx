@@ -55,6 +55,7 @@ const CompleteProfilePage = () => {
       });
       window.location.href = `#/?welcome=true`;
     } catch (err) {
+      // eslint-disable-next-line no-alert
       window.alert(err);
     }
   };

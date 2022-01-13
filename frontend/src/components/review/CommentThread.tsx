@@ -87,6 +87,7 @@ const CommentThread = ({
       if (typeof err === "string") {
         handleError(err);
       } else {
+        // eslint-disable-next-line no-alert
         window.alert(err);
         handleError("Error occurred, please try again.");
       }

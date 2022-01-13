@@ -103,6 +103,7 @@ const ImportStoryPage = () => {
       ) {
         setStoryFile(newStoryFile);
       } else {
+        // eslint-disable-next-line no-console
         console.log("Incorrect file type");
       }
     } else if (e.dataTransfer.files && e.dataTransfer.files.length === 1) {
@@ -118,6 +119,7 @@ const ImportStoryPage = () => {
 
   const submitForm = async () => {
     if (!(storyFile && title && description && level && youtubeLink)) {
+      // eslint-disable-next-line no-alert
       window.alert("Please fill out all required fields.");
       return;
     }

@@ -63,12 +63,13 @@ const WIPComment = ({
       if (typeof err === "string") {
         handleError(err);
       } else {
+        // eslint-disable-next-line no-console
         console.log(err);
         handleError("Error occurred, please try again.");
       }
     }
   };
-  const name = `${authenticatedUser!!.firstName} 
+  const name = `${authenticatedUser!!.firstName}
                 ${authenticatedUser!!.lastName}`;
   return (
     <Flex

@@ -157,9 +157,11 @@ const TranslationPage = () => {
       if (result.data?.updateStoryTranslationStage.ok) {
         history.push("/");
       } else {
+        // eslint-disable-next-line no-alert
         window.alert("Unable to send for review.");
       }
     } catch (error) {
+      // eslint-disable-next-line no-alert
       window.alert(error ?? "Error occurred, please try again.");
     }
   };

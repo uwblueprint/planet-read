@@ -222,6 +222,7 @@ const UserProfilePage = () => {
         setAuthenticatedUser(null);
       }
     } catch (err) {
+      // eslint-disable-next-line no-alert
       window.alert(err);
     }
   };
