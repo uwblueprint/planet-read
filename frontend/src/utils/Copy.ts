@@ -135,3 +135,10 @@ export const REVIEW_TEST_TOOL_TIP_COPY = "This test has already been graded.";
 
 export const GRADED_TEST_ASSIGN_LEVEL_TOOL_TIP_COPY =
   "The results of the test cannot be altered.";
+
+export const ADD_LANGUAGE_SUCCESS_HEADING = "New Language Added";
+
+export const ADD_LANGUAGE_SUCCESS_CONFIRMATION =
+  "The new language was successfully added.";
+
+export const CONFIRM_OK = "Okay";

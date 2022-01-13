@@ -8,9 +8,13 @@ class IStoryService(ABC):
     """
 
     @abstractmethod
-    def get_stories(self):
+    def get_stories(self, story_title, start_date, end_date):
         """Return a list of all stories
 
+        :param story_title: optional title of story to filter by likeness and
+        return
+        :param start_date: optional start date to filter story upload date by
+        :param end_date: optional end date to filter story upload date by
         :return: A list of dictionaries from Story objects
         :rtype: list of dictionaries
         """

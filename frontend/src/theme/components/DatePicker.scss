@@ -1,0 +1,28 @@
+@import "node_modules/react-datepicker/src/stylesheets/datepicker.scss";
+
+.react-datepicker-wrapper,
+.react-datepicker__input-container,
+.react-datepicker__input-container input {
+  align-items: center;
+  display: inline-block;
+  font-family: "Noto Sans", -apple-system, BlinkMacSystemFont, "Segoe UI",
+    "Roboto", "Oxygen", "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans",
+    "Helvetica Neue", sans-serif;
+  font-size: 16px;
+  height: 40px;
+  width: 100%;
+}
+
+.react-datepicker__input-container input {
+  border: 1px solid #dcdcdc; // #DCDCDC corresponds with gray.200
+  border-radius: 0.375rem;
+  padding-left: 10px;
+}
+
+.react-datepicker__month-container {
+  color: #969eac;
+  font-family: "Noto Sans", -apple-system, BlinkMacSystemFont, "Segoe UI",
+    "Roboto", "Oxygen", "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans",
+    "Helvetica Neue", sans-serif;
+  font-size: 12px;
+}

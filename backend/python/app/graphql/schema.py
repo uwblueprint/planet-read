@@ -106,7 +106,12 @@ class Query(graphene.ObjectType):
         resolved=graphene.Boolean(),
     )
     file_by_id = graphene.Field(DownloadFileDTO, id=graphene.Int(required=True))
-    stories = graphene.Field(graphene.List(StoryResponseDTO))
+    stories = graphene.Field(
+        graphene.List(StoryResponseDTO),
+        story_title=graphene.String(),
+        start_date=graphene.String(),
+        end_date=graphene.String(),
+    )
     story_by_id = graphene.Field(StoryResponseDTO, id=graphene.Int(required=True))
     story_translations = graphene.relay.ConnectionField(
         StoryTranslationConnection,
@@ -175,8 +180,10 @@ class Query(graphene.ObjectType):
     def resolve_file_by_id(root, info, id):
         return resolve_file_by_id(root, info, id)
 
-    def resolve_stories(root, info, **kwargs):
-        return resolve_stories(root, info, **kwargs)
+    def resolve_stories(
+        root, info, story_title=None, start_date=None, end_date=None, **kwargs
+    ):
+        return resolve_stories(root, info, story_title, start_date, end_date, **kwargs)
 
     def resolve_story_by_id(root, info, id):
         return resolve_story_by_id(root, info, id)

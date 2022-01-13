@@ -1,4 +1,6 @@
 import "bootstrap/dist/css/bootstrap.min.css";
+import "./theme/components/DatePicker.scss";
+
 import React, { useEffect, useState } from "react";
 import { HashRouter as Router, Route, Switch } from "react-router-dom";
 import { ChakraProvider, useColorMode } from "@chakra-ui/react";

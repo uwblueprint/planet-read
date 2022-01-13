@@ -106,21 +106,24 @@ const CommentThread = ({
           translatorId === comment.userId ? translatorName : reviewerName
         }
       />
-      {threadReplies.map(function (threadReply: CommentResponse, i: number) {
-        return (
-          <ExistingComment
-            comment={threadReply}
-            isFirstReply={i === 0}
-            isThreadHead={false}
-            key={threadReply.id}
-            userName={
-              translatorId === threadReply.userId
-                ? translatorName
-                : reviewerName
-            }
-          />
-        );
-      })}
+      {
+        // eslint-disable-next-line func-names
+        threadReplies.map(function (threadReply: CommentResponse, i: number) {
+          return (
+            <ExistingComment
+              comment={threadReply}
+              isFirstReply={i === 0}
+              isThreadHead={false}
+              key={threadReply.id}
+              userName={
+                translatorId === threadReply.userId
+                  ? translatorName
+                  : reviewerName
+              }
+            />
+          );
+        })
+      }
       {reply > -1 && (
         <WIPComment
           comments={comments}

@@ -20,6 +20,7 @@ type AutosaveProps = {
 // Inspiration from https://www.synthace.com/autosave-with-react-hooks/
 const Autosave = ({ storylines, onSuccess }: AutosaveProps) => {
   const handleError = (errorMessage: string) => {
+    // eslint-disable-next-line no-alert
     alert(errorMessage);
   };
 
