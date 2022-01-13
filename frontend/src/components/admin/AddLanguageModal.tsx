@@ -66,11 +66,13 @@ const AddLanguageModal = ({ isOpen, onClose }: AddLanguageModalProps) => {
     try {
       const result = await addLanguage({ variables: { language, isRtl } });
       if (!result.data?.addLanguage.ok) {
+        // eslint-disable-next-line no-alert
         window.alert("Error creating new language!");
         onConfirmationModalClose();
       }
       setIsSuccessModalOpen(true);
     } catch (err) {
+      // eslint-disable-next-line no-alert
       window.alert(err);
       onConfirmationModalClose();
     }
