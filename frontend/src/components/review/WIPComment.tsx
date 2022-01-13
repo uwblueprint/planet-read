@@ -69,7 +69,7 @@ const WIPComment = ({
       }
     }
   };
-  const name = `${authenticatedUser!!.firstName} 
+  const name = `${authenticatedUser!!.firstName}
                 ${authenticatedUser!!.lastName}`;
   return (
     <Flex

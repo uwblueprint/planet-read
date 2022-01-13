@@ -1,6 +1,6 @@
 import React from "react";
+import { Flex, Text } from "@chakra-ui/react";
 import StoryCard, { StoryCardProps } from "./StoryCard";
-import "./StoryList.css";
 
 export type StoryListProps = {
   stories: StoryCardProps[] | null;
@@ -10,19 +10,31 @@ export type StoryListProps = {
 
 const LoadingCard = () => {
   return (
-    <div className="loading-card">
-      <h1>Loading...</h1>
-      <p>Almost there ⌛⌛⌛</p>
-    </div>
+    <Flex
+      alignItems="center"
+      border="2px solid black"
+      flexDirection="column"
+      margin="10px 0px 10px 0px"
+      padding="20px"
+    >
+      <Text>Loading...</Text>
+      <Text>Almost there ⌛⌛⌛</Text>
+    </Flex>
   );
 };
 
 const NoStoriesFoundCard = () => {
   return (
-    <div className="no-stories-found-card">
-      <h1>No Stories Found</h1>
-      <p>Please check access permissions.</p>
-    </div>
+    <Flex
+      alignItems="center"
+      border="2px solid black"
+      flexDirection="column"
+      margin="10px 0px 10px 0px"
+      padding="20px"
+    >
+      <Text>No Stories Found</Text>
+      <Text>Please check access permissions.</Text>
+    </Flex>
   );
 };
 

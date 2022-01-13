@@ -1,9 +1,0 @@
-.no-stories-found-card, .loading-card {
-    align-items: center;
-    border: 2px solid #333333;
-    background-color: #fafafa;
-    flex-direction: column;
-    display: flex;
-    margin: 10px 0px 10px 0px;
-    padding: 20px;
-}
