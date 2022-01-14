@@ -197,7 +197,7 @@ def test_create_translation_test(app, db, services):
     db.session.commit()
 
     story_translation_resp = services["story"].create_translation_test(
-        translator_obj.id, 2, "ENGLISH"
+        translator_obj.id, 2, "ENGLISH", False
     )
     story_translation_obj = StoryTranslation.query.get(story_translation_resp.id)
     assert story_translation_resp == story_translation_obj
@@ -272,10 +272,10 @@ def test_get_story_translation_tests(app, db, services):
 
     # Create story translation tests
     first_story_translation_resp = services["story"].create_translation_test(
-        first_translator_obj.id, 2, "ENGLISH"
+        first_translator_obj.id, 2, "ENGLISH", False
     )
     second_story_translation_resp = services["story"].create_translation_test(
-        second_translator_obj.id, 2, "ENGLISH"
+        second_translator_obj.id, 2, "ENGLISH", False
     )
 
     # Test for admin

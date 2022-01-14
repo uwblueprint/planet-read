@@ -55,12 +55,14 @@ class IStoryService(ABC):
         pass
 
     @abstractmethod
-    def create_translation_test(self, user_id, level, language):
+    def create_translation_test(self, user_id, level, language, wants_reviewer):
         """Create a new StoryTranslation object that is_test=True
 
         :param user_id: ID target translator_id
         :param level: int Story test level
         :param language: String target test language
+        :param wants_reviewer: Boolean indicating if user wants to be
+                               assigned level for review
         :return: dictionary of StoryTranslation object
         :rtype: dictionary
         :raises Exception: if story fields are invalid

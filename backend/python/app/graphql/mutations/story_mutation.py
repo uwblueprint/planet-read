@@ -56,13 +56,14 @@ class CreateStoryTranslationTest(graphene.Mutation):
         user_id = graphene.ID(required=True)
         level = graphene.Int(required=True)
         language = graphene.String(required=True)
+        wants_reviewer = graphene.Boolean(required=True)
 
     story = graphene.Field(lambda: CreateStoryTranslationResponseDTO)
 
-    def mutate(root, info, user_id, level, language):
+    def mutate(root, info, user_id, level, language, wants_reviewer):
         try:
             new_story_translation = services["story"].create_translation_test(
-                user_id, level, language
+                user_id, level, language, wants_reviewer
             )
             return CreateStoryTranslation(story=new_story_translation)
         except Exception as e:

@@ -142,3 +142,6 @@ export const ADD_LANGUAGE_SUCCESS_CONFIRMATION =
   "The new language was successfully added.";
 
 export const CONFIRM_OK = "Okay";
+
+export const USER_WANTS_REVIEWER =
+  "This user is requesting to be evaluated for the reviewer role";

@@ -185,7 +185,7 @@ class StoryService(IStoryService):
 
         return {**story.to_dict(), **new_story_translation.to_dict()}
 
-    def create_translation_test(self, user_id, level, language):
+    def create_translation_test(self, user_id, level, language, wants_reviewer):
         try:
             story_translation_tests = (
                 StoryTranslation.query.filter(StoryTranslation.translator_id == user_id)
@@ -193,7 +193,6 @@ class StoryService(IStoryService):
                 .filter(StoryTranslation.is_test == True)
                 .all()
             )
-
             last_30_days = datetime.utcnow() - timedelta(days=30)
 
             for story_translation_test in story_translation_tests:
@@ -223,18 +222,19 @@ class StoryService(IStoryService):
                 stage="TRANSLATE",
                 translator_id=user_id,
                 is_test=True,
+                test_result={"wants_reviewer": wants_reviewer},
             )
             db.session.add(new_story_translation)
             db.session.commit()
         except Exception as error:
-            self.logger.error(str(error))
+            self.logger.error("Could not create story translation test.", str(error))
             raise error
         try:
             self._insert_empty_story_translation_contents(db, new_story_translation)
         except Exception as error:
             db.session.delete(new_story_translation)
             db.session.commit()
-            self.logger.error(str(error))
+            self.logger.error("Could not create story translation test.", str(error))
             raise error
         return new_story_translation
 
