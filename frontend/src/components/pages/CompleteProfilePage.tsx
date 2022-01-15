@@ -63,7 +63,7 @@ const CompleteProfilePage = () => {
   return (
     <Flex direction="column" height="100vh">
       <Header />
-      <Flex direction="row" flex={1} margin="40px" marginLeft="90px">
+      <Flex direction="row" flex={1} margin="40px 90px">
         <UserProfileForm
           fullName={name}
           email={email}
