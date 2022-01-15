@@ -249,9 +249,18 @@ const UserProfilePage = () => {
 
   return (
     <Flex direction="column" height="100vh">
-      <Header />
-      <Flex direction="row" flex={1}>
-        <Flex sx={filterStyle} maxWidth="400px">
+      <Box backgroundColor="white" position="fixed" width="100%" zIndex="1000">
+        <Header />
+      </Box>
+      <Box paddingTop="64px">
+        <Flex
+          backgroundColor="white"
+          height="100%"
+          position="fixed"
+          sx={filterStyle}
+          width="400px"
+          zIndex="100"
+        >
           <Heading size="lg">{fullName}</Heading>
           <Heading size="sm" marginTop="36px">
             Role(s)
@@ -277,7 +286,7 @@ const UserProfilePage = () => {
             </>
           )}
         </Flex>
-        <Flex direction="column" margin="40px" flex={1}>
+        <Flex direction="column" margin="40px 40px 40px 440px">
           {/* TODO: use different state for email & fullname since currently the sidebar also gets modified */}
           {!isAdmin && (
             <Box>
@@ -405,7 +414,7 @@ const UserProfilePage = () => {
             </>
           )}
         </Flex>
-      </Flex>
+      </Box>
       {confirmDeleteUser && (
         <ConfirmationModal
           confirmation={confirmDeleteUser}

@@ -203,7 +203,6 @@ const UserProfileForm = ({
           direction="column"
           height="250px"
           justify="center"
-          maxWidth="80%"
           onDragEnter={(e: any) => onDragEnter(e)}
           onDragLeave={(e: any) => onDragLeave(e)}
           onDragOver={(e: any) => onDragOver(e)}
