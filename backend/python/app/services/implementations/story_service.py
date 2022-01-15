@@ -227,14 +227,14 @@ class StoryService(IStoryService):
             db.session.add(new_story_translation)
             db.session.commit()
         except Exception as error:
-            self.logger.error("Could not create story translation test.", str(error))
+            self.logger.error(str(error))
             raise error
         try:
             self._insert_empty_story_translation_contents(db, new_story_translation)
         except Exception as error:
             db.session.delete(new_story_translation)
             db.session.commit()
-            self.logger.error("Could not create story translation test.", str(error))
+            self.logger.error(str(error))
             raise error
         return new_story_translation
 

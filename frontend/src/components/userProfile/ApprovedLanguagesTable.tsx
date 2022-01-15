@@ -197,12 +197,12 @@ const ApprovedLanguagesTable = ({
   const openLevelUpModal = (
     level: number,
     language: string,
-    review_language: boolean,
+    reviewLanguage: boolean,
   ) => {
     setTestLevel(level);
     setTestLanguage(language);
     setConfirmLevelUp(true);
-    setWantsReviewer(review_language);
+    setWantsReviewer(reviewLanguage);
   };
 
   const closeLevelUpModal = () => {

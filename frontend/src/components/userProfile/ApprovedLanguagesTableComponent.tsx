@@ -40,7 +40,7 @@ export type ApprovedLanguagesTableComponentProps = {
   levelUpOnClick: (
     level: number,
     language: string,
-    review_language: boolean,
+    reviewLanguage: boolean,
   ) => void;
   removeLanguageOnClick: (isTranslate: boolean, language: string) => void;
   onSliderValueChange: (

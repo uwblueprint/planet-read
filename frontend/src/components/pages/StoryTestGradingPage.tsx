@@ -115,15 +115,21 @@ const StoryTestGradingPage = () => {
         setTitle(data.storyById.title);
         setNumApprovedLines(data.storyTranslationById.numApprovedLines);
         if (JSON.parse(data.storyTranslationById.testResult)) {
-          setDefaultTranslatorLevel(
-            JSON.parse(data.storyTranslationById.testResult).translate,
-          );
-          setDefaultReviewerLevel(
-            JSON.parse(data.storyTranslationById.testResult).review,
-          );
-          setWantsReviewer(
-            JSON.parse(data.storyTranslationById.testResult).wants_reviewer,
-          );
+          if (JSON.parse(data.storyTranslationById.testResult).translate) {
+            setDefaultTranslatorLevel(
+              JSON.parse(data.storyTranslationById.testResult).translate,
+            );
+          }
+          if (JSON.parse(data.storyTranslationById.testResult).review) {
+            setDefaultReviewerLevel(
+              JSON.parse(data.storyTranslationById.testResult).review,
+            );
+          }
+          if (JSON.parse(data.storyTranslationById.testResult).wants_reviewer) {
+            setWantsReviewer(
+              JSON.parse(data.storyTranslationById.testResult).wants_reviewer,
+            );
+          }
         }
         setDefaultTestFeedback(data.storyTranslationById.testFeedback);
 
