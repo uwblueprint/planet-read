@@ -227,7 +227,6 @@ const ApprovedLanguagesTable = ({
     newLanguage: string,
     requestReviewer: boolean,
   ) => {
-    // eslint-disable-next-line
     try {
       await createTranslationTest({
         variables: {
