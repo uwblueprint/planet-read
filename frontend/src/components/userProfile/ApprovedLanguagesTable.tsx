@@ -69,6 +69,7 @@ const ApprovedLanguagesTable = ({
   const [confirmDemoteLevel, setConfirmDemoteLevel] = useState(false);
   const [confirmLevelUp, setConfirmLevelUp] = useState(false);
   const [alertNewTest, setAlertNewTest] = useState(false);
+  const [wantsReviewer, setWantsReviewer] = useState(false);
   const [testLevel, setTestLevel] = useState(0);
   const [testLanguage, setTestLanguage] = useState("");
   const [languageToRemove, setLanguageToRemove] = useState("");
@@ -193,10 +194,15 @@ const ApprovedLanguagesTable = ({
     setRemoveLanguage(false);
   };
 
-  const openLevelUpModal = (level: number, language: string) => {
+  const openLevelUpModal = (
+    level: number,
+    language: string,
+    reviewLanguage: boolean,
+  ) => {
     setTestLevel(level);
     setTestLanguage(language);
     setConfirmLevelUp(true);
+    setWantsReviewer(reviewLanguage);
   };
 
   const closeLevelUpModal = () => {
@@ -217,13 +223,17 @@ const ApprovedLanguagesTable = ({
     closeAddNewLanguageModal(false);
   };
 
-  const onUserAddNewLanguage = async (newLanguage: string) => {
+  const onUserAddNewLanguage = async (
+    newLanguage: string,
+    requestReviewer: boolean,
+  ) => {
     try {
       await createTranslationTest({
         variables: {
           userId,
           level: 2,
           language: newLanguage,
+          wantsReviewer: requestReviewer,
         },
       });
       closeAddNewLanguageModal(false);
@@ -252,6 +262,7 @@ const ApprovedLanguagesTable = ({
           userId,
           level: testLevel,
           language: testLanguage,
+          wantsReviewer,
         },
       });
       closeLevelUpModal();

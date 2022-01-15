@@ -148,11 +148,17 @@ export const UPDATE_STORY = gql`
 export type UpdateStoryResponse = { ok: boolean };
 
 export const CREATE_TRANSLATION_TEST = gql`
-  mutation UpdateStory($userId: ID!, $level: Int!, $language: String!) {
+  mutation UpdateStory(
+    $userId: ID!
+    $level: Int!
+    $language: String!
+    $wantsReviewer: Boolean!
+  ) {
     createStoryTranslationTest(
       userId: $userId
       level: $level
       language: $language
+      wantsReviewer: $wantsReviewer
     ) {
       story {
         id

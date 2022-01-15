@@ -32,6 +32,7 @@ import {
   ASSIGN_USER_LEVEL_BUTTON,
   VIEW_FAILED_GRADE_ALERT,
   GRADED_TEST_ASSIGN_LEVEL_TOOL_TIP_COPY,
+  USER_WANTS_REVIEWER,
 } from "../../utils/Copy";
 import ConfirmationModal from "../utils/ConfirmationModal";
 import DropdownIndicator from "../utils/DropdownIndicator";
@@ -50,11 +51,13 @@ export type AssignTestGradeModalProps = {
   defaultTranslatorLevel?: number | null;
   defaultReviewerLevel?: number | null;
   defaultTestFeedback?: string;
+  wantsReviewer?: boolean;
 };
 
 export type TestResult = {
   translate: number | null;
   review?: number | null;
+  wants_reviewer: boolean | null;
 };
 
 const AssignTestGradeModal = ({
@@ -69,6 +72,7 @@ const AssignTestGradeModal = ({
   defaultTranslatorLevel = null,
   defaultReviewerLevel = null,
   defaultTestFeedback = "",
+  wantsReviewer = false,
 }: AssignTestGradeModalProps) => {
   const [assignReviewerLevel, setAssignReviewerLevel] =
     useState<boolean>(false);
@@ -87,6 +91,7 @@ const AssignTestGradeModal = ({
   const assignTestLevel = async () => {
     const testResult: TestResult = {
       translate: translatorLevel,
+      wants_reviewer: wantsReviewer,
     };
     if (assignReviewerLevel) testResult.review = reviewerLevel;
     const result = await finishGradingStoryTranslation({
@@ -228,7 +233,12 @@ const AssignTestGradeModal = ({
             </Heading>
           </ModalHeader>
           <ModalBody paddingBottom="36px">
-            <Heading as="h4" paddingBottom="24px" size="md">
+            {wantsReviewer && (
+              <Flex marginRight="28px" justifyContent="flex-end">
+                <InfoAlert message={USER_WANTS_REVIEWER} colour="orange.50" />
+              </Flex>
+            )}
+            <Heading as="h4" paddingBottom="24px" size="md" paddingTop="24px">
               Basic Test Information
             </Heading>
 

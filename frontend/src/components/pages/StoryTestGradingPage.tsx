@@ -55,6 +55,7 @@ const StoryTestGradingPage = () => {
   const [level, setLevel] = useState<number>(0);
   const [language, setLanguage] = useState<string>("");
   const [stage, setStage] = useState<string>("");
+  const [wantsReviewer, setWantsReviewer] = useState(false);
 
   const [failUser, setFailUser] = useState(false);
   const [assignGrade, setAssignGrade] = useState(false);
@@ -114,12 +115,21 @@ const StoryTestGradingPage = () => {
         setTitle(data.storyById.title);
         setNumApprovedLines(data.storyTranslationById.numApprovedLines);
         if (JSON.parse(data.storyTranslationById.testResult)) {
-          setDefaultTranslatorLevel(
-            JSON.parse(data.storyTranslationById.testResult).translate,
-          );
-          setDefaultReviewerLevel(
-            JSON.parse(data.storyTranslationById.testResult).review,
-          );
+          if (JSON.parse(data.storyTranslationById.testResult).translate) {
+            setDefaultTranslatorLevel(
+              JSON.parse(data.storyTranslationById.testResult).translate,
+            );
+          }
+          if (JSON.parse(data.storyTranslationById.testResult).review) {
+            setDefaultReviewerLevel(
+              JSON.parse(data.storyTranslationById.testResult).review,
+            );
+          }
+          if (JSON.parse(data.storyTranslationById.testResult).wants_reviewer) {
+            setWantsReviewer(
+              JSON.parse(data.storyTranslationById.testResult).wants_reviewer,
+            );
+          }
         }
         setDefaultTestFeedback(data.storyTranslationById.testFeedback);
 
@@ -255,6 +265,7 @@ const StoryTestGradingPage = () => {
           defaultTranslatorLevel={defaultTranslatorLevel}
           defaultReviewerLevel={defaultReviewerLevel}
           defaultTestFeedback={defaultTestFeedback}
+          wantsReviewer={wantsReviewer}
         />
       </Flex>
     </Flex>

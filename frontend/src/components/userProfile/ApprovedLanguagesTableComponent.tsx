@@ -37,7 +37,11 @@ type ApprovedLanguage = {
 
 export type ApprovedLanguagesTableComponentProps = {
   addNewLanguage: () => void;
-  levelUpOnClick: (level: number, language: string) => void;
+  levelUpOnClick: (
+    level: number,
+    language: string,
+    reviewLanguage: boolean,
+  ) => void;
   removeLanguageOnClick: (isTranslate: boolean, language: string) => void;
   onSliderValueChange: (
     isTranslate: boolean,
@@ -184,6 +188,7 @@ const ApprovedLanguagesTableComponent = ({
                   levelUpOnClick(
                     approvedLanguage.level + 1,
                     approvedLanguage.language,
+                    approvedLanguage.role === "Reviewer",
                   )
                 }
               >

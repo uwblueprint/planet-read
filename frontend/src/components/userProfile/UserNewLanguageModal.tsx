@@ -3,6 +3,7 @@ import { useQuery } from "@apollo/client";
 import Select from "react-select";
 import {
   Button,
+  Checkbox,
   Flex,
   Heading,
   Modal,
@@ -20,7 +21,7 @@ import DropdownIndicator from "../utils/DropdownIndicator";
 import { getLanguagesQuery } from "../../APIClients/queries/LanguageQueries";
 
 export type UserNewLanguageModalProps = {
-  onSubmit: (newLanguage: string) => void;
+  onSubmit: (newLanguage: string, wantsReviewer: boolean) => void;
   approvedLanguagesTranslation: ApprovedLanguagesMap | undefined;
   isOpen: boolean;
   onClose: () => void;
@@ -34,6 +35,8 @@ const UserNewLanguageModal = ({
 }: UserNewLanguageModalProps) => {
   const [newLanguage, setNewLanguage] = useState<string>("");
   const [languageOptions, setLanguageOptions] = useState<string[]>([]);
+  const [wantsReviewer, setWantsReviewer] = useState<boolean>(false);
+
   useQuery(getLanguagesQuery.string, {
     fetchPolicy: "cache-and-network",
     onCompleted: (data) => {
@@ -75,7 +78,7 @@ const UserNewLanguageModal = ({
             Please select a new language that you would like to take the story
             translation test in.
           </Text>
-          <Flex marginBottom="200px">
+          <Flex marginBottom="20px">
             <Select
               components={{ DropdownIndicator }}
               getOptionLabel={(option: any) => option.value}
@@ -84,6 +87,16 @@ const UserNewLanguageModal = ({
               placeholder="Select language"
               styles={colourStyles}
             />
+          </Flex>
+          <Flex marginBottom="180px">
+            <Checkbox
+              isChecked={wantsReviewer}
+              size="md"
+              width="100%"
+              onChange={() => setWantsReviewer(!wantsReviewer)}
+            >
+              <Text>I want to become a reviewer in this language</Text>
+            </Checkbox>
           </Flex>
           <Tooltip
             hasArrow
@@ -95,7 +108,7 @@ const UserNewLanguageModal = ({
               <Button
                 colorScheme="blue"
                 disabled={newLanguage === ""}
-                onClick={() => onSubmit(newLanguage)}
+                onClick={() => onSubmit(newLanguage, wantsReviewer)}
               >
                 ADD TEST
               </Button>
