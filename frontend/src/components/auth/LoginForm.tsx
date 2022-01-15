@@ -13,6 +13,9 @@ import {
 } from "@chakra-ui/react";
 import { FaRegEye, FaRegEyeSlash } from "react-icons/fa";
 
+import InfoAlert from "../utils/InfoAlert";
+import { SIGN_UP_ALERT_PASSWORD_LESS_THAN_6_CHARACTERS } from "../../utils/Copy";
+
 type LoginFormProps = {
   isSignup: boolean;
   invalidLogin: boolean;
@@ -100,7 +103,7 @@ const LoginForm = ({
         <FormLabel htmlFor="password" color={invalidLogin ? "red" : "black"}>
           {isSignup ? "Create Password" : "Password"}
         </FormLabel>
-        <InputGroup size="md">
+        <InputGroup size="md" paddingBottom="5px">
           <Input
             id="password"
             type={showPassword ? "text" : "password"}
@@ -119,6 +122,15 @@ const LoginForm = ({
             />
           </InputRightElement>
         </InputGroup>
+        {password.length > 0 && password.length < 6 ? (
+          <InfoAlert
+            message={SIGN_UP_ALERT_PASSWORD_LESS_THAN_6_CHARACTERS}
+            colour="orange.50"
+            height="20px"
+          />
+        ) : (
+          <Flex height="24px" />
+        )}
         {invalidLogin && (
           <FormHelperText id="password-helper-text" color="red">
             Invalid login, please try again.
