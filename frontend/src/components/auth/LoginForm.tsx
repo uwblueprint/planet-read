@@ -14,7 +14,7 @@ import {
 import { FaRegEye, FaRegEyeSlash } from "react-icons/fa";
 
 import InfoAlert from "../utils/InfoAlert";
-import { SIGN_UP_ALERT_PASSWORD_LESS_THAN_6_CHARACTERS } from "../../utils/Copy";
+import { SIGN_UP_PASSWORD_LESS_THAN_6_CHAR_ALERT } from "../../utils/Copy";
 
 type LoginFormProps = {
   isSignup: boolean;
@@ -124,7 +124,7 @@ const LoginForm = ({
         </InputGroup>
         {password.length > 0 && password.length < 6 ? (
           <InfoAlert
-            message={SIGN_UP_ALERT_PASSWORD_LESS_THAN_6_CHARACTERS}
+            message={SIGN_UP_PASSWORD_LESS_THAN_6_CHAR_ALERT}
             colour="orange.50"
             height="20px"
           />

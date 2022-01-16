@@ -146,5 +146,5 @@ export const CONFIRM_OK = "Okay";
 export const USER_WANTS_REVIEWER =
   "This user is requesting to be evaluated for the reviewer role";
 
-export const SIGN_UP_ALERT_PASSWORD_LESS_THAN_6_CHARACTERS =
-  "For security, please consider a longer password.";
+export const SIGN_UP_PASSWORD_LESS_THAN_6_CHAR_ALERT =
+  "Please enter a password at least 6 characters long.";
