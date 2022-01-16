@@ -187,6 +187,15 @@ class UserService(IUserService):
                     firebase_user = firebase_admin.auth.create_user(uid=user.auth_id)
                 auth_id = user.auth_id
 
+            existing_languages = language_service.get_languages()
+
+            for lang in {
+                **(user.approved_languages_translation or {}),
+                **(user.approved_languages_review or {}),
+            }:
+                if lang not in existing_languages:
+                    raise Exception("{lang} is not a valid language".format(lang=lang))
+
             mysql_user = {
                 "first_name": user.first_name,
                 "last_name": user.last_name,
@@ -312,6 +321,14 @@ class UserService(IUserService):
 
             if not old_user:
                 raise Exception("user_id {user_id} not found".format(user_id=user_id))
+
+            existing_languages = language_service.get_languages()
+            for lang in {
+                **(user.approved_languages_translation or {}),
+                **(user.approved_languages_review or {}),
+            }:
+                if lang not in existing_languages:
+                    raise Exception("{lang} is not a valid language".format(lang=lang))
 
             User.query.filter_by(id=user_id).update(
                 {
