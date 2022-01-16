@@ -1,5 +1,6 @@
-import React from "react";
+import React, { useState } from "react";
 import {
+  Box,
   Checkbox,
   Flex,
   FormControl,
@@ -15,6 +16,7 @@ import { FaRegEye, FaRegEyeSlash } from "react-icons/fa";
 
 import InfoAlert from "../utils/InfoAlert";
 import { SIGN_UP_INVALID_PASSWORD_ALERT } from "../../utils/Copy";
+import WelcomeModal from "../homepage/WelcomeModal";
 
 type LoginFormProps = {
   isSignup: boolean;
@@ -53,10 +55,10 @@ const LoginForm = ({
     setShowPassword(!showPassword);
   };
 
-  // TODO: Display terms and conditions.
+  const [welcomeModalToggle, setWelcomeModalToggle] = useState<boolean>(false);
+
   const onTermsClick = () => {
-    // eslint-disable-next-line no-console
-    console.log("Display terms and conditions.");
+    setWelcomeModalToggle(true);
   };
 
   return (
@@ -145,9 +147,11 @@ const LoginForm = ({
           <FormLabel>
             <Checkbox
               defaultChecked={agreeToTerms}
-              spacing="20px"
+              verticalAlign="middle"
+              marginBottom="2px"
               onChange={onAgreeToTermsClick}
-            >
+            />
+            <Box marginLeft="20px" display="inline">
               I agree to
               <Text
                 display="inline"
@@ -158,10 +162,16 @@ const LoginForm = ({
               >
                 terms and conditions
               </Text>
-            </Checkbox>
+            </Box>
           </FormLabel>
         </FormControl>
       )}
+      <WelcomeModal
+        readonly
+        isOpen={welcomeModalToggle}
+        onClose={() => setWelcomeModalToggle(false)}
+        title="Terms and Conditions"
+      />
     </Flex>
   );
 };

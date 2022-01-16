@@ -66,13 +66,6 @@ const UserProfilePage = () => {
   const [email, setEmail] = useState<string>("");
   const [role, setRole] = useState<string>("");
   const [resumeId, setResumeId] = useState<number | null>(null);
-  // TODO: remove eslint-disable after page is functional
-  /* eslint-disable */
-  const [language, setLanguage] = useState<string>("");
-  const [educationalQualification, setEducationalQualification] =
-    useState<string>("");
-  const [languageExperience, setLanguageExperience] = useState<string>("");
-  /* eslint-enable */
   const [confirmDeleteUser, setConfirmDeleteUser] = useState(false);
   const [alertText, setAlertText] = useState<string>("");
   const [alert, setAlert] = useState(false);
@@ -92,8 +85,7 @@ const UserProfilePage = () => {
     StoryAssignStage.INITIAL,
   );
 
-  // TODO: Send resume to backend when save changes button is implemented
-  /* eslint-disable-next-line @typescript-eslint/no-unused-vars */
+  const resumeFileName = [...fullName.split(" "), "resume"].join("_");
   const [resume, setResume] = useState<File | null>(null);
 
   const [tempFullName, setTempFullName] = useState<string>("");
@@ -107,7 +99,7 @@ const UserProfilePage = () => {
 
   const history = useHistory();
 
-  const [downloadFile] = useFileDownload("resume", getFileQuery);
+  const [downloadFile] = useFileDownload(resumeFileName, getFileQuery);
 
   const { loading, error } = useQuery(GET_USER(parseInt(userId, 10)), {
     fetchPolicy: "cache-and-network",
@@ -270,24 +262,18 @@ const UserProfilePage = () => {
             Email
           </Heading>
           <Text>{email}</Text>
-          <Heading size="sm" marginTop="36px">
-            Last active on
-          </Heading>
-          <Text>TODO</Text>
           {isAdmin && resumeId && (
             <>
               <Heading size="sm" marginTop="36px">
                 User Files
               </Heading>
-              {/* TODO: replace file name */}
               <Button variant="link" onClick={() => downloadFile(resumeId)}>
-                resume.pdf
+                {`${resumeFileName}`}
               </Button>
             </>
           )}
         </Flex>
         <Flex direction="column" margin="40px 40px 40px 440px">
-          {/* TODO: use different state for email & fullname since currently the sidebar also gets modified */}
           {!isAdmin && (
             <Box>
               <UserProfileForm
@@ -299,7 +285,7 @@ const UserProfilePage = () => {
                 setEducationalQualification={setTempEducationalQualification}
                 setEmail={setTempEmail}
                 setFullName={setTempFullName}
-                setLanguage={setLanguage}
+                setLanguage={() => {}}
                 setLanguageExperience={setTempLanguageExperience}
                 updateResume={updateResume}
               />
