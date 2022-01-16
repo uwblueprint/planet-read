@@ -89,6 +89,7 @@ const LoginComponent = ({
           colorScheme="blue"
           onClick={isSignup ? onSignUpClick : onLogInClick}
           textTransform="none"
+          isDisabled={isSignup && password.length < 6}
         >
           {isSignup ? "Register account" : "Sign in"}
         </Button>
