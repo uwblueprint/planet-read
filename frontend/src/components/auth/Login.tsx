@@ -60,7 +60,7 @@ const Login = () => {
   const onSignUpClick = async () => {
     setInvalidLogin(false);
     if (isSignup) {
-      if (agreeToTerms && validateEmail(email)) {
+      if (validateEmail(email)) {
         const user: AuthenticatedUser = await authAPIClient.signup(
           firstName,
           lastName,
@@ -69,12 +69,9 @@ const Login = () => {
           signup,
         );
         setAuthenticatedUser(user);
-      } else if (!agreeToTerms) {
-        // eslint-disable-next-line no-alert
-        alert("Please agree to the terms and conditions in order to sign up.");
       } else {
         // eslint-disable-next-line no-alert
-        alert("Please enter a valid email.");
+        window.alert("Please enter a valid email.");
       }
     } else {
       setIsSignup(true);
