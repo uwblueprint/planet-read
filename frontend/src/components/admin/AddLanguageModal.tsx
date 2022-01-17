@@ -55,7 +55,11 @@ const AddLanguageModal = ({ isOpen, onClose }: AddLanguageModalProps) => {
   }>(ADD_LANGUAGE);
 
   const onConfirmationModalClose = () => {
-    setLanguageOptions([...languageOptions, language]);
+    setLanguageOptions(
+      [...languageOptions, language].sort((a, b) =>
+        a.toUpperCase() > b.toUpperCase() ? 1 : -1,
+      ),
+    );
     setLanguage("");
     setIsRtl(null);
     setIsSuccessModalOpen(false);
