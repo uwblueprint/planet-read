@@ -107,8 +107,8 @@ def create_translator(db):
             email="carl.sagan@uwblueprint.org",
             auth_id="secret",
             role="User",
-            approved_languages_translation={"ENGLISH_US": 4, "ENGLISH_UK": 4},
-            approved_languages_review={"ENGLISH_US": 4, "ENGLISH_UK": 4},
+            approved_languages_translation={"English (US)": 4, "English (UK)": 4},
+            approved_languages_review={"English (US)": 4, "English (UK)": 4},
         ),
     )
 
@@ -122,8 +122,8 @@ def create_reviewer(db):
             email="dwight.d.eisenhower@uwblueprint.org",
             auth_id="anothersecret",
             role="User",
-            approved_languages_translation={"ENGLISH_US": 4, "ENGLISH_UK": 4},
-            approved_languages_review={"ENGLISH_US": 4, "ENGLISH_UK": 4},
+            approved_languages_translation={"English (US)": 4, "English (UK)": 4},
+            approved_languages_review={"English (US)": 4, "English (UK)": 4},
         ),
     )
 
@@ -137,8 +137,8 @@ def create_admin(db):
             email="planetread+angelamerkel@uwblueprint.org",
             auth_id="thirdsecret",
             role="Admin",
-            approved_languages_translation={"GERMAN": 4},
-            approved_languages_review={"GERMAN": 4},
+            approved_languages_translation={"German": 4},
+            approved_languages_review={"German": 4},
         ),
     )
 
@@ -148,7 +148,7 @@ def _create_story_translation(db, story, translator, reviewer):
         db,
         StoryTranslationAll(
             story_id=story.id,
-            language="ENGLISH_US",
+            language="English (US)",
             stage="TRANSLATE",
             translator_id=translator.id,
             reviewer_id=reviewer.id,
