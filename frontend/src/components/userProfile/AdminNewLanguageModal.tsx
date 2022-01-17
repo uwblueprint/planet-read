@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useQuery } from "@apollo/client";
 import Select from "react-select";
 import {
@@ -49,8 +49,10 @@ const AdminNewLanguageModal = ({
   const [role, setRole] = useState<string | null>(null);
   const [language, setLanguage] = useState<string | null>(null);
   const [level, setLevel] = useState<number | null>(null);
-  const [languageOptions, setLanguageOptions] = useState<string[]>([]);
-
+  const [languageOptions, setLanguageOptions] = useState<{ value: string }[]>(
+    [],
+  );
+  const [allLanguageOptions, setAllLanguageOptions] = useState<string[]>([]);
   const currentApprovedLanguages = new Set(
     Object.keys(
       role === "Translator"
@@ -62,17 +64,19 @@ const AdminNewLanguageModal = ({
   useQuery(getLanguagesQuery.string, {
     fetchPolicy: "cache-and-network",
     onCompleted: (data) => {
-      setLanguageOptions(
-        data.languages.filter(
-          (lang: string) => !currentApprovedLanguages.has(lang),
-        ),
-      );
+      setAllLanguageOptions(data.languages);
     },
   });
 
-  const newLanguageOptions = languageOptions.map((lang) => {
-    return { value: lang };
-  });
+  useEffect(() => {
+    setLanguageOptions(
+      allLanguageOptions
+        .filter((lang) => !currentApprovedLanguages.has(lang))
+        .map((lang) => {
+          return { value: lang };
+        }),
+    );
+  }, [role]);
 
   const disabledStyle = useStyleConfig("Disabled");
   const isLanguageSelectDisabled = role == null;
@@ -136,7 +140,7 @@ const AdminNewLanguageModal = ({
               >
                 <Select
                   placeholder="Select language"
-                  options={newLanguageOptions}
+                  options={languageOptions}
                   onChange={(option: any) => setLanguage(option.value)}
                   getOptionLabel={(option: any) => option.value}
                   value={language ? { value: language } : null}
