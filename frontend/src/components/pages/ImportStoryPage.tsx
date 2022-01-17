@@ -103,8 +103,8 @@ const ImportStoryPage = () => {
       ) {
         setStoryFile(newStoryFile);
       } else {
-        // eslint-disable-next-line no-console
-        console.log("Incorrect file type");
+        // eslint-disable-next-line no-alert
+        window.alert("Incorrect file type");
       }
     } else if (e.dataTransfer.files && e.dataTransfer.files.length === 1) {
       const newStoryFile = e.dataTransfer.files[0];

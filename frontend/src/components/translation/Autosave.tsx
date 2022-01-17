@@ -55,8 +55,6 @@ const Autosave = ({ storylines, onSuccess }: AutosaveProps) => {
         if (typeof err === "string") {
           handleError(err);
         } else {
-          // eslint-disable-next-line no-console
-          console.log(err);
           handleError("Error occurred, please try again.");
         }
       }
