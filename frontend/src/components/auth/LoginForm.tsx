@@ -14,7 +14,7 @@ import {
 import { FaRegEye, FaRegEyeSlash } from "react-icons/fa";
 
 import InfoAlert from "../utils/InfoAlert";
-import { SIGN_UP_PASSWORD_LESS_THAN_6_CHAR_ALERT } from "../../utils/Copy";
+import { SIGN_UP_INVALID_PASSWORD_ALERT } from "../../utils/Copy";
 
 type LoginFormProps = {
   isSignup: boolean;
@@ -29,6 +29,7 @@ type LoginFormProps = {
   setPassword: (password: string) => void;
   agreeToTerms: boolean;
   onAgreeToTermsClick: () => void;
+  checkValidPassword: () => boolean;
 };
 
 const LoginForm = ({
@@ -44,6 +45,7 @@ const LoginForm = ({
   setPassword,
   agreeToTerms,
   onAgreeToTermsClick,
+  checkValidPassword,
 }: LoginFormProps) => {
   const [showPassword, setShowPassword] = React.useState(false);
 
@@ -122,15 +124,16 @@ const LoginForm = ({
             />
           </InputRightElement>
         </InputGroup>
-        {password.length > 0 && password.length < 6 ? (
-          <InfoAlert
-            message={SIGN_UP_PASSWORD_LESS_THAN_6_CHAR_ALERT}
-            colour="orange.50"
-            height="20px"
-          />
-        ) : (
-          <Flex height="24px" />
-        )}
+        {isSignup &&
+          (!checkValidPassword() ? (
+            <InfoAlert
+              message={SIGN_UP_INVALID_PASSWORD_ALERT}
+              colour="orange.50"
+              height="55px"
+            />
+          ) : (
+            <Flex height="55px" />
+          ))}
         {invalidLogin && (
           <FormHelperText id="password-helper-text" color="red">
             Invalid login, please try again.

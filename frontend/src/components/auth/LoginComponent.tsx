@@ -56,10 +56,22 @@ const LoginComponent = ({
   onGoogleLoginSuccess,
   onFailure,
 }: LoginComponentProps) => {
+  const checkValidPassword = () => {
+    if (password.length >= 8 && /\d/.test(password) && /\D/.test(password)) {
+      return true;
+    }
+    return false;
+  };
+
   return (
     <Flex>
       <LoginImage />
-      <Flex marginTop="140px" marginLeft="120px" direction="column">
+      <Flex
+        marginTop="140px"
+        marginLeft="120px"
+        direction="column"
+        width="450px"
+      >
         <Flex>
           <Heading as="h3" size="lg">
             {isSignup ? "Sign up to" : "Sign in to"}
@@ -84,8 +96,11 @@ const LoginComponent = ({
           setPassword={setPassword}
           agreeToTerms={agreeToTerms}
           onAgreeToTermsClick={onAgreeToTermsClick}
+          checkValidPassword={checkValidPassword}
         />
         <Button
+          marginTop={isSignup ? "0px" : "40px"}
+          width="100%"
           colorScheme="blue"
           isDisabled={
             isSignup &&
@@ -93,14 +108,13 @@ const LoginComponent = ({
               lastName === "" ||
               email === "" ||
               password === "" ||
-              !agreeToTerms)
+              !agreeToTerms) &&
+            !checkValidPassword()
           }
           isLoading={isLoading}
           loadingText={isSignup ? "Registering account" : "Signing in"}
-          marginTop={isSignup ? "20px" : "40px"}
           onClick={isSignup ? onSignUpClick : onLogInClick}
           textTransform="none"
-          width="100%"
         >
           {isSignup ? "Register account" : "Sign in"}
         </Button>
