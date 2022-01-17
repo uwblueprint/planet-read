@@ -75,8 +75,6 @@ const StoryCard = ({
       if (typeof err === "string") {
         handleError(err);
       } else {
-        // eslint-disable-next-line no-console
-        console.log(err);
         handleError("Error occurred, please try again.");
       }
     }
@@ -106,8 +104,6 @@ const StoryCard = ({
       if (typeof err === "string") {
         handleError(err);
       } else {
-        // eslint-disable-next-line no-console
-        console.log(err);
         handleError("Error occurred, please try again.");
       }
     }
