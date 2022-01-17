@@ -71,7 +71,7 @@ const accessTokenInjectionLink = new ApolloLink(
 
 const refreshDirectionalLink = new RetryLink().split(
   (operation) =>
-    ["Refresh", "Login", "SignUp", "LoginWithGoogle"].includes(
+    ["Refresh", "ResetPassword", "Login", "SignUp", "LoginWithGoogle"].includes(
       operation.operationName,
     ),
   authFromLocalLink.concat(httpLink),
