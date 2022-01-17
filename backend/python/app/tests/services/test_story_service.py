@@ -82,7 +82,7 @@ def test_create_story(app, db, services):
 
 def test_get_stories_available_for_translation(app, db, services):
     translator_obj = create_translator(db)
-    translation_language = "ENGLISH_US"
+    translation_language = "English (US)"
     translation_level = 3
 
     # create stories
@@ -160,7 +160,7 @@ def test_create_translation(app, db, services):
 
     story_translation = StoryTranslationRequestDTO(
         story_id=story_obj.id,
-        language="English",
+        language="English (UK)",
         stage="TRANSLATE",
         translator_id=translator_obj.id,
         reviewer_id=reviewer_obj.id,
@@ -197,7 +197,7 @@ def test_create_translation_test(app, db, services):
     db.session.commit()
 
     story_translation_resp = services["story"].create_translation_test(
-        translator_obj.id, 2, "ENGLISH", False
+        translator_obj.id, 2, "English (UK)", False
     )
     story_translation_obj = StoryTranslation.query.get(story_translation_resp.id)
     assert story_translation_resp == story_translation_obj
@@ -272,10 +272,10 @@ def test_get_story_translation_tests(app, db, services):
 
     # Create story translation tests
     first_story_translation_resp = services["story"].create_translation_test(
-        first_translator_obj.id, 2, "ENGLISH", False
+        first_translator_obj.id, 2, "English (UK)", False
     )
     second_story_translation_resp = services["story"].create_translation_test(
-        second_translator_obj.id, 2, "ENGLISH", False
+        second_translator_obj.id, 2, "English (UK)", False
     )
 
     # Test for admin
@@ -316,7 +316,7 @@ def test_assign_user_as_reviewer(app, db, services):
         db,
         StoryTranslationAll(
             story_id=story_obj.id,
-            language="ENGLISH_US",
+            language="English (US)",
             stage="TRANSLATE",
             translator_id=translator_obj.id,
             reviewer_id=None,
@@ -345,8 +345,8 @@ def test_assign_user_as_reviewer_not_approved_for_language(app, db, services):
             email="dwight.d.eisenhower@uwblueprint.org",
             auth_id="anothersecret",
             role="User",
-            approved_languages_translation={"ENGLISH_US": 2},
-            approved_languages_review={"ENGLISH_US": 2},
+            approved_languages_translation={"English (US)": 2},
+            approved_languages_review={"English (US)": 2},
         ),
     )
     story_obj = db_session_add_commit_obj(
@@ -362,7 +362,7 @@ def test_assign_user_as_reviewer_not_approved_for_language(app, db, services):
         db,
         StoryTranslationAll(
             story_id=story_obj.id,
-            language="ENGLISH_US",
+            language="English (US)",
             stage="TRANSLATE",
             translator_id=translator_obj.id,
             reviewer_id=None,
@@ -391,8 +391,8 @@ def test_assign_user_as_reviewer_insufficient_level_for_language(app, db, servic
             email="dwight.d.eisenhower@uwblueprint.org",
             auth_id="anothersecret",
             role="User",
-            approved_languages_translation={"ENGLISH_US": 2},
-            approved_languages_review={"ENGLISH_US": 2},
+            approved_languages_translation={"English (US)": 2},
+            approved_languages_review={"English (US)": 2},
         ),
     )
     story_obj = db_session_add_commit_obj(
@@ -408,7 +408,7 @@ def test_assign_user_as_reviewer_insufficient_level_for_language(app, db, servic
         db,
         StoryTranslationAll(
             story_id=story_obj.id,
-            language="ENGLISH_US",
+            language="English (US)",
             stage="TRANSLATE",
             translator_id=translator_obj.id,
             reviewer_id=None,
@@ -419,7 +419,7 @@ def test_assign_user_as_reviewer_insufficient_level_for_language(app, db, servic
         story_translation_obj.id
     )
 
-    assert reviewer_obj.approved_languages_review["ENGLISH_US"] < story_obj.level
+    assert reviewer_obj.approved_languages_review["English (US)"] < story_obj.level
     with pytest.raises(Exception) as e:
         services["story"].assign_user_as_reviewer(
             user=reviewer_obj, story_translation=story_translation
@@ -439,8 +439,8 @@ def test_assign_user_as_reviewer_reviewer_id_already_exists_on_translation(
             email="test@gmail.com",
             auth_id="anothersecret2",
             role="User",
-            approved_languages_translation={"ENGLISH_US": 2},
-            approved_languages_review={"ENGLISH_US": 2},
+            approved_languages_translation={"English (US)": 2},
+            approved_languages_review={"English (US)": 2},
         ),
     )
     create_story_translation_contents(db, story_translation_obj)
@@ -546,7 +546,7 @@ def test_get_story_translations_available_for_review(app, db, services):
     translator_obj = create_translator(db)
     reviewer_obj = create_reviewer(db)
 
-    translation_language = "ENGLISH_US"
+    translation_language = "English (US)"
     translation_level = 3
 
     # create stories
@@ -621,7 +621,7 @@ def test_get_story_translations_available_for_review_user_already_reviewing(
         db,
         StoryTranslationAll(
             story_id=story_2.id,
-            language="ENGLISH_US",
+            language="English (US)",
             stage="TRANSLATE",
             translator_id=translator.id,
             reviewer_id=None,
@@ -634,7 +634,7 @@ def test_get_story_translations_available_for_review_user_already_reviewing(
     assert story_translation_2.reviewer_id == None
 
     resp = services["story"].get_story_translations_available_for_review(
-        "ENGLISH_US", 4, reviewer.id
+        "English (US)", 4, reviewer.id
     )
     assert len(resp) == 0
 
@@ -651,16 +651,16 @@ def test_get_story_translations_available_for_review_translation_has_reviewer(
             email="test@gmail.com",
             auth_id="anothersecret2",
             role="User",
-            approved_languages_translation={"ENGLISH_US": 4},
-            approved_languages_review={"ENGLISH_US": 4},
+            approved_languages_translation={"English (US)": 4},
+            approved_languages_review={"English (US)": 4},
         ),
     )
 
     assert story_translation.reviewer_id != None
-    assert story_translation.language == "ENGLISH_US"
+    assert story_translation.language == "English (US)"
     assert story.level == 4
     resp = services["story"].get_story_translations_available_for_review(
-        "ENGLISH_US", 4, reviewer_2.id
+        "English (US)", 4, reviewer_2.id
     )
     assert len(resp) == 0
 

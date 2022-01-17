@@ -28,6 +28,9 @@ from ...models.story_translation_content import StoryTranslationContent
 from ...models.story_translation_content_status import StoryTranslationContentStatus
 from ...models.user import User
 from ..interfaces.story_service import IStoryService
+from .language_service import LanguageService
+
+language_service = LanguageService(current_app.logger)
 
 
 class StoryService(IStoryService):
@@ -154,7 +157,20 @@ class StoryService(IStoryService):
             languages_currently_translating = self._get_story_translation_languages(
                 story_translations_translating
             )
-            if new_story_translation.language in languages_currently_translating:
+            existing_languages = language_service.get_languages()
+
+            if new_story_translation.language not in existing_languages:
+                self.logger.error(
+                    "{lang} is not a valid language".format(
+                        lang=new_story_translation.language
+                    )
+                )
+                raise Exception(
+                    "{lang} is not a valid language".format(
+                        lang=new_story_translation.language
+                    )
+                )
+            elif new_story_translation.language in languages_currently_translating:
                 self.logger.error("User can't be assigned as a translator")
                 raise Exception("User can't be assigned as a translator")
             else:
@@ -216,6 +232,15 @@ class StoryService(IStoryService):
                 .filter(Story.level == level)
                 .first()
             )
+
+            existing_languages = language_service.get_languages()
+
+            if language not in existing_languages:
+                self.logger.error(
+                    "{lang} is not a valid language".format(lang=language)
+                )
+                raise Exception("{lang} is not a valid language".format(lang=language))
+
             new_story_translation = StoryTranslation(
                 story_id=test_story.id,
                 language=language,
