@@ -95,7 +95,7 @@ const Login = () => {
     if (response.error === "idpiframe_initialization_failed") {
       // eslint-disable-next-line no-console
       console.warn("Google SignIn does not work on incognito mode.");
-    } else {
+    } else if (response.error !== "popup_closed_by_user") {
       // eslint-disable-next-line no-alert
       alert(JSON.stringify(response));
     }
