@@ -108,8 +108,8 @@ const LoginComponent = ({
               lastName === "" ||
               email === "" ||
               password === "" ||
-              !agreeToTerms) &&
-            !checkValidPassword()
+              !agreeToTerms ||
+              !checkValidPassword())
           }
           isLoading={isLoading}
           loadingText={isSignup ? "Registering account" : "Signing in"}
