@@ -19,6 +19,7 @@ const Login = () => {
   const [isSignup, setIsSignup] = useState(false);
   const [agreeToTerms, setAgreeToTerms] = useState(false);
   const [invalidLogin, setInvalidLogin] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   const [signup] = useMutation<{ signup: AuthenticatedUser }>(SIGNUP);
   const [login] = useMutation<{ login: AuthenticatedUser }>(LOGIN);
@@ -31,6 +32,7 @@ const Login = () => {
       setIsSignup(false);
     } else {
       try {
+        setIsLoading(true);
         const user: AuthenticatedUser = await authAPIClient.login(
           email,
           password,
@@ -41,6 +43,7 @@ const Login = () => {
         setInvalidLogin(true);
       }
     }
+    setIsLoading(false);
   };
 
   const onGoogleLoginSuccess = async (tokenId: string) => {
@@ -61,6 +64,7 @@ const Login = () => {
     setInvalidLogin(false);
     if (isSignup) {
       if (validateEmail(email)) {
+        setIsLoading(true);
         const user: AuthenticatedUser = await authAPIClient.signup(
           firstName,
           lastName,
@@ -76,6 +80,7 @@ const Login = () => {
     } else {
       setIsSignup(true);
     }
+    setIsLoading(false);
   };
 
   const onAgreeToTermsClick = async () => {
@@ -107,6 +112,7 @@ const Login = () => {
 
   return (
     <LoginComponent
+      isLoading={isLoading}
       isSignup={isSignup}
       invalidLogin={invalidLogin}
       firstName={firstName}
