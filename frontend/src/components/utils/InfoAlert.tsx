@@ -22,6 +22,7 @@ const InfoAlert = ({
       textColor="black"
       opacity="60%"
       height={height}
+      width="100%"
     >
       <AlertIcon as={MdInfoOutline} color="black" />
       {message}
