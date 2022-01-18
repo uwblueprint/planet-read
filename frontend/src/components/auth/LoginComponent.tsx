@@ -18,6 +18,7 @@ type GoogleErrorResponse = {
 };
 
 type LoginComponentProps = {
+  isLoading: boolean;
   isSignup: boolean;
   invalidLogin: boolean;
   firstName: string;
@@ -37,6 +38,7 @@ type LoginComponentProps = {
 };
 
 const LoginComponent = ({
+  isLoading,
   isSignup,
   invalidLogin,
   firstName,
@@ -84,11 +86,7 @@ const LoginComponent = ({
           onAgreeToTermsClick={onAgreeToTermsClick}
         />
         <Button
-          marginTop={isSignup ? "20px" : "40px"}
-          width="100%"
           colorScheme="blue"
-          onClick={isSignup ? onSignUpClick : onLogInClick}
-          textTransform="none"
           isDisabled={
             isSignup &&
             (firstName === "" ||
@@ -97,6 +95,12 @@ const LoginComponent = ({
               password === "" ||
               !agreeToTerms)
           }
+          isLoading={isLoading}
+          loadingText={isSignup ? "Registering account" : "Signing in"}
+          marginTop={isSignup ? "20px" : "40px"}
+          onClick={isSignup ? onSignUpClick : onLogInClick}
+          textTransform="none"
+          width="100%"
         >
           {isSignup ? "Register account" : "Sign in"}
         </Button>
