@@ -244,15 +244,18 @@ const ReviewPage = () => {
             </Tooltip>
           </Flex>
         </Flex>
-        <CommentsPanel
-          storyTranslationContentId={storyTranslationContentId}
-          commentLine={commentLine}
-          storyTranslationId={storyTranslationId}
-          translatorId={translatorId}
-          translatorName={translatorName}
-          reviewerName={reviewerName}
-          setCommentLine={setCommentLine}
-        />
+        {(+authenticatedUser!.id === translatorId ||
+          +authenticatedUser!.id === reviewerId) && (
+          <CommentsPanel
+            storyTranslationContentId={storyTranslationContentId}
+            commentLine={commentLine}
+            storyTranslationId={storyTranslationId}
+            translatorId={translatorId}
+            translatorName={translatorName}
+            reviewerName={reviewerName}
+            setCommentLine={setCommentLine}
+          />
+        )}
         {returnToTranslator && (
           <ConfirmationModal
             confirmation={returnToTranslator}
