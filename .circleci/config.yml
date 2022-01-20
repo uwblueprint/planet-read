@@ -69,20 +69,14 @@ jobs:
             yarn install --frozen-lockfile
             yarn build
       - run:
-          name: Setup Credentials
+          name: Deploy frontend
           command: |
             sudo apt-get update
             sudo apt-get -qq install git-ftp
-            echo "Setting up FTP credentials..."
+            echo "Setting up frontend FTP credentials..."
             HOST=`echo ${FTP_HOST_BASE64} | base64 --decode`
             USERNAME=`echo ${FTP_USERNAME_BASE64} | base64 --decode`
             PASSWORD=`echo ${FTP_PASSWORD_BASE64} | base64 --decode`
-            echo "export HOST=$HOST" >> $BASH_ENV
-            echo "export USERNAME=$USERNAME" >> $BASH_ENV
-            echo "export PASSWORD=$PASSWORD" >> $BASH_ENV
-      - run:
-          name: Deploy frontend
-          command: |
             echo "Deploying frontend..."
             git config git-ftp.url ${HOST}
             git config git-ftp.user ${USERNAME}
@@ -95,10 +89,16 @@ jobs:
       - run:
           name: Deploy backend
           command: |
+            sudo apt-get update
+            sudo apt-get -qq install git-ftp
+            echo "Setting up backend FTP credentials..."
+            HOST_BACKEND=`echo ${FTP_HOST_BACKEND_BASE64} | base64 --decode`
+            USERNAME_BACKEND=`echo ${FTP_USERNAME_BACKEND_BASE64} | base64 --decode`
+            PASSWORD_BACKEND=`echo ${FTP_PASSWORD_BACKEND_BASE64} | base64 --decode`
             echo "Deploying backend..."
-            git config git-ftp.url "${HOST}/~/backend/"
-            git config git-ftp.user ${USERNAME}
-            git config git-ftp.password ${PASSWORD}
+            git config git-ftp.url "${HOST_BACKEND}/home/bp-amluser/planet-read/backend/"
+            git config git-ftp.user ${USERNAME_BACKEND}
+            git config git-ftp.password ${PASSWORD_BACKEND}
             git ftp push --insecure --syncroot backend/python
             echo "Backend deployed!"
 
