@@ -82,7 +82,6 @@ def resolve_story_translation_tests(
     )
 
 
-@require_authorization_by_role_gql({"User", "Admin"})
 def _select_user_id_for_available_translations_query(user_id):
     # if caller is admin, use param use_id. Else, use caller id
     calling_user_id = get_user_id_from_request()

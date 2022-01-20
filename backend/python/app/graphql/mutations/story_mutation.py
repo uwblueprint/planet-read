@@ -28,7 +28,7 @@ class CreateStory(graphene.Mutation):
     ok = graphene.Boolean()
     story = graphene.Field(lambda: StoryResponseDTO)
 
-    @require_authorization_by_role_gql({"User", "Admin"})
+    @require_authorization_by_role_gql({"Admin"})
     def mutate(root, info, story_data=None, contents=None):
         story_response = services["story"].create_story(story_data, contents)
         ok = True
@@ -81,7 +81,7 @@ class AssignUserAsReviewer(graphene.Mutation):
 
     story = graphene.Field(lambda: CreateStoryTranslationResponseDTO)
 
-    @require_authorization_by_role_gql({"Admin"})
+    @require_authorization_by_role_gql({"User", "Admin"})
     def mutate(root, info, user_id, story_translation_id):
         try:
             user = services["user"].get_user_by_id(user_id)
