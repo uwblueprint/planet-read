@@ -2,6 +2,7 @@ import React, { Dispatch, SetStateAction, useState } from "react";
 import { Icon } from "@chakra-ui/icon";
 import { MdDelete } from "react-icons/md";
 import {
+  Badge,
   Link,
   Table,
   Thead,
@@ -18,6 +19,7 @@ import {
   MANAGE_STORY_TABLE_DELETE_STORY_CONFIRMATION,
 } from "../../utils/Copy";
 import ConfirmationModal from "../utils/ConfirmationModal";
+import { getLevelVariant } from "../../utils/StatusUtils";
 import { generateSortFn } from "../../utils/Utils";
 import { Story } from "../../APIClients/queries/StoryQueries";
 import {
@@ -128,6 +130,15 @@ const StoriesTable = ({
       </Td>
       <Td>{new Date(story.dateUploaded).toLocaleDateString()}</Td>
       <Td>
+        <Badge
+          background={getLevelVariant(story.level)}
+          marginBottom="3px"
+          marginTop="3px"
+        >
+          {`Level ${story.level}`}
+        </Badge>
+      </Td>
+      <Td>
         <IconButton
           aria-label={`Delete story ${story.title}`}
           background="transparent"
@@ -160,6 +171,7 @@ const StoriesTable = ({
           <Th cursor="pointer" onClick={() => sort("date")}>{`DATE UPLOADED ${
             isAscendingDate ? "↑" : "↓"
           }`}</Th>
+          <Th>LEVEL</Th>
           <Th width="18%">ACTION</Th>
         </Tr>
       </Thead>
