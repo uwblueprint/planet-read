@@ -33,7 +33,7 @@ CREATE_STORY = """
     }
 """
 
- # Test no longer works because mutation is authenticated
+# Test no longer works because mutation is authenticated
 def test_create_story(app, db, client):
     """
     # seconds need to be dropped for testing purposes since there may be a discrepancy between the new_story and the test_db_story
