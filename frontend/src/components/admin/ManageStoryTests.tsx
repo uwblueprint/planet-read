@@ -5,26 +5,12 @@ import {
   buildStoryTranslationTestsQuery,
   StoryTranslationTest,
 } from "../../APIClients/queries/StoryQueries";
-import { convertTitleCaseToStage } from "../../utils/StageUtils";
 import StoryTestsTable from "./StoryTestsTable";
 
 const ManageStoryTests = () => {
-  // TODO: uncomment if filters are implemented
-  /* eslint-disable */
-  const [language, setLanguage] = useState<string | null>(null);
-  const [level, setLevel] = useState<string | null>(null);
-  const [stage, setStage] = useState<string | null>(null);
-  const [searchText, setSearchText] = useState<string | null>(null);
   const [storyTests, setStoryTests] = useState<StoryTranslationTest[]>([]);
-  /* eslint-enable */
 
-  const query = buildStoryTranslationTestsQuery(
-    language || "",
-    parseInt(level || "", 10) || 0,
-    convertTitleCaseToStage(stage || ""),
-    searchText || "",
-    true,
-  );
+  const query = buildStoryTranslationTestsQuery("", 0, "", "", true);
 
   const { data } = useQuery(query.string, {
     fetchPolicy: "cache-and-network",
