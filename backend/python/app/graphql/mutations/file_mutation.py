@@ -3,11 +3,11 @@ import os
 import graphene
 from graphene_file_upload.scalars import Upload
 
+from ...middlewares.auth import require_authorization_by_role_gql
 from ..service import services
 from ..types.file_type import CreateFileDTO, FileDTO
 
 
-# TODO: require User or Admin role
 class CreateFile(graphene.Mutation):
     class Arguments:
         file = Upload(required=True)
@@ -15,6 +15,7 @@ class CreateFile(graphene.Mutation):
     ok = graphene.Boolean()
     file = graphene.Field(lambda: FileDTO)
 
+    @require_authorization_by_role_gql({"User", "Admin"})
     def mutate(root, info, file=None):
         try:
             res = services["file"].create_file(file)

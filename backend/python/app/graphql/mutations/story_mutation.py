@@ -28,6 +28,7 @@ class CreateStory(graphene.Mutation):
     ok = graphene.Boolean()
     story = graphene.Field(lambda: StoryResponseDTO)
 
+    @require_authorization_by_role_gql({"Admin"})
     def mutate(root, info, story_data=None, contents=None):
         story_response = services["story"].create_story(story_data, contents)
         ok = True
@@ -40,6 +41,7 @@ class CreateStoryTranslation(graphene.Mutation):
 
     story = graphene.Field(lambda: CreateStoryTranslationResponseDTO)
 
+    @require_authorization_by_role_gql({"User", "Admin"})
     def mutate(root, info, story_translation_data):
         try:
             new_story_translation = services["story"].create_translation(
@@ -60,6 +62,7 @@ class CreateStoryTranslationTest(graphene.Mutation):
 
     story = graphene.Field(lambda: CreateStoryTranslationResponseDTO)
 
+    @require_authorization_by_role_gql({"User", "Admin"})
     def mutate(root, info, user_id, level, language, wants_reviewer):
         try:
             new_story_translation = services["story"].create_translation_test(
@@ -78,6 +81,7 @@ class AssignUserAsReviewer(graphene.Mutation):
 
     story = graphene.Field(lambda: CreateStoryTranslationResponseDTO)
 
+    @require_authorization_by_role_gql({"User", "Admin"})
     def mutate(root, info, user_id, story_translation_id):
         try:
             user = services["user"].get_user_by_id(user_id)
@@ -100,6 +104,7 @@ class RemoveReviewerFromStoryTranslation(graphene.Mutation):
 
     ok = graphene.Boolean()
 
+    @require_authorization_by_role_gql({"Admin"})
     def mutate(root, info, story_translation_id):
         try:
             story_translation = services["story"].get_story_translation(
@@ -215,6 +220,7 @@ class UpdateStoryTranslationStage(graphene.Mutation):
 
     ok = graphene.Boolean()
 
+    @require_authorization_by_role_gql({"User", "Admin"})
     def mutate(root, info, story_translation_data):
         try:
             user_id = get_user_id_from_request()
@@ -285,6 +291,7 @@ class ImportStory(graphene.Mutation):
 
     story = graphene.Field(lambda: StoryResponseDTO)
 
+    @require_authorization_by_role_gql({"Admin"})
     def mutate(root, info, story_details, story_file):
         try:
             if not services["file"].validate_file(story_file.filename, "docx"):
@@ -304,6 +311,7 @@ class ProcessStory(graphene.Mutation):
 
     story_contents = graphene.Field(lambda: graphene.List(graphene.String))
 
+    @require_authorization_by_role_gql({"Admin"})
     def mutate(root, info, story_file):
         try:
             if not services["file"].validate_file(story_file.filename, "docx"):

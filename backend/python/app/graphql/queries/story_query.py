@@ -5,14 +5,17 @@ from ...middlewares.auth import (
 from ..service import services
 
 
+@require_authorization_by_role_gql({"User", "Admin"})
 def resolve_stories(root, info, story_title, start_date, end_date, **kwargs):
     return services["story"].get_stories(story_title, start_date, end_date)
 
 
+@require_authorization_by_role_gql({"User", "Admin"})
 def resolve_story_by_id(root, info, id):
     return services["story"].get_story(id)
 
 
+@require_authorization_by_role_gql({"User", "Admin"})
 def resolve_stories_available_for_translation(root, info, language, level, user_id):
     target_user_id = _select_user_id_for_available_translations_query(user_id)
 
@@ -21,6 +24,7 @@ def resolve_stories_available_for_translation(root, info, language, level, user_
     )
 
 
+@require_authorization_by_role_gql({"User", "Admin"})
 def resolve_story_translations_by_user(
     root, info, user_id, is_translator, language, level
 ):
@@ -29,10 +33,12 @@ def resolve_story_translations_by_user(
     )
 
 
+@require_authorization_by_role_gql({"User", "Admin"})
 def resolve_story_translation_by_id(root, info, id):
     return services["story"].get_story_translation(id)
 
 
+@require_authorization_by_role_gql({"User", "Admin"})
 def resolve_story_translations_available_for_review(
     root, info, language, level, user_id=None
 ):
@@ -43,10 +49,12 @@ def resolve_story_translations_available_for_review(
     )
 
 
+@require_authorization_by_role_gql({"Admin"})
 def resolve_story_translation_statistics(root, info):
     return services["story"].get_story_translation_statistics()
 
 
+@require_authorization_by_role_gql({"Admin"})
 def resolve_export_story_translation(root, info, id):
     res = services["story"].export_story_translation(id)
     file = services["file"].download_file(res["path"])

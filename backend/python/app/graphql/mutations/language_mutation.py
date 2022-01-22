@@ -1,5 +1,6 @@
 import graphene
 
+from ...middlewares.auth import require_authorization_by_role_gql
 from ..service import services
 from ..types.language_type import LanguageDTO
 
@@ -12,6 +13,7 @@ class AddLanguage(graphene.Mutation):
     ok = graphene.Boolean()
     language = graphene.Field(lambda: LanguageDTO)
 
+    @require_authorization_by_role_gql({"Admin"})
     def mutate(root, info, language, is_rtl=False):
         try:
             new_language = services["language"].add_language(

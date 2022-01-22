@@ -31,6 +31,7 @@ class UpdateMe(graphene.Mutation):
 
     user = graphene.Field(lambda: UserDTO)
 
+    @require_authorization_by_role_gql({"User", "Admin"})
     def mutate(root, info, user, resume=None):
         """
         Update the user that made the request
