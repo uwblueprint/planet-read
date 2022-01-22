@@ -323,16 +323,13 @@ def test_assign_user_as_reviewer(app, db, services):
         ),
     )
     create_story_translation_contents(db, story_translation_obj)
-    story_translation = services["story"].get_story_translation(
-        story_translation_obj.id
-    )
 
     assert story_translation_obj.reviewer_id == None
     resp = services["story"].assign_user_as_reviewer(
-        user=reviewer_obj, story_translation=story_translation
+        user=reviewer_obj, story_translation_id=story_translation_obj.id
     )
     assert resp["reviewer_id"] == reviewer_obj.id
-    assert resp["level"] == story_translation["level"]
+    assert resp["level"] == story_obj.level
 
 
 def test_assign_user_as_reviewer_not_approved_for_language(app, db, services):
@@ -369,14 +366,11 @@ def test_assign_user_as_reviewer_not_approved_for_language(app, db, services):
         ),
     )
     create_story_translation_contents(db, story_translation_obj)
-    story_translation = services["story"].get_story_translation(
-        story_translation_obj.id
-    )
 
     assert "GERMAN" not in reviewer_obj.approved_languages_review
     with pytest.raises(Exception) as e:
         services["story"].assign_user_as_reviewer(
-            user=reviewer_obj, story_translation=story_translation
+            user=reviewer_obj, story_translation_id=story_translation_obj.id
         )
     assert "User can't be assigned as a reviewer" in str(e.value)
 
@@ -415,14 +409,11 @@ def test_assign_user_as_reviewer_insufficient_level_for_language(app, db, servic
         ),
     )
     create_story_translation_contents(db, story_translation_obj)
-    story_translation = services["story"].get_story_translation(
-        story_translation_obj.id
-    )
 
     assert reviewer_obj.approved_languages_review["English (US)"] < story_obj.level
     with pytest.raises(Exception) as e:
         services["story"].assign_user_as_reviewer(
-            user=reviewer_obj, story_translation=story_translation
+            user=reviewer_obj, story_translation_id=story_translation_obj.id
         )
     assert "User can't be assigned as a reviewer" in str(e.value)
 
@@ -444,14 +435,11 @@ def test_assign_user_as_reviewer_reviewer_id_already_exists_on_translation(
         ),
     )
     create_story_translation_contents(db, story_translation_obj)
-    story_translation = services["story"].get_story_translation(
-        story_translation_obj.id
-    )
 
     assert story_translation_obj.reviewer_id != None
     with pytest.raises(Exception) as e:
         services["story"].assign_user_as_reviewer(
-            user=reviewer_2, story_translation=story_translation
+            user=reviewer_2, story_translation_id=story_translation_obj.id
         )
     assert "User can't be assigned as a reviewer" in str(e.value)
 

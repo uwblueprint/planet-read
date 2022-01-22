@@ -246,7 +246,6 @@ class UserService(IUserService):
         return UserDTO(**new_user_dict)
 
     def update_me(self, user_id, user, resume=None):
-        # TODO: start a new story test for given language when user wants to increase their level
         try:
             old_user = User.query.get(user_id)
 
