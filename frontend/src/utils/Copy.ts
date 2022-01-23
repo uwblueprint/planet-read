@@ -148,3 +148,6 @@ export const USER_WANTS_REVIEWER =
 
 export const SIGN_UP_INVALID_PASSWORD_ALERT =
   "Password must be at least 8 characters long and contain one letter and one number.";
+
+export const CHANGES_NOT_YET_SAVED_ALERT =
+  "Your changes have not yet been saved. Please wait before submitting...";

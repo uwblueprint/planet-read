@@ -15,10 +15,15 @@ export type StoryLine = {
 type AutosaveProps = {
   storylines: StoryLine[];
   onSuccess: () => void;
+  setChangesSaved: (saved: boolean) => void;
 };
 
 // Inspiration from https://www.synthace.com/autosave-with-react-hooks/
-const Autosave = ({ storylines, onSuccess }: AutosaveProps) => {
+const Autosave = ({
+  storylines,
+  onSuccess,
+  setChangesSaved,
+}: AutosaveProps) => {
   const handleError = (errorMessage: string) => {
     // eslint-disable-next-line no-alert
     alert(errorMessage);
@@ -33,7 +38,6 @@ const Autosave = ({ storylines, onSuccess }: AutosaveProps) => {
       if (linesToUpdate.length === 0) {
         return;
       }
-
       const storyTranslationContents = linesToUpdate.map((line: StoryLine) => {
         return {
           id: line.storyTranslationContentId,
@@ -50,6 +54,7 @@ const Autosave = ({ storylines, onSuccess }: AutosaveProps) => {
           handleError("Unable to save translation");
         } else {
           onSuccess();
+          setChangesSaved(true);
         }
       } catch (err) {
         if (typeof err === "string") {
@@ -57,6 +62,7 @@ const Autosave = ({ storylines, onSuccess }: AutosaveProps) => {
         } else {
           handleError("Error occurred, please try again.");
         }
+        setChangesSaved(true);
       }
     }, 1000),
     [],
