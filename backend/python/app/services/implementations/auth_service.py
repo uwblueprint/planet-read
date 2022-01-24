@@ -74,7 +74,7 @@ class AuthService(IAuthService):
                     auth_id=auth_id,
                     on_firebase=on_firebase,
                 )
-            )  # TODO: Pass in the profile photo from google
+            )
         except Exception as e:
             reason = getattr(e, "message", None)
             self.logger.error(

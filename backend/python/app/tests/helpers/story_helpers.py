@@ -27,12 +27,12 @@ def assert_story_equals_model(story_response, story_model, graphql_response=True
 
     if graphql_response:
         assert story_response["youtubeLink"] == story_model.youtube_link
-        # TODO: expected translatedLanguages?
-        assert story_response["translatedLanguages"] == None
+        assert story_response["translatedLanguages"] == story_model.translated_languages
     else:
         assert story_response["youtube_link"] == story_model.youtube_link
-        # TODO: expected translated_languages?
-        assert story_response["translated_languages"] == None
+        assert (
+            story_response["translated_languages"] == story_model.translated_languages
+        )
 
 
 def guarantee_story_table_not_empty(db):

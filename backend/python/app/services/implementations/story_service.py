@@ -83,7 +83,6 @@ class StoryService(IStoryService):
         db.session.commit()
 
         # insert contents into story_contents
-        # TODO use batch inserts here instead of iterating over the for loop?
         try:
             for i, line in enumerate(content):
                 new_content = {
@@ -551,12 +550,13 @@ class StoryService(IStoryService):
             self.logger.error(str(error))
             raise error
 
-    def assign_user_as_reviewer(self, user, story_translation):
+    def assign_user_as_reviewer(self, user, story_translation_id):
         story_translations_reviewing = (
             self._get_story_translations_user_translating_query(
                 user.id, isTranslator=False
             ).all()
         )
+        story_translation = self.get_story_translation(story_translation_id)
         languages_currently_reviewing = self._get_story_translation_languages(
             story_translations_reviewing
         )
@@ -678,7 +678,6 @@ class StoryService(IStoryService):
 
         if story_translation_stage == "TRANSLATE":
             try:
-                # TODO: return lineIndex too
                 db.session.bulk_update_mappings(
                     StoryTranslationContent, story_translation_contents
                 )
