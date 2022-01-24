@@ -23,7 +23,7 @@ const LoadingCard = () => {
   );
 };
 
-const NoStoriesFoundCard = () => {
+const NoStoriesFoundCardCheckAccess = () => {
   return (
     <Flex
       alignItems="center"
@@ -34,6 +34,25 @@ const NoStoriesFoundCard = () => {
     >
       <Text>No Stories Found</Text>
       <Text>Please check access permissions.</Text>
+    </Flex>
+  );
+};
+
+const NoStoriesFoundCard = () => {
+  return (
+    <Flex
+      alignItems="center"
+      border="2px solid black"
+      flexDirection="column"
+      margin="10px 0px 10px 0px"
+      padding="20px"
+    >
+      <Text>No Stories Found</Text>
+      <Text>
+        You may be seeing no stories if you are a translator or reviewer on an
+        active story translation for this language. <br />
+        Please complete that story translation before signing up for more.
+      </Text>
     </Flex>
   );
 };
@@ -52,8 +71,12 @@ const StoryList = ({
     return <LoadingCard />;
   }
 
-  if (stories.length === 0) {
+  if (stories.length === 0 && !displayMyStories && !displayMyTests) {
     return <NoStoriesFoundCard />;
+  }
+
+  if (stories.length === 0) {
+    return <NoStoriesFoundCardCheckAccess />;
   }
 
   const storyCards = stories.map(
