@@ -114,6 +114,18 @@ const AddLanguageModal = ({ isOpen, onClose }: AddLanguageModalProps) => {
       .map((lang) => lang.toLowerCase())
       .indexOf(language.toLowerCase()) !== -1;
 
+  const languageNotTitlecase = language.match(/\b[a-z]/) !== null;
+
+  const getFocuBorderColor = () => {
+    if (languageAlreadyExists) {
+      return "red.100";
+    }
+    if (languageNotTitlecase) {
+      return "orange.100";
+    }
+    return "";
+  };
+
   return (
     <>
       <Modal
@@ -144,6 +156,11 @@ const AddLanguageModal = ({ isOpen, onClose }: AddLanguageModalProps) => {
                 <Text marginBottom="3px">
                   Please enter the name of the new language.
                 </Text>
+                {languageNotTitlecase && (
+                  <Text marginBottom="3px" color="orange.100">
+                    Note: Did you mean to make this language title-case?
+                  </Text>
+                )}
                 {languageAlreadyExists && (
                   <Text marginBottom="3px" color="red.100">
                     This language already exists.
@@ -153,7 +170,7 @@ const AddLanguageModal = ({ isOpen, onClose }: AddLanguageModalProps) => {
                   id="new-language"
                   isInvalid={languageAlreadyExists}
                   errorBorderColor="red.100"
-                  focusBorderColor={languageAlreadyExists ? "red.100" : ""}
+                  focusBorderColor={getFocuBorderColor()}
                   type="text"
                   value={language}
                   onChange={(event) => setLanguage(event.target.value)}
