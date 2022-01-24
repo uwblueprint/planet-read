@@ -96,7 +96,7 @@ jobs:
             USERNAME_BACKEND=`echo ${FTP_USERNAME_BACKEND_BASE64} | base64 --decode`
             PASSWORD_BACKEND=`echo ${FTP_PASSWORD_BACKEND_BASE64} | base64 --decode`
             echo "Deploying backend..."
-            git config git-ftp.url "${HOST_BACKEND}/home/bp-amluser/planet-read/backend/"
+            git config git-ftp.url "${HOST_BACKEND}/home/bp-amluser/aml/backend/"
             git config git-ftp.user ${USERNAME_BACKEND}
             git config git-ftp.password ${PASSWORD_BACKEND}
             git ftp push --insecure --syncroot backend/python
