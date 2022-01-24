@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import {
   GoogleLogin,
   GoogleLoginResponse,
@@ -62,6 +62,26 @@ const LoginComponent = ({
     }
     return false;
   };
+
+  useEffect(() => {
+    window.addEventListener("keyup", (event) => {
+      if (event.key === "Enter") {
+        if (
+          isSignup &&
+          firstName !== "" &&
+          lastName !== "" &&
+          email !== "" &&
+          password !== "" &&
+          agreeToTerms &&
+          checkValidPassword()
+        ) {
+          onSignUpClick();
+        } else if (!isSignup) {
+          onLogInClick();
+        }
+      }
+    });
+  }, []);
 
   return (
     <Flex>
