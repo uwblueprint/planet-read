@@ -223,7 +223,7 @@ const ReviewPage = () => {
                   }
                 >
                   {numApprovedLines === translatedStoryLines.length
-                    ? "SUBMIT TRANSLATION"
+                    ? "FINISH TRANSLATION"
                     : "RETURN TO TRANSLATOR"}
                 </Button>
               </Box>
