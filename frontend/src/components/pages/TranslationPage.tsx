@@ -19,6 +19,7 @@ import deepCopy from "../../utils/DeepCopyUtils";
 import Header from "../navigation/Header";
 import CommentsPanel from "../review/CommentsPanel";
 import {
+  CHANGES_NOT_YET_SAVED_ALERT,
   TRANSLATION_PAGE_TOOL_TIP_COPY,
   TRANSLATION_PAGE_BUTTON_MESSAGE,
   TRANSLATION_PAGE_SEND_FOR_REVIEW_CONFIRMATION,
@@ -63,6 +64,7 @@ const TranslationPage = () => {
     Map<number, StoryLine>
   >(new Map());
   const [numTranslatedLines, setNumTranslatedLines] = useState(0);
+  const [changesSaved, setChangesSaved] = useState<Boolean>(true);
   // UndoRedo
   const [versionHistoryStack, setVersionHistoryStack] = useState<
     Array<StoryLine[]>
@@ -90,6 +92,8 @@ const TranslationPage = () => {
     newContent: string,
     lineIndex: number,
   ) => {
+    setChangesSaved(false);
+
     const updatedContentArray = [...translatedStoryLines];
     snapSnapShotLineIndexes((val: Set<number>) => new Set(val.add(lineIndex)));
     if (
@@ -291,15 +295,19 @@ const TranslationPage = () => {
             />
             <Tooltip
               hasArrow
-              label={TRANSLATION_PAGE_TOOL_TIP_COPY}
-              isDisabled={editable}
+              label={
+                !changesSaved
+                  ? CHANGES_NOT_YET_SAVED_ALERT
+                  : TRANSLATION_PAGE_TOOL_TIP_COPY
+              }
+              disabled={editable && changesSaved}
             >
               <Box>
                 <Button
                   colorScheme="blue"
                   size="secondary"
                   margin="0 10px 0"
-                  disabled={!editable}
+                  disabled={!editable || !changesSaved}
                   onClick={onSendForReviewClick}
                 >
                   {editable ? "SEND FOR REVIEW" : "IN REVIEW"}
@@ -323,6 +331,7 @@ const TranslationPage = () => {
       <Autosave
         storylines={Array.from(changedStoryLines.values())}
         onSuccess={clearUnsavedChangesMap}
+        setChangesSaved={setChangesSaved}
       />
       {sendForReview && (
         <ConfirmationModal
