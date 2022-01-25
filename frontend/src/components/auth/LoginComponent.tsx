@@ -68,13 +68,13 @@ const LoginComponent = ({
       const submitButton = document.getElementById("submit-login-form");
       if (event.key === "Enter" && submitButton !== null) {
         if (
-          !isSignup ||
-          (firstName !== "" &&
-            lastName !== "" &&
-            email !== "" &&
-            password !== "" &&
-            agreeToTerms &&
-            checkValidPassword())
+          email !== "" &&
+          password !== "" &&
+          (!isSignup ||
+            (firstName !== "" &&
+              lastName !== "" &&
+              agreeToTerms &&
+              checkValidPassword()))
         ) {
           submitButton.click();
         }
