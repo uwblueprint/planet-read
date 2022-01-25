@@ -65,19 +65,18 @@ const LoginComponent = ({
 
   useEffect(() => {
     window.addEventListener("keyup", (event) => {
-      if (event.key === "Enter") {
+      const submitButton = document.getElementById("submit-login-form");
+      if (event.key === "Enter" && submitButton !== null) {
         if (
-          isSignup &&
-          firstName !== "" &&
-          lastName !== "" &&
-          email !== "" &&
-          password !== "" &&
-          agreeToTerms &&
-          checkValidPassword()
+          !isSignup ||
+          (firstName !== "" &&
+            lastName !== "" &&
+            email !== "" &&
+            password !== "" &&
+            agreeToTerms &&
+            checkValidPassword())
         ) {
-          onSignUpClick();
-        } else if (!isSignup) {
-          onLogInClick();
+          submitButton.click();
         }
       }
     });
@@ -119,6 +118,7 @@ const LoginComponent = ({
           checkValidPassword={checkValidPassword}
         />
         <Button
+          id="submit-login-form"
           marginTop={isSignup ? "0px" : "40px"}
           width="100%"
           colorScheme="blue"
