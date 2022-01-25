@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import {
   GoogleLogin,
   GoogleLoginResponse,
@@ -63,6 +63,15 @@ const LoginComponent = ({
     return false;
   };
 
+  useEffect(() => {
+    window.addEventListener("keyup", (event) => {
+      const submitButton = document.getElementById("submit-login-form");
+      if (event.key === "Enter" && submitButton !== null) {
+        submitButton.click();
+      }
+    });
+  }, []);
+
   return (
     <Flex>
       <LoginImage />
@@ -99,17 +108,18 @@ const LoginComponent = ({
           checkValidPassword={checkValidPassword}
         />
         <Button
+          id="submit-login-form"
           marginTop={isSignup ? "0px" : "40px"}
           width="100%"
           colorScheme="blue"
           isDisabled={
-            isSignup &&
-            (firstName === "" ||
-              lastName === "" ||
-              email === "" ||
-              password === "" ||
-              !agreeToTerms ||
-              !checkValidPassword())
+            email === "" ||
+            password === "" ||
+            (isSignup &&
+              (firstName === "" ||
+                lastName === "" ||
+                !agreeToTerms ||
+                !checkValidPassword()))
           }
           isLoading={isLoading}
           loadingText={isSignup ? "Registering account" : "Signing in"}
