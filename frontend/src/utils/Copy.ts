@@ -15,10 +15,10 @@ export const REVIEW_PAGE_TOOL_TIP_COPY =
   "The story is in translation. You can leave comments and change translation statuses once the translator makes the story translation ready for review.";
 
 export const REVIEW_PAGE_APPROVE_ALL_CONFIRMATION =
-  "Every line (including lines with the “Action” status) will be marked as “Approved”. To officially finish the translation, click “Submit Translation” afterwards.";
+  "Every line (including lines with the “Action” status) will be marked as “Approved”. To officially finish the translation, click “Finish Translation” afterwards.";
 
 export const REVIEW_PAGE_APPROVE_LAST_LINE_CONFIRMATION =
-  "By marking this last line as “Approved”, all lines will be approved for this translation. To officially finish the translation, click “Submit Translation” afterwards.";
+  "By marking this last line as “Approved”, all lines will be approved for this translation. To officially finish the translation, click “Finish Translation” afterwards.";
 
 export const TRANSLATION_PAGE_SEND_FOR_REVIEW_CONFIRMATION =
   "Once you send your translation for review, you wont be able to edit the translation or leave comments until a reviewer reviews your translation. This action cannot be undone. Please make sure that there are no mistakes.";
@@ -31,7 +31,7 @@ export const REVIEW_PAGE_RETURN_TO_TRANSLATOR_BUTTON_MESSAGE =
 export const TRANSLATION_PAGE_BUTTON_MESSAGE = "I'm sure, send for review";
 
 export const REVIEW_PAGE_SUBMIT_TRANSLATION_BUTTON_MESSAGE =
-  "I'm sure, submit translation";
+  "I'm sure, finish translation";
 
 export const REVIEW_PAGE_RETURN_TO_TRANSLATOR_CONFIRMATION =
   "By clicking this button, your review session will end and the story translation will be returned to the translator.";
