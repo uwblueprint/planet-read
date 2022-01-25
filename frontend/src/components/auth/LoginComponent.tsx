@@ -67,17 +67,7 @@ const LoginComponent = ({
     window.addEventListener("keyup", (event) => {
       const submitButton = document.getElementById("submit-login-form");
       if (event.key === "Enter" && submitButton !== null) {
-        if (
-          email !== "" &&
-          password !== "" &&
-          (!isSignup ||
-            (firstName !== "" &&
-              lastName !== "" &&
-              agreeToTerms &&
-              checkValidPassword()))
-        ) {
-          submitButton.click();
-        }
+        submitButton.click();
       }
     });
   }, []);
@@ -123,13 +113,13 @@ const LoginComponent = ({
           width="100%"
           colorScheme="blue"
           isDisabled={
-            isSignup &&
-            (firstName === "" ||
-              lastName === "" ||
-              email === "" ||
-              password === "" ||
-              !agreeToTerms ||
-              !checkValidPassword())
+            email === "" ||
+            password === "" ||
+            (isSignup &&
+              (firstName === "" ||
+                lastName === "" ||
+                !agreeToTerms ||
+                !checkValidPassword()))
           }
           isLoading={isLoading}
           loadingText={isSignup ? "Registering account" : "Signing in"}
