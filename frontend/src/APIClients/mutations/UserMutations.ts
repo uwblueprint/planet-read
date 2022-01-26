@@ -57,6 +57,7 @@ export const COMPLETE_SIGN_UP = gql`
     $userId: ID!
     $level: Int!
     $language: String!
+    $wantsReviewer: Boolean!
     $resume: Upload
   ) {
     updateMe(user: $userData, resume: $resume) {
@@ -69,6 +70,7 @@ export const COMPLETE_SIGN_UP = gql`
       userId: $userId
       level: $level
       language: $language
+      wantsReviewer: $wantsReviewer
     ) {
       story {
         id
