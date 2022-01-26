@@ -50,6 +50,7 @@ const CompleteProfilePage = () => {
           userId: authenticatedUser!!.id,
           level: 2,
           language,
+          wantsReviewer: false,
           resume,
         },
       });
