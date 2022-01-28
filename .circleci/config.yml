@@ -55,7 +55,7 @@ jobs:
 
   deploy:
     docker:
-      - image: cimg/node:14.15.5
+      - image: cimg/node:14.17.0
     steps:
       - checkout
       - run:
