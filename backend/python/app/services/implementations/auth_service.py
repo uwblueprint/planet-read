@@ -1,3 +1,5 @@
+import os
+
 import firebase_admin.auth
 
 from ...models import db
@@ -111,19 +113,25 @@ class AuthService(IAuthService):
     def reset_password(self, email):
         if not self.email_service:
             error_message = """
-                Attempted to call reset_password but this instance of AuthService 
+                Attempted to call reset_password but this instance of AuthService
                 does not have an EmailService instance
                 """
             self.logger.error(error_message)
             raise Exception(error_message)
 
         try:
-            reset_link = firebase_admin.auth.generate_password_reset_link(email)
+            action_code_settings = firebase_admin.auth.ActionCodeSettings(
+                url=os.getenv("PASSWORD_RESET_REDIRECT"),
+                handle_code_in_app=False,
+            )
+            reset_link = firebase_admin.auth.generate_password_reset_link(
+                email, action_code_settings
+            )
             email_body = """
                 Hello,
                 <br><br>
-                We have received a password reset request for your account. 
-                Please click the following link to reset it. 
+                We have received a password reset request for your account.
+                Please click the following link to reset it.
                 <strong>This link is only valid for 1 hour.</strong>
                 <br><br>
                 <a href={reset_link}>Reset Password</a>
@@ -244,7 +252,7 @@ class AuthService(IAuthService):
                 )[0]
             else:
                 error_message = """
-                Neither story_translation_id nor story_translation_content_id were passed in 
+                Neither story_translation_id nor story_translation_content_id were passed in
                 """
                 self.logger.error(error_message)
                 raise Exception(error_message)
