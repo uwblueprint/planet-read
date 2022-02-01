@@ -15,7 +15,10 @@ import {
 import { FaRegEye, FaRegEyeSlash } from "react-icons/fa";
 
 import InfoAlert from "../utils/InfoAlert";
-import { SIGN_UP_INVALID_PASSWORD_ALERT } from "../../utils/Copy";
+import {
+  SIGN_UP_INVALID_EMAIL_ALERT,
+  SIGN_UP_INVALID_PASSWORD_ALERT,
+} from "../../utils/Copy";
 import WelcomeModal from "../homepage/WelcomeModal";
 
 type LoginFormProps = {
@@ -31,6 +34,7 @@ type LoginFormProps = {
   setPassword: (password: string) => void;
   agreeToTerms: boolean;
   onAgreeToTermsClick: () => void;
+  checkValidEmail: () => boolean;
   checkValidPassword: () => boolean;
 };
 
@@ -47,6 +51,7 @@ const LoginForm = ({
   setPassword,
   agreeToTerms,
   onAgreeToTermsClick,
+  checkValidEmail,
   checkValidPassword,
 }: LoginFormProps) => {
   const [showPassword, setShowPassword] = React.useState(false);
@@ -101,7 +106,18 @@ const LoginForm = ({
           onChange={(event) => setEmail(event.target.value)}
           isInvalid={invalidLogin}
           placeholder="Enter email address"
+          marginBottom="5px"
         />
+        {isSignup &&
+          (!checkValidEmail() ? (
+            <InfoAlert
+              message={SIGN_UP_INVALID_EMAIL_ALERT}
+              colour="orange.50"
+              height="55px"
+            />
+          ) : (
+            <Flex height="55px" />
+          ))}
       </FormControl>
       <FormControl isRequired={isSignup} marginTop="30px">
         <FormLabel htmlFor="password" color={invalidLogin ? "red" : "black"}>

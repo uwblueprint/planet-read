@@ -56,6 +56,14 @@ const LoginComponent = ({
   onGoogleLoginSuccess,
   onFailure,
 }: LoginComponentProps) => {
+  const checkValidEmail = () => {
+    // Email validation is case insensitive and allows for plus signs and
+    // periods in the email
+    return /^[_a-zA-Z0-9-]+(\.[_a-zA-Z0-9-]+)*(\+[a-zA-Z0-9-]+)?@[a-zA-Z0-9-]+\.[a-zA-Z0-9-]{2,63}$/.test(
+      email,
+    );
+  };
+
   const checkValidPassword = () => {
     if (password.length >= 8 && /\d/.test(password) && /\D/.test(password)) {
       return true;
@@ -105,6 +113,7 @@ const LoginComponent = ({
           setPassword={setPassword}
           agreeToTerms={agreeToTerms}
           onAgreeToTermsClick={onAgreeToTermsClick}
+          checkValidEmail={checkValidEmail}
           checkValidPassword={checkValidPassword}
         />
         <Button
@@ -119,6 +128,7 @@ const LoginComponent = ({
               (firstName === "" ||
                 lastName === "" ||
                 !agreeToTerms ||
+                !checkValidEmail() ||
                 !checkValidPassword()))
           }
           isLoading={isLoading}

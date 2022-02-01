@@ -146,6 +146,9 @@ export const CONFIRM_OK = "Okay";
 export const USER_WANTS_REVIEWER =
   "This user is requesting to be evaluated for the reviewer role";
 
+export const SIGN_UP_INVALID_EMAIL_ALERT =
+  "Please enter a valid email address.";
+
 export const SIGN_UP_INVALID_PASSWORD_ALERT =
   "Password must be at least 8 characters long and contain one letter and one number.";
 
