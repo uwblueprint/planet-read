@@ -30,7 +30,7 @@ jobs:
           command: |
             set -x
             echo "Build images"
-            docker-compose build frontend 
+            docker-compose build frontend
             docker-compose build py-backend
 
   test:
@@ -66,6 +66,8 @@ jobs:
             touch .env.production
             REACT_APP_BACKEND_URL=`echo ${REACT_APP_BACKEND_URL_BASE64} | base64 --decode`
             echo "REACT_APP_BACKEND_URL=$REACT_APP_BACKEND_URL" > .env.production
+            REACT_APP_URL=`echo ${REACT_APP_URL_BASE64} | base64 --decode`
+            echo "REACT_APP_URL=$REACT_APP_URL" > .env.production
             yarn install --frozen-lockfile
             yarn build
       - run:
