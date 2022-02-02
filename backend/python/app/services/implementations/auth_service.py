@@ -121,7 +121,7 @@ class AuthService(IAuthService):
 
         try:
             action_code_settings = firebase_admin.auth.ActionCodeSettings(
-                url=os.getenv("PASSWORD_RESET_REDIRECT"),
+                url=os.getenv("REACT_APP_URL") + "/#/login",
                 handle_code_in_app=False,
             )
             reset_link = firebase_admin.auth.generate_password_reset_link(
