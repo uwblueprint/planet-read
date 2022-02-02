@@ -15,7 +15,10 @@ import {
 import { FaRegEye, FaRegEyeSlash } from "react-icons/fa";
 
 import InfoAlert from "../utils/InfoAlert";
-import { SIGN_UP_INVALID_PASSWORD_ALERT } from "../../utils/Copy";
+import {
+  SIGN_UP_INVALID_EMAIL_ALERT,
+  SIGN_UP_INVALID_PASSWORD_ALERT,
+} from "../../utils/Copy";
 import WelcomeModal from "../homepage/WelcomeModal";
 
 type LoginFormProps = {
@@ -31,7 +34,8 @@ type LoginFormProps = {
   setPassword: (password: string) => void;
   agreeToTerms: boolean;
   onAgreeToTermsClick: () => void;
-  checkValidPassword: () => boolean;
+  isValidEmail: () => boolean;
+  isValidPassword: () => boolean;
 };
 
 const LoginForm = ({
@@ -47,7 +51,8 @@ const LoginForm = ({
   setPassword,
   agreeToTerms,
   onAgreeToTermsClick,
-  checkValidPassword,
+  isValidEmail,
+  isValidPassword,
 }: LoginFormProps) => {
   const [showPassword, setShowPassword] = React.useState(false);
 
@@ -101,7 +106,15 @@ const LoginForm = ({
           onChange={(event) => setEmail(event.target.value)}
           isInvalid={invalidLogin}
           placeholder="Enter email address"
+          marginBottom="5px"
         />
+        {isSignup && !isValidEmail() && (
+          <InfoAlert
+            message={SIGN_UP_INVALID_EMAIL_ALERT}
+            colour="orange.50"
+            height="55px"
+          />
+        )}
       </FormControl>
       <FormControl isRequired={isSignup} marginTop="30px">
         <FormLabel htmlFor="password" color={invalidLogin ? "red" : "black"}>
@@ -126,16 +139,13 @@ const LoginForm = ({
             />
           </InputRightElement>
         </InputGroup>
-        {isSignup &&
-          (!checkValidPassword() ? (
-            <InfoAlert
-              message={SIGN_UP_INVALID_PASSWORD_ALERT}
-              colour="orange.50"
-              height="55px"
-            />
-          ) : (
-            <Flex height="55px" />
-          ))}
+        {isSignup && !isValidPassword() && (
+          <InfoAlert
+            message={SIGN_UP_INVALID_PASSWORD_ALERT}
+            colour="orange.50"
+            height="55px"
+          />
+        )}
         {invalidLogin && (
           <FormHelperText id="password-helper-text" color="red">
             Invalid login, please try again.
@@ -143,7 +153,7 @@ const LoginForm = ({
         )}
       </FormControl>
       {isSignup && (
-        <FormControl isRequired marginTop="20px">
+        <FormControl isRequired marginTop="30px">
           <FormLabel>
             <Checkbox
               defaultChecked={agreeToTerms}
