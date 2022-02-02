@@ -56,7 +56,7 @@ const LoginComponent = ({
   onGoogleLoginSuccess,
   onFailure,
 }: LoginComponentProps) => {
-  const checkValidEmail = () => {
+  const isValidEmail = () => {
     // Email validation is case insensitive and allows for plus signs and
     // periods in the email
     return /^[_a-zA-Z0-9-]+(\.[_a-zA-Z0-9-]+)*(\+[a-zA-Z0-9-]+)?@[a-zA-Z0-9-]+\.[a-zA-Z0-9-]{2,63}$/.test(
@@ -64,7 +64,7 @@ const LoginComponent = ({
     );
   };
 
-  const checkValidPassword = () => {
+  const isValidPassword = () => {
     if (password.length >= 8 && /\d/.test(password) && /\D/.test(password)) {
       return true;
     }
@@ -113,8 +113,8 @@ const LoginComponent = ({
           setPassword={setPassword}
           agreeToTerms={agreeToTerms}
           onAgreeToTermsClick={onAgreeToTermsClick}
-          checkValidEmail={checkValidEmail}
-          checkValidPassword={checkValidPassword}
+          isValidEmail={isValidEmail}
+          isValidPassword={isValidPassword}
         />
         <Button
           id="submit-login-form"
@@ -128,8 +128,8 @@ const LoginComponent = ({
               (firstName === "" ||
                 lastName === "" ||
                 !agreeToTerms ||
-                !checkValidEmail() ||
-                !checkValidPassword()))
+                !isValidEmail() ||
+                !isValidPassword()))
           }
           isLoading={isLoading}
           loadingText={isSignup ? "Registering account" : "Signing in"}
