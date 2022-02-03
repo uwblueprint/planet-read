@@ -51,7 +51,7 @@ const WIPComment = ({
       });
       if (result.data?.createComment.ok) {
         setText("");
-        setCommentLine(-1);
+        setCommentLine(0);
         const newComments = insertSortedComments(
           comments,
           result.data.createComment.comment,
