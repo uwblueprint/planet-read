@@ -1,1 +1,1 @@
-web: python -m tools.insert_test_data erase & wait -n; flask db upgrade & wait -n; python -m tools.insert_test_data & wait -n; python server.py
+web: python -m tools.insert_test_data erase & wait -n; flask db upgrade & wait -n; python -m tools.insert_test_data & wait -n; python wsgi.py
