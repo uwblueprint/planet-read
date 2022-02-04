@@ -566,7 +566,6 @@ class StoryService(IStoryService):
             and user.approved_languages_review[story_translation["language"]]
             >= story_translation["level"]
             and not story_translation["reviewer_id"]
-            and user.id != story_translation["translator_id"]
         ):
             story_translation = StoryTranslation.query.get(story_translation["id"])
             story_translation.reviewer_id = user.id

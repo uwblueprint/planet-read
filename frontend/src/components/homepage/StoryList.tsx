@@ -90,6 +90,7 @@ const StoryList = ({
       language,
       translatorId,
       reviewerId,
+      stage,
     }: StoryCardProps) => (
       <StoryCard
         key={createCardId(storyId, storyTranslationId)}
@@ -104,6 +105,7 @@ const StoryList = ({
         isMyTest={displayMyTests}
         translatorId={translatorId}
         reviewerId={reviewerId}
+        stage={stage}
       />
     ),
   );
