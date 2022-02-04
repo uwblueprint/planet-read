@@ -12,12 +12,10 @@ import {
   InputGroup,
   InputLeftElement,
   Stack,
-  Tooltip,
 } from "@chakra-ui/react";
 import DatePicker from "react-datepicker";
 import { levelOptions } from "../../constants/Levels";
 import { stageOptions } from "../../constants/Stage";
-import { FILTER_TOOL_TIP_COPY } from "../../utils/Copy";
 import DropdownIndicator from "../utils/DropdownIndicator";
 import { colourStyles } from "../../theme/components/Select";
 import { getLanguagesQuery } from "../../APIClients/queries/LanguageQueries";
@@ -107,66 +105,45 @@ const TableFilter = ({
         margin="20px auto 10px"
       >
         {useLanguage && setLanguage && (
-          <Tooltip
-            hasArrow
-            label={FILTER_TOOL_TIP_COPY}
-            isDisabled={language == null}
-          >
-            <Box flex={1}>
-              <Select
-                isDisabled={language != null}
-                placeholder="Language"
-                options={options}
-                onChange={(option: any) => setLanguage(option?.value || "")}
-                getOptionLabel={(option: any) => `
+          <Box flex={1}>
+            <Select
+              placeholder="Language"
+              options={options}
+              onChange={(option: any) => setLanguage(option?.value || "")}
+              getOptionLabel={(option: any) => `
                 ${option.value || ""}
               `}
-                value={language ? { value: language } : null}
-                styles={colourStyles}
-                components={{ DropdownIndicator }}
-              />
-            </Box>
-          </Tooltip>
+              value={language ? { value: language } : null}
+              styles={colourStyles}
+              components={{ DropdownIndicator }}
+            />
+          </Box>
         )}
         {useLevel && setLevel && (
-          <Tooltip
-            hasArrow
-            label={FILTER_TOOL_TIP_COPY}
-            isDisabled={level == null}
-          >
-            <Box flex={1} margin="0 15px">
-              <Select
-                placeholder="Level"
-                options={levelOptions}
-                onChange={(option: any) => setLevel(option?.value || "")}
-                getOptionLabel={(option: any) => `Level ${option.value}`}
-                value={level ? { value: level } : null}
-                styles={colourStyles}
-                components={{ DropdownIndicator }}
-                isDisabled={level != null}
-              />
-            </Box>
-          </Tooltip>
+          <Box flex={1} margin="0 15px">
+            <Select
+              placeholder="Level"
+              options={levelOptions}
+              onChange={(option: any) => setLevel(option?.value || "")}
+              getOptionLabel={(option: any) => `Level ${option.value}`}
+              value={level ? { value: level } : null}
+              styles={colourStyles}
+              components={{ DropdownIndicator }}
+            />
+          </Box>
         )}
         {useStage && setStage && (
-          <Tooltip
-            hasArrow
-            label={FILTER_TOOL_TIP_COPY}
-            isDisabled={stage == null}
-          >
-            <Box flex={1} margin="0 15px">
-              <Select
-                placeholder="Progress"
-                options={stageOptions}
-                onChange={(option: any) => setStage(option?.value || "")}
-                getOptionLabel={(option: any) => `${option.value}`}
-                value={stage ? { value: stage } : null}
-                styles={colourStyles}
-                components={{ DropdownIndicator }}
-                isDisabled={stage != null}
-              />
-            </Box>
-          </Tooltip>
+          <Box flex={1} margin="0 15px">
+            <Select
+              placeholder="Progress"
+              options={stageOptions}
+              onChange={(option: any) => setStage(option?.value || "")}
+              getOptionLabel={(option: any) => `${option.value}`}
+              value={stage ? { value: stage } : null}
+              styles={colourStyles}
+              components={{ DropdownIndicator }}
+            />
+          </Box>
         )}
         {useDate && setStartDate && setEndDate && (
           <Box
