@@ -8,16 +8,20 @@ export type StoriesFilterFn = (story: StoryCardProps) => boolean;
 
 export type MyWorkFilterProps = {
   setFilter: Dispatch<SetStateAction<StoriesFilterFn | null>>;
+  isDefaultInReview: boolean;
 };
 
-const MyWorkFilter = ({ setFilter }: MyWorkFilterProps) => {
+const MyWorkFilter = ({ setFilter, isDefaultInReview }: MyWorkFilterProps) => {
   const generateFilterFn = (stage: string) => {
     return (story: StoryCardProps) => story?.stage === stage;
   };
 
   useEffect(() => {
-    // default to show stories in translation
-    setFilter(() => generateFilterFn("TRANSLATE"));
+    if (isDefaultInReview) {
+      setFilter(() => generateFilterFn("REVIEW"));
+    } else {
+      setFilter(() => generateFilterFn("TRANSLATE"));
+    }
   }, []);
 
   const handleStageChange = (stage: string) => {
@@ -41,7 +45,7 @@ const MyWorkFilter = ({ setFilter }: MyWorkFilterProps) => {
           name="Level"
           options={["In Translation", "In Review", "Completed"]}
           onChange={handleStageChange}
-          defaultValue="In Translation"
+          defaultValue={isDefaultInReview ? "In Review" : "In Translation"}
         />
       </Box>
     </Flex>

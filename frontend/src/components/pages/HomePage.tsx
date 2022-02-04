@@ -146,13 +146,22 @@ const HomePage = () => {
     },
   });
 
+  const isDefaultInReview =
+    stories &&
+    stories.filter(
+      (s) => s.reviewerId === +authenticatedUser!!.id && s.stage === "REVIEW",
+    ).length > 0;
+
   return (
     <Box>
       <Header />
       <Divider />
       <Flex direction="row">
-        {pageOption === HomepageOption.MyStories ? (
-          <MyWorkFilter setFilter={setStoriesFilter} />
+        {pageOption === HomepageOption.MyStories && stories ? (
+          <MyWorkFilter
+            setFilter={setStoriesFilter}
+            isDefaultInReview={!!isDefaultInReview}
+          />
         ) : (
           <Filter
             approvedLanguagesTranslation={approvedLanguagesTranslation}
