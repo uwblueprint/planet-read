@@ -594,10 +594,11 @@ class StoryService(IStoryService):
             )
             raise error
 
-    def update_story(self, story_id, title, description, youtube_link):
+    def update_story(self, story_id, title, level, description, youtube_link):
         try:
             story = Story.query.get(story_id)
             story.title = title
+            story.level = level
             story.description = description
             story.youtube_link = youtube_link
             db.session.commit()

@@ -132,12 +132,14 @@ export const UPDATE_STORY = gql`
   mutation UpdateStory(
     $storyId: Int!
     $title: String!
+    $level: Int!
     $description: String!
     $youtubeLink: String!
   ) {
     updateStory(
       storyId: $storyId
       title: $title
+      level: $level
       description: $description
       youtubeLink: $youtubeLink
     ) {

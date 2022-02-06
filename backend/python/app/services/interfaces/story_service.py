@@ -142,10 +142,11 @@ class IStoryService(ABC):
         pass
 
     @abstractmethod
-    def update_story(self, story_id, title, description, youtube_link):
+    def update_story(self, story_id, title, level, description, youtube_link):
         """Update a single story
         :param story_id: id of story to be updated
         :param title: updated title
+        :param level: updated level
         :param description: updated description
         :param youtube_link: updated youtube_link
         :raises Exception: if the user is not authorized to update stories
