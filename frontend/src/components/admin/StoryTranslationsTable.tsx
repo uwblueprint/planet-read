@@ -1,4 +1,10 @@
-import React, { ReactNode, useState } from "react";
+import React, {
+  Dispatch,
+  ReactNode,
+  SetStateAction,
+  useEffect,
+  useState,
+} from "react";
 import { useMutation } from "@apollo/client";
 import { Icon } from "@chakra-ui/icon";
 import { MdDelete, MdOutlineFileDownload } from "react-icons/md";
@@ -41,6 +47,14 @@ export type StoryTranslationsTableProps = {
   width?: string;
 };
 
+interface StoryTranslationFieldSortDict {
+  [field: string]: {
+    sortFn: (a: StoryTranslation, b: StoryTranslation) => number;
+    isAscending: boolean;
+    setIsAscending: Dispatch<SetStateAction<boolean>>;
+  };
+}
+
 const StoryTranslationsTable = ({
   storyTranslationSlice,
   paginator,
@@ -48,9 +62,18 @@ const StoryTranslationsTable = ({
   loading,
   width = "95%",
 }: StoryTranslationsTableProps) => {
+  const [isAscendingLastEdited, setIsAscendingLastEdited] = useState(true);
   const [confirmDeleteTranslation, setConfirmDeleteTranslation] =
     useState(false);
   const [idToDelete, setIdToDelete] = useState(0);
+
+  const [storyTranslations, setStoryTranslations] = useState<
+    StoryTranslation[]
+  >(storyTranslationSlice);
+
+  useEffect(() => {
+    setStoryTranslations(storyTranslationSlice);
+  }, [storyTranslationSlice]);
 
   const [deleteStoryTranslation] = useMutation<{
     response: SoftDeleteStoryTranslationResponse;
@@ -104,14 +127,36 @@ const StoryTranslationsTable = ({
     );
   };
 
-  const tableBody = storyTranslationSlice.map(
+  const dateSort = (t1: StoryTranslation, t2: StoryTranslation) => {
+    const dateT1 = lastEditedDate(t1) || 0;
+    const dateT2 = lastEditedDate(t2) || 0;
+    const forwardCompare = +(dateT2 > dateT1); // 1 if dateT2 > dateT1
+    const reverseCompare = +(dateT1 > dateT2); // 1 if dateT1 > dateT2
+    return isAscendingLastEdited
+      ? forwardCompare - reverseCompare
+      : reverseCompare - forwardCompare;
+  };
+  const sortDict: StoryTranslationFieldSortDict = {
+    lastEditedDate: {
+      sortFn: dateSort,
+      isAscending: isAscendingLastEdited,
+      setIsAscending: setIsAscendingLastEdited,
+    },
+  };
+  const sort = (field: string) => {
+    const newStoryTranslations = [...storyTranslationSlice];
+    const { sortFn, isAscending, setIsAscending } = sortDict[field];
+    setIsAscending(!isAscending);
+    newStoryTranslations.sort(sortFn);
+    setStoryTranslations(newStoryTranslations);
+  };
+
+  const tableBody = storyTranslations.map(
     (storyTranslationObj: StoryTranslation, index: number) => (
       <Tr
         key={`${storyTranslationObj?.storyId}${storyTranslationObj?.storyTranslationId}`}
         borderBottom={
-          index === storyTranslationSlice.length - 1
-            ? "1em solid transparent"
-            : ""
+          index === storyTranslations.length - 1 ? "1em solid transparent" : ""
         }
       >
         <Td>
@@ -199,13 +244,16 @@ const StoryTranslationsTable = ({
           <Th>PROGRESS</Th>
           <Th>TRANSLATOR</Th>
           <Th>REVIEWER</Th>
-          <Th>LAST EDITED</Th>
+          <Th
+            cursor="pointer"
+            onClick={() => sort("lastEditedDate")}
+          >{`LAST EDITED ${isAscendingLastEdited ? "↑" : "↓"}`}</Th>
           <Th>EXPORT</Th>
           <Th>ACTION</Th>
         </Tr>
       </Thead>
       <Tbody>
-        {storyTranslationSlice.length === 0 && !loading ? (
+        {storyTranslations.length === 0 && !loading ? (
           <EmptyTable filters={filters} />
         ) : (
           tableBody
