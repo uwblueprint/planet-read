@@ -120,14 +120,7 @@ const ManageStoryPage = () => {
           youtubeLink: tempYoutubeLink,
         },
       });
-      // Reload page so Story Translations Table shows translations with updated levels
-      if (tempLevel !== level) {
-        window.location.reload();
-      }
-      setTitle(tempTitle);
-      setLevel(tempLevel);
-      setDescription(tempDescription);
-      setYoutubeLink(tempYoutubeLink);
+      window.location.reload();
     }
   };
 
