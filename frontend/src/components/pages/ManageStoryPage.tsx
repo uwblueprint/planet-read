@@ -287,7 +287,8 @@ const ManageStoryPage = () => {
             isDisabled={
               title === tempTitle &&
               description === tempDescription &&
-              youtubeLink === tempYoutubeLink
+              youtubeLink === tempYoutubeLink &&
+              level === tempLevel
             }
             onClick={cancelChanges}
             variant="blueOutline"
