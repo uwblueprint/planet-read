@@ -48,6 +48,8 @@ const StoryCard = ({
   isMyStory,
   isMyTest,
   translatorId,
+  reviewerId,
+  stage,
 }: StoryCardProps) => {
   const { authenticatedUser } = useContext(AuthContext);
   const history = useHistory();
@@ -57,6 +59,7 @@ const StoryCard = ({
     alert(errorMessage);
   };
   const isTranslator = +authenticatedUser!!.id === translatorId;
+  const isReviewer = +authenticatedUser!!.id === reviewerId;
 
   const [assignUserAsReviewer] = useMutation<{
     assignUserAsReviewer: AssignReviewerResponse;
@@ -119,7 +122,10 @@ const StoryCard = ({
   };
 
   const openTranslation = () => {
-    const storyTranslationUrlBase = isTranslator ? "translation" : "review";
+    const storyTranslationUrlBase =
+      (isTranslator && !isReviewer) || (isTranslator && stage === "TRANSLATE")
+        ? "translation"
+        : "review";
     history.push(
       `/${storyTranslationUrlBase}/${storyId}/${storyTranslationId}`,
     );
@@ -177,11 +183,10 @@ const StoryCard = ({
               background={getLevelVariant(level)}
             >{`Level ${level}`}</Badge>
             <Badge variant="language">{`${language}`}</Badge>
-            {isMyStory && (
-              <Badge variant="role">
-                {isTranslator ? "Translator" : "Reviewer"}
-              </Badge>
+            {isMyStory && isTranslator && (
+              <Badge variant="role">Translator</Badge>
             )}
+            {isMyStory && isReviewer && <Badge variant="role">Reviewer</Badge>}
             {isMyTest && <Badge variant="role">Test Book</Badge>}
           </Flex>
         </Flex>
