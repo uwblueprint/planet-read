@@ -196,15 +196,18 @@ class UpdateStory(graphene.Mutation):
     class Arguments:
         story_id = graphene.Int(required=True)
         title = graphene.String(required=True)
+        level = graphene.Int(required=True)
         description = graphene.String(required=True)
         youtube_link = graphene.String(required=True)
 
     ok = graphene.Boolean()
 
     @require_authorization_by_role_gql({"Admin"})
-    def mutate(root, info, story_id, title, description, youtube_link):
+    def mutate(root, info, story_id, title, level, description, youtube_link):
         try:
-            services["story"].update_story(story_id, title, description, youtube_link)
+            services["story"].update_story(
+                story_id, title, level, description, youtube_link
+            )
             return UpdateStory(ok=True)
         except Exception as e:
             error_message = getattr(e, "message", None)

@@ -8,6 +8,11 @@ import {
   FormControl,
   Input,
   Heading,
+  Slider,
+  SliderFilledTrack,
+  SliderMark,
+  SliderThumb,
+  SliderTrack,
   Text,
   Textarea,
 } from "@chakra-ui/react";
@@ -44,9 +49,11 @@ const ManageStoryPage = () => {
   const { storyIdParam } = useParams<ManageStoryPageProps>();
 
   const [title, setTitle] = useState<string>("");
+  const [level, setLevel] = useState<number>(0);
   const [description, setDescription] = useState<string>("");
   const [youtubeLink, setYoutubeLink] = useState<string>("");
   const [tempTitle, setTempTitle] = useState<string>("");
+  const [tempLevel, setTempLevel] = useState<number>(0);
   const [tempDescription, setTempDescription] = useState<string>("");
   const [tempYoutubeLink, setTempYoutubeLink] = useState<string>("");
 
@@ -68,9 +75,11 @@ const ManageStoryPage = () => {
     fetchPolicy: "cache-and-network",
     onCompleted: (data: { storyById: Story; errors: any }) => {
       setTitle(data.storyById.title);
+      setLevel(data.storyById.level);
       setDescription(data.storyById.description);
       setYoutubeLink(data.storyById.youtubeLink);
       setTempTitle(data.storyById.title);
+      setTempLevel(data.storyById.level);
       setTempDescription(data.storyById.description);
       setTempYoutubeLink(data.storyById.youtubeLink);
     },
@@ -99,19 +108,19 @@ const ManageStoryPage = () => {
     if (
       title !== tempTitle ||
       description !== tempDescription ||
-      youtubeLink !== tempYoutubeLink
+      youtubeLink !== tempYoutubeLink ||
+      level !== tempLevel
     ) {
       await updateStory({
         variables: {
           storyId: storyIdParam,
           title: tempTitle,
+          level: tempLevel,
           description: tempDescription,
           youtubeLink: tempYoutubeLink,
         },
       });
-      setTitle(tempTitle);
-      setDescription(tempDescription);
-      setYoutubeLink(tempYoutubeLink);
+      window.location.reload();
     }
   };
 
@@ -151,6 +160,45 @@ const ManageStoryPage = () => {
                   type="title"
                   value={tempTitle || ""}
                 />
+                <Heading size="sm" marginTop="24px" marginBottom="18px">
+                  Level
+                </Heading>
+                <Slider
+                  value={tempLevel}
+                  min={1}
+                  max={4}
+                  step={1}
+                  marginLeft="20px"
+                  size="lg"
+                  width="79%"
+                  onChange={(newLevel: number) => setTempLevel(newLevel)}
+                >
+                  <SliderTrack height="6px">
+                    <SliderFilledTrack bg="blue.500" />
+                  </SliderTrack>
+                  <SliderThumb boxShadow="0px 0px 3px black" />
+                  {[1, 2, 3, 4].map((val) => (
+                    <SliderMark
+                      key={val}
+                      value={val}
+                      height="6px"
+                      width="4px"
+                      marginTop="-3px"
+                      bg={
+                        level >= val
+                          ? "#64A1CD" // light blue
+                          : "#ECF1F4" // light gray
+                      }
+                    >
+                      <Text
+                        margin="10px 0px 0px -2px"
+                        fontWeight={level === val ? "bold" : "normal"}
+                      >
+                        {val}
+                      </Text>
+                    </SliderMark>
+                  ))}
+                </Slider>
                 <Heading size="sm" marginTop="24px" marginBottom="18px">
                   Description
                 </Heading>
@@ -201,7 +249,6 @@ const ManageStoryPage = () => {
             filters={[() => {}]}
             width="100%"
           />
-
           <Heading size="sm">Delete Story</Heading>
           <Text>
             Permanently delete this story and all story translations associated
@@ -233,7 +280,8 @@ const ManageStoryPage = () => {
             isDisabled={
               title === tempTitle &&
               description === tempDescription &&
-              youtubeLink === tempYoutubeLink
+              youtubeLink === tempYoutubeLink &&
+              level === tempLevel
             }
             onClick={cancelChanges}
             variant="blueOutline"
@@ -245,7 +293,8 @@ const ManageStoryPage = () => {
             isDisabled={
               title === tempTitle &&
               description === tempDescription &&
-              youtubeLink === tempYoutubeLink
+              youtubeLink === tempYoutubeLink &&
+              level === tempLevel
             }
             onClick={callUpdateStoryMutation}
           >
