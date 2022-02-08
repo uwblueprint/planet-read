@@ -166,6 +166,13 @@ const ReviewPage = () => {
     removeReviewerFromStoryTranslation: UnassignReviewerResponse;
   }>(UNASSIGN_REVIEWER);
   const onRemoveFromTranslationConfirmationClick = async (): Promise<void> => {
+    const storyTranslationData = {
+      id: storyTranslationId,
+      stage: "TRANSLATE",
+    };
+    await updateStoryTranslationStage({
+      variables: { storyTranslationData },
+    });
     await removeReviewer({
       variables: {
         storyTranslationId,

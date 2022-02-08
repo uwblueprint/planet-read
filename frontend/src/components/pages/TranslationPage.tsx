@@ -183,7 +183,6 @@ const TranslationPage = () => {
     response: SoftDeleteStoryTranslationResponse;
   }>(SOFT_DELETE_STORY_TRANSLATION);
   const onRemoveFromTranslationConfirmationClick = async () => {
-    console.log(storyTranslationId);
     await deleteStoryTranslation({
       variables: {
         id: storyTranslationId,
