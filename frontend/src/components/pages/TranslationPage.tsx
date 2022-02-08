@@ -11,6 +11,8 @@ import Autosave, { StoryLine } from "../translation/Autosave";
 import { convertStatusTitleCase } from "../../utils/StatusUtils";
 import { GET_STORY_AND_TRANSLATION_CONTENTS } from "../../APIClients/queries/StoryQueries";
 import {
+  SOFT_DELETE_STORY_TRANSLATION,
+  SoftDeleteStoryTranslationResponse,
   UPDATE_STORY_TRANSLATION_STAGE,
   UpdateStoryTranslationStageResponse,
 } from "../../APIClients/mutations/StoryMutations";
@@ -23,6 +25,8 @@ import {
   TRANSLATION_PAGE_TOOL_TIP_COPY,
   TRANSLATION_PAGE_BUTTON_MESSAGE,
   TRANSLATION_PAGE_SEND_FOR_REVIEW_CONFIRMATION,
+  TRANSLATION_PAGE_REMOVE_FROM_TRANSLATION_BUTTON_MESSAGE,
+  TRANSLATION_PAGE_REMOVE_FROM_TRANSLATION_CONFIRMATION,
 } from "../../utils/Copy";
 import ConfirmationModal from "../utils/ConfirmationModal";
 
@@ -170,6 +174,24 @@ const TranslationPage = () => {
     }
   };
 
+  const [removeFromTranslation, setRemoveFromTranslation] = useState(false);
+  const onRemoveFromTranslationClick = async () => {
+    setRemoveFromTranslation(!removeFromTranslation);
+  };
+
+  const [deleteStoryTranslation] = useMutation<{
+    response: SoftDeleteStoryTranslationResponse;
+  }>(SOFT_DELETE_STORY_TRANSLATION);
+  const onRemoveFromTranslationConfirmationClick = async () => {
+    await deleteStoryTranslation({
+      variables: {
+        storyTranslationId,
+      },
+    });
+    onRemoveFromTranslationClick();
+    history.push("/");
+  };
+
   const { loading } = useQuery(
     GET_STORY_AND_TRANSLATION_CONTENTS(storyId, storyTranslationId),
     {
@@ -293,27 +315,37 @@ const TranslationPage = () => {
               type="Translation"
               fontSize={fontSize}
             />
-            <Tooltip
-              hasArrow
-              label={
-                !changesSaved
-                  ? CHANGES_NOT_YET_SAVED_ALERT
-                  : TRANSLATION_PAGE_TOOL_TIP_COPY
-              }
-              disabled={editable && changesSaved}
-            >
-              <Box>
-                <Button
-                  colorScheme="blue"
-                  size="secondary"
-                  margin="0 10px 0"
-                  disabled={!editable || !changesSaved}
-                  onClick={onSendForReviewClick}
-                >
-                  {editable ? "SEND FOR REVIEW" : "IN REVIEW"}
-                </Button>
-              </Box>
-            </Tooltip>
+            <Flex>
+              <Text
+                as="u"
+                margin="5px 20px 0 0"
+                onClick={onRemoveFromTranslationClick}
+                variant="link"
+              >
+                Remove myself from translation
+              </Text>
+              <Tooltip
+                hasArrow
+                label={
+                  !changesSaved
+                    ? CHANGES_NOT_YET_SAVED_ALERT
+                    : TRANSLATION_PAGE_TOOL_TIP_COPY
+                }
+                disabled={editable && changesSaved}
+              >
+                <Box>
+                  <Button
+                    colorScheme="blue"
+                    size="secondary"
+                    margin="0 10px 0"
+                    disabled={!editable || !changesSaved}
+                    onClick={onSendForReviewClick}
+                  >
+                    {editable ? "SEND FOR REVIEW" : "IN REVIEW"}
+                  </Button>
+                </Box>
+              </Tooltip>
+            </Flex>
           </Flex>
         </Flex>
         {!isTest && (
@@ -340,6 +372,19 @@ const TranslationPage = () => {
           onConfirmationClick={onSendForReviewConfirmationClick}
           confirmationMessage={TRANSLATION_PAGE_SEND_FOR_REVIEW_CONFIRMATION}
           buttonMessage={TRANSLATION_PAGE_BUTTON_MESSAGE}
+        />
+      )}
+      {removeFromTranslation && (
+        <ConfirmationModal
+          buttonMessage={
+            TRANSLATION_PAGE_REMOVE_FROM_TRANSLATION_BUTTON_MESSAGE
+          }
+          confirmation={removeFromTranslation}
+          confirmationMessage={
+            TRANSLATION_PAGE_REMOVE_FROM_TRANSLATION_CONFIRMATION
+          }
+          onClose={onRemoveFromTranslationClick}
+          onConfirmationClick={onRemoveFromTranslationConfirmationClick}
         />
       )}
     </Flex>
