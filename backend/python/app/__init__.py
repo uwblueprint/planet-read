@@ -44,7 +44,7 @@ def create_app(config_name):
         app.config["CORS_ORIGINS"] = re.compile("https://planet-read-uwbp.*")
     else:
         app.config["CORS_ORIGINS"] = os.getenv(
-            "CORS_ORIGINS", "http://localhost:3000"
+            "CORS_ORIGINS", "http://localhost:3000", "https://www.planetread.org"
         ).split(",")
     app.config["CORS_SUPPORTS_CREDENTIALS"] = True
     CORS(app)
