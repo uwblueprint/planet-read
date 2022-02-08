@@ -1,5 +1,4 @@
 from functools import wraps
-import sys
 
 import firebase_admin.auth
 from flask import current_app, jsonify, request
@@ -199,7 +198,10 @@ def require_authorization_as_story_user_by_role(as_translator):
                         story_translation_id=kwargs["story_translation_id"],
                     )
                 )
-            elif "story_translation_content_id" in kwargs or "story_translation_contents" in kwargs:
+            elif (
+                "story_translation_content_id" in kwargs
+                or "story_translation_contents" in kwargs
+            ):
                 story_translation_content_id = None
 
                 if "story_translation_content_id" in kwargs:
@@ -235,7 +237,6 @@ def require_authorization_as_story_user_by_role(as_translator):
                         story_translation_id=kwargs["id"],
                     )
                 )
-
 
             if not authorized:
                 if as_translator:
