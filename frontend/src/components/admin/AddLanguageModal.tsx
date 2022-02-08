@@ -60,6 +60,7 @@ const AddLanguageModal = ({ isOpen, onClose }: AddLanguageModalProps) => {
     setIsRtl(null);
     setIsSuccessModalOpen(false);
     onClose();
+    window.location.reload();
   };
 
   const useAddLanguage = async () => {
