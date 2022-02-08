@@ -1,6 +1,6 @@
 import React, { useContext, useState } from "react";
 import { useQuery, useMutation } from "@apollo/client";
-import { Box, Divider, Flex, Button, Tooltip } from "@chakra-ui/react";
+import { Box, Divider, Flex, Button, Text, Tooltip } from "@chakra-ui/react";
 import { useParams, Redirect, useHistory } from "react-router-dom";
 
 import AuthContext from "../../contexts/AuthContext";
@@ -19,8 +19,12 @@ import {
   REVIEW_PAGE_SUBMIT_TRANSLATION_CONFIRMATION,
   REVIEW_PAGE_SUBMIT_TRANSLATION_BUTTON_MESSAGE,
   REVIEW_PAGE_TOOL_TIP_COPY,
+  TRANSLATION_PAGE_REMOVE_FROM_TRANSLATION_BUTTON_MESSAGE,
+  TRANSLATION_PAGE_REMOVE_FROM_TRANSLATION_CONFIRMATION,
 } from "../../utils/Copy";
 import {
+  UNASSIGN_REVIEWER,
+  UnassignReviewerResponse,
   UPDATE_STORY_TRANSLATION_STAGE,
   UpdateStoryTranslationStageResponse,
 } from "../../APIClients/mutations/StoryMutations";
@@ -153,6 +157,24 @@ const ReviewPage = () => {
     },
   );
 
+  const [removeFromTranslation, setRemoveFromTranslation] = useState(false);
+  const onRemoveFromTranslationClick = async () => {
+    setRemoveFromTranslation(!removeFromTranslation);
+  };
+
+  const [removeReviewer] = useMutation<{
+    removeReviewerFromStoryTranslation: UnassignReviewerResponse;
+  }>(UNASSIGN_REVIEWER);
+  const onRemoveFromTranslationConfirmationClick = async (): Promise<void> => {
+    await removeReviewer({
+      variables: {
+        storyTranslationId,
+      },
+    });
+    onRemoveFromTranslationClick();
+    history.push("/");
+  };
+
   const isAdmin = authenticatedUser!!.role === "Admin";
   const isDisabled = stage !== "REVIEW" || isAdmin;
   if (loading || reviewerId === -1) return <div />;
@@ -218,30 +240,40 @@ const ReviewPage = () => {
                 fontSize={fontSize}
               />
             </Flex>
-            <Tooltip
-              hasArrow
-              label={REVIEW_PAGE_TOOL_TIP_COPY}
-              isDisabled={!isDisabled}
-            >
-              <Box>
-                <Button
-                  colorScheme="blue"
-                  size="secondary"
-                  margin="0 10px 0"
-                  width="250px"
-                  disabled={isDisabled}
-                  onClick={
-                    numApprovedLines === translatedStoryLines.length
-                      ? openSubmitTranslationModal
-                      : openReturnToTranslatorModal
-                  }
-                >
-                  {numApprovedLines === translatedStoryLines.length
-                    ? "FINISH TRANSLATION"
-                    : "RETURN TO TRANSLATOR"}
-                </Button>
-              </Box>
-            </Tooltip>
+            <Flex>
+              <Text
+                as="u"
+                margin="5px 20px 0 0"
+                onClick={onRemoveFromTranslationClick}
+                variant="link"
+              >
+                Remove myself from translation
+              </Text>
+              <Tooltip
+                hasArrow
+                label={REVIEW_PAGE_TOOL_TIP_COPY}
+                isDisabled={!isDisabled}
+              >
+                <Box>
+                  <Button
+                    colorScheme="blue"
+                    size="secondary"
+                    margin="0 10px 0"
+                    width="250px"
+                    disabled={isDisabled}
+                    onClick={
+                      numApprovedLines === translatedStoryLines.length
+                        ? openSubmitTranslationModal
+                        : openReturnToTranslatorModal
+                    }
+                  >
+                    {numApprovedLines === translatedStoryLines.length
+                      ? "FINISH TRANSLATION"
+                      : "RETURN TO TRANSLATOR"}
+                  </Button>
+                </Box>
+              </Tooltip>
+            </Flex>
           </Flex>
         </Flex>
         {(+authenticatedUser!.id === translatorId ||
@@ -276,6 +308,19 @@ const ReviewPage = () => {
             onClose={closeSubmitTranslationModal}
             confirmationMessage={REVIEW_PAGE_SUBMIT_TRANSLATION_CONFIRMATION}
             buttonMessage={REVIEW_PAGE_SUBMIT_TRANSLATION_BUTTON_MESSAGE}
+          />
+        )}
+        {removeFromTranslation && (
+          <ConfirmationModal
+            buttonMessage={
+              TRANSLATION_PAGE_REMOVE_FROM_TRANSLATION_BUTTON_MESSAGE
+            }
+            confirmation={removeFromTranslation}
+            confirmationMessage={
+              TRANSLATION_PAGE_REMOVE_FROM_TRANSLATION_CONFIRMATION
+            }
+            onClose={onRemoveFromTranslationClick}
+            onConfirmationClick={onRemoveFromTranslationConfirmationClick}
           />
         )}
       </Flex>

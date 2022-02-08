@@ -101,7 +101,7 @@ class RemoveReviewerFromStoryTranslation(graphene.Mutation):
 
     ok = graphene.Boolean()
 
-    @require_authorization_by_role_gql({"Admin"})
+    @require_authorization_as_story_user_by_role(as_translator=False)
     def mutate(root, info, story_translation_id):
         try:
             story_translation = services["story"].get_story_translation(
@@ -239,7 +239,7 @@ class SoftDeleteStoryTranslation(graphene.Mutation):
 
     ok = graphene.Boolean()
 
-    @require_authorization_by_role_gql({"Admin"})
+    @require_authorization_as_story_user_by_role(as_translator=True)
     def mutate(root, info, id):
         try:
             services["story"].soft_delete_story_translation(id)

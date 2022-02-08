@@ -151,3 +151,9 @@ export const SIGN_UP_INVALID_PASSWORD_ALERT =
 
 export const CHANGES_NOT_YET_SAVED_ALERT =
   "Your changes have not yet been saved. Please wait before submitting...";
+
+export const TRANSLATION_PAGE_REMOVE_FROM_TRANSLATION_BUTTON_MESSAGE =
+  "I'm sure, remove";
+
+export const TRANSLATION_PAGE_REMOVE_FROM_TRANSLATION_CONFIRMATION =
+  "Are you sure you want to remove yourself from this story translation? You will lose access to contributing to this story translation.";
