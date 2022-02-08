@@ -97,7 +97,7 @@ const StoryTranslationsTable = ({
   const callSoftDeleteStoryTranslationMutation = async () => {
     await deleteStoryTranslation({
       variables: {
-        id: idToDelete,
+        storyTranslationId: idToDelete,
       },
     });
     closeModal();

@@ -198,10 +198,7 @@ def require_authorization_as_story_user_by_role(as_translator):
                         story_translation_id=kwargs["story_translation_id"],
                     )
                 )
-            elif (
-                "story_translation_content_id" in kwargs
-                or "story_translation_contents" in kwargs
-            ):
+            else:
                 story_translation_content_id = None
 
                 if "story_translation_content_id" in kwargs:
@@ -225,18 +222,6 @@ def require_authorization_as_story_user_by_role(as_translator):
                             story_translation_content_id=story_translation_content_id,
                         )
                     )
-            elif "id" in kwargs:
-                authorized = (
-                    auth_service.is_translator(
-                        access_token,
-                        story_translation_id=kwargs["id"],
-                    )
-                    if as_translator
-                    else auth_service.is_reviewer(
-                        access_token,
-                        story_translation_id=kwargs["id"],
-                    )
-                )
 
             if not authorized:
                 if as_translator:

@@ -185,7 +185,7 @@ const TranslationPage = () => {
   const onRemoveFromTranslationConfirmationClick = async () => {
     await deleteStoryTranslation({
       variables: {
-        id: storyTranslationId,
+        storyTranslationId,
       },
     });
     onRemoveFromTranslationClick();

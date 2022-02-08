@@ -224,7 +224,7 @@ const AssignedStoryTranslationsTable = ({
   const unassignTranslator = async (storyTranslationId: number) => {
     await deleteStoryTranslation({
       variables: {
-        id: storyTranslationId,
+        storyTranslationId,
       },
     });
     return null;
