@@ -67,7 +67,10 @@ const WIPComment = ({
       }
     }
   };
-  const name = `${authenticatedUser!!.firstName}
+  const isAdmin = authenticatedUser!!.role === "Admin";
+  const name = isAdmin
+    ? "Admin"
+    : `${authenticatedUser!!.firstName}
                 ${authenticatedUser!!.lastName}`;
   return (
     <Flex

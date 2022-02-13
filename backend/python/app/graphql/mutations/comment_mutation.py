@@ -23,8 +23,9 @@ class CreateComment(graphene.Mutation):
     @require_authorization_by_role_gql({"User", "Admin"})
     def mutate(root, info, comment_data):
         user_id = get_user_id_from_request()
+        is_admin = services["user"].get_user_by_id(user_id).role == "Admin"
         comment_response = services["comment"].create_comment(
-            comment=comment_data, user_id=user_id
+            comment=comment_data, user_id=user_id, is_admin=is_admin
         )
         ok = True
         return CreateComment(ok=ok, comment=comment_response)
