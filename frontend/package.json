@@ -50,7 +50,7 @@
   },
   "scripts": {
     "start": "react-scripts start",
-    "build": "react-scripts build",
+    "build": "react-scripts build && VERSIONTAG=`git describe --tags --always` && sed -i -- 's/%VERSIONTAG%/'$VERSIONTAG'/g' build/index.html && echo Tagged Version = $VERSIONTAG",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
     "lint": "eslint . --ext .ts,.tsx,.js,.jsx",
