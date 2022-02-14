@@ -284,13 +284,15 @@ const ReviewPage = () => {
           </Flex>
         </Flex>
         {(+authenticatedUser!.id === translatorId ||
-          +authenticatedUser!.id === reviewerId) && (
+          +authenticatedUser!.id === reviewerId ||
+          isAdmin) && (
           <CommentsPanel
             storyTranslationContentId={storyTranslationContentId}
             commentLine={commentLine}
             storyTranslationId={storyTranslationId}
             translatorId={translatorId}
             translatorName={translatorName}
+            reviewerId={reviewerId}
             reviewerName={reviewerName}
             setCommentLine={setCommentLine}
           />

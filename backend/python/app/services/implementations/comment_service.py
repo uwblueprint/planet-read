@@ -18,7 +18,7 @@ class CommentService(ICommentService):
     def __init__(self, logger=current_app.logger):
         self.logger = logger
 
-    def create_comment(self, comment, user_id):
+    def create_comment(self, comment, user_id, is_admin=False):
         try:
             new_comment = CommentAll(**comment)
             new_comment.user_id = user_id
@@ -44,11 +44,13 @@ class CommentService(ICommentService):
         except Exception as error:
             self.logger.error(str(error))
             raise error
-        if story_translation_stage == "PUBLISH" and (is_translator or is_reviewer):
+        if story_translation_stage == "PUBLISH" and (
+            is_translator or is_reviewer or is_admin
+        ):
             raise Exception(
                 "Comments cannot be left after the story has been published."
             )
-        elif is_translator or is_reviewer:
+        elif is_translator or is_reviewer or is_admin:
             try:
                 new_comment.time = datetime.utcnow()
                 new_comment.resolved = False

@@ -12,6 +12,7 @@ export type CommentPanelProps = {
   storyTranslationId: number;
   translatorId: number;
   translatorName: string;
+  reviewerId: number | null;
   reviewerName: string;
   commentLine: number;
   setCommentLine: (line: number) => void;
@@ -21,6 +22,7 @@ export type CommentPanelProps = {
 const CommentsPanel = ({
   storyTranslationId,
   translatorId,
+  reviewerId,
   translatorName,
   reviewerName,
   commentLine,
@@ -122,13 +124,14 @@ const CommentsPanel = ({
                   comments={comments}
                   commentsIdx={i}
                   key={comment.id}
-                  reviewerName={reviewerName}
                   setComments={setComments}
                   updateCommentsAsResolved={updateCommentsAsResolved}
                   updateThreadHeadMap={updateThreadHeadMap}
                   threadHeadMap={threadHeadMap}
                   translatorId={translatorId}
                   translatorName={translatorName}
+                  reviewerId={reviewerId}
+                  reviewerName={reviewerName}
                 />
               );
             }

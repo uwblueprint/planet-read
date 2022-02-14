@@ -11,18 +11,20 @@ import {
 export type CommentThreadProps = {
   comments: CommentResponse[];
   commentsIdx: number;
-  reviewerName: string;
   setComments: (comments: CommentResponse[]) => void;
   updateCommentsAsResolved: (index: number) => void;
   updateThreadHeadMap: (cmts: CommentResponse[]) => void;
   threadHeadMap: boolean[];
   translatorId: number;
   translatorName: string;
+  reviewerId: number | null;
+  reviewerName: string;
 };
 
 const CommentThread = ({
   comments,
   commentsIdx,
+  reviewerId,
   reviewerName,
   setComments,
   updateCommentsAsResolved,
@@ -94,6 +96,16 @@ const CommentThread = ({
     }
   };
 
+  const getCommentAuthor = (userId: number) => {
+    if (translatorId === userId) {
+      return translatorName;
+    }
+    if (reviewerId === userId) {
+      return reviewerName;
+    }
+    return "Admin";
+  };
+
   return (
     <>
       <ExistingComment
@@ -102,9 +114,7 @@ const CommentThread = ({
         isFirstReply={false}
         isThreadHead
         resolveExistingComment={resolveExistingComment}
-        userName={
-          translatorId === comment.userId ? translatorName : reviewerName
-        }
+        userName={getCommentAuthor(comment.userId)}
       />
       {
         // eslint-disable-next-line func-names
@@ -115,11 +125,7 @@ const CommentThread = ({
               isFirstReply={i === 0}
               isThreadHead={false}
               key={threadReply.id}
-              userName={
-                translatorId === threadReply.userId
-                  ? translatorName
-                  : reviewerName
-              }
+              userName={getCommentAuthor(threadReply.userId)}
             />
           );
         })

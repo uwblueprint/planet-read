@@ -54,6 +54,7 @@ const TranslationPage = () => {
     [],
   );
   const [translatorId, setTranslatorId] = useState(-1);
+  const [reviewerId, setReviewerId] = useState<number | null>(-1);
   const [title, setTitle] = useState<string>("");
   const [language, setLanguage] = useState<string>("");
   const [stage, setStage] = useState<string>("");
@@ -198,6 +199,7 @@ const TranslationPage = () => {
       fetchPolicy: "cache-and-network",
       onCompleted: (data) => {
         setTranslatorId(data.storyTranslationById.translatorId);
+        setReviewerId(data.storyTranslationById.reviewerId);
         const storyContent = data.storyById.contents;
         const translatedContent = data.storyTranslationById.translationContents;
         setStage(data.storyTranslationById.stage);
@@ -355,6 +357,7 @@ const TranslationPage = () => {
             storyTranslationId={storyTranslationId}
             translatorId={translatorId}
             translatorName={translatorName}
+            reviewerId={reviewerId}
             reviewerName={reviewerName}
             setCommentLine={setCommentLine}
           />
