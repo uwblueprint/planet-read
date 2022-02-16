@@ -248,14 +248,16 @@ const ReviewPage = () => {
               />
             </Flex>
             <Flex>
-              <Text
-                as="u"
-                margin="5px 20px 0 0"
-                onClick={onRemoveFromTranslationClick}
-                variant="link"
-              >
-                Remove myself from translation
-              </Text>
+              {+authenticatedUser!.id === reviewerId && (
+                <Text
+                  as="u"
+                  margin="5px 20px 0 0"
+                  onClick={onRemoveFromTranslationClick}
+                  variant="link"
+                >
+                  Remove myself from translation
+                </Text>
+              )}
               <Tooltip
                 hasArrow
                 label={REVIEW_PAGE_TOOL_TIP_COPY}
