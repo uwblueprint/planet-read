@@ -1,6 +1,7 @@
 import firebase_admin.auth
 from flask import current_app
 from flask.globals import current_app
+from sqlalchemy import exc
 
 from ...models import db
 from ...models.comment import Comment
@@ -13,7 +14,26 @@ from .language_service import LanguageService
 
 language_service = LanguageService(current_app.logger)
 
+def handle_exceptions(f):
+    from functools import wraps
 
+    @wraps(f)
+    def wrapper(*args, **kwargs):
+        try:
+            res = f(*args, **kwargs)
+            db.session.commit()
+            return res
+        except exc.SQLAlchemyError as error:
+            db.session.rollback()
+            raise error
+        except Exception as error:
+            self = args[0]
+            self.logger.error(error)
+            raise error
+        finally:
+            db.session.close()
+
+    return wrapper
 class UserService(IUserService):
     """
     UserService implementation with user management methods
@@ -28,6 +48,7 @@ class UserService(IUserService):
         """
         self.logger = logger
 
+    @handle_exceptions
     def get_user_by_id(self, user_id):
         try:
             user = User.query.get(user_id)
@@ -49,6 +70,7 @@ class UserService(IUserService):
             )
             raise e
 
+    @handle_exceptions
     def get_user_by_email(self, email):
         try:
             firebase_user = firebase_admin.auth.get_user_by_email(email)
@@ -74,6 +96,7 @@ class UserService(IUserService):
             )
             raise e
 
+    @handle_exceptions
     def get_user_role_by_auth_id(self, auth_id):
         try:
             user = self.get_user_by_auth_id(auth_id)
@@ -87,6 +110,7 @@ class UserService(IUserService):
             )
             raise e
 
+    @handle_exceptions
     def get_user_id_by_auth_id(self, auth_id):
         try:
             user = self.get_user_by_auth_id(auth_id)
@@ -100,6 +124,7 @@ class UserService(IUserService):
             )
             raise e
 
+    @handle_exceptions
     def get_auth_id_by_user_id(self, user_id):
         try:
             user = User.query.get(user_id)
@@ -117,6 +142,7 @@ class UserService(IUserService):
             )
             raise e
 
+    @handle_exceptions
     def get_users(self, isTranslators, language=None, level=None, name_or_email=None):
         user_dtos = []
         appr_langs = None
@@ -171,6 +197,7 @@ class UserService(IUserService):
 
         return user_dtos
 
+    @handle_exceptions
     def create_user(self, user):
         new_user = None
         firebase_user = None
@@ -245,6 +272,7 @@ class UserService(IUserService):
         new_user_dict["email"] = user.email
         return UserDTO(**new_user_dict)
 
+    @handle_exceptions
     def update_me(self, user_id, user, resume=None):
         try:
             old_user = User.query.get(user_id)
@@ -314,6 +342,7 @@ class UserService(IUserService):
 
         return UserService.get_user_by_id(self, user_id)
 
+    @handle_exceptions
     def update_user_by_id(self, user_id, user):
         try:
             old_user = User.query.get(user_id)
@@ -383,6 +412,7 @@ class UserService(IUserService):
 
         return UserDTO(user_id, **user)
 
+    @handle_exceptions
     def soft_delete_user(self, user_id):
         try:
             user = User.query.get(user_id)
@@ -413,6 +443,7 @@ class UserService(IUserService):
             self.logger.error(error)
             raise error
 
+    @handle_exceptions
     def delete_user_by_id(self, user_id):
         try:
             deleted_user = User.query.get(user_id)
@@ -477,6 +508,7 @@ class UserService(IUserService):
             )
             raise e
 
+    @handle_exceptions
     def delete_user_by_email(self, email):
         try:
             firebase_user = firebase_admin.auth.get_user_by_email(email)
@@ -544,6 +576,7 @@ class UserService(IUserService):
             )
             raise e
 
+    @handle_exceptions
     def get_user_by_auth_id(self, auth_id):
         """
         Get a user document by auth_id
@@ -563,6 +596,7 @@ class UserService(IUserService):
 
         return UserDTO(**user_dict)
 
+    @handle_exceptions
     def update_approved_language(self, user_id, is_translate, language, level):
         try:
             if not language in language_service.get_languages():

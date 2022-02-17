@@ -5,7 +5,7 @@ from datetime import datetime, timedelta
 import docx
 from docx.enum.style import WD_STYLE_TYPE
 from flask import current_app
-from sqlalchemy import or_
+from sqlalchemy import exc, or_
 from sqlalchemy.orm import aliased
 from werkzeug.utils import secure_filename
 
@@ -33,10 +33,33 @@ from .language_service import LanguageService
 language_service = LanguageService(current_app.logger)
 
 
+def handle_exceptions(f):
+    from functools import wraps
+
+    @wraps(f)
+    def wrapper(*args, **kwargs):
+        try:
+            res = f(*args, **kwargs)
+            db.session.commit()
+            return res
+        except exc.SQLAlchemyError as error:
+            db.session.rollback()
+            raise error
+        except Exception as error:
+            self = args[0]
+            self.logger.error(error)
+            raise error
+        finally:
+            db.session.close()
+
+    return wrapper
+
+
 class StoryService(IStoryService):
     def __init__(self, logger=current_app.logger):
         self.logger = logger
 
+    @handle_exceptions
     def get_stories(self, story_title=None, start_date=None, end_date=None):
         try:
             # Story is a SQLAlchemy model, we can use convenient methods provided
@@ -59,6 +82,7 @@ class StoryService(IStoryService):
             self.logger.error(error)
             raise error
 
+    @handle_exceptions
     def get_story(self, id):
         # get queries by the primary key, which is id for the Story table
         # note: include_relationships=True will only include StoryContents if StoryAll is called
@@ -70,6 +94,7 @@ class StoryService(IStoryService):
             raise Exception("Invalid id")
         return story.to_dict(include_relationships=True)
 
+    @handle_exceptions
     def create_story(self, story, content):
         # create story
         try:
@@ -101,6 +126,7 @@ class StoryService(IStoryService):
 
         return new_story
 
+    @handle_exceptions
     def import_story(self, details, file):
         try:
             story_contents = self.process_story(file["path"])
@@ -110,6 +136,7 @@ class StoryService(IStoryService):
             self.logger.error(str(error))
             raise error
 
+    @handle_exceptions
     def export_story_translation(self, id):
         try:
             story_details = self.get_story_translation(id=id)
@@ -145,6 +172,7 @@ class StoryService(IStoryService):
             self.logger.error(str(error))
             raise error
 
+    @handle_exceptions
     def create_translation(self, translation):
         try:
             new_story_translation = StoryTranslation(**translation.__dict__)
@@ -200,6 +228,7 @@ class StoryService(IStoryService):
 
         return {**story.to_dict(), **new_story_translation.to_dict()}
 
+    @handle_exceptions
     def create_translation_test(self, user_id, level, language, wants_reviewer):
         try:
             story_translation_tests = (
@@ -262,6 +291,7 @@ class StoryService(IStoryService):
             raise error
         return new_story_translation
 
+    @handle_exceptions
     def get_story_translations_by_user(
         self, user_id, is_translator=None, language=None, level=None
     ):
@@ -277,6 +307,7 @@ class StoryService(IStoryService):
             language=language, level=level, role_filter=role_filter
         )
 
+    @handle_exceptions
     def get_story_translations(
         self,
         language=None,
@@ -385,6 +416,7 @@ class StoryService(IStoryService):
             self.logger.error(str(error))
             raise error
 
+    @handle_exceptions
     def get_story_translation_tests(
         self,
         user,
@@ -464,6 +496,7 @@ class StoryService(IStoryService):
             self.logger.error(str(error))
             raise error
 
+    @handle_exceptions
     def get_story_translation(self, id):
         try:
             translator = aliased(User)
@@ -550,6 +583,7 @@ class StoryService(IStoryService):
             self.logger.error(str(error))
             raise error
 
+    @handle_exceptions
     def assign_user_as_reviewer(self, user, story_translation_id):
         story_translations_reviewing = (
             self._get_story_translations_user_translating_query(
@@ -579,6 +613,7 @@ class StoryService(IStoryService):
             **story_translation.to_dict(),
         }
 
+    @handle_exceptions
     def remove_reviewer_from_story_translation(self, story_translation):
         try:
             story_translation = StoryTranslation.query.get(story_translation["id"])
@@ -593,6 +628,7 @@ class StoryService(IStoryService):
             )
             raise error
 
+    @handle_exceptions
     def update_story(self, story_id, title, level, description, youtube_link):
         try:
             story = Story.query.get(story_id)
@@ -660,6 +696,7 @@ class StoryService(IStoryService):
         else:
             raise Exception("Story translation contents cannot be changed right now.")
 
+    @handle_exceptions
     def update_story_translation_contents(self, story_translation_contents):
         try:
             story_translation = (
@@ -705,6 +742,7 @@ class StoryService(IStoryService):
         else:
             raise Exception("Story translation contents cannot be changed right now.")
 
+    @handle_exceptions
     def update_story_translation_stage(self, story_translation_data, user_id):
         try:
             story_translation = StoryTranslation.query.filter_by(
@@ -734,6 +772,7 @@ class StoryService(IStoryService):
             self.logger.error(error)
             raise error
 
+    @handle_exceptions
     def get_stories_available_for_translation(self, language, level, user_id):
         try:
             ongoing_translations = (
@@ -756,6 +795,7 @@ class StoryService(IStoryService):
             self.logger.error(str(error))
             raise error
 
+    @handle_exceptions
     def get_story_translations_available_for_review(self, language, level, user_id):
         try:
             ongoing_translations = (
@@ -802,6 +842,7 @@ class StoryService(IStoryService):
             self.logger.error(str(error))
             raise error
 
+    @handle_exceptions
     def update_story_translation_content_status(
         self, story_translation_content_id, status
     ):
@@ -849,6 +890,7 @@ class StoryService(IStoryService):
             status,
         )
 
+    @handle_exceptions
     def approve_all_story_translation_content(self, story_translation_id):
         try:
             story_translation = StoryTranslation.query.get(story_translation_id)
@@ -882,6 +924,7 @@ class StoryService(IStoryService):
             )
             raise error
 
+    @handle_exceptions
     def finish_grading_story_translation(
         self, reviewer_id, test_result, test_feedback, story_translation_test_id
     ):
@@ -948,6 +991,7 @@ class StoryService(IStoryService):
 
         return story_translation_test
 
+    @handle_exceptions
     def soft_delete_story_translation(self, id):
         try:
             story_translation = StoryTranslationAll.query.get(id)
@@ -977,6 +1021,7 @@ class StoryService(IStoryService):
             self.logger.error(error)
             raise error
 
+    @handle_exceptions
     def remove_user_from_story_translation(self, story_translation_id, user_id):
         try:
             story_translation = StoryTranslation.query.get(story_translation_id)
@@ -995,6 +1040,7 @@ class StoryService(IStoryService):
             self.logger.error(error)
             raise error
 
+    @handle_exceptions
     def get_story_translation_statistics(self):
         num_translations_in_translation = (
             db.session.query(StoryTranslation)
@@ -1020,6 +1066,7 @@ class StoryService(IStoryService):
             num_translations_completed=num_translations_completed,
         )
 
+    @handle_exceptions
     def soft_delete_story(self, id):
         try:
             story = StoryAll.query.get(id)

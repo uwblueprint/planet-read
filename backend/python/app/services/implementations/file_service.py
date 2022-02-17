@@ -1,6 +1,6 @@
 import os
 from base64 import b64encode
-
+from sqlalchemy import exc
 from werkzeug.utils import secure_filename
 
 from ...graphql.types.file_type import DownloadFileDTO, FileDTO
@@ -9,10 +9,33 @@ from ...models.file import File
 from ..interfaces.file_service import IFileService
 
 
+def handle_exceptions(f):
+    from functools import wraps
+
+    @wraps(f)
+    def wrapper(*args, **kwargs):
+        try:
+            res = f(*args, **kwargs)
+            db.session.commit()
+            return res
+        except exc.SQLAlchemyError as error:
+            db.session.rollback()
+            raise error
+        except Exception as error:
+            self = args[0]
+            self.logger.error(error)
+            raise error
+        finally:
+            db.session.close()
+
+    return wrapper
+
+
 class FileService(IFileService):
     def __init__(self, logger):
         self.logger = logger
 
+    @handle_exceptions
     def get_file_path(self, id):
         try:
             file = File.query.get(id)
@@ -31,6 +54,7 @@ class FileService(IFileService):
             )
             raise e
 
+    @handle_exceptions
     def download_file(self, file_path):
         try:  # encode file data as base64 string
             file_bytes = open(file_path, "rb").read()
@@ -87,6 +111,7 @@ class FileService(IFileService):
 
         return new_file.to_dict()
 
+    @handle_exceptions
     def delete_file(self, file):
         try:
             os.remove(file)

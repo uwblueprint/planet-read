@@ -1,7 +1,7 @@
 from datetime import datetime
 
 from flask import current_app
-from sqlalchemy import func
+from sqlalchemy import exc, func
 
 from ...models import db
 from ...models.comment import Comment
@@ -14,10 +14,33 @@ from .story_service import StoryService
 story_service = StoryService(current_app.logger)
 
 
+def handle_exceptions(f):
+    from functools import wraps
+
+    @wraps(f)
+    def wrapper(*args, **kwargs):
+        try:
+            res = f(*args, **kwargs)
+            db.session.commit()
+            return res
+        except exc.SQLAlchemyError as error:
+            db.session.rollback()
+            raise error
+        except Exception as error:
+            self = args[0]
+            self.logger.error(error)
+            raise error
+        finally:
+            db.session.close()
+
+    return wrapper
+
+
 class CommentService(ICommentService):
     def __init__(self, logger=current_app.logger):
         self.logger = logger
 
+    @handle_exceptions
     def create_comment(self, comment, user_id, is_admin=False):
         try:
             new_comment = CommentAll(**comment)
@@ -91,6 +114,7 @@ class CommentService(ICommentService):
         else:
             raise Exception("You are not authorized to leave comments on this story.")
 
+    @handle_exceptions
     def get_comments_by_story_translation(self, story_translation_id, resolved=None):
         try:
             comments_data = (
@@ -126,6 +150,7 @@ class CommentService(ICommentService):
 
         return comments
 
+    @handle_exceptions
     def update_comment(self, updated_comment, user_id):
         try:
             comment = Comment.query.filter_by(id=updated_comment.id).first()
