@@ -70,7 +70,7 @@ const LoginForm = ({
     <Flex direction="column">
       {isSignup && (
         <Flex direction="column">
-          <FormControl isRequired marginTop="30px">
+          <FormControl isRequired marginTop="15px">
             <FormLabel htmlFor="first-name">First name</FormLabel>
             <Input
               id="first-name"
@@ -81,7 +81,7 @@ const LoginForm = ({
               placeholder="Enter first name"
             />
           </FormControl>
-          <FormControl isRequired marginTop="30px">
+          <FormControl isRequired marginTop="15px">
             <FormLabel htmlFor="last-name">Last name</FormLabel>
             <Input
               id="last-name"
@@ -94,7 +94,7 @@ const LoginForm = ({
           </FormControl>
         </Flex>
       )}
-      <FormControl isRequired={isSignup} marginTop="30px">
+      <FormControl isRequired={isSignup} marginTop="15px">
         <FormLabel htmlFor="email" color={invalidLogin ? "red" : "black"}>
           Email Address
         </FormLabel>
@@ -112,11 +112,11 @@ const LoginForm = ({
           <InfoAlert
             message={SIGN_UP_INVALID_EMAIL_ALERT}
             colour="orange.50"
-            height="55px"
+            height="40px"
           />
         )}
       </FormControl>
-      <FormControl isRequired={isSignup} marginTop="30px">
+      <FormControl isRequired={isSignup} marginTop="15px">
         <FormLabel htmlFor="password" color={invalidLogin ? "red" : "black"}>
           {isSignup ? "Create Password" : "Password"}
         </FormLabel>
@@ -153,7 +153,7 @@ const LoginForm = ({
         )}
       </FormControl>
       {isSignup && (
-        <FormControl isRequired marginTop="30px">
+        <FormControl isRequired marginTop="15px">
           <FormLabel>
             <Checkbox
               defaultChecked={agreeToTerms}
