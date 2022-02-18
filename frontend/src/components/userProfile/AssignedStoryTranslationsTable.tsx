@@ -126,6 +126,12 @@ const AssignedStoryTranslationsTable = ({
   };
 
   const getRole = (translation: StoryTranslation) => {
+    if (
+      userId === translation.translatorId &&
+      userId === translation.reviewerId
+    ) {
+      return "Translator, Reviewer";
+    }
     if (userId === translation.translatorId) {
       return "Translator";
     }
