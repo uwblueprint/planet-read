@@ -78,7 +78,7 @@ const HomePage = () => {
   useEffect(() => {
     const index = getPageOptionFromURL();
     if (index === -1) {
-      window.location.href = "/";
+      window.location.href = "#/";
     } else {
       setPageOption(index);
     }
@@ -116,7 +116,7 @@ const HomePage = () => {
     } else if (nextOption === "My Tests") {
       newIndex = 2;
     }
-    window.location.href = `/#/?tab=${newIndex}`;
+    window.location.href = `#/?tab=${newIndex}`;
   };
 
   const query = buildHomePageStoriesQuery(
@@ -228,7 +228,7 @@ const HomePage = () => {
         isOpen={welcomeModalToggle}
         onClose={() => {
           setWelcomeModalToggle(false);
-          window.location.href = "/";
+          window.location.href = "#/";
         }}
       />
     </Box>

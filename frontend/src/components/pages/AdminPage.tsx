@@ -24,7 +24,7 @@ const AdminPage = () => {
 
   const adminPageOption = getPageOptionFromURL();
   if (adminPageOption === -1) {
-    window.location.href = "/";
+    window.location.href = "#/";
   }
   const bodyComponent = (adminPgOption: AdminPageOption) => {
     switch (adminPgOption) {
