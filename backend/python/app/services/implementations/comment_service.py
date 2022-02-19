@@ -10,30 +10,9 @@ from ...models.story_translation import StoryTranslation
 from ...models.story_translation_content import StoryTranslationContent
 from ..interfaces.comment_service import ICommentService
 from .story_service import StoryService
+from .utils import handle_exceptions
 
 story_service = StoryService(current_app.logger)
-
-
-def handle_exceptions(f):
-    from functools import wraps
-
-    @wraps(f)
-    def wrapper(*args, **kwargs):
-        try:
-            res = f(*args, **kwargs)
-            db.session.commit()
-            return res
-        except exc.SQLAlchemyError as error:
-            db.session.rollback()
-            raise error
-        except Exception as error:
-            self = args[0]
-            self.logger.error(error)
-            raise error
-        finally:
-            db.session.close()
-
-    return wrapper
 
 
 class CommentService(ICommentService):
@@ -114,7 +93,6 @@ class CommentService(ICommentService):
         else:
             raise Exception("You are not authorized to leave comments on this story.")
 
-    @handle_exceptions
     def get_comments_by_story_translation(self, story_translation_id, resolved=None):
         try:
             comments_data = (

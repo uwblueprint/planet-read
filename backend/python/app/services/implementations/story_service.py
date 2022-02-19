@@ -5,7 +5,7 @@ from datetime import datetime, timedelta
 import docx
 from docx.enum.style import WD_STYLE_TYPE
 from flask import current_app
-from sqlalchemy import exc, or_
+from sqlalchemy import or_
 from sqlalchemy.orm import aliased
 from werkzeug.utils import secure_filename
 
@@ -29,30 +29,9 @@ from ...models.story_translation_content_status import StoryTranslationContentSt
 from ...models.user import User
 from ..interfaces.story_service import IStoryService
 from .language_service import LanguageService
+from .utils import handle_exceptions
 
 language_service = LanguageService(current_app.logger)
-
-
-def handle_exceptions(f):
-    from functools import wraps
-
-    @wraps(f)
-    def wrapper(*args, **kwargs):
-        try:
-            res = f(*args, **kwargs)
-            db.session.commit()
-            return res
-        except exc.SQLAlchemyError as error:
-            db.session.rollback()
-            raise error
-        except Exception as error:
-            self = args[0]
-            self.logger.error(error)
-            raise error
-        finally:
-            db.session.close()
-
-    return wrapper
 
 
 class StoryService(IStoryService):
@@ -82,7 +61,6 @@ class StoryService(IStoryService):
             self.logger.error(error)
             raise error
 
-    @handle_exceptions
     def get_story(self, id):
         # get queries by the primary key, which is id for the Story table
         # note: include_relationships=True will only include StoryContents if StoryAll is called
@@ -126,7 +104,6 @@ class StoryService(IStoryService):
 
         return new_story
 
-    @handle_exceptions
     def import_story(self, details, file):
         try:
             story_contents = self.process_story(file["path"])
@@ -136,7 +113,6 @@ class StoryService(IStoryService):
             self.logger.error(str(error))
             raise error
 
-    @handle_exceptions
     def export_story_translation(self, id):
         try:
             story_details = self.get_story_translation(id=id)
@@ -291,7 +267,6 @@ class StoryService(IStoryService):
             raise error
         return new_story_translation
 
-    @handle_exceptions
     def get_story_translations_by_user(
         self, user_id, is_translator=None, language=None, level=None
     ):
@@ -307,7 +282,6 @@ class StoryService(IStoryService):
             language=language, level=level, role_filter=role_filter
         )
 
-    @handle_exceptions
     def get_story_translations(
         self,
         language=None,
@@ -416,7 +390,6 @@ class StoryService(IStoryService):
             self.logger.error(str(error))
             raise error
 
-    @handle_exceptions
     def get_story_translation_tests(
         self,
         user,
@@ -496,7 +469,6 @@ class StoryService(IStoryService):
             self.logger.error(str(error))
             raise error
 
-    @handle_exceptions
     def get_story_translation(self, id):
         try:
             translator = aliased(User)
@@ -647,6 +619,7 @@ class StoryService(IStoryService):
             raise error
 
     # Deprecated: function is not currently in use (story translation stage logic has not been tested)
+    @handle_exceptions
     def update_story_translation_content(self, story_translation_content):
         story_translation = StoryTranslationContent.query.filter_by(
             id=story_translation_content.id
@@ -772,7 +745,6 @@ class StoryService(IStoryService):
             self.logger.error(error)
             raise error
 
-    @handle_exceptions
     def get_stories_available_for_translation(self, language, level, user_id):
         try:
             ongoing_translations = (
@@ -795,7 +767,6 @@ class StoryService(IStoryService):
             self.logger.error(str(error))
             raise error
 
-    @handle_exceptions
     def get_story_translations_available_for_review(self, language, level, user_id):
         try:
             ongoing_translations = (
@@ -1040,7 +1011,6 @@ class StoryService(IStoryService):
             self.logger.error(error)
             raise error
 
-    @handle_exceptions
     def get_story_translation_statistics(self):
         num_translations_in_translation = (
             db.session.query(StoryTranslation)
@@ -1119,6 +1089,7 @@ class StoryService(IStoryService):
             [story_translation.language for story_translation in story_translations]
         )
 
+    @handle_exceptions
     def _insert_empty_story_translation_contents(self, db, new_story_translation):
         translation_id = new_story_translation.id
         story_id = new_story_translation.story_id
@@ -1146,6 +1117,7 @@ class StoryService(IStoryService):
 
         return final_grade
 
+    @handle_exceptions
     def _update_story_translation_last_activity(self, story_translation, is_translator):
         try:
             if not story_translation:

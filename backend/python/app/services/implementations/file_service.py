@@ -7,35 +7,13 @@ from ...graphql.types.file_type import DownloadFileDTO, FileDTO
 from ...models import db
 from ...models.file import File
 from ..interfaces.file_service import IFileService
-
-
-def handle_exceptions(f):
-    from functools import wraps
-
-    @wraps(f)
-    def wrapper(*args, **kwargs):
-        try:
-            res = f(*args, **kwargs)
-            db.session.commit()
-            return res
-        except exc.SQLAlchemyError as error:
-            db.session.rollback()
-            raise error
-        except Exception as error:
-            self = args[0]
-            self.logger.error(error)
-            raise error
-        finally:
-            db.session.close()
-
-    return wrapper
+from .utils import handle_exceptions
 
 
 class FileService(IFileService):
     def __init__(self, logger):
         self.logger = logger
 
-    @handle_exceptions
     def get_file_path(self, id):
         try:
             file = File.query.get(id)
@@ -54,7 +32,6 @@ class FileService(IFileService):
             )
             raise e
 
-    @handle_exceptions
     def download_file(self, file_path):
         try:  # encode file data as base64 string
             file_bytes = open(file_path, "rb").read()
@@ -89,6 +66,7 @@ class FileService(IFileService):
         split_filename = filename.split(".", 1)
         return split_filename[-1] == extension
 
+    @handle_exceptions
     def create_file(self, file):
         try:
             upload_folder_path = os.getenv("UPLOAD_PATH")

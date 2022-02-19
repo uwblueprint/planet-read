@@ -11,29 +11,11 @@ from ...models.user_all import UserAll
 from ...resources.user_dto import UserDTO
 from ..interfaces.user_service import IUserService
 from .language_service import LanguageService
+from .utils import handle_exceptions
 
 language_service = LanguageService(current_app.logger)
 
-def handle_exceptions(f):
-    from functools import wraps
 
-    @wraps(f)
-    def wrapper(*args, **kwargs):
-        try:
-            res = f(*args, **kwargs)
-            db.session.commit()
-            return res
-        except exc.SQLAlchemyError as error:
-            db.session.rollback()
-            raise error
-        except Exception as error:
-            self = args[0]
-            self.logger.error(error)
-            raise error
-        finally:
-            db.session.close()
-
-    return wrapper
 class UserService(IUserService):
     """
     UserService implementation with user management methods
@@ -48,7 +30,6 @@ class UserService(IUserService):
         """
         self.logger = logger
 
-    @handle_exceptions
     def get_user_by_id(self, user_id):
         try:
             user = User.query.get(user_id)
@@ -70,7 +51,6 @@ class UserService(IUserService):
             )
             raise e
 
-    @handle_exceptions
     def get_user_by_email(self, email):
         try:
             firebase_user = firebase_admin.auth.get_user_by_email(email)
@@ -96,7 +76,6 @@ class UserService(IUserService):
             )
             raise e
 
-    @handle_exceptions
     def get_user_role_by_auth_id(self, auth_id):
         try:
             user = self.get_user_by_auth_id(auth_id)
@@ -110,7 +89,6 @@ class UserService(IUserService):
             )
             raise e
 
-    @handle_exceptions
     def get_user_id_by_auth_id(self, auth_id):
         try:
             user = self.get_user_by_auth_id(auth_id)
@@ -124,7 +102,6 @@ class UserService(IUserService):
             )
             raise e
 
-    @handle_exceptions
     def get_auth_id_by_user_id(self, user_id):
         try:
             user = User.query.get(user_id)
@@ -142,7 +119,6 @@ class UserService(IUserService):
             )
             raise e
 
-    @handle_exceptions
     def get_users(self, isTranslators, language=None, level=None, name_or_email=None):
         user_dtos = []
         appr_langs = None
@@ -576,7 +552,6 @@ class UserService(IUserService):
             )
             raise e
 
-    @handle_exceptions
     def get_user_by_auth_id(self, auth_id):
         """
         Get a user document by auth_id
