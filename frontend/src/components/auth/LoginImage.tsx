@@ -5,7 +5,7 @@ import LoginBackgroundImage from "../../assets/login-background-image.png";
 
 const LoginImage = () => {
   return (
-    <Box background="gray.100" width="40vw" height="100vh">
+    <Box background="gray.100" width="40vw" minHeight="100vh">
       <Flex direction="column" height="100%">
         <Flex margin="40px">
           <Image width="80px" src={Logo} alt="PlanetRead logo" />
