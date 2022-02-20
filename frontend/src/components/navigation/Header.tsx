@@ -62,7 +62,7 @@ const Header = ({ title, adminPageOption }: HeaderProps) => {
     AdminPageOptionToStr.map((adminPageOp: AdminPageOptionPair) => (
       <Button
         onClick={() => {
-          window.location.href = `/#/?tab=${adminPageOp.op}`;
+          window.location.href = `#/?tab=${adminPageOp.op}`;
         }}
         variant={adminPageOption === adminPageOp.op ? "headerSelect" : "header"}
       >

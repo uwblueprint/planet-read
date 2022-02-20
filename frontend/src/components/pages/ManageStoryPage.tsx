@@ -131,7 +131,7 @@ const ManageStoryPage = () => {
           id: parseInt(storyIdParam, 10),
         },
       });
-      window.location.href = "/#/?tab=1";
+      window.location.href = "#/?tab=1";
     } catch (error) {
       // eslint-disable-next-line no-alert
       window.alert(`Error occurred, please try again. Error: ${error}`);
