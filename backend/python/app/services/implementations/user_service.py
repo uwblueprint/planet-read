@@ -1,7 +1,6 @@
 import firebase_admin.auth
 from flask import current_app
 from flask.globals import current_app
-from sqlalchemy import exc
 
 from ...models import db
 from ...models.comment import Comment
@@ -30,6 +29,7 @@ class UserService(IUserService):
         """
         self.logger = logger
 
+    @handle_exceptions
     def get_user_by_id(self, user_id):
         try:
             user = User.query.get(user_id)
@@ -51,6 +51,7 @@ class UserService(IUserService):
             )
             raise e
 
+    @handle_exceptions
     def get_user_by_email(self, email):
         try:
             firebase_user = firebase_admin.auth.get_user_by_email(email)
@@ -102,6 +103,7 @@ class UserService(IUserService):
             )
             raise e
 
+    @handle_exceptions
     def get_auth_id_by_user_id(self, user_id):
         try:
             user = User.query.get(user_id)
@@ -119,6 +121,7 @@ class UserService(IUserService):
             )
             raise e
 
+    @handle_exceptions
     def get_users(self, isTranslators, language=None, level=None, name_or_email=None):
         user_dtos = []
         appr_langs = None
@@ -552,6 +555,7 @@ class UserService(IUserService):
             )
             raise e
 
+    @handle_exceptions
     def get_user_by_auth_id(self, auth_id):
         """
         Get a user document by auth_id

@@ -66,10 +66,8 @@ def create_app(config_name):
     )
 
     app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
-    app.config["SQLALCHEMY_ENGINE_OPTIONS"] = {
-        "pool_pre_ping": True,
-        "pool_recycle": 1800,
-    }
+    app.config["SQLALCHEMY_POOL_RECYCLE"] = 499
+    app.config["SQLALCHEMY_POOL_TIMEOUT"] = 20
     mysql.init_app(app)
     firebase_admin.initialize_app()
 

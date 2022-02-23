@@ -1,6 +1,6 @@
 import os
 from base64 import b64encode
-from sqlalchemy import exc
+
 from werkzeug.utils import secure_filename
 
 from ...graphql.types.file_type import DownloadFileDTO, FileDTO

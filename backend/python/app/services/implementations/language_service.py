@@ -1,5 +1,4 @@
 from flask import current_app
-from sqlalchemy import exc
 
 from ...models import db
 from ...models.language import Language
@@ -11,6 +10,7 @@ class LanguageService(ILanguageService):
     def __init__(self, logger=current_app.logger):
         self.logger = logger
 
+    @handle_exceptions
     def get_languages(self):
         try:
             languages = Language.query.order_by(Language.language.asc()).all()
@@ -30,6 +30,7 @@ class LanguageService(ILanguageService):
             self.logger.error(str(error))
             raise error
 
+    @handle_exceptions
     def get_is_rtl(self, language):
         try:
             to_check = Language.query.filter_by(language=language).first()

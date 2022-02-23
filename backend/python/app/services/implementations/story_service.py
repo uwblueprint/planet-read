@@ -61,6 +61,7 @@ class StoryService(IStoryService):
             self.logger.error(error)
             raise error
 
+    @handle_exceptions
     def get_story(self, id):
         # get queries by the primary key, which is id for the Story table
         # note: include_relationships=True will only include StoryContents if StoryAll is called
@@ -267,6 +268,7 @@ class StoryService(IStoryService):
             raise error
         return new_story_translation
 
+    @handle_exceptions
     def get_story_translations_by_user(
         self, user_id, is_translator=None, language=None, level=None
     ):
@@ -282,6 +284,7 @@ class StoryService(IStoryService):
             language=language, level=level, role_filter=role_filter
         )
 
+    @handle_exceptions
     def get_story_translations(
         self,
         language=None,
@@ -390,6 +393,7 @@ class StoryService(IStoryService):
             self.logger.error(str(error))
             raise error
 
+    @handle_exceptions
     def get_story_translation_tests(
         self,
         user,
@@ -469,6 +473,7 @@ class StoryService(IStoryService):
             self.logger.error(str(error))
             raise error
 
+    @handle_exceptions
     def get_story_translation(self, id):
         try:
             translator = aliased(User)
@@ -745,6 +750,7 @@ class StoryService(IStoryService):
             self.logger.error(error)
             raise error
 
+    @handle_exceptions
     def get_stories_available_for_translation(self, language, level, user_id):
         try:
             ongoing_translations = (
@@ -767,6 +773,7 @@ class StoryService(IStoryService):
             self.logger.error(str(error))
             raise error
 
+    @handle_exceptions
     def get_story_translations_available_for_review(self, language, level, user_id):
         try:
             ongoing_translations = (
@@ -1011,6 +1018,7 @@ class StoryService(IStoryService):
             self.logger.error(error)
             raise error
 
+    @handle_exceptions
     def get_story_translation_statistics(self):
         num_translations_in_translation = (
             db.session.query(StoryTranslation)
@@ -1073,6 +1081,7 @@ class StoryService(IStoryService):
 
         return count
 
+    @handle_exceptions
     def _get_story_translations_user_translating_query(self, user_id, isTranslator):
         return (
             StoryTranslation.query.filter(StoryTranslation.is_test == False)

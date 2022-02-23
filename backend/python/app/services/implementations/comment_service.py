@@ -1,7 +1,7 @@
 from datetime import datetime
 
 from flask import current_app
-from sqlalchemy import exc, func
+from sqlalchemy import func
 
 from ...models import db
 from ...models.comment import Comment
@@ -93,6 +93,7 @@ class CommentService(ICommentService):
         else:
             raise Exception("You are not authorized to leave comments on this story.")
 
+    @handle_exceptions
     def get_comments_by_story_translation(self, story_translation_id, resolved=None):
         try:
             comments_data = (
