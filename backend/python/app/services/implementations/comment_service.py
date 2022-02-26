@@ -10,6 +10,7 @@ from ...models.story_translation import StoryTranslation
 from ...models.story_translation_content import StoryTranslationContent
 from ..interfaces.comment_service import ICommentService
 from .story_service import StoryService
+from .utils import handle_exceptions
 
 story_service = StoryService(current_app.logger)
 
@@ -18,6 +19,7 @@ class CommentService(ICommentService):
     def __init__(self, logger=current_app.logger):
         self.logger = logger
 
+    @handle_exceptions
     def create_comment(self, comment, user_id, is_admin=False):
         try:
             new_comment = CommentAll(**comment)
@@ -91,6 +93,7 @@ class CommentService(ICommentService):
         else:
             raise Exception("You are not authorized to leave comments on this story.")
 
+    @handle_exceptions
     def get_comments_by_story_translation(self, story_translation_id, resolved=None):
         try:
             comments_data = (
@@ -126,6 +129,7 @@ class CommentService(ICommentService):
 
         return comments
 
+    @handle_exceptions
     def update_comment(self, updated_comment, user_id):
         try:
             comment = Comment.query.filter_by(id=updated_comment.id).first()

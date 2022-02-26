@@ -10,6 +10,7 @@ from ...resources.create_user_dto import CreateUserWithGoogleDTO
 from ...resources.token import Token
 from ...utilities.firebase_rest_client import FirebaseRestClient
 from ..interfaces.auth_service import IAuthService
+from .utils import handle_exceptions
 
 
 class AuthService(IAuthService):
@@ -213,6 +214,7 @@ class AuthService(IAuthService):
             story_translation_content_id=story_translation_content_id,
         )
 
+    @handle_exceptions
     def _is_story_role(
         self,
         access_token,

@@ -7,6 +7,7 @@ from ...graphql.types.file_type import DownloadFileDTO, FileDTO
 from ...models import db
 from ...models.file import File
 from ..interfaces.file_service import IFileService
+from .utils import handle_exceptions
 
 
 class FileService(IFileService):
@@ -65,6 +66,7 @@ class FileService(IFileService):
         split_filename = filename.split(".", 1)
         return split_filename[-1] == extension
 
+    @handle_exceptions
     def create_file(self, file):
         try:
             upload_folder_path = os.getenv("UPLOAD_PATH")
@@ -87,6 +89,7 @@ class FileService(IFileService):
 
         return new_file.to_dict()
 
+    @handle_exceptions
     def delete_file(self, file):
         try:
             os.remove(file)
