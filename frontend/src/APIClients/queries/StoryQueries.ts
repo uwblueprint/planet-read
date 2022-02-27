@@ -283,9 +283,11 @@ export const buildStoryTranslationsQuery = (
   queryParams += stage ? `stage: "${stage}", ` : "";
   queryParams += storyTitle ? `storyTitle: "${storyTitle}", ` : "";
   queryParams += storyId ? `storyId: ${storyId}, ` : "";
-  queryParams += lastActivityAscending
-    ? `lastActivityAscending: "${lastActivityAscending}", `
-    : "";
+  queryParams +=
+    typeof lastActivityAscending !== "undefined" &&
+    lastActivityAscending !== null
+      ? `lastActivityAscending: ${lastActivityAscending}, `
+      : "";
 
   return {
     fieldName: "storyTranslations",

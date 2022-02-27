@@ -36,7 +36,7 @@ const ManageStoryTranslations = () => {
     parseInt(level || "", 10) || 0,
     convertTitleCaseToStage(stage || ""),
     searchText || "",
-    true, // This causes problem
+    true,
   );
 
   const { loading, pageResults, paginator } = usePagination<StoryTranslation>(

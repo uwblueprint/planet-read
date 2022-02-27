@@ -120,6 +120,7 @@ class Query(graphene.ObjectType):
         stage=graphene.String(),
         story_title=graphene.String(),
         story_id=graphene.Int(),
+        last_activity_ascending=graphene.Boolean(),
     )
     story_translation_tests = graphene.Field(
         graphene.List(StoryTranslationTestResponseDTO),
