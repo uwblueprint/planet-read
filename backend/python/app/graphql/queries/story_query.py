@@ -64,10 +64,10 @@ def resolve_export_story_translation(root, info, id):
 
 @require_authorization_by_role_gql({"Admin"})
 def resolve_story_translations(
-    root, info, language, level, stage, story_title, story_id
+    root, info, language, level, stage, story_title, story_id, last_activity_ascending
 ):
     return services["story"].get_story_translations(
-        language, level, stage, story_title, story_id
+        language, level, stage, story_title, story_id, last_activity_ascending
     )
 
 

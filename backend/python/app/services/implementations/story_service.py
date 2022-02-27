@@ -5,7 +5,7 @@ from datetime import datetime, timedelta
 import docx
 from docx.enum.style import WD_STYLE_TYPE
 from flask import current_app
-from sqlalchemy import or_
+from sqlalchemy import func, or_
 from sqlalchemy.orm import aliased
 from werkzeug.utils import secure_filename
 
@@ -293,6 +293,7 @@ class StoryService(IStoryService):
         story_title=None,
         story_id=None,
         role_filter=None,
+        last_activity_ascending=None,
     ):
         try:
             filters = [
@@ -348,7 +349,29 @@ class StoryService(IStoryService):
                 .join("translation_contents")
                 .filter(*filters)
                 .filter(StoryTranslationAll.is_deleted == False)
-                .order_by(Story.id)
+                .order_by(
+                    Story.id
+                    if last_activity_ascending is None
+                    else (
+                        func.greatest(
+                            func.coalesce(
+                                StoryTranslationAll.translator_last_activity, 0
+                            ),
+                            func.coalesce(
+                                StoryTranslationAll.reviewer_last_activity, 0
+                            ),
+                        ).asc()
+                        if last_activity_ascending
+                        else func.greatest(
+                            func.coalesce(
+                                StoryTranslationAll.translator_last_activity, 0
+                            ),
+                            func.coalesce(
+                                StoryTranslationAll.reviewer_last_activity, 0
+                            ),
+                        ).desc()
+                    )
+                )
                 .all()
             )
 

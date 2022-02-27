@@ -227,10 +227,18 @@ class Query(graphene.ObjectType):
         stage=None,
         story_title=None,
         story_id=None,
+        last_activity_ascending=None,
         **kwargs
     ):
         return resolve_story_translations(
-            root, info, language, level, stage, story_title, story_id
+            root,
+            info,
+            language,
+            level,
+            stage,
+            story_title,
+            story_id,
+            last_activity_ascending,
         )
 
     def resolve_story_translation_tests(
