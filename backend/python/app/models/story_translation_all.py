@@ -41,12 +41,8 @@ class StoryTranslationAll(db.Model):
         return formatted
 
     @hybrid_property
-    def get_last_activity(self):
+    def last_activity(self):
         return func.greatest(
-            func.coalesce(
-                self.translator_last_activity, 0
-            ),
-            func.coalesce(
-                self.reviewer_last_activity, 0
-            ),
+            func.coalesce(self.translator_last_activity, 0),
+            func.coalesce(self.reviewer_last_activity, 0),
         )

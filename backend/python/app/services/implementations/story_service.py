@@ -353,9 +353,9 @@ class StoryService(IStoryService):
                     Story.id
                     if last_activity_ascending is None
                     else (
-                        StoryTranslationAll.get_last_activity.asc()
+                        StoryTranslationAll.last_activity.asc()
                         if last_activity_ascending
-                        else StoryTranslationAll.get_last_activity.desc()
+                        else StoryTranslationAll.last_activity.desc()
                     )
                 )
                 .all()
