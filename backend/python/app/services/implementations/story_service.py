@@ -5,7 +5,7 @@ from datetime import datetime, timedelta
 import docx
 from docx.enum.style import WD_STYLE_TYPE
 from flask import current_app
-from sqlalchemy import func, or_
+from sqlalchemy import or_
 from sqlalchemy.orm import aliased
 from werkzeug.utils import secure_filename
 
@@ -353,23 +353,9 @@ class StoryService(IStoryService):
                     Story.id
                     if last_activity_ascending is None
                     else (
-                        func.greatest(
-                            func.coalesce(
-                                StoryTranslationAll.translator_last_activity, 0
-                            ),
-                            func.coalesce(
-                                StoryTranslationAll.reviewer_last_activity, 0
-                            ),
-                        ).asc()
+                        StoryTranslationAll.get_last_activity.asc()
                         if last_activity_ascending
-                        else func.greatest(
-                            func.coalesce(
-                                StoryTranslationAll.translator_last_activity, 0
-                            ),
-                            func.coalesce(
-                                StoryTranslationAll.reviewer_last_activity, 0
-                            ),
-                        ).desc()
+                        else StoryTranslationAll.get_last_activity.desc()
                     )
                 )
                 .all()

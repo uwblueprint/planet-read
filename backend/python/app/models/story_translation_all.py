@@ -1,5 +1,6 @@
-from sqlalchemy import Boolean, DateTime, Float, inspect
+from sqlalchemy import Boolean, DateTime, Float, func, inspect
 from sqlalchemy.dialects.mysql import TEXT
+from sqlalchemy.ext.hybrid import hybrid_property
 from sqlalchemy.orm.properties import ColumnProperty
 
 from . import db
@@ -38,3 +39,14 @@ class StoryTranslationAll(db.Model):
             elif include_relationships:
                 formatted[field] = [obj.to_dict() for obj in attr]
         return formatted
+
+    @hybrid_property
+    def get_last_activity(self):
+        return func.greatest(
+            func.coalesce(
+                self.translator_last_activity, 0
+            ),
+            func.coalesce(
+                self.reviewer_last_activity, 0
+            ),
+        )
