@@ -295,7 +295,6 @@ class StoryService(IStoryService):
         role_filter=None,
         last_activity_ascending=None,
     ):
-        raise Exception(last_activity_ascending)
         try:
             filters = [
                 StoryTranslation.is_test == False,
@@ -361,7 +360,7 @@ class StoryService(IStoryService):
                             func.coalesce(
                                 StoryTranslationAll.reviewer_last_activity, 0
                             ),
-                        ).desc()
+                        ).asc()
                         if last_activity_ascending
                         else func.greatest(
                             func.coalesce(

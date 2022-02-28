@@ -67,7 +67,7 @@ def resolve_story_translations(
     root, info, language, level, stage, story_title, story_id, last_activity_ascending
 ):
     return services["story"].get_story_translations(
-        language, level, stage, story_title, story_id, True
+        language, level, stage, story_title, story_id, last_activity_ascending=last_activity_ascending
     )
 
 
