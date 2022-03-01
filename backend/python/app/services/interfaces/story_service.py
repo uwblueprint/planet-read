@@ -86,7 +86,14 @@ class IStoryService(ABC):
 
     @abstractmethod
     def get_story_translations(
-        self, language, level, stage, story_title, story_id, role_filter
+        self,
+        language,
+        level,
+        stage,
+        story_title,
+        story_id,
+        role_filter,
+        last_activity_ascending,
     ):
         """Return a list of story translations based on filters
 
@@ -97,6 +104,7 @@ class IStoryService(ABC):
         likeness and return
         :param story_id: story_id of story translation to filter by
         :param role_filter: filter to get story_translations by user_id/role
+        :param last_activity_ascending: whether or not story translations are sorted by last activity
         :return: list of StoryTranslationNode's
         :rtype: list of StoryTranslationNode's
         """

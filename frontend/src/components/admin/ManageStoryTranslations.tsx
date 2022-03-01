@@ -29,6 +29,7 @@ const ManageStoryTranslations = () => {
   const [numTranslationsCompleted, setNumTranslationsCompleted] = useState(0);
   const [isAddNewLanguageModalOpen, setIsAddNewLanguageModalOpen] =
     useState(false);
+  const [isAscendingLastEdited, setIsAscendingLastEdited] = useState(false);
 
   const query = buildStoryTranslationsQuery(
     0,
@@ -36,6 +37,7 @@ const ManageStoryTranslations = () => {
     parseInt(level || "", 10) || 0,
     convertTitleCaseToStage(stage || ""),
     searchText || "",
+    isAscendingLastEdited,
   );
 
   const { loading, pageResults, paginator } = usePagination<StoryTranslation>(
@@ -123,6 +125,7 @@ const ManageStoryTranslations = () => {
           storyTranslationSlice={pageResults}
           paginator={paginator}
           filters={[setLanguage, setLevel, setStage, setSearchText]}
+          setQueryIsAscendingLastEdited={setIsAscendingLastEdited}
         />
       </Box>
       <AddLanguageModal

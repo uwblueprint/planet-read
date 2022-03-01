@@ -276,12 +276,18 @@ export const buildStoryTranslationsQuery = (
   level?: number,
   stage?: string,
   storyTitle?: string,
+  lastActivityAscending?: boolean,
 ) => {
   let queryParams = language ? `language: "${language}", ` : "";
   queryParams += level ? `level: ${level}, ` : "";
   queryParams += stage ? `stage: "${stage}", ` : "";
   queryParams += storyTitle ? `storyTitle: "${storyTitle}", ` : "";
   queryParams += storyId ? `storyId: ${storyId}, ` : "";
+  queryParams +=
+    typeof lastActivityAscending !== "undefined" &&
+    lastActivityAscending !== null
+      ? `lastActivityAscending: ${lastActivityAscending}, `
+      : "";
 
   return {
     fieldName: "storyTranslations",

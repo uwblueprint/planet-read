@@ -45,6 +45,7 @@ export type StoryTranslationsTableProps = {
   filters: { (data: string | null): void }[];
   loading: Boolean;
   width?: string;
+  setQueryIsAscendingLastEdited?: Dispatch<SetStateAction<boolean>>;
 };
 
 interface StoryTranslationFieldSortDict {
@@ -61,8 +62,9 @@ const StoryTranslationsTable = ({
   filters,
   loading,
   width = "95%",
+  setQueryIsAscendingLastEdited,
 }: StoryTranslationsTableProps) => {
-  const [isAscendingLastEdited, setIsAscendingLastEdited] = useState(true);
+  const [isAscendingLastEdited, setIsAscendingLastEdited] = useState(false);
   const [confirmDeleteTranslation, setConfirmDeleteTranslation] =
     useState(false);
   const [idToDelete, setIdToDelete] = useState(0);
@@ -149,6 +151,13 @@ const StoryTranslationsTable = ({
     setIsAscending(!isAscending);
     newStoryTranslations.sort(sortFn);
     setStoryTranslations(newStoryTranslations);
+  };
+
+  const sortQuery = () => {
+    if (setQueryIsAscendingLastEdited) {
+      setQueryIsAscendingLastEdited(!isAscendingLastEdited);
+      setIsAscendingLastEdited(!isAscendingLastEdited);
+    }
   };
 
   const tableBody = storyTranslations.map(
@@ -246,7 +255,11 @@ const StoryTranslationsTable = ({
           <Th>REVIEWER</Th>
           <Th
             cursor="pointer"
-            onClick={() => sort("lastEditedDate")}
+            onClick={
+              setQueryIsAscendingLastEdited
+                ? sortQuery
+                : () => sort("lastEditedDate")
+            }
           >{`LAST EDITED ${isAscendingLastEdited ? "↑" : "↓"}`}</Th>
           <Th>EXPORT</Th>
           <Th>ACTION</Th>

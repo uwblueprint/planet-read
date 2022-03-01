@@ -293,6 +293,7 @@ class StoryService(IStoryService):
         story_title=None,
         story_id=None,
         role_filter=None,
+        last_activity_ascending=None,
     ):
         try:
             filters = [
@@ -348,7 +349,15 @@ class StoryService(IStoryService):
                 .join("translation_contents")
                 .filter(*filters)
                 .filter(StoryTranslationAll.is_deleted == False)
-                .order_by(Story.id)
+                .order_by(
+                    Story.id
+                    if last_activity_ascending is None
+                    else (
+                        StoryTranslationAll.last_activity.asc()
+                        if last_activity_ascending
+                        else StoryTranslationAll.last_activity.desc()
+                    )
+                )
                 .all()
             )
 
