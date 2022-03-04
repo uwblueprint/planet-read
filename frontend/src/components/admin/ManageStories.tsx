@@ -42,7 +42,7 @@ const ManageStories = () => {
             as={MdLogin}
             height={5}
             margin="5px"
-            transform="rotate(270deg)"
+            transform="rotate(90deg)"
             width={5}
           />
           IMPORT STORY
