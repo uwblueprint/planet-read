@@ -41,7 +41,7 @@ const WelcomeModal = ({
 
   const handleClose = () => {
     onClose();
-    window.location.href = `#/?welcome=true&tab=2`;
+    window.location.href = `#/?tab=2`;
   };
 
   return (
