@@ -247,8 +247,8 @@ const ReviewPage = () => {
                 fontSize={fontSize}
               />
             </Flex>
-            <Flex>
-              {+authenticatedUser!.id === reviewerId && (
+            {+authenticatedUser!.id === reviewerId && (
+              <Flex>
                 <Text
                   as="u"
                   margin="5px 20px 0 0"
@@ -257,32 +257,32 @@ const ReviewPage = () => {
                 >
                   Remove myself from translation
                 </Text>
-              )}
-              <Tooltip
-                hasArrow
-                label={REVIEW_PAGE_TOOL_TIP_COPY}
-                isDisabled={!isDisabled}
-              >
-                <Box>
-                  <Button
-                    colorScheme="blue"
-                    size="secondary"
-                    margin="0 10px 0"
-                    width="250px"
-                    disabled={isDisabled}
-                    onClick={
-                      numApprovedLines === translatedStoryLines.length
-                        ? openSubmitTranslationModal
-                        : openReturnToTranslatorModal
-                    }
-                  >
-                    {numApprovedLines === translatedStoryLines.length
-                      ? "FINISH TRANSLATION"
-                      : "RETURN TO TRANSLATOR"}
-                  </Button>
-                </Box>
-              </Tooltip>
-            </Flex>
+                <Tooltip
+                  hasArrow
+                  label={REVIEW_PAGE_TOOL_TIP_COPY}
+                  isDisabled={!isDisabled}
+                >
+                  <Box>
+                    <Button
+                      colorScheme="blue"
+                      size="secondary"
+                      margin="0 10px 0"
+                      width="250px"
+                      disabled={isDisabled}
+                      onClick={
+                        numApprovedLines === translatedStoryLines.length
+                          ? openSubmitTranslationModal
+                          : openReturnToTranslatorModal
+                      }
+                    >
+                      {numApprovedLines === translatedStoryLines.length
+                        ? "FINISH TRANSLATION"
+                        : "RETURN TO TRANSLATOR"}
+                    </Button>
+                  </Box>
+                </Tooltip>
+              </Flex>
+            )}
           </Flex>
         </Flex>
         {(+authenticatedUser!.id === translatorId ||
