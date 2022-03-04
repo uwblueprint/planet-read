@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { useHistory } from "react-router-dom";
 import { useQuery } from "@apollo/client";
 import { Box, Button, Icon, Flex, Heading } from "@chakra-ui/react";
-import { MdLogout } from "react-icons/md";
+import { MdLogin } from "react-icons/md";
 import StoriesTable from "./StoriesTable";
 import { Story, GET_STORIES } from "../../APIClients/queries/StoryQueries";
 import TableFilter from "./TableFilter";
@@ -39,10 +39,10 @@ const ManageStories = () => {
           width="180px"
         >
           <Icon
-            as={MdLogout}
+            as={MdLogin}
             height={5}
             margin="5px"
-            transform="rotate(270deg)"
+            transform="rotate(90deg)"
             width={5}
           />
           IMPORT STORY
