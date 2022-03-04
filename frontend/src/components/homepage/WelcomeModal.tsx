@@ -38,6 +38,12 @@ const WelcomeModal = ({
   readonly = false,
 }: WelcomeModalProps) => {
   const [isAgreed, setIsAgreed] = useState(false);
+
+  const handleClose = () => {
+    onClose();
+    window.location.href = `#/?welcome=true&tab=2`;
+  };
+
   return (
     <Modal
       isCentered
@@ -78,7 +84,7 @@ const WelcomeModal = ({
               <Button
                 colorScheme="blue"
                 isDisabled={!isAgreed}
-                onClick={onClose}
+                onClick={handleClose}
               >
                 Let&apos;s Get Started
               </Button>

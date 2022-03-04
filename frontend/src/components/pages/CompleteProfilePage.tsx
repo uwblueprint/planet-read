@@ -54,7 +54,7 @@ const CompleteProfilePage = () => {
           resume,
         },
       });
-      window.location.href = `#/?welcome=true`;
+      window.location.href = `#/?welcome=true&tab=2`;
     } catch (err) {
       // eslint-disable-next-line no-alert
       window.alert(err);
