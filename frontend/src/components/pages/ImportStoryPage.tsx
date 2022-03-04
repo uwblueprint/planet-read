@@ -118,27 +118,32 @@ const ImportStoryPage = () => {
   };
 
   const submitForm = async () => {
-    if (!(storyFile && title && description && level && youtubeLink)) {
-      // eslint-disable-next-line no-alert
-      window.alert("Please fill out all required fields.");
-      return;
-    }
+    try {
+      if (!(storyFile && title && description && level && youtubeLink)) {
+        // eslint-disable-next-line no-alert
+        window.alert("Please fill out all required fields.");
+        return;
+      }
 
-    const result = await importStory({
-      variables: {
-        storyFile,
-        storyDetails: {
-          title,
-          description,
-          youtubeLink,
-          level,
-          translatedLanguages: excludedLanguages,
+      const result = await importStory({
+        variables: {
+          storyFile,
+          storyDetails: {
+            title,
+            description,
+            youtubeLink,
+            level,
+            translatedLanguages: excludedLanguages,
+          },
         },
-      },
-    });
-    if (result.data) {
-      const storyId = result.data.importStory.story.id;
-      history.push(`/story/${storyId}`);
+      });
+      if (result.data) {
+        const storyId = result.data.importStory.story.id;
+        history.push(`/story/${storyId}`);
+      }
+    } catch (error) {
+      // eslint-disable-next-line no-alert
+      window.alert(error ?? "Error occurred, please try again.");
     }
   };
 
