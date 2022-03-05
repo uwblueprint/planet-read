@@ -107,6 +107,12 @@ class StoryService(IStoryService):
 
     def import_story(self, details, file):
         try:
+            matching_story_title = (
+                db.session.query(Story).filter(Story.title == details.title).first()
+            )
+            if matching_story_title is not None:
+                raise Exception("Story title already exists")
+
             story_contents = self.process_story(file["path"])
             return self.create_story(details, story_contents)
 
