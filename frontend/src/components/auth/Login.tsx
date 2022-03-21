@@ -2,11 +2,7 @@ import { useMutation } from "@apollo/client";
 import React, { useContext, useState } from "react";
 import { Redirect } from "react-router-dom";
 import authAPIClient from "../../APIClients/AuthAPIClient";
-import {
-  SIGNUP,
-  LOGIN,
-  LOGIN_WITH_GOOGLE,
-} from "../../APIClients/mutations/AuthMutations";
+import { SIGNUP, LOGIN } from "../../APIClients/mutations/AuthMutations";
 import AuthContext, { AuthenticatedUser } from "../../contexts/AuthContext";
 import LoginComponent from "./LoginComponent";
 
@@ -23,8 +19,6 @@ const Login = () => {
 
   const [signup] = useMutation<{ signup: AuthenticatedUser }>(SIGNUP);
   const [login] = useMutation<{ login: AuthenticatedUser }>(LOGIN);
-  const [loginWithGoogle] =
-    useMutation<{ loginWithGoogle: AuthenticatedUser }>(LOGIN_WITH_GOOGLE);
 
   const onLogInClick = async () => {
     setInvalidLogin(false);
@@ -44,14 +38,6 @@ const Login = () => {
       }
     }
     setIsLoading(false);
-  };
-
-  const onGoogleLoginSuccess = async (tokenId: string) => {
-    const user: AuthenticatedUser = await authAPIClient.loginWithGoogle(
-      tokenId,
-      loginWithGoogle,
-    );
-    setAuthenticatedUser(user);
   };
 
   const validateEmail = (emailToValidate: string) => {
@@ -87,22 +73,6 @@ const Login = () => {
     setAgreeToTerms(!agreeToTerms);
   };
 
-  type GoogleErrorResponse = {
-    error: string;
-    details: string;
-  };
-
-  const onFailure = (response: GoogleErrorResponse) => {
-    // https://stackoverflow.com/questions/63631849/google-sign-in-not-working-in-incognito-mode
-    if (response.error === "idpiframe_initialization_failed") {
-      // eslint-disable-next-line no-console
-      console.warn("Google SignIn does not work on incognito mode.");
-    } else if (response.error !== "popup_closed_by_user") {
-      // eslint-disable-next-line no-alert
-      alert(JSON.stringify(response));
-    }
-  };
-
   if (authenticatedUser && isSignup) {
     return <Redirect to="/complete-profile" />;
   }
@@ -127,8 +97,6 @@ const Login = () => {
       onAgreeToTermsClick={onAgreeToTermsClick}
       onLogInClick={onLogInClick}
       onSignUpClick={onSignUpClick}
-      onGoogleLoginSuccess={onGoogleLoginSuccess}
-      onFailure={onFailure}
     />
   );
 };
