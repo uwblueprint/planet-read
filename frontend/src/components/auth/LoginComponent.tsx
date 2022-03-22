@@ -1,21 +1,8 @@
 import React, { useEffect } from "react";
-import {
-  GoogleLogin,
-  GoogleLoginResponse,
-  GoogleLoginResponseOffline,
-} from "react-google-login";
 import { Button, Flex, Heading, Text } from "@chakra-ui/react";
-import { FaGoogle } from "react-icons/fa";
 import LoginForm from "./LoginForm";
 import LoginImage from "./LoginImage";
 import ResetPassword from "./ResetPassword";
-
-type GoogleResponse = GoogleLoginResponse | GoogleLoginResponseOffline;
-
-type GoogleErrorResponse = {
-  error: string;
-  details: string;
-};
 
 type LoginComponentProps = {
   isLoading: boolean;
@@ -33,8 +20,6 @@ type LoginComponentProps = {
   onAgreeToTermsClick: () => Promise<void>;
   onLogInClick: () => Promise<void>;
   onSignUpClick: () => Promise<void>;
-  onGoogleLoginSuccess: (tokenId: string) => Promise<void>;
-  onFailure: (response: GoogleErrorResponse) => void;
 };
 
 const LoginComponent = ({
@@ -53,8 +38,6 @@ const LoginComponent = ({
   onAgreeToTermsClick,
   onLogInClick,
   onSignUpClick,
-  onGoogleLoginSuccess,
-  onFailure,
 }: LoginComponentProps) => {
   const isValidEmail = () => {
     // Email validation is case insensitive and allows for plus signs and
@@ -118,7 +101,7 @@ const LoginComponent = ({
         />
         <Button
           id="submit-login-form"
-          marginTop={isSignup ? "0px" : "40px"}
+          marginTop={isSignup ? "15px" : "25px"}
           width="100%"
           colorScheme="blue"
           isDisabled={
@@ -138,33 +121,6 @@ const LoginComponent = ({
         >
           {isSignup ? "Register account" : "Sign in"}
         </Button>
-        <GoogleLogin
-          clientId="175399577852-6hll8ih9q1ljij8f50f9pf9t2va6u3a7.apps.googleusercontent.com"
-          render={(renderProps) => (
-            <Button
-              marginTop="20px"
-              width="100%"
-              textTransform="none"
-              borderColor="gray.200"
-              variant="blueOutline"
-              iconSpacing="15px"
-              leftIcon={<FaGoogle />}
-              onClick={renderProps.onClick}
-              disabled={renderProps.disabled}
-            >
-              {isSignup ? "Sign up with Google" : "Sign in with Google"}
-            </Button>
-          )}
-          onSuccess={(response: GoogleResponse): void => {
-            if ("tokenId" in response) {
-              onGoogleLoginSuccess(response.tokenId);
-            } else {
-              // eslint-disable-next-line no-alert
-              alert(JSON.stringify(response));
-            }
-          }}
-          onFailure={onFailure}
-        />
         {!isSignup && <ResetPassword email={email} />}
         <Flex marginTop="15px">
           <Text color="gray.400">
