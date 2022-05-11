@@ -38,7 +38,7 @@ def init_app(app):
             "client_id": os.getenv("EMAIL_CLIENT_ID"),
             "client_secret": os.getenv("EMAIL_CLIENT_SECRET"),
         },
-        "planetread@uwblueprint.org",  # must replace
-        "Planet Read",  # must replace
+        os.getenv("EMAIL_USER"),
+        "Add My Language",
     )
     services["auth"] = AuthService(current_app.logger, services["user"], email_service)
